@@ -62,4 +62,5 @@ dkms.conf
 *.xml
 *.toc
 *.lof
+*.lot
 
