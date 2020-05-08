@@ -1,0 +1,24 @@
+\documentclass[a4paper, 10pt, twocolumn]{report}
+
+\usepackage[english]{babel}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{fontawesome}
+\usepackage{fancyhdr}
+
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\nouppercase{\rightmark}}
+\fancyfoot[LE,RO]{\thepage}
+
+\usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
+    style=alphabetic, citestyle=authoryear]{biblatex}
+\addbibresource{argent-manual.bib}
+
+
+\renewcommand{\familydefault}{\sfdefault}
+\pagestyle{fancy}
+
+\begin{document}
+\end{document}
+
