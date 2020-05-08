@@ -1,7 +1,8 @@
-DOC_GEN = pdflatex
+DOC_DIR = doc
+DOC_GEN = cd $(DOC_DIR) && pdflatex
+DOC_BIB = cd $(DOC_DIR) && biber
 DOC_VWR = xdg-open
 DOC_FLG = --halt-on-error
-DOC_BIB = biber
 DOC_OUT = argent-manual
 DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml
 
@@ -10,7 +11,7 @@ doc:
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
 	$(DOC_BIB) $(DOC_OUT)
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
-	$(DOC_VWR) $(DOC_OUT).pdf &
+	$(DOC_VWR) $(DOC_DIR)/$(DOC_OUT).pdf &
 
 
 clean:
