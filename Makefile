@@ -11,7 +11,7 @@
 # Argent Library.
 #
 # The contents of this file are released under the GPLv3 License. See the
-# accompanying LICENSE file or the generated Argent manual (section I:?) for 
+# accompanying LICENSE file or the generated Developer Manual (section I:?) for 
 # complete licensing details.
 #
 # BY CONTINUING TO USE AND/OR DISTRIBUTE THIS FILE, YOU ACKNOWLEDGE THAT YOU
