@@ -37,7 +37,6 @@
 #endif
 
 
-
 /*
  *      The ag_unlikely() macro provides a branch prediction hint that a 
  *      predicate is likely to be false [DM:??]
@@ -63,7 +62,7 @@
 
 
 /*
- *      The ag_hot macro hints that a given function is frequently called
+ *      The ag_hot macro hints that a given function is called frequently
  *      [DM:??].
  */
 #if (defined __GNUC__ || defined __clang__)
@@ -71,5 +70,17 @@
 #else
 #   define ag_hot
 #   warning "[!] ag_hot not supported by current compiler"
+#endif
+
+
+/*
+ *      The ag_cold macro hints that a given function is called infrequently
+ *      [DM:??].
+ */
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_cold __attribute__((cold))
+#else
+#   define ag_cold
+#   warning "[!] ag_cold not supported by current compiler"
 #endif
 
