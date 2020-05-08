@@ -60,4 +60,6 @@ dkms.conf
 *.pdf 
 *.synctex.gz 
 *.xml
+*.toc
+*.lof
 

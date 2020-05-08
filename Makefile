@@ -25,7 +25,7 @@ DOC_BIB = cd $(DOC_DIR) && biber
 DOC_VWR = xdg-open
 DOC_FLG = --halt-on-error
 DOC_OUT = argent-manual
-DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml
+DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml *.toc *.lof
 
 
 doc:
