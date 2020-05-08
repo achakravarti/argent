@@ -19,15 +19,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\documentclass[a4paper, 10pt, twocolumn]{report}
+\documentclass[a4paper, twocolumn]{report}
 
-\usepackage[english]{babel}
 \usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[english]{babel}
 \usepackage{booktabs}
 \usepackage{fontawesome}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[defaultlines=4,all]{nowidow}
 \usepackage{graphicx}
 \usepackage{imakeidx}
 \usepackage{fancyhdr}
+\usepackage[Glenn]{fncychap}
+\usepackage[toc, page]{appendix}
+\usepackage[tikz]{bclogo}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fontawesome}
 \usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
     style=alphabetic, citestyle=authoryear]{biblatex}
 
@@ -39,7 +49,7 @@
 \addbibresource{argent-manual.bib}
 \makeindex[columns=3, title=Index, intoc]
 
-\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\familydefault}{\rmdefault}
 \pagestyle{fancy}
 
 \begin{document}
@@ -53,14 +63,22 @@
 \end{titlepage}
 
 \tableofcontents
-\listoffigures
 \listoftables
+\listoffigures
+\listofalgorithms
+\lstlistoflistings
 
-\part{Overview}
-\part{Application Programming Interface}
-\part{Implementation}
-\part{Test Cases}
-\part{Appendix}
+%\part{Overview}
+\input{chapters/overview/license.tex}
+
+%\part{Application Programming Interface}
+\input{chapters/api/compiler-extensions}
+
+%\part{Implementation}
+%\part{Test Cases}
+\begin{appendices}
+  \input{chapters/appendix/gpl.tex}
+\end{appendices}
 
 \clearpage
 \printindex

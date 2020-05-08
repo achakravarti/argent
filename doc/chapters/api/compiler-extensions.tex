@@ -1,0 +1,391 @@
+%https://www.overleaf.com/learn/latex/code_listing
+\definecolor{GREEN}{rgb}{0,0.6,0}
+\definecolor{GRAY}{rgb}{0.5,0.5,0.5}
+\definecolor{PURPLE}{rgb}{0.58,0,0.82}
+\definecolor{BACKGROUND}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CODE}{
+  backgroundcolor=\color{BACKGROUND},
+  commentstyle=\color{GREEN},
+  keywordstyle=\color{blue},
+  numberstyle=\tiny\color{GRAY},
+  stringstyle=\color{PURPLE},
+  basicstyle=\ttfamily\scriptsize,
+  language=C,
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+\lstset{style=CODE}
+
+
+\chapter{Compiler Extensions}
+
+\begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
+  \small
+  \begin{tabular}{l l}
+    \faPlug & \verb|src/api.h| \\
+    \faWrench & \verb|src/api.h| \\
+    \faBalanceScale & \verb|test/compiler-extensions.c| \\
+    \faBook & \verb|doc/chp/compiler-extensions.tex| \\
+  \end{tabular}
+\end{bclogo}
+
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  \small
+  The compiler extension macros have no effect on compilers other than GCC and
+  Clang.
+\end{bclogo}
+
+GCC provides a rich set of compiler extensions to the C language standards
+through non-standard keywords and built-in functions such as 
+\verb|__attribute__|, \verb|__thread| and \verb|__builtin_expect()|. These 
+compiler extensions allow special properties to be specified to types, 
+enumerators, statements, functions and variables. These special properties are 
+used by GCC to perform optimisations and provide other enhancements beyond what 
+the C standard specifies.
+
+Experience has shown that careful use of these extensions is beneficial,
+especially if we know that the code is to be compiled on GCC, or a GCC-
+compatible compiler such as Clang that supports the non-standard keywords and
+built-in functions introduced by GCC.
+
+The Argent Library uses a few selected such extensions, and wraps them as macros
+so that they degrade gracefully (with an appropriate warning) when ported to 
+compilers that do not support the non-standard extensions provided by GCC.
+
+The list of compiler extension macros are summarised in Table~\ref{tab:synopsis}
+and elaborated in the following sections. These macros are both declared and
+defined in the \verb|src/api.h| header file.
+
+\renewcommand\arraystretch{1.1}
+\begin{table}[!htbp]
+  \small
+  \centering
+  \caption{Synopsis of compiler extension macros}
+  \label{tab:synopsis}
+  \begin{tabular}[t]{>{\centering}m{0.3\linewidth}
+    >{\raggedright\arraybackslash}m{0.6\linewidth}}
+    \toprule
+    \textbf{Macro} & \textbf{Synopsis} \\
+    \midrule
+    \verb|ag_cold| & Hints that a given function is called rarely \\
+    \verb|ag_hot| & Hints that a given function is called frequently \\
+    \verb|ag_likely| & Hints that a predicate is likely to be true \\
+    \verb|ag_pure| & Hints that a given function is pure \\
+    \verb|ag_threadlocal| & Hints that a given variable has thread local 
+      storage \\
+    \verb|ag_unlikely| & Hints that a predicate is likely to be false \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_pure
+%
+
+
+\section{Macro \texttt{ag\_pure}}
+
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+    \small
+    \verb|#include <argent/api.h>| \\
+    \verb|#define ag_pure| \ldots
+  \end{bclogo}
+
+  A \emph{pure function} is one that always returns the same result for the same
+  set of arguments without any side effects. In order for GCC to consider a
+  function to be pure, it must meet the following criteria:
+  \begin{enumerate}
+    \item Its return value depends only on its arguments and global variables.
+    \item It does not modify any of its arguments or global variables.
+    \item It does not involve any I/O calls such as \texttt{printf()}.
+    \item It does not make a call to any impure function.
+  \end{enumerate}
+
+  By marking such functions as pure with the \texttt{ag\_pure} macro, GCC is able
+  to perform relevant optimisations on them such as subexpression elimination. In
+  order to mark a function as pure, apply the \texttt{ag\_pure} macro on the
+  prototype declaration like so:
+
+  \begin{lstlisting}[linewidth=1.0\linewidth, caption=Example use of ag\_pure]
+    extern ag_pure int foo(const char *bar);
+  \end{lstlisting}
+
+  The algorithm for defining \verb|ag_pure| is given by Algorithm
+  \ref{alg:ag_pure}. We first check whether the compiler is either GCC or Clang;
+  if either is detected, then \verb|ag_pure| is defined as
+  \verb|__attribute__((pure))|, otherwise it is defined to nothing and an
+  appropriate compiler warning is issued.
+
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_pure}}
+    \label{alg:ag_pure}
+  \begin{algorithmic}
+    \If{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_pure| \gets \verb|__attribute__((pure))|$}
+    \Else
+      \State{$\verb|ag_pure| \gets \emptyset$}
+      \Comment{disable ag\_pure}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_hot
+%
+
+
+\section{Macro \texttt{ag\_hot}}
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+  \small
+  \verb|#include <argent/api.h>| \\
+  \verb|#define ag_hot| \ldots
+\end{bclogo}
+
+A \emph{hot function} is one that is called frequently. Marking such hot
+functions with the \verb|ag_hot| macro allows GCC to perform suitable
+performance optimisations on them. To mark a function as hot, its prototype
+needs to be decorated with \verb|ag_hot| like so:
+
+\begin{lstlisting}[linewidth=1.0\linewidth, 
+    caption=Example use of ag\_hot]
+extern int foo(const char *bar) ag_hot;
+\end{lstlisting}
+
+The algorithm for defining \verb|ag_hot| is given by Algorithm \ref{alg:ag_hot}.
+This algorithm is essentially the same as that for defining \verb|ag_pure|
+(Algorithm \ref{alg:ag_pure}), except for the use of \verb|__attribute__((hot))|
+instead of \verb|__attribute__((pure))|.
+
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_hot}}
+    \label{alg:ag_hot}
+  \begin{algorithmic}
+    \If{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_hot| \gets \verb|__attribute__((hot))|$}
+    \Else
+      \State{$\verb|ag_hot| \gets \emptyset$}
+      \Comment{disable ag\_hot}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_cold
+%
+
+
+\section{Macro \texttt{ag\_cold}}
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+  \small
+  \verb|#include <argent/api.h>| \\
+  \verb|#define ag_cold| \ldots
+\end{bclogo}
+
+The \verb|ag_cold| macro is similar to the \verb|ag_hot| macro, except
+that it is used to mark a \emph{cold function}, i.e. a function which is called
+rarely. To mark a function as cold, its prototype must be decorated like so:
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_cold]
+extern int foo(const char *bar) ag_cold;
+\end{lstlisting}
+
+The algorithm for defining \verb|ag_cold| is given by Algorithm 
+\ref{alg:ag_cold}. Just as in the case of the algorithm for defining 
+\verb|ag_hot| (Algorithm \ref{alg:ag_hot}, this algorithm is essentially the 
+same as that for defining \verb|ag_pure| (Algorithm \ref{alg:ag_pure}), except 
+for the use of \verb|__attribute__((cold))| instead of 
+\verb|__attribute__((pure))|.
+
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_cold}}
+    \label{alg:ag_cold}
+  \begin{algorithmic}
+    \If{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_cold| \gets \verb|__attribute__((cold))|$}
+    \Else
+      \State{$\verb|ag_cold| \gets \emptyset$}
+      \Comment{disable ag\_cold}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_likely()
+%
+
+
+\section{Macro \texttt{ag\_likely()}}
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+  \small
+  \verb|#include <argent/api.h>| \\
+  \verb|#define ag_likely(p)| \ldots \par
+  \texttt{p} = \emph{predicate to hint}
+\end{bclogo}
+
+The \verb|ag_likely()| macro provides a branch prediction hint that a predicate
+is likely to be \textbf{true}. It has only one parameter, which is the predicate 
+to be marked as likely. As an example, to mark the predicate of an \verb|if| 
+condition as likely, we would write:
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_likely()]
+if (ag_likely (s && *s)) 
+    printf("%s\n", s);
+\end{lstlisting}
+
+The algorithm for defining the \verb|ag_likely()| macro is given by Algorithm
+\ref{alg:ag_likely}, and has been modelled after the definition of the
+\verb|likely()| macro in the Linux kernel. 
+
+We first check whether GCC or Clang is being used as the compiler; if so, then 
+the \verb|ag_likely()| macro is defined in terms of the GCC built-in function 
+\verb|__builtin_expect()|, passing the predicate \emph{p} to be compared against 
+the value \textbf{1}. The double negation of the predicate \emph{p} ensures that 
+it evaluates to either \textbf{0} or \textbf{1}. If we find that GCC or Clang is
+not being used, then we simply alias \verb|ag_likely()| to the predicate
+\emph{p} and issue an appropriate compiler warning.
+
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_likely()}}
+    \label{alg:ag_likely}
+  \begin{algorithmic}
+    \If{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_likely(p)| \gets \Call{$\_\_builtin\_expect$}{!!(p), 1}$}
+    \Else
+      \State{$\verb|ag_likely(p)| \gets (p)$}
+      \Comment{disable ag\_likely()}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_unlikely()
+%
+
+
+\section{Macro \texttt{ag\_unlikely()}}
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+  \small
+  \verb|#include <argent/api.h>| \\
+  \verb|#define ag_unlikely(p)| \ldots \par
+  \texttt{p} = \emph{predicate to hint}
+\end{bclogo}
+
+The \verb|ag_unlikely()| macro, similar to the \verb|ag_likely()| macro,
+provides a branch prediction hint that a predicate is likely to be 
+\textbf{false}. As an example, to mark the predicate of an \verb|if| condition 
+as unlikely, we would write:
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_unlikely()]
+if (ag_unlikely (!(s && *s))) 
+    printf("unable to show contents of 's'\n");
+\end{lstlisting}
+ 
+ The algorithm for the definition of \verb|ag_unlikely()| is given by Algorithm
+ \ref{alg:ag_unlikely}, and is modelled after the definition of the
+ \verb|unlikely()| macro in the Linux kernel. This algorithm is similar to that
+ of \verb|ag_likely()| (Algorithm \ref{alg:ag_likely}), except that we compare
+ the predicate against \textbf{0} in the call to \verb|__builtin_expect()|.
+
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_unlikely()}}
+    \label{alg:ag_unlikely}
+  \begin{algorithmic}
+    \If{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_unlikely(p)| \gets \Call{$\_\_builtin\_expect$}{!!(p), 
+      0}$}
+    \Else
+      \State{$\verb|ag_unlikely(p)| \gets (p)$}
+      \Comment{disable ag\_unlikely()}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_threadlocal
+%
+
+
+\section{Macro \texttt{ag\_threadlocal}}
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+  \small
+  \verb|#include <argent/api.h>| \\
+  \verb|#define ag_threadlocal| \ldots
+\end{bclogo}
+
+Thread local storage refers to the mechanism by which a global or static
+variable is given as a separate copy to each thread, thereby keeping the 
+variable local to the thread.
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_threadlocal]
+  static ag_threadlocal int foo = 55;
+\end{lstlisting}
+
+The algorithm for defining the \verb|ag_threadlocal| macro is given by Algorithm
+\ref{alg:ag_threadlocal}. We start by checking the C dialect being used; if we
+are using the C11 (and beyond) dialect, we include the standard \emph{threads.h} 
+header file and define \verb|ag_threadlocal| to be an alias for
+the standard \verb|thread_local| keyword.
+
+If we are using a dialect lower than C11, we check if we are using either GCC or
+Clang as the compiler; if so, then we define \verb|ag_threadlocal| to be an 
+alias for the GCC-specific keyword \verb|__thread|, otherwise we define
+\verb|ag_threadlocal| to nothing and issue an appropriate compiler warning.
+  \begin{algorithm}
+    \scriptsize
+    \caption{Defining \texttt{ag\_threadlocal}}
+    \label{alg:ag_threadlocal}
+  \begin{algorithmic}
+    \If{$STDC \geq C11$}
+      \State{$\verb|#include| \gets \verb|<threads.h>|$}
+      \State{$\verb|ag_threadlocal| \gets \verb|thread_local|$}
+    \ElsIf{$compiler \equiv gcc$ or $compiler \equiv clang$}
+      \State{$\verb|ag_threadlocal| \gets \verb|__thread|$}
+    \Else
+      \State{$\verb|ag_threadlocal| \gets \emptyset$}
+      \Comment{disable ag\_threadlocal}
+      \State{$\verb|#warning| \gets$ ``unsupported macro''}
+      \Comment{compiler warning}
+    \EndIf
+  \end{algorithmic}
+  \end{algorithm}

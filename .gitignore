@@ -56,14 +56,16 @@ dkms.conf
 *.bbl 
 *.bcf 
 *.blg 
-*.log 
-*.pdf 
-*.synctex.gz 
-*.xml
-*.toc
-*.lof
-*.lot
 *.idx
 *.ilg
 *.ind
+*.loa
+*.lof
+*.log 
+*.lol
+*.lot
+*.pdf 
+*.synctex.gz 
+*.toc
+*.xml
 
