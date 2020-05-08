@@ -61,3 +61,15 @@
 #   warning "[!] ag_pure not supported by current compiler"
 #endif
 
+
+/*
+ *      The ag_hot macro hints that a given function is frequently called
+ *      [DM:??].
+ */
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_hot __attribute__((hot))
+#else
+#   define ag_hot
+#   warning "[!] ag_hot not supported by current compiler"
+#endif
+
