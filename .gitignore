@@ -63,4 +63,7 @@ dkms.conf
 *.toc
 *.lof
 *.lot
+*.idx
+*.ilg
+*.ind
 

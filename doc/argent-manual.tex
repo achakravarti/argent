@@ -25,17 +25,19 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{fontawesome}
-\usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage{imakeidx}
+\usepackage{fancyhdr}
+\usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
+    style=alphabetic, citestyle=authoryear]{biblatex}
 
 \fancyhf{}
 \fancyhead[LE]{\leftmark}
 \fancyhead[RO]{\nouppercase{\rightmark}}
 \fancyfoot[LE,RO]{\thepage}
 
-\usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
-    style=alphabetic, citestyle=authoryear]{biblatex}
 \addbibresource{argent-manual.bib}
+\makeindex[columns=3, title=Index, intoc]
 
 \renewcommand{\familydefault}{\sfdefault}
 \pagestyle{fancy}
@@ -59,5 +61,8 @@
 \part{Implementation}
 \part{Test Cases}
 \part{Appendix}
+
+\clearpage
+\printindex
 \end{document}
 
