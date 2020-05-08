@@ -1,0 +1,19 @@
+\chapter{Compiler Extensions}
+
+GCC provides a rich set of compiler extensions to the C language standards
+through the \texttt{\_\_attribute\_\_} keyword. These compiler extensions allow 
+special properties to be specified to types, enumerators, statements, functions, 
+and variables. These special properties, applied through the 
+\texttt{\_\_attribute\_\_} keyword, are used by GCC to perform optimisations and
+provide other enhancements beyond what the C standard specifies.
+
+Experience has shown that careful use of these extensions is beneficial,
+especially if we know that the code is to be compiled on GCC, or a GCC-
+compatible compiler such as Clang that supports the 
+\texttt{\_\_attribute\_\_} keyword.
+
+The Argent Library uses a few selected such extensions, and wraps them as macros
+so that they degrade gracefully (with an appropriate warning) when ported to 
+compilers that do not support the \texttt{\_\_attribute\_\_} extensions provided
+ by GCC.
+
