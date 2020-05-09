@@ -28,6 +28,7 @@
 \usepackage{graphicx}
 \usepackage{imakeidx}
 \usepackage{fancyhdr}
+\usepackage[Glenn]{fncychap}
 \usepackage[toc, page]{appendix}
 \usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
     style=alphabetic, citestyle=authoryear]{biblatex}
@@ -58,8 +59,11 @@
 \listoftables
 
 \part{Overview}
+\input{chapters/overview/license.tex}
+
 \part{Application Programming Interface}
 \input{chapters/api/compiler-extensions}
+
 \part{Implementation}
 \part{Test Cases}
 \begin{appendices}
