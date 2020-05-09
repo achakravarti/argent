@@ -28,6 +28,7 @@
 \usepackage{graphicx}
 \usepackage{imakeidx}
 \usepackage{fancyhdr}
+\usepackage[toc, page]{appendix}
 \usepackage[backend=biber, bibencoding=utf8, minbibnames=5, maxbibnames=5,
     style=alphabetic, citestyle=authoryear]{biblatex}
 
@@ -61,7 +62,9 @@
 \input{chapters/api/compiler-extensions}
 \part{Implementation}
 \part{Test Cases}
-\part{Appendix}
+\begin{appendices}
+  \input{chapters/appendix/gpl.tex}
+\end{appendices}
 
 \clearpage
 \printindex
