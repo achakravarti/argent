@@ -15,5 +15,58 @@ compatible compiler such as Clang that supports the
 The Argent Library uses a few selected such extensions, and wraps them as macros
 so that they degrade gracefully (with an appropriate warning) when ported to 
 compilers that do not support the \texttt{\_\_attribute\_\_} extensions provided
- by GCC.
+by GCC.
+
+The list of compiler extension macros are summarised in Table~\ref{tab:synopsis}
+and elaborated in the following sections. These macros are declared in the
+\emph{src/api.h} header file.
+
+\renewcommand\arraystretch{1.1}
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabular}[t]{>{\centering}m{0.3\linewidth}
+    >{\raggedright\arraybackslash}m{0.6\linewidth}}
+\toprule
+\textbf{Macro} & \textbf{Synopsis} \\
+\midrule
+\texttt{ag\_cold} & Hints that a given function is called rarely \\
+\texttt{ag\_hot} & Hints that a given function is called frequently \\
+\texttt{ag\_likely} & Hints that a predicate is likely to be true \\
+\texttt{ag\_pure} & Hints that a given function is pure \\
+\texttt{ag\_threadlocal} & Hints that a given variable has thread local \\
+\texttt{ag\_unlikely} & Hints that a predicate is likely to be false
+    storage \\
+\bottomrule
+\end{tabular}
+\caption{Synopsis of compiler extension macros}
+\label{tab:synopsis}
+\end{table}
+
+
+\section{Macro \texttt{ag\_hot}}
+A \emph{hot function} is one that is called frequently. Marking such hot
+functions with the \texttt{ag\_hot} macro allows GCC to perform suitable
+performance optimisations on them. To mark a function as hot, its prototype
+needs to be decorated with \texttt{ag\_hot} like so:
+\par
+\texttt{extern int ag\_hot foo(const char *bar);}
+
+On compilers that do not support \texttt{ag\_hot}, the macro degrades safely
+but generates a warning message during compilation.
+
+
+\section{Macro \texttt{ag\_cold}}
+The \texttt{ag\_cold} macro is similar to the \texttt{ag\_hot} macro, except
+that it is used to mark a \emph{cold function}, i.e. a function which is called
+rarely. To mark a function as cold, its prototype must be decorated like so:
+\par
+\texttt{extern int ag\_cold foo(const char *bar);}
+
+If the compiler does not support \texttt{ag\_hot}, then the macro degrades
+safely, generating an appropriate compiler warning.
+
+\section{Macro \texttt{ag\_likely}}
+\section{Macro \texttt{ag\_unlikely}}
+\section{Macro \texttt{ag\_pure}}
 
