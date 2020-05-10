@@ -1,13 +1,26 @@
+%https://www.overleaf.com/learn/latex/code_listing
+\definecolor{GREEN}{rgb}{0,0.6,0}
+\definecolor{GRAY}{rgb}{0.5,0.5,0.5}
+\definecolor{PURPLE}{rgb}{0.58,0,0.82}
+\definecolor{BACKGROUND}{rgb}{0.95,0.95,0.92}
+
 \lstdefinestyle{CODE}{
+  backgroundcolor=\color{BACKGROUND},
+  commentstyle=\color{GREEN},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{GRAY},
+  stringstyle=\color{PURPLE},
+  basicstyle=\ttfamily\footnotesize,
   language=C,
   tabsize=4,
   showspaces=false,
   showstringspaces=false,
   frame=single,
   breaklines=true,
+  captionpos=b,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 }
-\lstset{basicstyle=\footnotesize,style=CODE}
+\lstset{style=CODE}
 
 
 \chapter{Compiler Extensions}
@@ -83,10 +96,11 @@ safely, generating an appropriate compiler warning.
 \section{Macro \texttt{ag\_likely()}}
 The \verb|ag_likely()| macro provides a branch prediction hint that a predicate
 is likely to be \textbf{true}. It has only one parameter, which is the predicate 
-to be marked as likely. As an example, to mark an \verb|if| condition as likely, 
-we would write:
+to be marked as likely. As an example, to mark the predicate of an \verb|if| 
+condition as likely, we would write:
 \begin{lstlisting}[linewidth=1.0\linewidth]
-if (ag_likely (!p)) p++;
+if (ag_likely (s && *s)) 
+    printf("%s\n", s);
 \end{lstlisting}
 
 On compilers that do not support \verb|ag_likely()|, the macro degrades safely
@@ -95,10 +109,11 @@ to a no-op, but issues an appropriate compiler warning.
 \section{Macro \texttt{ag\_unlikely()}}
 The \verb|ag_unlikely()| macro, similar to the \verb|ag_likely()| macro,
 provides a branch prediction hint that a predicate is likely to be 
-\textbf{false}. As an example, to mark an \verb|if| condition as unlikely, we 
-would write:
+\textbf{false}. As an example, to mark the predicate of an \verb|if| condition 
+as unlikely, we would write:
 \begin{lstlisting}[linewidth=1.0\linewidth]
-if (ag\_unlikely (!p)) p++;
+if (ag_unlikely (!(s && *s))) 
+    printf("unable to display contents of 's'\n");
 \end{lstlisting}
 
 If the compiler does not support the \verb|ag_unlikely()| macro, then it
