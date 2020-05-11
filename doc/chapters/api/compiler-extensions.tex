@@ -7,7 +7,7 @@
 \lstdefinestyle{CODE}{
   backgroundcolor=\color{BACKGROUND},
   commentstyle=\color{GREEN},
-  keywordstyle=\color{magenta},
+  keywordstyle=\color{blue},
   numberstyle=\tiny\color{GRAY},
   stringstyle=\color{PURPLE},
   basicstyle=\ttfamily\footnotesize,
@@ -75,7 +75,7 @@ functions with the \verb|ag_hot| macro allows GCC to perform suitable
 performance optimisations on them. To mark a function as hot, its prototype
 needs to be decorated with \verb|ag_hot| like so:
 \begin{lstlisting}[linewidth=1.0\linewidth]
-extern int ag_hot foo(const char *bar);
+extern ag_hot int foo(const char *bar);
 \end{lstlisting}
 
 On compilers that do not support \verb|ag_hot|, the macro degrades safely
@@ -87,7 +87,7 @@ The \verb|ag_cold| macro is similar to the \verb|ag_hot| macro, except
 that it is used to mark a \emph{cold function}, i.e. a function which is called
 rarely. To mark a function as cold, its prototype must be decorated like so:
 \begin{lstlisting}[linewidth=1.0\linewidth]
-extern int ag_cold foo(const char *bar);
+extern ag_cold int foo(const char *bar);
 \end{lstlisting}
 
 If the compiler does not support \texttt{ag\_hot}, then the macro degrades
@@ -117,7 +117,24 @@ if (ag_unlikely (!(s && *s)))
 \end{lstlisting}
 
 If the compiler does not support the \verb|ag_unlikely()| macro, then it
-degrades saftely and emits a compiler warning.
+degrades safely and emits a compiler warning.
 
 \section{Macro \texttt{ag\_pure}}
+A \emph{pure function} is one that always returns the same result for the same
+set of arguments without any side effects. In order for GCC to consider a
+function to be pure, it must meet the following criteria:
+\begin{enumerate}
+  \item Its return value depends only on its arguments and global variables.
+  \item It does not modify any of its arguments or global variables.
+  \item It does not involve any I/O calls such as \texttt{printf()}.
+  \item It does not make a call to any impure function.
+\end{enumerate}
+
+By marking such functions as pure with the \texttt{ag\_pure} macro, GCC is able
+to perform relevant optimisations on them such as subexpression elimination. In
+order to mark a function as pure, apply the \texttt{ag\_pure} macro on the
+prototype declaration like so:
+\begin{lstlisting}[linewidth=1.0\linewidth]
+extern ag_pure int foo(const char *bar);
+\end{lstlisting}
 
