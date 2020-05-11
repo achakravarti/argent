@@ -78,8 +78,10 @@ needs to be decorated with \verb|ag_hot| like so:
 extern ag_hot int foo(const char *bar);
 \end{lstlisting}
 
-On compilers that do not support \verb|ag_hot|, the macro degrades safely
-but generates a warning message during compilation.
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_hot| macro is not available on compilers other than GCC and 
+  Clang.
+\end{bclogo}
 
 
 \section{Macro \texttt{ag\_cold}}
@@ -90,8 +92,11 @@ rarely. To mark a function as cold, its prototype must be decorated like so:
 extern ag_cold int foo(const char *bar);
 \end{lstlisting}
 
-If the compiler does not support \texttt{ag\_hot}, then the macro degrades
-safely, generating an appropriate compiler warning.
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_cold| macro is not available on compilers other than GCC and 
+  Clang.
+\end{bclogo}
+
 
 \section{Macro \texttt{ag\_likely()}}
 The \verb|ag_likely()| macro provides a branch prediction hint that a predicate
@@ -103,8 +108,11 @@ if (ag_likely (s && *s))
     printf("%s\n", s);
 \end{lstlisting}
 
-On compilers that do not support \verb|ag_likely()|, the macro degrades safely
-to a no-op, but issues an appropriate compiler warning.
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_likely()| macro is not available on compilers other than GCC and 
+  Clang.
+\end{bclogo}
+
 
 \section{Macro \texttt{ag\_unlikely()}}
 The \verb|ag_unlikely()| macro, similar to the \verb|ag_likely()| macro,
@@ -116,8 +124,13 @@ if (ag_unlikely (!(s && *s)))
     printf("unable to display contents of 's'\n");
 \end{lstlisting}
 
-If the compiler does not support the \verb|ag_unlikely()| macro, then it
-degrades safely and emits a compiler warning.
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_unlikely()| macro is not available on compilers other than GCC 
+  and Clang.
+\end{bclogo}
+
+
+
 
 \section{Macro \texttt{ag\_pure}}
 A \emph{pure function} is one that always returns the same result for the same
@@ -137,4 +150,9 @@ prototype declaration like so:
 \begin{lstlisting}[linewidth=1.0\linewidth]
 extern ag_pure int foo(const char *bar);
 \end{lstlisting}
+
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_pure| macro is not available on compilers other than GCC and
+  Clang.
+\end{bclogo}
 
