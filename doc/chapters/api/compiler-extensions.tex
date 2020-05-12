@@ -25,21 +25,31 @@
 
 \chapter{Compiler Extensions}
 
+\begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
+  \small
+  \begin{tabular}{l l}
+      \faPlug & \emph{src/api.h} \\
+      \faWrench & \emph{src/api.h} \\
+      \faBalanceScale & \emph{test/compiler-extensions.c} \\
+      \faBook & \emph{doc/chapters/compiler-extensions.tex} \\
+  \end{tabular}
+\end{bclogo}
+
 GCC provides a rich set of compiler extensions to the C language standards
-through the \texttt{\_\_attribute\_\_} keyword. These compiler extensions allow 
+through the \verb|__attribute__| keyword. These compiler extensions allow 
 special properties to be specified to types, enumerators, statements, functions, 
 and variables. These special properties, applied through the 
-\texttt{\_\_attribute\_\_} keyword, are used by GCC to perform optimisations and
+\verb|__attribute__| keyword, are used by GCC to perform optimisations and
 provide other enhancements beyond what the C standard specifies.
 
 Experience has shown that careful use of these extensions is beneficial,
 especially if we know that the code is to be compiled on GCC, or a GCC-
-compatible compiler such as Clang that supports the 
-\texttt{\_\_attribute\_\_} keyword.
+compatible compiler such as Clang that supports the \verb|__attribute__| 
+keyword.
 
 The Argent Library uses a few selected such extensions, and wraps them as macros
 so that they degrade gracefully (with an appropriate warning) when ported to 
-compilers that do not support the \texttt{\_\_attribute\_\_} extensions provided
+compilers that do not support the \verb|__attribute__| extensions provided
 by GCC.
 
 The list of compiler extension macros are summarised in Table~\ref{tab:synopsis}
@@ -55,13 +65,13 @@ and elaborated in the following sections. These macros are declared in the
 \toprule
 \textbf{Macro} & \textbf{Synopsis} \\
 \midrule
-\texttt{ag\_cold} & Hints that a given function is called rarely \\
-\texttt{ag\_hot} & Hints that a given function is called frequently \\
-\texttt{ag\_likely} & Hints that a predicate is likely to be true \\
-\texttt{ag\_pure} & Hints that a given function is pure \\
-\texttt{ag\_threadlocal} & Hints that a given variable has thread local 
+\verb|ag_cold| & Hints that a given function is called rarely \\
+\verb|ag_hot| & Hints that a given function is called frequently \\
+\verb|ag_likely| & Hints that a predicate is likely to be true \\
+\verb|ag_pure| & Hints that a given function is pure \\
+\verb|ag_threadlocal| & Hints that a given variable has thread local 
     storage \\
-\texttt{ag\_unlikely} & Hints that a predicate is likely to be false \\
+\verb|ag_unlikely| & Hints that a predicate is likely to be false \\
 \bottomrule
 \end{tabular}
 \caption{Synopsis of compiler extension macros}
@@ -77,6 +87,10 @@ and elaborated in the following sections. These macros are declared in the
   \verb|#define ag_hot| \ldots
 \end{bclogo}
 
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_hot| macro has no effect on compilers other than GCC and Clang.
+\end{bclogo}
+
 A \emph{hot function} is one that is called frequently. Marking such hot
 functions with the \verb|ag_hot| macro allows GCC to perform suitable
 performance optimisations on them. To mark a function as hot, its prototype
@@ -85,10 +99,7 @@ needs to be decorated with \verb|ag_hot| like so:
 extern ag_hot int foo(const char *bar);
 \end{lstlisting}
 
-\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
-  The \verb|ag_hot| macro is not available on compilers other than GCC and 
-  Clang.
-\end{bclogo}
+
 
 
 \section{Macro \texttt{ag\_cold}}
@@ -99,6 +110,10 @@ extern ag_hot int foo(const char *bar);
   \verb|#define ag_cold| \ldots
 \end{bclogo}
 
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_cold| macro has no effect on compilers other than GCC and Clang.
+\end{bclogo}
+
 The \verb|ag_cold| macro is similar to the \verb|ag_hot| macro, except
 that it is used to mark a \emph{cold function}, i.e. a function which is called
 rarely. To mark a function as cold, its prototype must be decorated like so:
@@ -106,10 +121,6 @@ rarely. To mark a function as cold, its prototype must be decorated like so:
 extern ag_cold int foo(const char *bar);
 \end{lstlisting}
 
-\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
-  The \verb|ag_cold| macro is not available on compilers other than GCC and 
-  Clang.
-\end{bclogo}
 
 
 \section{Macro \texttt{ag\_likely()}}
@@ -122,6 +133,11 @@ extern ag_cold int foo(const char *bar);
   \texttt{p} = \emph{predicate}
 \end{bclogo}
 
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_likely()| macro has no effect on compilers other than GCC and 
+  Clang.
+\end{bclogo}
+
 The \verb|ag_likely()| macro provides a branch prediction hint that a predicate
 is likely to be \textbf{true}. It has only one parameter, which is the predicate 
 to be marked as likely. As an example, to mark the predicate of an \verb|if| 
@@ -131,10 +147,6 @@ if (ag_likely (s && *s))
     printf("%s\n", s);
 \end{lstlisting}
 
-\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
-  The \verb|ag_likely()| macro is not available on compilers other than GCC and 
-  Clang.
-\end{bclogo}
 
 
 \section{Macro \texttt{ag\_unlikely()}}
@@ -147,6 +159,11 @@ if (ag_likely (s && *s))
   \texttt{p} = \emph{predicate}
 \end{bclogo}
 
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_unlikely()| macro is not available on compilers other than GCC 
+  and Clang.
+\end{bclogo}
+
 The \verb|ag_unlikely()| macro, similar to the \verb|ag_likely()| macro,
 provides a branch prediction hint that a predicate is likely to be 
 \textbf{false}. As an example, to mark the predicate of an \verb|if| condition 
@@ -157,13 +174,6 @@ if (ag_unlikely (!(s && *s)))
     printf("unable to display contents of 's'\n");
 \end{lstlisting}
 
-\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
-  The \verb|ag_unlikely()| macro is not available on compilers other than GCC 
-  and Clang.
-\end{bclogo}
-
-
-
 
 \section{Macro \texttt{ag\_pure}}
 
@@ -171,6 +181,11 @@ if (ag_unlikely (!(s && *s)))
     {Synopsis}
   \verb|#include <argent/api.h>|
   \verb|#define ag_pure| \ldots
+\end{bclogo}
+
+\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
+  The \verb|ag_pure| macro is not available on compilers other than GCC and
+  Clang.
 \end{bclogo}
 
 A \emph{pure function} is one that always returns the same result for the same
@@ -191,9 +206,4 @@ prototype declaration like so:
 \begin{lstlisting}[linewidth=1.0\linewidth]
 extern ag_pure int foo(const char *bar);
 \end{lstlisting}
-
-\begin{bclogo}[logo=\bctakecare, noborder=true, couleurBarre=orange]{Warning}
-  The \verb|ag_pure| macro is not available on compilers other than GCC and
-  Clang.
-\end{bclogo}
 
