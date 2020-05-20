@@ -28,10 +28,10 @@
 \begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
   \small
   \begin{tabular}{l l}
-      \faPlug & \emph{src/api.h} \\
-      \faWrench & \emph{src/api.h} \\
-      \faBalanceScale & \emph{test/compiler-extensions.c} \\
-      \faBook & \emph{doc/chapters/compiler-extensions.tex} \\
+    \faPlug & \emph{src/api.h} \\
+    \faWrench & \emph{src/api.h} \\
+    \faBalanceScale & \emph{test/compiler-extensions.c} \\
+    \faBook & \emph{doc/chapters/compiler-extensions.tex} \\
   \end{tabular}
 \end{bclogo}
 
@@ -63,25 +63,72 @@ and elaborated in the following sections. These macros are declared in the
 
 \renewcommand\arraystretch{1.1}
 \begin{table}[!htbp]
-\centering
-\small
-\begin{tabular}[t]{>{\centering}m{0.3\linewidth}
+  \centering
+  \small
+  \begin{tabular}[t]{>{\centering}m{0.3\linewidth}
     >{\raggedright\arraybackslash}m{0.6\linewidth}}
-\toprule
-\textbf{Macro} & \textbf{Synopsis} \\
-\midrule
-\verb|ag_cold| & Hints that a given function is called rarely \\
-\verb|ag_hot| & Hints that a given function is called frequently \\
-\verb|ag_likely| & Hints that a predicate is likely to be true \\
-\verb|ag_pure| & Hints that a given function is pure \\
-\verb|ag_threadlocal| & Hints that a given variable has thread local 
-    storage \\
-\verb|ag_unlikely| & Hints that a predicate is likely to be false \\
-\bottomrule
-\end{tabular}
-\caption{Synopsis of compiler extension macros}
-\label{tab:synopsis}
+    \toprule
+    \textbf{Macro} & \textbf{Synopsis} \\
+    \midrule
+    \verb|ag_cold| & Hints that a given function is called rarely \\
+    \verb|ag_hot| & Hints that a given function is called frequently \\
+    \verb|ag_likely| & Hints that a predicate is likely to be true \\
+    \verb|ag_pure| & Hints that a given function is pure \\
+    \verb|ag_threadlocal| & Hints that a given variable has thread local 
+      storage \\
+    \verb|ag_unlikely| & Hints that a predicate is likely to be false \\
+    \bottomrule
+  \end{tabular}
+  \caption{Synopsis of compiler extension macros}
+  \label{tab:synopsis}
 \end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_pure
+%
+
+
+\section{Macro \texttt{ag\_pure}}
+
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+    \verb|#include <argent/api.h>|
+    \verb|#define ag_pure| \ldots
+  \end{bclogo}
+
+  A \emph{pure function} is one that always returns the same result for the same
+  set of arguments without any side effects. In order for GCC to consider a
+  function to be pure, it must meet the following criteria:
+  \begin{enumerate}
+    \item Its return value depends only on its arguments and global variables.
+    \item It does not modify any of its arguments or global variables.
+    \item It does not involve any I/O calls such as \texttt{printf()}.
+    \item It does not make a call to any impure function.
+  \end{enumerate}
+
+  By marking such functions as pure with the \texttt{ag\_pure} macro, GCC is able
+  to perform relevant optimisations on them such as subexpression elimination. In
+  order to mark a function as pure, apply the \texttt{ag\_pure} macro on the
+  prototype declaration like so:
+
+  \begin{lstlisting}[linewidth=1.0\linewidth, caption=Example use of ag\_pure]
+    extern ag_pure int foo(const char *bar);
+  \end{lstlisting}
+
+  \begin{algorithmic}
+    \If{$compiler = gcc$ or $compiler = clang$}
+      \State{$\verb|ag_pure| \gets \verb|__attribute__((pure))|$}
+    \Else
+      \State{$\verb|ag_pure| \gets \emptyset$}\Comment{undefine ag\_pure}
+      \State{\verb|#warning| $''message''$}
+    \EndIf
+  \end{algorithmic}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_hot
+%
 
 
 \section{Macro \texttt{ag\_hot}}
@@ -96,11 +143,16 @@ A \emph{hot function} is one that is called frequently. Marking such hot
 functions with the \verb|ag_hot| macro allows GCC to perform suitable
 performance optimisations on them. To mark a function as hot, its prototype
 needs to be decorated with \verb|ag_hot| like so:
-\begin{lstlisting}[linewidth=1.0\linewidth]
-extern ag_hot int foo(const char *bar);
+
+\begin{lstlisting}[linewidth=1.0\linewidth, 
+    caption=Example use of ag\_hot]
+extern int foo(const char *bar) ag_hot;
 \end{lstlisting}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_cold
+%
 
 
 \section{Macro \texttt{ag\_cold}}
@@ -114,10 +166,16 @@ extern ag_hot int foo(const char *bar);
 The \verb|ag_cold| macro is similar to the \verb|ag_hot| macro, except
 that it is used to mark a \emph{cold function}, i.e. a function which is called
 rarely. To mark a function as cold, its prototype must be decorated like so:
-\begin{lstlisting}[linewidth=1.0\linewidth]
-extern ag_cold int foo(const char *bar);
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_cold]
+extern int foo(const char *bar) ag_cold;
 \end{lstlisting}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_likely()
+%
 
 
 \section{Macro \texttt{ag\_likely()}}
@@ -134,11 +192,17 @@ The \verb|ag_likely()| macro provides a branch prediction hint that a predicate
 is likely to be \textbf{true}. It has only one parameter, which is the predicate 
 to be marked as likely. As an example, to mark the predicate of an \verb|if| 
 condition as likely, we would write:
-\begin{lstlisting}[linewidth=1.0\linewidth]
+
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_likely()]
 if (ag_likely (s && *s)) 
     printf("%s\n", s);
 \end{lstlisting}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_unlikely()
+%
 
 
 \section{Macro \texttt{ag\_unlikely()}}
@@ -156,36 +220,32 @@ provides a branch prediction hint that a predicate is likely to be
 \textbf{false}. As an example, to mark the predicate of an \verb|if| condition 
 as unlikely, we would write:
 
-\begin{lstlisting}[linewidth=1.0\linewidth]
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_unlikely()]
 if (ag_unlikely (!(s && *s))) 
     printf("unable to display contents of 's'\n");
 \end{lstlisting}
 
 
-\section{Macro \texttt{ag\_pure}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macro ag_threadlocal
+%
+
+
+\section{Macro \texttt{ag\_threadlocal}}
 
 \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
     {Synopsis}
   \verb|#include <argent/api.h>|
-  \verb|#define ag_pure| \ldots
+  \verb|#define ag_threadlocal| \ldots
 \end{bclogo}
 
-A \emph{pure function} is one that always returns the same result for the same
-set of arguments without any side effects. In order for GCC to consider a
-function to be pure, it must meet the following criteria:
-\begin{enumerate}
-  \item Its return value depends only on its arguments and global variables.
-  \item It does not modify any of its arguments or global variables.
-  \item It does not involve any I/O calls such as \texttt{printf()}.
-  \item It does not make a call to any impure function.
-\end{enumerate}
+Thread local storage refers to the mechanism by which a global or static
+variable is given a separate copy to each thread, thereby keeping the variable
+local to the thread.
 
-By marking such functions as pure with the \texttt{ag\_pure} macro, GCC is able
-to perform relevant optimisations on them such as subexpression elimination. In
-order to mark a function as pure, apply the \texttt{ag\_pure} macro on the
-prototype declaration like so:
-
-\begin{lstlisting}[linewidth=1.0\linewidth]
-extern ag_pure int foo(const char *bar);
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Example use of ag\_threadlocal]
+  static ag_threadlocal int foo = 55;
 \end{lstlisting}
 
