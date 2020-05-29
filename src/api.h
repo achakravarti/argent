@@ -118,6 +118,8 @@
  */
 enum ag_erno {
     AG_ERNO_NULL = 0x0,
+    AG_ERNO_MEMPOOL_NEW,
+    AG_ERNO_MEMPOOL_RESIZE,
     AG_ERNO_LEN
 };
 
@@ -183,15 +185,44 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
  *      The ag_require() macro ensures that a given predicate is true, raising
  *      an exception otherwise [DM:??].
  */
-#define ag_require(p, e, opt) do {           \
-    if (ag_unlikely (!(p))) {                \
-        struct ag_exception ex = {           \
-            .erno = e,                       \
-            .func = __func__,                \
-            .file = __FILE__,                \
-            .line = __LINE__                 \
-        };                                   \
-        ag_exception_handler_get()(ex, opt); \
-    }                                        \
+#define ag_require(p, e, opt) do {            \
+    if (ag_unlikely (!(p))) {                 \
+        struct ag_exception ex = {            \
+            .erno = e,                        \
+            .func = __func__,                 \
+            .file = __FILE__,                 \
+            .line = __LINE__                  \
+        };                                    \
+        ag_exception_handler_get()(&ex, opt); \
+    }                                         \
 } while (0)
+
+
+
+
+/*******************************************************************************
+ *                                MEMORY POOL
+ */
+
+
+/*
+ *      The ag_mempool_new() interface function allocates a new block of heap
+ *      memory of a given size [DM:??].
+ */
+extern void *ag_mempool_new(size_t sz);
+
+
+/*
+ *      The ag_mempool_resize() interface function resizes an existing block of
+ *      heap memory [DM:??].
+ */
+extern void ag_mempool_resize(void **bfr, size_t sz);
+
+
+/*
+ *      The ag_mempool_free() interface function releases a previously allocated
+ *      block of heap memory [DM:??].
+ */
+extern void ag_mempool_free(void **bfr);
+
 

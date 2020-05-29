@@ -55,7 +55,9 @@ static ag_threadlocal ag_exception_handler *g_eh = eh_default;
  *      each enum ag_erno enumerator [DM:??]
  */
 static ag_threadlocal const char *g_emsg[] = {
-    "AG_ERNO_NULL: no error has occurred"
+    "AG_ERNO_NULL: no error has occurred",
+    "AG_ERNO_MEMPOOL_NEW: failed to allocate new heap memory",
+    "AG_ERNO_MEMPOOL_RESIZE: failed to resize existing heap memory buffer"
 };
 
 
@@ -108,8 +110,10 @@ extern void ag_exception_handler_set(ag_exception_handler *eh)
  */
 static void eh_default(const struct ag_exception *ex, void *opt)
 {
+    (void) opt;
     printf("[!] unhandled exception: 0x%x [%s(), %s:%lu]\n%s\n", ex->erno, 
             ex->func, ex->file, ex->line, ag_exception_message(ex->erno));
+
     exit(EXIT_FAILURE);
 }
 

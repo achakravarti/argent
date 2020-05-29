@@ -19,6 +19,20 @@
 ################################################################################
 
 
+DIR_BLD = bld
+
+DIR_LIB = src
+SRC_LIB = $(sort $(shell find $(DIR_LIB)/ -type f -name '*.c'))
+OBJ_LIB = $(patsubst $(DIR_LIB)/%.c, $(DIR_BLD)/%.o, $(SRC_LIB))
+BIN_LIB = bld/libargent.so
+
+CC = ccache gcc
+CFLAGS = -fPIC -g -Wall -Wextra -I $(shell pg_config --includedir)
+LDFLAGS = -shared -L $(shell pg_config --libdir) -lpq
+
+
+
+
 DOC_DIR = doc
 DOC_GEN = cd $(DOC_DIR) && pdflatex
 DOC_BIB = cd $(DOC_DIR) && biber
@@ -29,6 +43,23 @@ DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml *.toc *.loa \
 	*.lof *.lot *.idx *.ilg *.ind
 
 
+
+
+$(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
+	$(LINK.c) $^ -o $@
+
+$(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
+	$(COMPILE.c) $^ -o $@
+
+$(DIR_BLD):
+	mkdir -p $@
+
+
+
+
+all: $(BIN_LIB)
+
+
 doc:
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
 	$(DOC_BIB) $(DOC_OUT)
@@ -37,8 +68,8 @@ doc:
 
 
 clean:
-	rm -fv $(DOC_TMP)
+	rm -rfv $(DIR_BLD) $(DOC_TMP)
 
 
-.PHONY: doc clean
+.PHONY: all doc clean
 
