@@ -63,7 +63,7 @@ static inline void *copy_default(const void *payload)
  *      the client code does not supply a callback to free the payload of an
  *      object instance [DM:??].
  */
-static inline void free_default(void *payload)
+static inline void dispose_default(void *payload)
 {
     (void) payload;
 }
@@ -129,7 +129,7 @@ static ag_object *object_new(unsigned id, void *payload,
     ctx->payload = payload;
     
     ctx->vt.copy = vt->copy ? vt->copy : copy_default;
-    ctx->vt.free = vt->free ? vt->free : free_default;
+    ctx->vt.dispose = vt->dispose? vt->dispose: dispose_default;
     ctx->vt.len = vt->len ? vt->len : len_default;
     ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
     ctx->vt.str = vt->str ? vt->str : str_default;
@@ -150,7 +150,7 @@ static inline void object_copy(ag_object **obj)
         ag_object *cp = ag_object_new(hnd->id, hnd->vt.copy(hnd->payload), 
                 &hnd->vt);
 
-        ag_object_free(obj);
+        ag_object_dispose(obj);
         *obj = cp;
     }
 }
@@ -204,13 +204,13 @@ extern ag_object *ag_object_copy(const ag_object *ctx)
 /*
  *      Implementation of the ag_object_free() interface function [DM:??].
  */
-extern void ag_object_free(ag_object **ctx)
+extern void ag_object_dispose(ag_object **ctx)
 {
     ag_object *hnd;
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
-            hnd->vt.free(hnd->payload);
+            hnd->vt.dispose(hnd->payload);
             ag_mempool_free(&hnd->payload);
             ag_mempool_free((void **) ctx);
         }
@@ -259,7 +259,6 @@ extern size_t ag_object_len(const ag_object *ctx)
     ag_assert (ctx);
     return ctx->vt.len(ctx);
 }
-
 
 
 /*

@@ -260,7 +260,7 @@ typedef void *(ag_object_method_copy)(const void *payload);
 
 
                                 /* method to dispose object payload [AgDM:??] */
-typedef void (ag_object_method_free)(void *payload);
+typedef void (ag_object_method_dispose)(void *payload);
 
 
                           /* method to get length of object payload [AgDM:??] */
@@ -279,7 +279,7 @@ typedef const char *(ag_object_method_str)(const ag_object *obj);
                                               /* methods of object [AgDM::??] */
 struct ag_object_method {
     ag_object_method_copy *copy;
-    ag_object_method_free *free;
+    ag_object_method_dispose *dispose;
     ag_object_method_len *len;
     ag_object_method_cmp *cmp;
     ag_object_method_str *str;
@@ -301,7 +301,7 @@ extern ag_hot ag_object *ag_object_copy(const ag_object *ctx);
 
 
                                                  /* disposes object [AgDM:??] */
-extern ag_hot void ag_object_free(ag_object **ctx);
+extern ag_hot void ag_object_dispose(ag_object **ctx);
 
 
                                                   /* gets object ID [AgDM:??] */
