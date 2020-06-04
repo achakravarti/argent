@@ -263,6 +263,10 @@ typedef void *(ag_object_method_copy)(const void *payload);
 typedef void (ag_object_method_dispose)(void *payload);
 
 
+                            /* method to get size of object payload [AgDM:??] */
+typedef size_t (ag_object_method_sz)(const void *payload);
+
+
                           /* method to get length of object payload [AgDM:??] */
 typedef size_t (ag_object_method_len)(const void *payload);
 
@@ -280,6 +284,7 @@ typedef const char *(ag_object_method_str)(const ag_object *obj);
 struct ag_object_method {
     ag_object_method_copy *copy;
     ag_object_method_dispose *dispose;
+    ag_object_method_sz *sz;
     ag_object_method_len *len;
     ag_object_method_cmp *cmp;
     ag_object_method_str *str;
@@ -314,6 +319,10 @@ extern ag_cold void ag_object_id_set(ag_object **ctx, unsigned id);
 
                                              /* gets hash of object [AgDM:??] */
 extern ag_pure unsigned ag_object_hash(const ag_object *ctx, size_t len);
+
+
+                                                /* gets object size [AgDM:??] */
+extern ag_pure size_t ag_object_sz(const ag_object *ctx);
 
 
                                               /* gets object length [AgDM:??] */

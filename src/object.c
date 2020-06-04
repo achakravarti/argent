@@ -69,6 +69,13 @@ static inline void dispose_default(void *payload)
 }
 
 
+static inline size_t sz_default(const void *payload)
+{
+    (void) payload;
+    return 0;
+}
+
+
 /*
  *      The len_default() helper function is the default callback used in case
  *      the client code does not supply a callback to determine the length of
@@ -130,6 +137,7 @@ static ag_object *object_new(unsigned id, void *payload,
     
     ctx->vt.copy = vt->copy ? vt->copy : copy_default;
     ctx->vt.dispose = vt->dispose? vt->dispose: dispose_default;
+    ctx->vt.sz = vt->sz ? vt->sz : sz_default;
     ctx->vt.len = vt->len ? vt->len : len_default;
     ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
     ctx->vt.str = vt->str ? vt->str : str_default;
@@ -251,6 +259,13 @@ extern unsigned ag_object_hash(const ag_object *ctx, size_t len)
 }
 
 
+extern size_t ag_object_sz(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ctx->vt.sz(ctx);
+}
+
+
 /*
  *      Implementation of the ag_object_len() interface function [DM:??].
  */
@@ -321,5 +336,4 @@ extern const char *ag_object_str(const ag_object *ctx)
     ag_assert (ctx);
     return ctx->vt.str(ctx);
 }
-
 
