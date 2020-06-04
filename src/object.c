@@ -19,13 +19,14 @@
  ******************************************************************************/
 
 
+#include <math.h>
 #include "./api.h"
 
 
 
 
 /*******************************************************************************
- *                              TYPE DEFINITIONS
+ *                               TYPE DEFINITIONS
  */
 
 
@@ -33,319 +34,59 @@
  *      Expansion of the ag_object abstract data type [DM:??].
  */
 struct ag_object {
-    struct ag_object_vtable vt;
-    size_t refc;
+    unsigned refc;
+    unsigned type;
     unsigned id;
-    void *ld;
+    void *payload;
 };
 
 
 
 
 /*******************************************************************************
- *                             HELPER PROTOTYPES
+ *                            HELPER IMPLEMENTATION
  */
 
 
-/*
- *      The object_new() helper function creates a new object instance [DM:??].
- */
-static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
-
-
-/*
- *      The copy_deep() helper function creates a deep copy of an object
- *      instance [DM:??].
- */
-static void copy_deep(ag_object **ctx);
-
-
-/*
- *      The copy_default() helper function is the default callback used in case
- *      the client code does not supply a callback to copy the payload of an
- *      object instance.
- */
-static ag_object_payload *copy_default(const ag_object_payload *ctx);
-
-
-/*
- *      The free_default() helper function is the default callback used in case
- *      the client code does not supply a callback to free the payload of an
- *      object instance [DM:??].
- */
-static void free_default(ag_object_payload *ctx);
-
-
-/*
- *      The len_default() helper function is the default callback used in case
- *      the client code does not supply a callback to determine the length of
- *      the payload of an object instance [DM:??].
- */
-static size_t len_default(const ag_object_payload *ctx);
-
-
-/*
- *      The cmp_default() helper function is the default callback used in case
- *      the client code does not supply a callback to compare two object
- *      instances [DM:??].
- */
-static enum ag_object_cmp cmp_default(const ag_object *ctx, 
-        const ag_object *cmp);
-
-
-/*
- *      The str_default() helper function is the default callback used in case
- *      the client code does not supply a callback to generate the string
- *      representation of an object [DM:??].
- */
-static const char *str_default(const ag_object *ctx);
-
-
-
-
-/*******************************************************************************
- *                          INTERFACE IMPLEMENTATION
- */
-
-
-/*
- *      Implementation of the ag_object_new() interface function [DM:??].
- */
-extern ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
+                                             /* default copy method [AgDM:??] */
+static inline void *copy_default(const void *payload)
 {
-    ag_assert (id && ld && vt);
-    return object_new(id, ld, vt);
+    return (void *) payload;
 }
 
 
-/*
- *      Implementation of the ag_object_new_noid() interface function [DM:??].
- */
-extern ag_object *ag_object_new_noid(ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
+                                          /* default dispose method [AgDM:??] */
+static inline void dispose_default(void *payload)
 {
-    const unsigned NOID = 0;
-
-    ag_assert (ld && vt);
-    return object_new(NOID, ld, vt);
+    (void) payload;
 }
 
 
-/*
- *      Implementation of the ag_object_copy() interface function [DM:??].
- */
-extern ag_object *ag_object_copy(const ag_object *ctx)
+                                             /* default size method [AgDM:??] */
+static inline size_t sz_default(const void *payload)
 {
-    ag_assert (ctx);
-    ag_object *cp = (ag_object *) ctx;
-    
-    cp->refc++;
-    return cp;
+    (void) payload;
+    return 0;
 }
 
 
-/*
- *      Implementation of the ag_object_free() interface function [DM:??].
- */
-extern void ag_object_free(ag_object **ctx)
+                                           /* default length method [AgDM:??] */
+static inline size_t len_default(const void *payload)
 {
-    ag_object *hnd;
-
-    if (ag_likely (ctx && (hnd = *ctx))) {
-        if (!--hnd->refc) {
-            hnd->vt.free(hnd->ld);
-            ag_mempool_free(&hnd->ld);
-            ag_mempool_free((void **) ctx);
-        }
-    }
-}
-
-
-/*
- *      Implementation of the ag_object_id() interface function [DM:??].
- */
-extern unsigned ag_object_id(const ag_object *ctx)
-{
-    ag_assert (ctx);
-    return ctx->id;
-}
-
-
-/*
- *      Implementation of the ag_object_id_set() interface function [DM:??].
- */
-extern void ag_object_id_set(ag_object **ctx, unsigned id)
-{
-    ag_assert (ctx && *ctx);
-    copy_deep(ctx);
-
-    ag_assert (id);
-    (*ctx)->id = id;
-}
-
-
-/*
- *      Implementation of the ag_object_hash() interface function [DM:??].
- */
-extern unsigned ag_object_hash(const ag_object *ctx, size_t len)
-{
-    ag_assert (ctx && len);
-    return ctx->id / len;
-}
-
-
-/*
- *      Implementation of the ag_object_len() interface function [DM:??].
- */
-extern size_t ag_object_len(const ag_object *ctx)
-{
-    ag_assert (ctx);
-    return ctx->vt.len(ctx);
-}
-
-
-
-/*
- *      Implementation of the ag_object_cmp() interface function [DM:??].
- */
-extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
-        const ag_object *cmp)
-{
-    ag_assert (ctx);
-    return ctx->vt.cmp(ctx, cmp);
-}
-
-
-/*
- *      Declaration of the ag_object_lt() interface function [DM:??].
- */
-extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Declaration of the ag_object_eq() interface function [DM:??].
- */
-extern inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Declaration of the ag_object_gt() interface function [DM:??].
- */
-extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Implementation of the ag_object_payload_hnd() interface function 
- *      [DM:??].
- */
-extern const ag_object_payload *ag_object_payload_hnd(const ag_object *ctx)
-{
-    ag_assert (ctx);
-    return ctx->ld;
-}
-
-
-/*
- *      Implementation of the ag_object_payload_hnd_mutable() interface function
- *      [DM:??].
- */
-extern ag_object_payload *ag_object_payload_hnd_mutable(ag_object **ctx)
-{
-    ag_assert (ctx && *ctx);
-    copy_deep(ctx);
-
-    return (*ctx)->ld;
-}
-
-
-/*
- *      Implementation of the ag_object_str() interface function [DM:??].
- */
-extern const char *ag_object_str(const ag_object *ctx)
-{
-    ag_assert (ctx);
-    return ctx->vt.str(ctx);
-}
-
-
-
-
-/*******************************************************************************
- *                           HELPER IMPLEMENTATION
- */
-
-
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
-{
-    ag_object *ctx = ag_mempool_new(sizeof *ctx);
-    ctx->refc = 1;
-    ctx->id = id;
-    ctx->ld = ld;
-    
-    ctx->vt.copy = vt->copy ? vt->copy : copy_default;
-    ctx->vt.free = vt->free ? vt->free : free_default;
-    ctx->vt.len = vt->len ? vt->len : len_default;
-    ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
-    ctx->vt.str = vt->str ? vt->str : str_default;
-    
-    return ctx;
-}
-
-
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static void copy_deep(ag_object **ctx)
-{
-    ag_object *hnd = *ctx;
-
-    if (hnd->refc > 1) {
-        ag_object *cp = ag_object_new(hnd->id, hnd->vt.copy(hnd->ld), &hnd->vt);
-
-        ag_object_free(ctx);
-        *ctx = cp;
-    }
-}
-
-
-/*
- *      Implementation of the copy_default() helper function [DM:??].
- */
-static ag_object_payload *copy_default(const ag_object_payload *ctx)
-{
-    return (ag_object_payload *) ctx;
-}
-
-
-/*
- *      Implementation of the free_default() helper function [DM:??].
- */
-static void free_default(ag_object_payload *ctx)
-{
-    (void) ctx;
-}
-
-
-/*
- *      Implementation of the len_default() helper function [DM:??].
- */
-static size_t len_default(const ag_object_payload *ctx)
-{
-    (void) ctx;
+    (void) payload;
     return 1;
 }
 
 
-/*
- *      Implementation of the cmp_default() helper function [DM:??].
- */
-static enum ag_object_cmp cmp_default(const ag_object *ctx, 
+                                             /* default hash method [AgDM:??] */
+static inline size_t hash_default(const ag_object *obj)
+{
+    return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
+}
+
+
+                                       /* default comparison method [AgDM:??] */
+static inline enum ag_object_cmp cmp_default(const ag_object *ctx, 
         const ag_object *cmp)
 {
     size_t llen = ag_object_len(ctx);
@@ -358,10 +99,8 @@ static enum ag_object_cmp cmp_default(const ag_object *ctx,
 }
 
 
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static const char *str_default(const ag_object *ctx)
+                                           /* default string method [AgDM:??] */
+static inline const char *str_default(const ag_object *ctx)
 {
     const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
 #   define LEN 64
@@ -371,5 +110,206 @@ static const char *str_default(const ag_object *ctx)
 
     return bfr;
 #   undef LEN
+}
+
+
+                                              /* creates new object [AgDM:??] */
+static ag_object *object_new(unsigned type, unsigned id, void *payload)
+{
+    ag_object *ctx = ag_mempool_new(sizeof *ctx);
+    ctx->refc = 1;
+    ctx->type = type;
+    ctx->id = id;
+    ctx->payload = payload;
+    
+    return ctx;
+}
+
+
+                                       /* performs deep copy object [AgDM:??] */
+static inline void object_copy(ag_object **obj)
+{
+    ag_object *hnd = *obj;
+
+    if (hnd->refc > 1) {
+        ag_object *cp = ag_object_new(hnd->type, hnd->id, 
+                ag_object_vtable_get(hnd->type)->copy(hnd->payload));
+
+        ag_object_dispose(obj);
+        *obj = cp;
+    }
+}
+
+
+
+
+/*******************************************************************************
+ *                        INLINE INTERFACE DECLARATIONS
+ */
+
+
+                                   /* declaration of ag_object_lt() [AgDM:??] */
+extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
+
+
+                                   /* declaration of ag_object_eq() [AgDM:??] */
+extern inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp);
+
+
+                                   /* declaration of ag_object_gt() [AgDM:??] */
+extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
+
+
+
+
+/*******************************************************************************
+ *                           INTERFACE IMPLEMENTATION
+ */
+
+
+                          /* implementation of ag_object_register() [AgDM:??] */
+extern void ag_object_register(unsigned type, 
+        const struct ag_object_method *meth)
+{
+    struct ag_object_method m = {
+        .copy = meth->copy ? meth->copy : copy_default,
+        .dispose = meth->dispose? meth->dispose: dispose_default,
+        .sz = meth->sz ? meth->sz : sz_default,
+        .len = meth->len ? meth->len : len_default,
+        .hash = meth->hash ? meth->hash : hash_default,
+        .cmp = meth->cmp ? meth->cmp : cmp_default,
+        .str = meth->str ? meth->str : str_default
+    };
+
+    ag_object_vtable_set(type, &m);
+}
+
+
+                               /* implementation of ag_object_new() [AgDM:??] */
+extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload)
+{
+    ag_assert (type && id && payload);
+    return object_new(type, id, payload);
+}
+
+
+                          /* implementation of ag_object_new_noid() [AgDM:??] */
+extern ag_object *ag_object_new_noid(unsigned type, void *payload)
+{
+    const unsigned NOID = 0;
+
+    ag_assert (type && payload);
+    return object_new(type, NOID, payload);
+}
+
+
+                              /* implementation of ag_object_copy() [AgDM:??] */
+extern ag_object *ag_object_copy(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    ag_object *cp = (ag_object *) ctx;
+    
+    cp->refc++;
+    return cp;
+}
+
+
+                           /* implementation of ag_object_dispose() [AgDM:??] */
+extern void ag_object_dispose(ag_object **ctx)
+{
+    ag_object *hnd;
+
+    if (ag_likely (ctx && (hnd = *ctx))) {
+        if (!--hnd->refc) {
+            ag_object_vtable_get(hnd->type)->dispose(hnd->payload);
+            ag_mempool_free(&hnd->payload);
+            ag_mempool_free((void **) ctx);
+        }
+    }
+}
+
+
+                              /* implementation of ag_object_type() [AgDM:??] */
+extern unsigned ag_object_type(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ctx->type;
+}
+
+
+                                /* implementation of ag_object_id() [AgDM:??] */
+extern unsigned ag_object_id(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ctx->id;
+}
+
+
+                            /* implementation of ag_object_id_set() [AgDM:??] */
+extern void ag_object_id_set(ag_object **ctx, unsigned id)
+{
+    ag_assert (ctx && *ctx);
+    object_copy(ctx);
+
+    ag_assert (id);
+    (*ctx)->id = id;
+}
+
+
+                              /* implementation of ag_object_hash() [AgDM:??] */
+extern unsigned ag_object_hash(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ag_object_vtable_get(ctx->id)->hash(ctx);
+}
+
+
+                                /* implementation of ag_object_sz() [AgDM:??] */
+extern size_t ag_object_sz(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ag_object_vtable_get(ctx->id)->sz(ctx);
+}
+
+
+                               /* implementation of ag_object_len() [AgDM:??] */
+extern size_t ag_object_len(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ag_object_vtable_get(ctx->id)->len(ctx);
+}
+
+
+                               /* implementation of ag_object_cmp() [AgDM:??] */
+extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
+        const ag_object *cmp)
+{
+    ag_assert (ctx && ag_object_type(ctx) == ag_object_type(cmp));
+    return ag_object_vtable_get(ctx->id)->cmp(ctx, cmp);
+}
+
+
+                           /* implementation of ag_object_payload() [AgDM:??] */
+extern const void *ag_object_payload(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ctx->payload;
+}
+
+
+                   /* implementation of ag_object_payload_mutable() [AgDM:??] */
+extern void *ag_object_payload_mutable(ag_object **ctx)
+{
+    ag_assert (ctx && *ctx);
+    object_copy(ctx);
+    return (*ctx)->payload;
+}
+
+
+                               /* implementation of ag_object_str() [AgDM:??] */
+extern const char *ag_object_str(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ag_object_vtable_get(ctx->id)->str(ctx);
 }
 

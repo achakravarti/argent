@@ -234,19 +234,11 @@ extern void ag_mempool_free(void **bfr);
  */
 
 
-/*
- *      The ag_object abstract data type represents a reference-counted
- *      polymorphic object that is the base for all other ADTs of the Argent 
- *      Library [DM:??].
- */
+                                        /* base object for all ADTs [AgDM:??] */
 typedef struct ag_object ag_object;
 
 
-/*
- *      The ag_object_smart macro represents a smart version of an ag_object ADT
- *      that is able to automatically release the heap memory allocated to it
- *      once it goes out of scope [DM:??].
- */
+                                      /* smart version of ag_object [AgDM:??] */
 #if (defined __GNUC__ || defined __clang__)
 #   define ag_object_smart __attribute__((cleanup(ag_object_free))) ag_object
 #else
@@ -255,10 +247,7 @@ typedef struct ag_object ag_object;
 #endif
 
 
-/*
- *      The ag_object_cmp enumeration is a tristate representation of the result
- *      of comparing to object instances [DM:??].
- */
+                        /* tristate result of comparing two objects [AgDM:??] */
 enum ag_object_cmp {
     AG_OBJECT_CMP_LT = -1,
     AG_OBJECT_CMP_EQ = 0,
@@ -266,131 +255,120 @@ enum ag_object_cmp {
 };
 
 
-/*
- *      The ag_object_payload type represents the payload of an object [DM:??].
- */
-typedef void ag_object_payload;
+                                   /* method to copy object payload [AgDM:??] */
+typedef void *(ag_object_method_copy)(const void *payload);
 
 
-/*
- *      The ag_object_vtable_copy type is the callback used to make a deep copy
- *      of the payload of an object [DM:??].
- */
-typedef ag_object_payload *(ag_object_vtable_copy)(
-        const ag_object_payload *ctx);
+                                /* method to dispose object payload [AgDM:??] */
+typedef void (ag_object_method_dispose)(void *payload);
 
 
-/*
- *      The ag_object_vtable_free type is the callback used to release the
- *      resources allocated to the payload of an object [DM:??].
- */
-typedef void (ag_object_vtable_free)(ag_object_payload *ctx);
+                            /* method to get size of object payload [AgDM:??] */
+typedef size_t (ag_object_method_sz)(const void *payload);
 
 
-/*
- *      The ag_object_vtable_len type is the callback used to determine the
- *      length of the payload of an object [DM:??].
- */
-typedef size_t (ag_object_vtable_len)(const ag_object_payload *ctx);
+                          /* method to get length of object payload [AgDM:??] */
+typedef size_t (ag_object_method_len)(const void *payload);
 
 
-/*
- *      The ag_object_vtable_cmp type is the callback used to compare two object
- *      instances [DM:??].
- */
-typedef enum ag_object_cmp (ag_object_vtable_cmp)(const ag_object *ctx,
-        const ag_object *cmp);
+                                    /* method to get hash of object [AgDM:??] */
+typedef size_t (ag_object_method_hash)(const ag_object *obj);
+
+                                   /* method to compare two objects [AgDM:??] */
+typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *lhs,
+        const ag_object *rhs);
 
 
-/*
- *      The ag_object_vtable_str type is the callback used to generate the
- *      string representation of an object [DM:??].
- */
-typedef const char *(ag_object_vtable_str)(const ag_object *ctx);
+                   /* method to get string representation of object [AgDM:??] */
+typedef const char *(ag_object_method_str)(const ag_object *obj);
 
 
-/*
- *      The ag_object_vtable structure is the virtual table of polymorphic
- *      methods of an object [DM:??].
- */
-struct ag_object_vtable {
-    ag_object_vtable_copy *copy;
-    ag_object_vtable_free *free;
-    ag_object_vtable_len *len;
-    ag_object_vtable_cmp *cmp;
-    ag_object_vtable_str *str;
+                                              /* methods of object [AgDM:??] */
+struct ag_object_method {
+    ag_object_method_copy *copy;
+    ag_object_method_dispose *dispose;
+    ag_object_method_sz *sz;
+    ag_object_method_len *len;
+    ag_object_method_hash *hash;
+    ag_object_method_cmp *cmp;
+    ag_object_method_str *str;
 };
 
 
-/*
- *      The ag_object_new() interface function creates a new instance of an
- *      object [DM:??].
- */
-extern ag_hot ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
+                                      /* initialises object v-table [AgDM:??] */
+extern void ag_object_vtable_init(size_t len);
 
 
-/*
- *      The ag_object_new_noid() interface function creates a new instance of an
- *      object without an object ID [DM:??].
- */
-extern ag_hot ag_object *ag_object_new_noid(ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
+                                       /* shuts down object v-table [AgDM:??] */
+extern void ag_object_vtable_exit(void);
 
 
-/*
- *      The ag_object_copy() interface function creates a lazy copy of an object
- *      [DM:??].
- */
+                         /* checks if methods for object type exist [AgDM:??] */
+extern ag_pure bool ag_object_vtable_exists(unsigned type);
+
+
+                                     /* gets methods of object type [AgDM:??] */
+extern ag_pure ag_hot const struct ag_object_method *ag_object_vtable_get(
+        unsigned type);
+
+
+                                     /* sets methods of object type [AgDM:??] */
+extern void ag_object_vtable_set(unsigned type, 
+        const struct ag_object_method *meth);
+
+
+                                                /* registers object [AgDM:??] */
+extern void ag_object_register(unsigned type, 
+        const struct ag_object_method *meth);
+
+
+                                              /* creates new object [AgDM:??] */
+extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
+        void *payload);
+
+
+                                   /* creates new object without ID [AgDM:??] */
+extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload);
+
+
+                                                  /* copies object [AgDM:??] */
 extern ag_hot ag_object *ag_object_copy(const ag_object *ctx);
 
 
-/*
- *      The ag_object_free() interface function releases the resources allocated
- *      to an object [DM:??].
- */
-extern ag_hot void ag_object_free(ag_object **ctx);
+                                                 /* disposes object [AgDM:??] */
+extern ag_hot void ag_object_dispose(ag_object **ctx);
 
 
-/*
- *      The ag_object_id() interface function gets the ID of an object [DM:??].
- */
+                                                /* gets object type [AgDM:??] */
+extern ag_pure unsigned ag_object_type(const ag_object *ctx);
+
+
+                                                  /* gets object ID [AgDM:??] */
 extern ag_pure unsigned ag_object_id(const ag_object *ctx);
 
 
-/*
- *      The ag_object_id_set() interface function sets the ID of an object
- *      [DM:??].
- */
+                                                  /* sets object ID [AgDM:??] */
 extern ag_cold void ag_object_id_set(ag_object **ctx, unsigned id);
 
 
-/*
- *      The ag_object_hash() interface function gets the hash of an object
- *      [DM:??].
- */
-extern ag_pure unsigned ag_object_hash(const ag_object *ctx, size_t len);
+                                             /* gets hash of object [AgDM:??] */
+extern ag_pure unsigned ag_object_hash(const ag_object *ctx);
 
 
-/*
- *      The ag_object_len() interface function gets the length of an object
- *      [DM:??].
- */
+                                                /* gets object size [AgDM:??] */
+extern ag_pure size_t ag_object_sz(const ag_object *ctx);
+
+
+                                              /* gets object length [AgDM:??] */
 extern ag_pure size_t ag_object_len(const ag_object *ctx);
 
 
-/*
- *      The ag_object_cmp() interface function compares one object against
- *      another [DM:??].
- */
+                                            /* compares two objects [AgDM:??] */
 extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
         const ag_object *cmp);
 
 
-/*
- *      The ag_object_lt() interface function checks if an object is less than
- *      another [DM:??].
- */
+                           /* checks if object is less than another [AgDM:??] */
 inline ag_pure bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
 {
     ag_assert (ctx && cmp);
@@ -398,10 +376,7 @@ inline ag_pure bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
 }
 
 
-/*
- *      The ag_object_eq() interface function checks if an object is equivalent
- *      to another [DM:??].
- */
+                       /* checks if object is equivalent to another [AgDM:??] */
 inline ag_pure bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
 {
     ag_assert (ctx && cmp);
@@ -409,10 +384,7 @@ inline ag_pure bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
 }
 
 
-/*
- *      The ag_object_gt() interface function check is an object is greater than
- *      another [DM:??].
- */
+                        /* checks if object is greater than another [AgDM:??] */
 inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 {
     ag_assert (ctx && cmp);
@@ -420,24 +392,14 @@ inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 }
 
 
-/*
- *      The ag_object_payload_hnd() interface function gets a read-only handle
- *      to the payload of an object [DM:??].
- */
-extern ag_hot ag_pure const ag_object_payload *ag_object_payload_hnd(
-        const ag_object *ctx);
+                         /* gets read-only handle to object payload [AgDM:??] */
+extern ag_hot ag_pure const void *ag_object_payload(const ag_object *ctx);
 
 
-/*
- *      The ag_object_payload_hnd_mutable() interface function gets a read-write
- *      handle to the payload of an object [DM:??].
- */
-extern ag_hot ag_object_payload *ag_object_payload_hnd_mutable(ag_object **ctx);
+                        /* gets read-write handle to object payload [AgDM:??] */
+extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
 
 
-/*
- *      The ag_object_str() interface function generates the string
- *      representation of an object [DM:??].
- */
+                            /* gets string representation of object [AgDM:??] */
 extern ag_pure const char *ag_object_str(const ag_object *ctx);
 
