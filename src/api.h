@@ -283,7 +283,7 @@ typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *lhs,
 typedef const char *(ag_object_method_str)(const ag_object *obj);
 
 
-                                              /* methods of object [AgDM::??] */
+                                              /* methods of object [AgDM:??] */
 struct ag_object_method {
     ag_object_method_copy *copy;
     ag_object_method_dispose *dispose;
@@ -296,12 +296,12 @@ struct ag_object_method {
 
 
                                               /* creates new object [AgDM:??] */
-extern ag_hot ag_object *ag_object_new(unsigned id, void *payload,
-        const struct ag_object_method *vt);
+extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
+        void *payload, const struct ag_object_method *vt);
 
 
                                    /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object *ag_object_new_noid(void *payload,
+extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload,
         const struct ag_object_method *vt);
 
 
@@ -311,6 +311,10 @@ extern ag_hot ag_object *ag_object_copy(const ag_object *ctx);
 
                                                  /* disposes object [AgDM:??] */
 extern ag_hot void ag_object_dispose(ag_object **ctx);
+
+
+                                                /* gets object type [AgDM:??] */
+extern ag_pure unsigned ag_object_type(const ag_object *ctx);
 
 
                                                   /* gets object ID [AgDM:??] */

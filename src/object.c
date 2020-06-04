@@ -35,7 +35,8 @@
  */
 struct ag_object {
     struct ag_object_method vt;
-    size_t refc;
+    unsigned refc;
+    unsigned type;
     unsigned id;
     void *payload;
 };
@@ -134,11 +135,12 @@ static inline const char *str_default(const ag_object *ctx)
 /*
  *      The object_new() helper function creates a new object instance [DM:??].
  */
-static ag_object *object_new(unsigned id, void *payload,
+static ag_object *object_new(unsigned type, unsigned id, void *payload,
         const struct ag_object_method *vt)
 {
     ag_object *ctx = ag_mempool_new(sizeof *ctx);
     ctx->refc = 1;
+    ctx->type = type;
     ctx->id = id;
     ctx->payload = payload;
     
@@ -163,8 +165,8 @@ static inline void object_copy(ag_object **obj)
     ag_object *hnd = *obj;
 
     if (hnd->refc > 1) {
-        ag_object *cp = ag_object_new(hnd->id, hnd->vt.copy(hnd->payload), 
-                &hnd->vt);
+        ag_object *cp = ag_object_new(hnd->type, hnd->id, 
+                hnd->vt.copy(hnd->payload), &hnd->vt);
 
         ag_object_dispose(obj);
         *obj = cp;
@@ -183,24 +185,24 @@ static inline void object_copy(ag_object **obj)
 /*
  *      Implementation of the ag_object_new() interface function [DM:??].
  */
-extern ag_object *ag_object_new(unsigned id, void *payload,
+extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload,
         const struct ag_object_method *vt)
 {
-    ag_assert (id && payload && vt);
-    return object_new(id, payload, vt);
+    ag_assert (type && id && payload && vt);
+    return object_new(type, id, payload, vt);
 }
 
 
 /*
  *      Implementation of the ag_object_new_noid() interface function [DM:??].
  */
-extern ag_object *ag_object_new_noid(void *payload,
+extern ag_object *ag_object_new_noid(unsigned type, void *payload,
         const struct ag_object_method *vt)
 {
     const unsigned NOID = 0;
 
-    ag_assert (payload && vt);
-    return object_new(NOID, payload, vt);
+    ag_assert (type && payload && vt);
+    return object_new(type, NOID, payload, vt);
 }
 
 
@@ -231,6 +233,13 @@ extern void ag_object_dispose(ag_object **ctx)
             ag_mempool_free((void **) ctx);
         }
     }
+}
+
+
+extern unsigned ag_object_type(const ag_object *ctx)
+{
+    ag_assert (ctx);
+    return ctx->type;
 }
 
 
