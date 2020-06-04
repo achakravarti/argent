@@ -296,7 +296,7 @@ struct ag_object_method {
 
 
                                       /* initialises object v-table [AgDM:??] */
-extern void ag_object_vtable_init(void);
+extern void ag_object_vtable_init(size_t len);
 
 
                                        /* shuts down object v-table [AgDM:??] */

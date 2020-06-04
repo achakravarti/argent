@@ -44,12 +44,11 @@ struct node {
  */
 
 
-                                    /* number of buckets in v-table [AgDM:??] */
-#define VTABLE_BUCKETS 64
-
-
                                        /* v-table of object methods [AgDM:??] */
-ag_threadlocal struct node **vtable = NULL;
+ag_threadlocal struct {
+    size_t len;
+    struct node **bkt;
+} *vtable = NULL;
 
 
 
@@ -88,6 +87,13 @@ static inline void node_dispose(struct node *n)
 }
 
 
+                                        /* gets hash of object type [AgDM:??] */
+static inline unsigned type_hash(unsigned type)
+{
+    return type % vtable->len;
+}
+
+
 
 
 /*******************************************************************************
@@ -96,10 +102,15 @@ static inline void node_dispose(struct node *n)
 
 
                        /* implementation of ag_object_vtable_init() [AgDM:??] */
-extern void ag_object_vtable_init(void)
+extern void ag_object_vtable_init(size_t len)
 {
-    if (ag_likely (!vtable))
-        vtable = ag_mempool_new(sizeof *vtable * VTABLE_BUCKETS);
+    if (ag_likely (!vtable)) {
+        ag_assert (len);
+        vtable = ag_mempool_new(sizeof *vtable);
+
+        vtable->bkt = ag_mempool_new(sizeof *vtable->bkt * len);
+        vtable->len = len;
+    }
 }
 
 
@@ -108,8 +119,8 @@ extern void ag_object_vtable_exit(void)
 {
     struct node *n, *nxt;
 
-    for (register size_t i = 0; i < VTABLE_BUCKETS; i++) {
-        if ((n = vtable[i])) {
+    for (register size_t i = 0; i < vtable->len; i++) {
+        if ((n = vtable->bkt[i])) {
             do {
                 nxt = n->nxt;
                 node_dispose(n);
@@ -123,11 +134,8 @@ extern void ag_object_vtable_exit(void)
                      /* implementation of ag_object_vtable_exists() [AgDM:??] */
 extern bool ag_object_vtable_exists(unsigned type)
 {
-    ag_assert (type);
-    unsigned hash = type % VTABLE_BUCKETS;
-
-    ag_assert (vtable);
-    struct node *n = vtable[hash];
+    ag_assert (vtable && type);
+    struct node *n = vtable->bkt[type_hash(type)];
 
     while (n) {
         if (n->key == type)
@@ -143,11 +151,8 @@ extern bool ag_object_vtable_exists(unsigned type)
                         /* implementation of ag_object_vtable_get() [AgDM:??] */
 extern const struct ag_object_method *ag_object_vtable_get(unsigned type)
 {
-    ag_assert (type);
-    unsigned hash = type % VTABLE_BUCKETS;
-
-    ag_assert (vtable);
-    struct node *n = vtable[hash];
+    ag_assert (vtable && type);
+    struct node *n = vtable->bkt[type_hash(type)];
 
     while (n) {
         if (n->key == type)
@@ -166,10 +171,10 @@ extern void ag_object_vtable_set(unsigned type,
         const struct ag_object_method *meth)
 {
     ag_assert (type);
-    unsigned hash = type % VTABLE_BUCKETS;
+    unsigned h = type_hash(type);
 
     ag_assert (vtable && !ag_object_vtable_exists(type));
-    struct node *n = node_new(type, meth, vtable[hash]);
-    vtable[hash] = n;
+    struct node *n = node_new(type, meth, vtable->bkt[h]);
+    vtable->bkt[h] = n;
 }
 
