@@ -19,6 +19,7 @@
  ******************************************************************************/
 
 
+#include <math.h>
 #include "./api.h"
 
 
@@ -88,6 +89,12 @@ static inline size_t len_default(const void *payload)
 }
 
 
+static inline size_t hash_default(const ag_object *obj)
+{
+    return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
+}
+
+
 /*
  *      The cmp_default() helper function is the default callback used in case
  *      the client code does not supply a callback to compare two object
@@ -139,6 +146,7 @@ static ag_object *object_new(unsigned id, void *payload,
     ctx->vt.dispose = vt->dispose? vt->dispose: dispose_default;
     ctx->vt.sz = vt->sz ? vt->sz : sz_default;
     ctx->vt.len = vt->len ? vt->len : len_default;
+    ctx->vt.hash = vt->hash ? vt->hash : hash_default;
     ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
     ctx->vt.str = vt->str ? vt->str : str_default;
     
@@ -252,10 +260,10 @@ extern void ag_object_id_set(ag_object **ctx, unsigned id)
 /*
  *      Implementation of the ag_object_hash() interface function [DM:??].
  */
-extern unsigned ag_object_hash(const ag_object *ctx, size_t len)
+extern unsigned ag_object_hash(const ag_object *ctx)
 {
-    ag_assert (ctx && len);
-    return ctx->id / len;
+    ag_assert (ctx);
+    return ctx->vt.sz(ctx);
 }
 
 

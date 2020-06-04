@@ -271,6 +271,9 @@ typedef size_t (ag_object_method_sz)(const void *payload);
 typedef size_t (ag_object_method_len)(const void *payload);
 
 
+                                    /* method to get hash of object [AgDM:??] */
+typedef size_t (ag_object_method_hash)(const ag_object *obj);
+
                                    /* method to compare two objects [AgDM:??] */
 typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *lhs,
         const ag_object *rhs);
@@ -286,6 +289,7 @@ struct ag_object_method {
     ag_object_method_dispose *dispose;
     ag_object_method_sz *sz;
     ag_object_method_len *len;
+    ag_object_method_hash *hash;
     ag_object_method_cmp *cmp;
     ag_object_method_str *str;
 };
@@ -318,7 +322,7 @@ extern ag_cold void ag_object_id_set(ag_object **ctx, unsigned id);
 
 
                                              /* gets hash of object [AgDM:??] */
-extern ag_pure unsigned ag_object_hash(const ag_object *ctx, size_t len);
+extern ag_pure unsigned ag_object_hash(const ag_object *ctx);
 
 
                                                 /* gets object size [AgDM:??] */
