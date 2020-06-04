@@ -33,7 +33,7 @@
  *      Expansion of the ag_object abstract data type [DM:??].
  */
 struct ag_object {
-    struct ag_object_vtable vt;
+    struct ag_object_method vt;
     size_t refc;
     unsigned id;
     void *ld;
@@ -51,7 +51,7 @@ struct ag_object {
  *      The object_new() helper function creates a new object instance [DM:??].
  */
 static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
+        const struct ag_object_method *vt);
 
 
 /*
@@ -113,7 +113,7 @@ static const char *str_default(const ag_object *ctx);
  *      Implementation of the ag_object_new() interface function [DM:??].
  */
 extern ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
+        const struct ag_object_method *vt)
 {
     ag_assert (id && ld && vt);
     return object_new(id, ld, vt);
@@ -124,7 +124,7 @@ extern ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
  *      Implementation of the ag_object_new_noid() interface function [DM:??].
  */
 extern ag_object *ag_object_new_noid(ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
+        const struct ag_object_method *vt)
 {
     const unsigned NOID = 0;
 
@@ -281,7 +281,7 @@ extern const char *ag_object_str(const ag_object *ctx)
  *      Implementation of the object_new() helper function [DM:??].
  */
 static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt)
+        const struct ag_object_method *vt)
 {
     ag_object *ctx = ag_mempool_new(sizeof *ctx);
     ctx->refc = 1;

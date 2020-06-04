@@ -276,7 +276,7 @@ typedef void ag_object_payload;
  *      The ag_object_vtable_copy type is the callback used to make a deep copy
  *      of the payload of an object [DM:??].
  */
-typedef ag_object_payload *(ag_object_vtable_copy)(
+typedef ag_object_payload *(ag_object_method_copy)(
         const ag_object_payload *ctx);
 
 
@@ -284,21 +284,21 @@ typedef ag_object_payload *(ag_object_vtable_copy)(
  *      The ag_object_vtable_free type is the callback used to release the
  *      resources allocated to the payload of an object [DM:??].
  */
-typedef void (ag_object_vtable_free)(ag_object_payload *ctx);
+typedef void (ag_object_method_free)(ag_object_payload *ctx);
 
 
 /*
  *      The ag_object_vtable_len type is the callback used to determine the
  *      length of the payload of an object [DM:??].
  */
-typedef size_t (ag_object_vtable_len)(const ag_object_payload *ctx);
+typedef size_t (ag_object_method_len)(const ag_object_payload *ctx);
 
 
 /*
  *      The ag_object_vtable_cmp type is the callback used to compare two object
  *      instances [DM:??].
  */
-typedef enum ag_object_cmp (ag_object_vtable_cmp)(const ag_object *ctx,
+typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *ctx,
         const ag_object *cmp);
 
 
@@ -306,19 +306,19 @@ typedef enum ag_object_cmp (ag_object_vtable_cmp)(const ag_object *ctx,
  *      The ag_object_vtable_str type is the callback used to generate the
  *      string representation of an object [DM:??].
  */
-typedef const char *(ag_object_vtable_str)(const ag_object *ctx);
+typedef const char *(ag_object_method_str)(const ag_object *ctx);
 
 
 /*
  *      The ag_object_vtable structure is the virtual table of polymorphic
  *      methods of an object [DM:??].
  */
-struct ag_object_vtable {
-    ag_object_vtable_copy *copy;
-    ag_object_vtable_free *free;
-    ag_object_vtable_len *len;
-    ag_object_vtable_cmp *cmp;
-    ag_object_vtable_str *str;
+struct ag_object_method {
+    ag_object_method_copy *copy;
+    ag_object_method_free *free;
+    ag_object_method_len *len;
+    ag_object_method_cmp *cmp;
+    ag_object_method_str *str;
 };
 
 
@@ -327,7 +327,7 @@ struct ag_object_vtable {
  *      object [DM:??].
  */
 extern ag_hot ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
+        const struct ag_object_method *vt);
 
 
 /*
@@ -335,7 +335,7 @@ extern ag_hot ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
  *      object without an object ID [DM:??].
  */
 extern ag_hot ag_object *ag_object_new_noid(ag_object_payload *ld,
-        const struct ag_object_vtable *vt);
+        const struct ag_object_method *vt);
 
 
 /*
