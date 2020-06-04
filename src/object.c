@@ -26,7 +26,7 @@
 
 
 /*******************************************************************************
- *                              TYPE DEFINITIONS
+ *                               TYPE DEFINITIONS
  */
 
 
@@ -45,32 +45,25 @@ struct ag_object {
 
 
 /*******************************************************************************
- *                           HELPER IMPLEMENTATION
+ *                            HELPER IMPLEMENTATION
  */
 
 
-/*
- *      The copy_default() helper function is the default callback used in case
- *      the client code does not supply a callback to copy the payload of an
- *      object instance.
- */
+                                             /* default copy method [AgDM:??] */
 static inline void *copy_default(const void *payload)
 {
     return (void *) payload;
 }
 
 
-/*
- *      The free_default() helper function is the default callback used in case
- *      the client code does not supply a callback to free the payload of an
- *      object instance [DM:??].
- */
+                                          /* default dispose method [AgDM:??] */
 static inline void dispose_default(void *payload)
 {
     (void) payload;
 }
 
 
+                                             /* default size method [AgDM:??] */
 static inline size_t sz_default(const void *payload)
 {
     (void) payload;
@@ -78,11 +71,7 @@ static inline size_t sz_default(const void *payload)
 }
 
 
-/*
- *      The len_default() helper function is the default callback used in case
- *      the client code does not supply a callback to determine the length of
- *      the payload of an object instance [DM:??].
- */
+                                           /* default length method [AgDM:??] */
 static inline size_t len_default(const void *payload)
 {
     (void) payload;
@@ -90,17 +79,14 @@ static inline size_t len_default(const void *payload)
 }
 
 
+                                             /* default hash method [AgDM:??] */
 static inline size_t hash_default(const ag_object *obj)
 {
     return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
 }
 
 
-/*
- *      The cmp_default() helper function is the default callback used in case
- *      the client code does not supply a callback to compare two object
- *      instances [DM:??].
- */
+                                       /* default comparison method [AgDM:??] */
 static inline enum ag_object_cmp cmp_default(const ag_object *ctx, 
         const ag_object *cmp)
 {
@@ -114,11 +100,7 @@ static inline enum ag_object_cmp cmp_default(const ag_object *ctx,
 }
 
 
-/*
- *      The str_default() helper function is the default callback used in case
- *      the client code does not supply a callback to generate the string
- *      representation of an object [DM:??].
- */
+                                           /* default string method [AgDM:??] */
 static inline const char *str_default(const ag_object *ctx)
 {
     const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
@@ -132,9 +114,7 @@ static inline const char *str_default(const ag_object *ctx)
 }
 
 
-/*
- *      The object_new() helper function creates a new object instance [DM:??].
- */
+                                              /* creates new object [AgDM:??] */
 static ag_object *object_new(unsigned type, unsigned id, void *payload,
         const struct ag_object_method *vt)
 {
@@ -156,10 +136,7 @@ static ag_object *object_new(unsigned type, unsigned id, void *payload,
 }
 
 
-/*
- *      The object_copy() helper function creates a deep copy of an object
- *      instance [DM:??].
- */
+                                       /* performs deep copy object [AgDM:??] */
 static inline void object_copy(ag_object **obj)
 {
     ag_object *hnd = *obj;
@@ -176,15 +153,31 @@ static inline void object_copy(ag_object **obj)
 
 
 
+/*******************************************************************************
+ *                        INLINE INTERFACE DECLARATIONS
+ */
+
+
+                                   /* declaration of ag_object_lt() [AgDM:??] */
+extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
+
+
+                                   /* declaration of ag_object_eq() [AgDM:??] */
+extern inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp);
+
+
+                                   /* declaration of ag_object_gt() [AgDM:??] */
+extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
+
+
+
 
 /*******************************************************************************
- *                          INTERFACE IMPLEMENTATION
+ *                           INTERFACE IMPLEMENTATION
  */
 
 
-/*
- *      Implementation of the ag_object_new() interface function [DM:??].
- */
+                               /* implementation of ag_object_new() [AgDM:??] */
 extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload,
         const struct ag_object_method *vt)
 {
@@ -193,9 +186,7 @@ extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload,
 }
 
 
-/*
- *      Implementation of the ag_object_new_noid() interface function [DM:??].
- */
+                          /* implementation of ag_object_new_noid() [AgDM:??] */
 extern ag_object *ag_object_new_noid(unsigned type, void *payload,
         const struct ag_object_method *vt)
 {
@@ -206,9 +197,7 @@ extern ag_object *ag_object_new_noid(unsigned type, void *payload,
 }
 
 
-/*
- *      Implementation of the ag_object_copy() interface function [DM:??].
- */
+                              /* implementation of ag_object_copy() [AgDM:??] */
 extern ag_object *ag_object_copy(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -219,9 +208,7 @@ extern ag_object *ag_object_copy(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_free() interface function [DM:??].
- */
+                           /* implementation of ag_object_dispose() [AgDM:??] */
 extern void ag_object_dispose(ag_object **ctx)
 {
     ag_object *hnd;
@@ -236,6 +223,7 @@ extern void ag_object_dispose(ag_object **ctx)
 }
 
 
+                              /* implementation of ag_object_type() [AgDM:??] */
 extern unsigned ag_object_type(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -243,9 +231,7 @@ extern unsigned ag_object_type(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_id() interface function [DM:??].
- */
+                                /* implementation of ag_object_id() [AgDM:??] */
 extern unsigned ag_object_id(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -253,9 +239,7 @@ extern unsigned ag_object_id(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_id_set() interface function [DM:??].
- */
+                            /* implementation of ag_object_id_set() [AgDM:??] */
 extern void ag_object_id_set(ag_object **ctx, unsigned id)
 {
     ag_assert (ctx && *ctx);
@@ -266,9 +250,7 @@ extern void ag_object_id_set(ag_object **ctx, unsigned id)
 }
 
 
-/*
- *      Implementation of the ag_object_hash() interface function [DM:??].
- */
+                              /* implementation of ag_object_hash() [AgDM:??] */
 extern unsigned ag_object_hash(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -276,6 +258,7 @@ extern unsigned ag_object_hash(const ag_object *ctx)
 }
 
 
+                                /* implementation of ag_object_sz() [AgDM:??] */
 extern size_t ag_object_sz(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -283,9 +266,7 @@ extern size_t ag_object_sz(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_len() interface function [DM:??].
- */
+                               /* implementation of ag_object_len() [AgDM:??] */
 extern size_t ag_object_len(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -293,9 +274,7 @@ extern size_t ag_object_len(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_cmp() interface function [DM:??].
- */
+                               /* implementation of ag_object_cmp() [AgDM:??] */
 extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
         const ag_object *cmp)
 {
@@ -304,27 +283,7 @@ extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx,
 }
 
 
-/*
- *      Declaration of the ag_object_lt() interface function [DM:??].
- */
-extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Declaration of the ag_object_eq() interface function [DM:??].
- */
-extern inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Declaration of the ag_object_gt() interface function [DM:??].
- */
-extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
-
-
-/*
- *      Implementation of the ag_object_payload() interface function [DM:??].
- */
+                           /* implementation of ag_object_payload() [AgDM:??] */
 extern const void *ag_object_payload(const ag_object *ctx)
 {
     ag_assert (ctx);
@@ -332,10 +291,7 @@ extern const void *ag_object_payload(const ag_object *ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_payload_mutable() interface function
- *      [DM:??].
- */
+                   /* implementation of ag_object_payload_mutable() [AgDM:??] */
 extern void *ag_object_payload_mutable(ag_object **ctx)
 {
     ag_assert (ctx && *ctx);
@@ -345,9 +301,7 @@ extern void *ag_object_payload_mutable(ag_object **ctx)
 }
 
 
-/*
- *      Implementation of the ag_object_str() interface function [DM:??].
- */
+                               /* implementation of ag_object_str() [AgDM:??] */
 extern const char *ag_object_str(const ag_object *ctx)
 {
     ag_assert (ctx);
