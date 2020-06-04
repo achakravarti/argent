@@ -296,6 +296,7 @@ struct ag_object_method {
 
 extern void ag_object_vtable_init(void);
 extern void ag_object_vtable_exit(void);
+extern ag_pure bool ag_object_vtable_exists(unsigned type);
 extern ag_pure ag_hot const struct ag_object_method *ag_object_vtable_get(
         unsigned type);
 extern void ag_object_vtable_set(unsigned type, 
