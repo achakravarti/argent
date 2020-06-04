@@ -36,29 +36,15 @@ struct ag_object {
     struct ag_object_method vt;
     size_t refc;
     unsigned id;
-    void *ld;
+    void *payload;
 };
 
 
 
 
 /*******************************************************************************
- *                             HELPER PROTOTYPES
+ *                           HELPER IMPLEMENTATION
  */
-
-
-/*
- *      The object_new() helper function creates a new object instance [DM:??].
- */
-static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_method *vt);
-
-
-/*
- *      The copy_deep() helper function creates a deep copy of an object
- *      instance [DM:??].
- */
-static void copy_deep(ag_object **ctx);
 
 
 /*
@@ -66,7 +52,10 @@ static void copy_deep(ag_object **ctx);
  *      the client code does not supply a callback to copy the payload of an
  *      object instance.
  */
-static ag_object_payload *copy_default(const ag_object_payload *ctx);
+static inline void *copy_default(const void *payload)
+{
+    return (void *) payload;
+}
 
 
 /*
@@ -74,7 +63,10 @@ static ag_object_payload *copy_default(const ag_object_payload *ctx);
  *      the client code does not supply a callback to free the payload of an
  *      object instance [DM:??].
  */
-static void free_default(ag_object_payload *ctx);
+static inline void free_default(void *payload)
+{
+    (void) payload;
+}
 
 
 /*
@@ -82,7 +74,11 @@ static void free_default(ag_object_payload *ctx);
  *      the client code does not supply a callback to determine the length of
  *      the payload of an object instance [DM:??].
  */
-static size_t len_default(const ag_object_payload *ctx);
+static inline size_t len_default(const void *payload)
+{
+    (void) payload;
+    return 1;
+}
 
 
 /*
@@ -90,8 +86,17 @@ static size_t len_default(const ag_object_payload *ctx);
  *      the client code does not supply a callback to compare two object
  *      instances [DM:??].
  */
-static enum ag_object_cmp cmp_default(const ag_object *ctx, 
-        const ag_object *cmp);
+static inline enum ag_object_cmp cmp_default(const ag_object *ctx, 
+        const ag_object *cmp)
+{
+    size_t llen = ag_object_len(ctx);
+    size_t rlen = ag_object_len(cmp);
+
+    if (llen == rlen)
+        return AG_OBJECT_CMP_EQ;
+
+    return llen < rlen ? AG_OBJECT_CMP_LT : AG_OBJECT_CMP_GT;
+}
 
 
 /*
@@ -99,7 +104,57 @@ static enum ag_object_cmp cmp_default(const ag_object *ctx,
  *      the client code does not supply a callback to generate the string
  *      representation of an object [DM:??].
  */
-static const char *str_default(const ag_object *ctx);
+static inline const char *str_default(const ag_object *ctx)
+{
+    const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
+#   define LEN 64
+
+    static ag_threadlocal char bfr[LEN];
+    snprintf(bfr, LEN, FMT, ctx->id, ag_object_len(ctx), ctx->refc);
+
+    return bfr;
+#   undef LEN
+}
+
+
+/*
+ *      The object_new() helper function creates a new object instance [DM:??].
+ */
+static ag_object *object_new(unsigned id, void *payload,
+        const struct ag_object_method *vt)
+{
+    ag_object *ctx = ag_mempool_new(sizeof *ctx);
+    ctx->refc = 1;
+    ctx->id = id;
+    ctx->payload = payload;
+    
+    ctx->vt.copy = vt->copy ? vt->copy : copy_default;
+    ctx->vt.free = vt->free ? vt->free : free_default;
+    ctx->vt.len = vt->len ? vt->len : len_default;
+    ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
+    ctx->vt.str = vt->str ? vt->str : str_default;
+    
+    return ctx;
+}
+
+
+/*
+ *      The object_copy() helper function creates a deep copy of an object
+ *      instance [DM:??].
+ */
+static inline void object_copy(ag_object **obj)
+{
+    ag_object *hnd = *obj;
+
+    if (hnd->refc > 1) {
+        ag_object *cp = ag_object_new(hnd->id, hnd->vt.copy(hnd->payload), 
+                &hnd->vt);
+
+        ag_object_free(obj);
+        *obj = cp;
+    }
+}
+
 
 
 
@@ -112,24 +167,24 @@ static const char *str_default(const ag_object *ctx);
 /*
  *      Implementation of the ag_object_new() interface function [DM:??].
  */
-extern ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
+extern ag_object *ag_object_new(unsigned id, void *payload,
         const struct ag_object_method *vt)
 {
-    ag_assert (id && ld && vt);
-    return object_new(id, ld, vt);
+    ag_assert (id && payload && vt);
+    return object_new(id, payload, vt);
 }
 
 
 /*
  *      Implementation of the ag_object_new_noid() interface function [DM:??].
  */
-extern ag_object *ag_object_new_noid(ag_object_payload *ld,
+extern ag_object *ag_object_new_noid(void *payload,
         const struct ag_object_method *vt)
 {
     const unsigned NOID = 0;
 
-    ag_assert (ld && vt);
-    return object_new(NOID, ld, vt);
+    ag_assert (payload && vt);
+    return object_new(NOID, payload, vt);
 }
 
 
@@ -155,8 +210,8 @@ extern void ag_object_free(ag_object **ctx)
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
-            hnd->vt.free(hnd->ld);
-            ag_mempool_free(&hnd->ld);
+            hnd->vt.free(hnd->payload);
+            ag_mempool_free(&hnd->payload);
             ag_mempool_free((void **) ctx);
         }
     }
@@ -179,7 +234,7 @@ extern unsigned ag_object_id(const ag_object *ctx)
 extern void ag_object_id_set(ag_object **ctx, unsigned id)
 {
     ag_assert (ctx && *ctx);
-    copy_deep(ctx);
+    object_copy(ctx);
 
     ag_assert (id);
     (*ctx)->id = id;
@@ -237,26 +292,25 @@ extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
 
 
 /*
- *      Implementation of the ag_object_payload_hnd() interface function 
- *      [DM:??].
+ *      Implementation of the ag_object_payload() interface function [DM:??].
  */
-extern const ag_object_payload *ag_object_payload_hnd(const ag_object *ctx)
+extern const void *ag_object_payload(const ag_object *ctx)
 {
     ag_assert (ctx);
-    return ctx->ld;
+    return ctx->payload;
 }
 
 
 /*
- *      Implementation of the ag_object_payload_hnd_mutable() interface function
+ *      Implementation of the ag_object_payload_mutable() interface function
  *      [DM:??].
  */
-extern ag_object_payload *ag_object_payload_hnd_mutable(ag_object **ctx)
+extern void *ag_object_payload_mutable(ag_object **ctx)
 {
     ag_assert (ctx && *ctx);
-    copy_deep(ctx);
+    object_copy(ctx);
 
-    return (*ctx)->ld;
+    return (*ctx)->payload;
 }
 
 
@@ -269,107 +323,4 @@ extern const char *ag_object_str(const ag_object *ctx)
     return ctx->vt.str(ctx);
 }
 
-
-
-
-/*******************************************************************************
- *                           HELPER IMPLEMENTATION
- */
-
-
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static ag_object *object_new(unsigned id, ag_object_payload *ld,
-        const struct ag_object_method *vt)
-{
-    ag_object *ctx = ag_mempool_new(sizeof *ctx);
-    ctx->refc = 1;
-    ctx->id = id;
-    ctx->ld = ld;
-    
-    ctx->vt.copy = vt->copy ? vt->copy : copy_default;
-    ctx->vt.free = vt->free ? vt->free : free_default;
-    ctx->vt.len = vt->len ? vt->len : len_default;
-    ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
-    ctx->vt.str = vt->str ? vt->str : str_default;
-    
-    return ctx;
-}
-
-
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static void copy_deep(ag_object **ctx)
-{
-    ag_object *hnd = *ctx;
-
-    if (hnd->refc > 1) {
-        ag_object *cp = ag_object_new(hnd->id, hnd->vt.copy(hnd->ld), &hnd->vt);
-
-        ag_object_free(ctx);
-        *ctx = cp;
-    }
-}
-
-
-/*
- *      Implementation of the copy_default() helper function [DM:??].
- */
-static ag_object_payload *copy_default(const ag_object_payload *ctx)
-{
-    return (ag_object_payload *) ctx;
-}
-
-
-/*
- *      Implementation of the free_default() helper function [DM:??].
- */
-static void free_default(ag_object_payload *ctx)
-{
-    (void) ctx;
-}
-
-
-/*
- *      Implementation of the len_default() helper function [DM:??].
- */
-static size_t len_default(const ag_object_payload *ctx)
-{
-    (void) ctx;
-    return 1;
-}
-
-
-/*
- *      Implementation of the cmp_default() helper function [DM:??].
- */
-static enum ag_object_cmp cmp_default(const ag_object *ctx, 
-        const ag_object *cmp)
-{
-    size_t llen = ag_object_len(ctx);
-    size_t rlen = ag_object_len(cmp);
-
-    if (llen == rlen)
-        return AG_OBJECT_CMP_EQ;
-
-    return llen < rlen ? AG_OBJECT_CMP_LT : AG_OBJECT_CMP_GT;
-}
-
-
-/*
- *      Implementation of the object_new() helper function [DM:??].
- */
-static const char *str_default(const ag_object *ctx)
-{
-    const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
-#   define LEN 64
-
-    static ag_threadlocal char bfr[LEN];
-    snprintf(bfr, LEN, FMT, ctx->id, ag_object_len(ctx), ctx->refc);
-
-    return bfr;
-#   undef LEN
-}
 

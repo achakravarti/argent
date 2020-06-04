@@ -267,46 +267,39 @@ enum ag_object_cmp {
 
 
 /*
- *      The ag_object_payload type represents the payload of an object [DM:??].
- */
-typedef void ag_object_payload;
-
-
-/*
  *      The ag_object_vtable_copy type is the callback used to make a deep copy
  *      of the payload of an object [DM:??].
  */
-typedef ag_object_payload *(ag_object_method_copy)(
-        const ag_object_payload *ctx);
+typedef void *(ag_object_method_copy)(const void *payload);
 
 
 /*
  *      The ag_object_vtable_free type is the callback used to release the
  *      resources allocated to the payload of an object [DM:??].
  */
-typedef void (ag_object_method_free)(ag_object_payload *ctx);
+typedef void (ag_object_method_free)(void *payload);
 
 
 /*
  *      The ag_object_vtable_len type is the callback used to determine the
  *      length of the payload of an object [DM:??].
  */
-typedef size_t (ag_object_method_len)(const ag_object_payload *ctx);
+typedef size_t (ag_object_method_len)(const void *payload);
 
 
 /*
  *      The ag_object_vtable_cmp type is the callback used to compare two object
  *      instances [DM:??].
  */
-typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *ctx,
-        const ag_object *cmp);
+typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *lhs,
+        const ag_object *rhs);
 
 
 /*
  *      The ag_object_vtable_str type is the callback used to generate the
  *      string representation of an object [DM:??].
  */
-typedef const char *(ag_object_method_str)(const ag_object *ctx);
+typedef const char *(ag_object_method_str)(const ag_object *obj);
 
 
 /*
@@ -326,7 +319,7 @@ struct ag_object_method {
  *      The ag_object_new() interface function creates a new instance of an
  *      object [DM:??].
  */
-extern ag_hot ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
+extern ag_hot ag_object *ag_object_new(unsigned id, void *payload,
         const struct ag_object_method *vt);
 
 
@@ -334,7 +327,7 @@ extern ag_hot ag_object *ag_object_new(unsigned id, ag_object_payload *ld,
  *      The ag_object_new_noid() interface function creates a new instance of an
  *      object without an object ID [DM:??].
  */
-extern ag_hot ag_object *ag_object_new_noid(ag_object_payload *ld,
+extern ag_hot ag_object *ag_object_new_noid(void *payload,
         const struct ag_object_method *vt);
 
 
@@ -410,8 +403,8 @@ inline ag_pure bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
 
 
 /*
- *      The ag_object_gt() interface function check is an object is greater than
- *      another [DM:??].
+ *      The ag_object_gt() interface function checks if an object is greater 
+ *      than another [DM:??].
  */
 inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 {
@@ -421,18 +414,17 @@ inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 
 
 /*
- *      The ag_object_payload_hnd() interface function gets a read-only handle
+ *      The ag_object_payload() interface function gets a read-only handle
  *      to the payload of an object [DM:??].
  */
-extern ag_hot ag_pure const ag_object_payload *ag_object_payload_hnd(
-        const ag_object *ctx);
+extern ag_hot ag_pure const void *ag_object_payload(const ag_object *ctx);
 
 
 /*
- *      The ag_object_payload_hnd_mutable() interface function gets a read-write
+ *      The ag_object_payload_mutable() interface function gets a read-write
  *      handle to the payload of an object [DM:??].
  */
-extern ag_hot ag_object_payload *ag_object_payload_hnd_mutable(ag_object **ctx);
+extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
 
 
 /*
