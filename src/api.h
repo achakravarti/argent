@@ -294,6 +294,12 @@ struct ag_object_method {
     ag_object_method_str *str;
 };
 
+extern void ag_object_vtable_init(void);
+extern void ag_object_vtable_exit(void);
+extern const struct ag_object_method *ag_object_vtable_get(unsigned type);
+extern void ag_object_vtable_set(unsigned type, 
+        const struct ag_object_method *meth);
+
 
                                               /* creates new object [AgDM:??] */
 extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
