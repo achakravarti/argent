@@ -294,11 +294,25 @@ struct ag_object_method {
     ag_object_method_str *str;
 };
 
+
+                                      /* initialises object v-table [AgDM:??] */
 extern void ag_object_vtable_init(void);
+
+
+                                       /* shuts down object v-table [AgDM:??] */
 extern void ag_object_vtable_exit(void);
+
+
+                         /* checks if methods for object type exist [AgDM:??] */
 extern ag_pure bool ag_object_vtable_exists(unsigned type);
+
+
+                                     /* gets methods of object type [AgDM:??] */
 extern ag_pure ag_hot const struct ag_object_method *ag_object_vtable_get(
         unsigned type);
+
+
+                                     /* sets methods of object type [AgDM:??] */
 extern void ag_object_vtable_set(unsigned type, 
         const struct ag_object_method *meth);
 
