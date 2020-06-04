@@ -34,7 +34,6 @@
  *      Expansion of the ag_object abstract data type [DM:??].
  */
 struct ag_object {
-    struct ag_object_method vt;
     unsigned refc;
     unsigned type;
     unsigned id;
@@ -115,22 +114,13 @@ static inline const char *str_default(const ag_object *ctx)
 
 
                                               /* creates new object [AgDM:??] */
-static ag_object *object_new(unsigned type, unsigned id, void *payload,
-        const struct ag_object_method *vt)
+static ag_object *object_new(unsigned type, unsigned id, void *payload)
 {
     ag_object *ctx = ag_mempool_new(sizeof *ctx);
     ctx->refc = 1;
     ctx->type = type;
     ctx->id = id;
     ctx->payload = payload;
-    
-    ctx->vt.copy = vt->copy ? vt->copy : copy_default;
-    ctx->vt.dispose = vt->dispose? vt->dispose: dispose_default;
-    ctx->vt.sz = vt->sz ? vt->sz : sz_default;
-    ctx->vt.len = vt->len ? vt->len : len_default;
-    ctx->vt.hash = vt->hash ? vt->hash : hash_default;
-    ctx->vt.cmp = vt->cmp ? vt->cmp : cmp_default;
-    ctx->vt.str = vt->str ? vt->str : str_default;
     
     return ctx;
 }
@@ -143,7 +133,7 @@ static inline void object_copy(ag_object **obj)
 
     if (hnd->refc > 1) {
         ag_object *cp = ag_object_new(hnd->type, hnd->id, 
-                hnd->vt.copy(hnd->payload), &hnd->vt);
+                ag_object_vtable_get(hnd->type)->copy(hnd->payload));
 
         ag_object_dispose(obj);
         *obj = cp;
@@ -177,23 +167,39 @@ extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
  */
 
 
-                               /* implementation of ag_object_new() [AgDM:??] */
-extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload,
-        const struct ag_object_method *vt)
+                          /* implementation of ag_object_register() [AgDM:??] */
+extern void ag_object_register(unsigned type, 
+        const struct ag_object_method *meth)
 {
-    ag_assert (type && id && payload && vt);
-    return object_new(type, id, payload, vt);
+    struct ag_object_method m = {
+        .copy = meth->copy ? meth->copy : copy_default,
+        .dispose = meth->dispose? meth->dispose: dispose_default,
+        .sz = meth->sz ? meth->sz : sz_default,
+        .len = meth->len ? meth->len : len_default,
+        .hash = meth->hash ? meth->hash : hash_default,
+        .cmp = meth->cmp ? meth->cmp : cmp_default,
+        .str = meth->str ? meth->str : str_default
+    };
+
+    ag_object_vtable_set(type, &m);
+}
+
+
+                               /* implementation of ag_object_new() [AgDM:??] */
+extern ag_object *ag_object_new(unsigned type, unsigned id, void *payload)
+{
+    ag_assert (type && id && payload);
+    return object_new(type, id, payload);
 }
 
 
                           /* implementation of ag_object_new_noid() [AgDM:??] */
-extern ag_object *ag_object_new_noid(unsigned type, void *payload,
-        const struct ag_object_method *vt)
+extern ag_object *ag_object_new_noid(unsigned type, void *payload)
 {
     const unsigned NOID = 0;
 
-    ag_assert (type && payload && vt);
-    return object_new(type, NOID, payload, vt);
+    ag_assert (type && payload);
+    return object_new(type, NOID, payload);
 }
 
 
@@ -215,7 +221,7 @@ extern void ag_object_dispose(ag_object **ctx)
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
-            hnd->vt.dispose(hnd->payload);
+            ag_object_vtable_get(hnd->type)->dispose(hnd->payload);
             ag_mempool_free(&hnd->payload);
             ag_mempool_free((void **) ctx);
         }
@@ -254,7 +260,7 @@ extern void ag_object_id_set(ag_object **ctx, unsigned id)
 extern unsigned ag_object_hash(const ag_object *ctx)
 {
     ag_assert (ctx);
-    return ctx->vt.sz(ctx);
+    return ag_object_vtable_get(ctx->id)->hash(ctx);
 }
 
 
@@ -262,7 +268,7 @@ extern unsigned ag_object_hash(const ag_object *ctx)
 extern size_t ag_object_sz(const ag_object *ctx)
 {
     ag_assert (ctx);
-    return ctx->vt.sz(ctx);
+    return ag_object_vtable_get(ctx->id)->sz(ctx);
 }
 
 
@@ -270,7 +276,7 @@ extern size_t ag_object_sz(const ag_object *ctx)
 extern size_t ag_object_len(const ag_object *ctx)
 {
     ag_assert (ctx);
-    return ctx->vt.len(ctx);
+    return ag_object_vtable_get(ctx->id)->len(ctx);
 }
 
 
@@ -278,8 +284,8 @@ extern size_t ag_object_len(const ag_object *ctx)
 extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
         const ag_object *cmp)
 {
-    ag_assert (ctx);
-    return ctx->vt.cmp(ctx, cmp);
+    ag_assert (ctx && ag_object_type(ctx) == ag_object_type(cmp));
+    return ag_object_vtable_get(ctx->id)->cmp(ctx, cmp);
 }
 
 
@@ -296,7 +302,6 @@ extern void *ag_object_payload_mutable(ag_object **ctx)
 {
     ag_assert (ctx && *ctx);
     object_copy(ctx);
-
     return (*ctx)->payload;
 }
 
@@ -305,6 +310,6 @@ extern void *ag_object_payload_mutable(ag_object **ctx)
 extern const char *ag_object_str(const ag_object *ctx)
 {
     ag_assert (ctx);
-    return ctx->vt.str(ctx);
+    return ag_object_vtable_get(ctx->id)->str(ctx);
 }
 

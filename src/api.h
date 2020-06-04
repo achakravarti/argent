@@ -296,19 +296,24 @@ struct ag_object_method {
 
 extern void ag_object_vtable_init(void);
 extern void ag_object_vtable_exit(void);
-extern const struct ag_object_method *ag_object_vtable_get(unsigned type);
+extern ag_pure ag_hot const struct ag_object_method *ag_object_vtable_get(
+        unsigned type);
 extern void ag_object_vtable_set(unsigned type, 
+        const struct ag_object_method *meth);
+
+
+                                                /* registers object [AgDM:??] */
+extern void ag_object_register(unsigned type, 
         const struct ag_object_method *meth);
 
 
                                               /* creates new object [AgDM:??] */
 extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
-        void *payload, const struct ag_object_method *vt);
+        void *payload);
 
 
                                    /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload,
-        const struct ag_object_method *vt);
+extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload);
 
 
                                                   /* copies object [AgDM:??] */
