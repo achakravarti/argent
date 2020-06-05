@@ -247,6 +247,11 @@ typedef struct ag_object ag_object;
 #endif
 
 
+                                           /* reserved object types [AgDM:??] */
+#define AG_OBJECT_TYPE_OBJECT ((unsigned) 0x0)
+#define AG_OBJECT_TYPE_OBJECT_LIST ((unsigned) 0x1)
+
+
                         /* tristate result of comparing two objects [AgDM:??] */
 enum ag_object_cmp {
     AG_OBJECT_CMP_LT = -1,
@@ -293,6 +298,22 @@ struct ag_object_method {
     ag_object_method_cmp *cmp;
     ag_object_method_str *str;
 };
+
+
+                                   /* singly linked list of objects [AgDM:??] */
+typedef ag_object ag_object_list;
+
+
+                                                      /* object list iterator */
+typedef void (ag_object_list_iterator)(const ag_object *node, void *opt);
+
+
+                                              /* mutable object list iterator */
+typedef void (ag_object_list_iterator_mutable)(ag_object **node, void *opt);
+
+
+                                 /* smart version of ag_object_list [AgDM:??] */
+#define ag_object_list_smart ag_object_smart
 
 
                                       /* initialises object v-table [AgDM:??] */
@@ -363,31 +384,35 @@ extern ag_pure size_t ag_object_sz(const ag_object *ctx);
 extern ag_pure size_t ag_object_len(const ag_object *ctx);
 
 
+                                       /* checks if object is empty [AgDM:??] */
+inline bool ag_object_empty(const ag_object *ctx)
+{
+    return !ag_object_len(ctx);
+}
+
+
                                             /* compares two objects [AgDM:??] */
 extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
         const ag_object *cmp);
 
 
                            /* checks if object is less than another [AgDM:??] */
-inline ag_pure bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
 {
-    ag_assert (ctx && cmp);
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_LT;
 }
 
 
                        /* checks if object is equivalent to another [AgDM:??] */
-inline ag_pure bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
 {
-    ag_assert (ctx && cmp);
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_EQ;
 }
 
 
                         /* checks if object is greater than another [AgDM:??] */
-inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 {
-    ag_assert (ctx && cmp);
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_GT;
 }
 
@@ -402,4 +427,152 @@ extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
 
                             /* gets string representation of object [AgDM:??] */
 extern ag_pure const char *ag_object_str(const ag_object *ctx);
+
+
+                                      /* registers object list type [AgDM:??] */
+extern void ag_object_list_register(void);
+
+
+                                         /* creates new object list [AgDM:??] */
+extern ag_object_list *ag_object_list_new(void);
+
+
+                                              /* copies object list [AgDM:??] */
+inline ag_object_list *ag_object_list_copy(const ag_object_list *ctx)
+{
+    return ag_object_copy(ctx);
+}
+
+
+                                            /* disposes object list [AgDM:??] */
+inline void ag_object_list_dispose(ag_object_list **ctx)
+{
+    ag_object_dispose(ctx);
+}
+
+
+                                 /* gets object type of object list [AgDM:??] */
+inline unsigned ag_object_list_type(const ag_object_list *ctx)
+{
+    return ag_object_type(ctx);
+}
+
+
+                                   /* gets object ID of object list [AgDM:??] */
+inline unsigned ag_object_list_id(const ag_object_list *ctx)
+{
+    return ag_object_id(ctx);
+}
+
+
+                                   /* sets object ID of object list [AgDM:??] */
+inline void ag_object_list_id_set(ag_object_list **ctx, unsigned id)
+{
+    ag_object_id_set(ctx, id);
+}
+
+
+                                        /* gets hash of object list [AgDM:??] */
+inline size_t ag_object_list_hash(const ag_object_list *ctx)
+{
+    return ag_object_hash(ctx);
+}
+
+
+                     /* gets sum of all object sizes in object list [AgDM:??] */
+inline size_t ag_object_list_sz(const ag_object_list *ctx)
+{
+    return ag_object_sz(ctx);
+}
+
+
+                                     /* gets number of objects in object list */
+inline size_t ag_object_list_len(const ag_object_list *ctx)
+{
+    return ag_object_len(ctx);
+}
+
+
+                                  /* checks if object list is empty [AgDM:??] */
+inline bool ag_object_list_empty(const ag_object_list *ctx)
+{
+    return ag_object_empty(ctx);
+}
+
+
+                                       /* compares two object lists [AgDM:??] */
+inline enum ag_object_cmp ag_object_list_cmp(const ag_object_list *ctx,
+        const ag_object_list *cmp)
+{
+    return ag_object_cmp(ctx, cmp);
+}
+
+
+                      /* checks if object list is less than another [AgDM:??] */
+inline bool ag_object_list_lt(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_lt(ctx, cmp);
+}
+
+
+                  /* checks if object list is equivalent to another [AgDM:??] */
+inline bool ag_object_list_eq(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_eq(ctx, cmp);
+}
+
+
+                   /* checks if object list is greater than another [AgDM:??] */
+inline bool ag_object_list_gt(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_gt(ctx, cmp);
+}
+
+
+                       /* gets string representation of object list [AgDM:??] */
+inline const char *ag_object_list_str(const ag_object *ctx)
+{
+    return ag_object_str(ctx);
+}
+
+                         /* starts internal iterator of object list [AgDM:??] */
+extern void ag_object_list_start(ag_object_list **ctx);
+
+
+                         /* moves object list iterator to next node [AgDM:??] */
+extern bool ag_object_list_next(ag_object_list **ctx);
+
+
+           /* gets object at currently iterated node of object list [AgDM:??] */
+extern ag_object *ag_object_list_get(const ag_object_list *ctx);
+
+
+                     /* gets object at 1-based index of object list [AgDM:??] */
+extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx);
+
+
+           /* sets object at currently iterated node of object list [AgDM:??] */
+extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val);
+
+
+                     /* sets object at 1-based index of object list [AgDM:??] */
+extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
+        const ag_object *val);
+
+
+                             /* pushes object to end of object list [AgDM:??] */
+extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val);
+
+
+                           /* iterates through nodes of object list [AgDM:??] */
+extern void ag_object_list_iterate(const ag_object_list *ctx, 
+        ag_object_list_iterator *cbk, void *opt);
+
+
+                   /* iterates mutably through nodes of object list [AgDM:??] */
+extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
+        ag_object_list_iterator_mutable *cbk, void *opt);
 
