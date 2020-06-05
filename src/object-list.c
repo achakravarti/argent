@@ -198,3 +198,103 @@ extern ag_object_list *ag_object_list_new(void)
     return ag_object_new_noid(AG_OBJECT_TYPE_OBJECT_LIST, payload_new(NULL));
 }
 
+
+extern void ag_object_list_start(ag_object_list **ctx)
+{
+    ag_assert (ctx);
+    struct payload *p = ag_object_payload_mutable(ctx);
+
+    ag_assert (p->len);
+    p->itr = p->head;
+}
+
+
+extern bool ag_object_list_next(ag_object_list **ctx)
+{
+    ag_assert (ctx);
+    struct payload *p = ag_object_payload_mutable(ctx);
+
+    p->itr = p->itr->nxt;
+    return p->itr->nxt;
+}
+
+
+extern ag_object *ag_object_list_get(const ag_object_list *ctx)
+{
+    ag_assert (ctx);
+    const struct payload *p = ag_object_payload(ctx);
+
+    ag_assert (p->itr);
+    return ag_object_copy(p->itr->val);
+}
+
+
+extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
+{
+    ag_assert (ctx);
+    const struct payload *p = ag_object_payload(ctx);
+
+    ag_assert (idx && idx <= p->len);
+    register const struct node *n = p->head;
+    for (register size_t i = 1; i < idx; i++)
+        n = n->nxt;
+
+    return ag_object_copy(n->val);
+}
+
+
+extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val)
+{
+    ag_assert (ctx && *ctx);
+    struct payload *p = ag_object_payload_mutable(ctx);
+
+    ag_assert (p->itr);
+    ag_object_dispose(&p->itr->val);
+    p->itr->val = ag_object_copy(val);
+}
+
+
+extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
+        const ag_object *val)
+{
+    ag_assert (ctx && *ctx);
+    struct payload *p = ag_object_payload_mutable(ctx);
+    
+    ag_assert (idx && idx <= p->len);
+    register struct node *n = p->head;
+    for (register size_t i = 1; i < idx; i++)
+        n = n->nxt;
+
+    ag_assert (val);
+    ag_object_dispose(&n->val);
+    n->val = ag_object_copy(val);
+}
+
+
+extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val)
+{
+    ag_assert (ctx && *ctx);
+    struct payload *p = ag_object_payload_mutable(ctx);
+
+    ag_assert (val);
+    payload_push(p, val);
+}
+
+
+extern void ag_object_list_iterate(const ag_object_list *ctx, 
+        void (*itr)(const ag_object *node, void *opt), void *opt)
+{
+    ag_assert (ctx);
+    if (ag_unlikely (!ag_object_list_len(ctx)))
+            return;
+
+    const struct payload *p = ag_object_payload(ctx);
+    register const struct node *n = p->head;
+    
+    while (n) {
+        itr(ag_object_copy(n->val), opt);
+        n = n->nxt;
+    }
+}
+
+

@@ -514,3 +514,13 @@ inline const char *ag_object_list_str(const ag_object *ctx)
     return ag_object_str(ctx);
 }
 
+extern void ag_object_list_start(ag_object_list **ctx);
+extern bool ag_object_list_next(ag_object_list **ctx);
+extern ag_object *ag_object_list_get(const ag_object_list *ctx);
+extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx);
+extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val);
+extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
+        const ag_object *val);
+extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val);
+extern void ag_object_list_iterate(const ag_object_list *ctx, 
+        void (*itr)(const ag_object *node, void *opt), void *opt);
