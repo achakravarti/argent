@@ -247,6 +247,11 @@ typedef struct ag_object ag_object;
 #endif
 
 
+                                           /* reserved object types [AgDM:??] */
+#define AG_OBJECT_TYPE_OBJECT ((unsigned) 0x0)
+#define AG_OBJECT_TYPE_OBJECT_LIST ((unsigned) 0x1)
+
+
                         /* tristate result of comparing two objects [AgDM:??] */
 enum ag_object_cmp {
     AG_OBJECT_CMP_LT = -1,

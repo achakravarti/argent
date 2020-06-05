@@ -8,15 +8,14 @@
  */
 
 
-#define AG_OBJECT_TYPE_OBJECT_LIST 0x1
-
-
+                               /* singly linked list node of object [AgDM:??] */
 struct node {
     ag_object *val;
     struct node *nxt;
 };
 
 
+                                             /* object list payload [AgDM:??] */
 struct payload {
     struct node *head;
     struct node *tail;
@@ -33,6 +32,7 @@ struct payload {
  */
 
 
+                                 /* pushes object into payload list [AgDM:??] */
 static void payload_push(struct payload *ctx, const ag_object *val)
 {
     struct node *n = ag_mempool_new(sizeof *n);
@@ -50,6 +50,7 @@ static void payload_push(struct payload *ctx, const ag_object *val)
 }
 
 
+                                    /* creates new payload instance [AgDM:??] */
 static struct payload *payload_new(const struct node *head)
 {
     struct payload *p = ag_mempool_new(sizeof *p);
@@ -70,6 +71,7 @@ static struct payload *payload_new(const struct node *head)
 }
 
 
+                                      /* method to copy object list [AgDM:??] */
 static inline void *method_copy(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
@@ -77,6 +79,7 @@ static inline void *method_copy(const void *ctx)
 }
 
 
+                                        /* method to dispose object [AgDM:??] */
 static void method_dispose(void *ctx)
 {
     struct payload *p = (struct payload *) ctx;
@@ -93,6 +96,7 @@ static void method_dispose(void *ctx)
 }
 
 
+                                       /* method to get object size [AgDM:??] */
 static inline size_t method_sz(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
@@ -100,6 +104,7 @@ static inline size_t method_sz(const void *ctx)
 }
 
 
+                                               /* method to get object length */
 static inline size_t method_len(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
@@ -177,6 +182,7 @@ extern inline const char *ag_object_list_str(const ag_object *ctx);
  */
 
 
+                     /* implementation of ag_object_list_register() [AgDM:??] */
 extern void ag_object_list_register(void)
 {
     struct ag_object_method m = {
@@ -193,12 +199,14 @@ extern void ag_object_list_register(void)
 }
 
 
+                          /* implementation of ag_object_list_new() [AgDM:??] */
 extern ag_object_list *ag_object_list_new(void)
 {
     return ag_object_new_noid(AG_OBJECT_TYPE_OBJECT_LIST, payload_new(NULL));
 }
 
 
+                        /* implementation of ag_object_list_start() [AgDM:??] */
 extern void ag_object_list_start(ag_object_list **ctx)
 {
     ag_assert (ctx);
@@ -209,6 +217,7 @@ extern void ag_object_list_start(ag_object_list **ctx)
 }
 
 
+                         /* implementation of ag_object_list_next() [AgDM:??] */
 extern bool ag_object_list_next(ag_object_list **ctx)
 {
     ag_assert (ctx);
@@ -219,6 +228,7 @@ extern bool ag_object_list_next(ag_object_list **ctx)
 }
 
 
+                          /* implementation of ag_object_list_get() [AgDM:??] */
 extern ag_object *ag_object_list_get(const ag_object_list *ctx)
 {
     ag_assert (ctx);
@@ -229,6 +239,7 @@ extern ag_object *ag_object_list_get(const ag_object_list *ctx)
 }
 
 
+                       /* implementation of ag_object_list_get_at() [AgDM:??] */
 extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
 {
     ag_assert (ctx);
@@ -243,6 +254,7 @@ extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
 }
 
 
+                          /* implementation of ag_object_list_set() [AgDM:??] */
 extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val)
 {
     ag_assert (ctx && *ctx);
@@ -254,6 +266,7 @@ extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val)
 }
 
 
+                       /* implementation of ag_object_list_set_at() [AgDM:??] */
 extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
         const ag_object *val)
 {
@@ -271,6 +284,7 @@ extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx,
 }
 
 
+                         /* implementation of ag_object_list_push() [AgDM:??] */
 extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val)
 {
     ag_assert (ctx && *ctx);
@@ -281,6 +295,7 @@ extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val)
 }
 
 
+                      /* implementation of ag_object_list_iterate() [AgDM:??] */
 extern void ag_object_list_iterate(const ag_object_list *ctx, 
         ag_object_list_iterator *cbk, void *opt)
 {
@@ -298,6 +313,7 @@ extern void ag_object_list_iterate(const ag_object_list *ctx,
 }
 
 
+              /* implementation of ag_object_list_iterate_mutable() [AgDM:??] */
 extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
         ag_object_list_iterator_mutable *cbk, void *opt)
 {
