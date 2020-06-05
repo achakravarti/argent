@@ -295,6 +295,14 @@ struct ag_object_method {
 };
 
 
+                                   /* singly linked list of objects [AgDM:??] */
+typedef ag_object ag_object_list;
+
+
+                                 /* smart version of ag_object_list [AgDM:??] */
+#define ag_object_list_smart ag_object_smart
+
+
                                       /* initialises object v-table [AgDM:??] */
 extern void ag_object_vtable_init(size_t len);
 
@@ -402,4 +410,107 @@ extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
 
                             /* gets string representation of object [AgDM:??] */
 extern ag_pure const char *ag_object_str(const ag_object *ctx);
+
+
+                                      /* registers object list type [AgDM:??] */
+extern void ag_object_list_register(void);
+
+
+                                         /* creates new object list [AgDM:??] */
+extern ag_object_list *ag_object_list_new(void);
+
+
+                                              /* copies object list [AgDM:??] */
+inline ag_object_list *ag_object_list_copy(const ag_object_list *ctx)
+{
+    return ag_object_copy(ctx);
+}
+
+
+                                            /* disposes object list [AgDM:??] */
+inline void ag_object_list_dispose(ag_object_list **ctx)
+{
+    ag_object_dispose(ctx);
+}
+
+
+                                 /* gets object type of object list [AgDM:??] */
+inline unsigned ag_object_list_type(const ag_object_list *ctx)
+{
+    return ag_object_type(ctx);
+}
+
+
+                                   /* gets object ID of object list [AgDM:??] */
+inline unsigned ag_object_list_id(const ag_object_list *ctx)
+{
+    return ag_object_id(ctx);
+}
+
+
+                                   /* sets object ID of object list [AgDM:??] */
+inline void ag_object_list_id_set(ag_object_list **ctx, unsigned id)
+{
+    ag_object_id_set(ctx, id);
+}
+
+
+                                        /* gets hash of object list [AgDM:??] */
+inline size_t ag_object_list_hash(const ag_object_list *ctx)
+{
+    return ag_object_hash(ctx);
+}
+
+
+                     /* gets sum of all object sizes in object list [AgDM:??] */
+inline size_t ag_object_list_sz(const ag_object_list *ctx)
+{
+    return ag_object_sz(ctx);
+}
+
+
+                                     /* gets number of objects in object list */
+inline size_t ag_object_list_len(const ag_object_list *ctx)
+{
+    return ag_object_len(ctx);
+}
+
+
+                                       /* compares two object lists [AgDM:??] */
+inline enum ag_object_cmp ag_object_list_cmp(const ag_object_list *ctx,
+        const ag_object_list *cmp)
+{
+    return ag_object_cmp(ctx, cmp);
+}
+
+
+                      /* checks if object list is less than another [AgDM:??] */
+inline bool ag_object_list_lt(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_lt(ctx, cmp);
+}
+
+
+                  /* checks if object list is equivalent to another [AgDM:??] */
+inline bool ag_object_list_eq(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_eq(ctx, cmp);
+}
+
+
+                   /* checks if object list is greater than another [AgDM:??] */
+inline bool ag_object_list_gt(const ag_object_list *ctx, 
+        const ag_object_list *cmp)
+{
+    return ag_object_gt(ctx, cmp);
+}
+
+
+                       /* gets string representation of object list [AgDM:??] */
+inline const char *ag_object_list_str(const ag_object *ctx)
+{
+    return ag_object_str(ctx);
+}
 
