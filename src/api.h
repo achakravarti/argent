@@ -397,21 +397,21 @@ extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object *ctx,
 
 
                            /* checks if object is less than another [AgDM:??] */
-inline ag_pure bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_LT;
 }
 
 
                        /* checks if object is equivalent to another [AgDM:??] */
-inline ag_pure bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_EQ;
 }
 
 
                         /* checks if object is greater than another [AgDM:??] */
-inline ag_pure bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_GT;
 }
