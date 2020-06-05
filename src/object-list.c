@@ -282,7 +282,7 @@ extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val)
 
 
 extern void ag_object_list_iterate(const ag_object_list *ctx, 
-        void (*itr)(const ag_object *node, void *opt), void *opt)
+        ag_object_list_iterator *cbk, void *opt)
 {
     ag_assert (ctx);
     if (ag_unlikely (!ag_object_list_len(ctx)))
@@ -292,9 +292,25 @@ extern void ag_object_list_iterate(const ag_object_list *ctx,
     register const struct node *n = p->head;
     
     while (n) {
-        itr(ag_object_copy(n->val), opt);
+        cbk(ag_object_copy(n->val), opt);
         n = n->nxt;
     }
 }
 
+
+extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
+        ag_object_list_iterator_mutable *cbk, void *opt)
+{
+    ag_assert (ctx);
+    if (ag_unlikely (!ag_object_list_len(*ctx)))
+            return;
+
+    struct payload *p = ag_object_payload_mutable(ctx);
+    register struct node *n = p->head;
+    
+    while (n) {
+        cbk(&n->val, opt);
+        n = n->nxt;
+    }
+}
 

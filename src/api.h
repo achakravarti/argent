@@ -299,6 +299,14 @@ struct ag_object_method {
 typedef ag_object ag_object_list;
 
 
+                                                      /* object list iterator */
+typedef void (ag_object_list_iterator)(const ag_object *node, void *opt);
+
+
+                                              /* mutable object list iterator */
+typedef void (ag_object_list_iterator_mutable)(ag_object **node, void *opt);
+
+
                                  /* smart version of ag_object_list [AgDM:??] */
 #define ag_object_list_smart ag_object_smart
 
@@ -514,13 +522,41 @@ inline const char *ag_object_list_str(const ag_object *ctx)
     return ag_object_str(ctx);
 }
 
+                         /* starts internal iterator of object list [AgDM:??] */
 extern void ag_object_list_start(ag_object_list **ctx);
+
+
+                         /* moves object list iterator to next node [AgDM:??] */
 extern bool ag_object_list_next(ag_object_list **ctx);
+
+
+           /* gets object at currently iterated node of object list [AgDM:??] */
 extern ag_object *ag_object_list_get(const ag_object_list *ctx);
+
+
+                     /* gets object at 1-based index of object list [AgDM:??] */
 extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx);
+
+
+           /* sets object at currently iterated node of object list [AgDM:??] */
 extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val);
+
+
+                     /* sets object at 1-based index of object list [AgDM:??] */
 extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
         const ag_object *val);
+
+
+                             /* pushes object to end of object list [AgDM:??] */
 extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val);
+
+
+                           /* iterates through nodes of object list [AgDM:??] */
 extern void ag_object_list_iterate(const ag_object_list *ctx, 
-        void (*itr)(const ag_object *node, void *opt), void *opt);
+        ag_object_list_iterator *cbk, void *opt);
+
+
+                   /* iterates mutably through nodes of object list [AgDM:??] */
+extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
+        ag_object_list_iterator_mutable *cbk, void *opt);
+
