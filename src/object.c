@@ -148,6 +148,10 @@ static inline void object_copy(ag_object **obj)
  */
 
 
+                                /* declaration of ag_object_empty() [AgDM:??] */
+extern inline bool ag_object_empty(const ag_object *ctx);
+
+
                                    /* declaration of ag_object_lt() [AgDM:??] */
 extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
 

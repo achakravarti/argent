@@ -151,6 +151,10 @@ extern inline size_t ag_object_list_sz(const ag_object_list *ctx);
 extern inline size_t ag_object_list_len(const ag_object_list *ctx);
 
 
+                           /* declaration of ag_object_list_empty() [AgDM:??] */
+extern inline bool ag_object_list_empty(const ag_object_list *ctx);
+
+
                              /* declaration of ag_object_list_cmp() [AgDM:??] */
 extern inline enum ag_object_cmp ag_object_list_cmp(const ag_object_list *ctx,
         const ag_object_list *cmp);
@@ -300,7 +304,7 @@ extern void ag_object_list_iterate(const ag_object_list *ctx,
         ag_object_list_iterator *cbk, void *opt)
 {
     ag_assert (ctx);
-    if (ag_unlikely (!ag_object_list_len(ctx)))
+    if (ag_unlikely (ag_object_list_empty(ctx)))
             return;
 
     const struct payload *p = ag_object_payload(ctx);
@@ -318,7 +322,7 @@ extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
         ag_object_list_iterator_mutable *cbk, void *opt)
 {
     ag_assert (ctx);
-    if (ag_unlikely (!ag_object_list_len(*ctx)))
+    if (ag_unlikely (ag_object_list_empty(*ctx)))
             return;
 
     struct payload *p = ag_object_payload_mutable(ctx);

@@ -384,6 +384,13 @@ extern ag_pure size_t ag_object_sz(const ag_object *ctx);
 extern ag_pure size_t ag_object_len(const ag_object *ctx);
 
 
+                                       /* checks if object is empty [AgDM:??] */
+inline bool ag_object_empty(const ag_object *ctx)
+{
+    return !ag_object_len(ctx);
+}
+
+
                                             /* compares two objects [AgDM:??] */
 extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
         const ag_object *cmp);
@@ -486,6 +493,13 @@ inline size_t ag_object_list_sz(const ag_object_list *ctx)
 inline size_t ag_object_list_len(const ag_object_list *ctx)
 {
     return ag_object_len(ctx);
+}
+
+
+                                  /* checks if object list is empty [AgDM:??] */
+inline bool ag_object_list_empty(const ag_object_list *ctx)
+{
+    return ag_object_empty(ctx);
 }
 
 
