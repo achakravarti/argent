@@ -213,11 +213,17 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 extern void *ag_mempool_new(size_t sz);
 
 
+extern void *ag_mempool_new_aligned(size_t align, size_t sz);
+
+
 /*
  *      The ag_mempool_resize() interface function resizes an existing block of
  *      heap memory [DM:??].
  */
 extern void ag_mempool_resize(void **bfr, size_t sz);
+
+
+extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
 
 
 /*
