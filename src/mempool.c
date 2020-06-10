@@ -30,9 +30,7 @@
  */
 
 
-/*
- *      Implementation of the ag_mempool_new() interface function [DM:??].
- */
+                              /* implementation of ag_mempool_new() [AgDM:??] */
 extern void *ag_mempool_new(size_t sz)
 {
     ag_assert (sz);
@@ -44,6 +42,7 @@ extern void *ag_mempool_new(size_t sz)
 }
 
 
+                      /* implementation of ag_mempool_new_aligned() [AgDM:??] */
 extern void *ag_mempool_new_aligned(size_t align, size_t sz)
 {
     ag_assert (align && sz && !(align & (align - 1)) && !(sz % align));
@@ -63,9 +62,7 @@ extern void *ag_mempool_new_aligned(size_t align, size_t sz)
 }
 
 
-/*
- *      Implementation of the ag_mempool_resize() interface function [DM:??].
- */
+                           /* implementation of ag_mempool_resize() [AgDM:??] */
 extern void ag_mempool_resize(void **bfr, size_t sz)
 {
     ag_assert (bfr && *bfr && sz);
@@ -74,6 +71,7 @@ extern void ag_mempool_resize(void **bfr, size_t sz)
 }
 
 
+                   /* implementation of ag_mempool_resize_aligned() [AgDM:??] */
 extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz)
 {
     ag_assert (bfr && *bfr);
@@ -82,9 +80,7 @@ extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz)
 }
 
 
-/*
- *      Implementaiton of the ag_mempool_free() interface function [DM:??].
- */
+                             /* implementation of ag_mempool_free() [AgDM:??] */
 extern void ag_mempool_free(void **bfr)
 {
     if (ag_likely (bfr && *bfr)) {

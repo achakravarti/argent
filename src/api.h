@@ -206,30 +206,23 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
  */
 
 
-/*
- *      The ag_mempool_new() interface function allocates a new block of heap
- *      memory of a given size [DM:??].
- */
+                                             /* allocate heap block [AgDM:??] */
 extern void *ag_mempool_new(size_t sz);
 
 
+                                     /* allocate aligned heap block [AgDM:??] */
 extern void *ag_mempool_new_aligned(size_t align, size_t sz);
 
 
-/*
- *      The ag_mempool_resize() interface function resizes an existing block of
- *      heap memory [DM:??].
- */
-extern void ag_mempool_resize(void **bfr, size_t sz);
+                                               /* resize heap block [AgDM:??] */
+void ag_mempool_resize(void **bfr, size_t sz);
 
 
+                                       /* resize aligned heap block [AgDM:??] */
 extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
 
 
-/*
- *      The ag_mempool_free() interface function releases a previously allocated
- *      block of heap memory [DM:??].
- */
+                                       /* free allocated heap block [AgDM:??] */
 extern void ag_mempool_free(void **bfr);
 
 
