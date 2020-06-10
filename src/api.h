@@ -228,12 +228,17 @@ extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
                                        /* free allocated heap block [AgDM:??] */
 extern void ag_mempool_free(void **bfr);
 
+
+                                            /* block of heap memory [AgDM:??] */
 typedef void ag_memblock_t;
 
+                                             /* allocate heap block [AgDM:??] */
 extern ag_memblock_t *ag_memblock_new(size_t sz);
 
+                                               /* resize heap block [AgDM:??] */
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
+                                       /* free allocated heap block [AgDM:??] */
 extern void ag_memblock_free(ag_memblock_t **bfr);
 
 
