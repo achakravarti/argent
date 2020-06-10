@@ -20,6 +20,7 @@
 
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -121,6 +122,8 @@ enum ag_erno {
     AG_ERNO_NULL = 0x0,
     AG_ERNO_MEMPOOL_NEW,
     AG_ERNO_MEMPOOL_RESIZE,
+    AG_ERNO_MEMBLOCK_NEW,
+    AG_ERNO_MEMBLOCK_RESIZE,
     AG_ERNO_LEN
 };
 
@@ -202,30 +205,20 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 
 
 /*******************************************************************************
- *                                MEMORY POOL
+ *                                 MEMORY BLOCK
  */
 
+                                            /* block of heap memory [AgDM:??] */
+typedef void ag_memblock_t;
 
-/*
- *      The ag_mempool_new() interface function allocates a new block of heap
- *      memory of a given size [DM:??].
- */
-extern void *ag_mempool_new(size_t sz);
+                                             /* allocate heap block [AgDM:??] */
+extern ag_memblock_t *ag_memblock_new(size_t sz);
 
+                                               /* resize heap block [AgDM:??] */
+extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
-/*
- *      The ag_mempool_resize() interface function resizes an existing block of
- *      heap memory [DM:??].
- */
-extern void ag_mempool_resize(void **bfr, size_t sz);
-
-
-/*
- *      The ag_mempool_free() interface function releases a previously allocated
- *      block of heap memory [DM:??].
- */
-extern void ag_mempool_free(void **bfr);
-
+                                       /* free allocated heap block [AgDM:??] */
+extern void ag_memblock_free(ag_memblock_t **bfr);
 
 
 
@@ -235,15 +228,16 @@ extern void ag_mempool_free(void **bfr);
 
 
                                         /* base object for all ADTs [AgDM:??] */
-typedef struct ag_object ag_object;
+typedef struct ag_object_t ag_object_t;
 
 
                                       /* smart version of ag_object [AgDM:??] */
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_object_smart __attribute__((cleanup(ag_object_free))) ag_object
+#   define ag_object_smart_t \
+            __attribute__((cleanup(ag_object_free))) ag_object_t
 #else
-#   define ag_object_smart ag_object
-#   warning "[!] ag_object_smart leaks memory on current compiler"
+#   define ag_object_smart_t ag_object_t
+#   warning "[!] ag_object_smart_t leaks memory on current compiler"
 #endif
 
 
@@ -261,59 +255,59 @@ enum ag_object_cmp {
 
 
                                    /* method to copy object payload [AgDM:??] */
-typedef void *(ag_object_method_copy)(const void *payload);
+typedef ag_memblock_t *(ag_object_method_copy_f)(const ag_memblock_t *payload);
 
 
                                 /* method to dispose object payload [AgDM:??] */
-typedef void (ag_object_method_dispose)(void *payload);
+typedef void (ag_object_method_dispose_f)(ag_memblock_t *payload);
 
 
                             /* method to get size of object payload [AgDM:??] */
-typedef size_t (ag_object_method_sz)(const void *payload);
+typedef size_t (ag_object_method_sz_f)(const ag_memblock_t *payload);
 
 
                           /* method to get length of object payload [AgDM:??] */
-typedef size_t (ag_object_method_len)(const void *payload);
+typedef size_t (ag_object_method_len_f)(const ag_memblock_t *payload);
 
 
                                     /* method to get hash of object [AgDM:??] */
-typedef size_t (ag_object_method_hash)(const ag_object *obj);
+typedef size_t (ag_object_method_hash_f)(const ag_object_t *obj);
 
                                    /* method to compare two objects [AgDM:??] */
-typedef enum ag_object_cmp (ag_object_method_cmp)(const ag_object *lhs,
-        const ag_object *rhs);
+typedef enum ag_object_cmp (ag_object_method_cmp_f)(const ag_object_t *lhs,
+        const ag_object_t *rhs);
 
 
                    /* method to get string representation of object [AgDM:??] */
-typedef const char *(ag_object_method_str)(const ag_object *obj);
+typedef const char *(ag_object_method_str_f)(const ag_object_t *obj);
 
 
                                               /* methods of object [AgDM:??] */
 struct ag_object_method {
-    ag_object_method_copy *copy;
-    ag_object_method_dispose *dispose;
-    ag_object_method_sz *sz;
-    ag_object_method_len *len;
-    ag_object_method_hash *hash;
-    ag_object_method_cmp *cmp;
-    ag_object_method_str *str;
+    ag_object_method_copy_f *copy;
+    ag_object_method_dispose_f *dispose;
+    ag_object_method_sz_f *sz;
+    ag_object_method_len_f *len;
+    ag_object_method_hash_f *hash;
+    ag_object_method_cmp_f *cmp;
+    ag_object_method_str_f *str;
 };
 
 
                                    /* singly linked list of objects [AgDM:??] */
-typedef ag_object ag_object_list;
+typedef ag_object_t ag_object_list;
 
 
                                                       /* object list iterator */
-typedef void (ag_object_list_iterator)(const ag_object *node, void *opt);
+typedef void (ag_object_list_iterator)(const ag_object_t *node, void *opt);
 
 
                                               /* mutable object list iterator */
-typedef void (ag_object_list_iterator_mutable)(ag_object **node, void *opt);
+typedef void (ag_object_list_iterator_mutable)(ag_object_t **node, void *opt);
 
 
                                  /* smart version of ag_object_list [AgDM:??] */
-#define ag_object_list_smart ag_object_smart
+#define ag_object_list_smart ag_object_smart_t
 
 
                                       /* initialises object v-table [AgDM:??] */
@@ -344,89 +338,91 @@ extern void ag_object_register(unsigned type,
 
 
                                               /* creates new object [AgDM:??] */
-extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
-        void *payload);
+extern ag_hot ag_object_t *ag_object_new(unsigned type, unsigned id, 
+        ag_memblock_t *payload);
 
 
                                    /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload);
+extern ag_hot ag_object_t *ag_object_new_noid(unsigned type, 
+        ag_memblock_t *payload);
 
 
                                                   /* copies object [AgDM:??] */
-extern ag_hot ag_object *ag_object_copy(const ag_object *ctx);
+extern ag_hot ag_object_t *ag_object_copy(const ag_object_t *ctx);
 
 
                                                  /* disposes object [AgDM:??] */
-extern ag_hot void ag_object_dispose(ag_object **ctx);
+extern ag_hot void ag_object_dispose(ag_object_t **ctx);
 
 
                                                 /* gets object type [AgDM:??] */
-extern ag_pure unsigned ag_object_type(const ag_object *ctx);
+extern ag_pure unsigned ag_object_type(const ag_object_t *ctx);
 
 
                                                   /* gets object ID [AgDM:??] */
-extern ag_pure unsigned ag_object_id(const ag_object *ctx);
+extern ag_pure unsigned ag_object_id(const ag_object_t *ctx);
 
 
                                                   /* sets object ID [AgDM:??] */
-extern ag_cold void ag_object_id_set(ag_object **ctx, unsigned id);
+extern ag_cold void ag_object_id_set(ag_object_t **ctx, unsigned id);
 
 
                                              /* gets hash of object [AgDM:??] */
-extern ag_pure unsigned ag_object_hash(const ag_object *ctx);
+extern ag_pure unsigned ag_object_hash(const ag_object_t *ctx);
 
 
                                                 /* gets object size [AgDM:??] */
-extern ag_pure size_t ag_object_sz(const ag_object *ctx);
+extern ag_pure size_t ag_object_sz(const ag_object_t *ctx);
 
 
                                               /* gets object length [AgDM:??] */
-extern ag_pure size_t ag_object_len(const ag_object *ctx);
+extern ag_pure size_t ag_object_len(const ag_object_t *ctx);
 
 
                                        /* checks if object is empty [AgDM:??] */
-inline bool ag_object_empty(const ag_object *ctx)
+inline bool ag_object_empty(const ag_object_t *ctx)
 {
     return !ag_object_len(ctx);
 }
 
 
                                             /* compares two objects [AgDM:??] */
-extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
-        const ag_object *cmp);
+extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
+        const ag_object_t *cmp);
 
 
                            /* checks if object is less than another [AgDM:??] */
-inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_lt(const ag_object_t *ctx, const ag_object_t *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_LT;
 }
 
 
                        /* checks if object is equivalent to another [AgDM:??] */
-inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_eq(const ag_object_t *ctx, const ag_object_t *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_EQ;
 }
 
 
                         /* checks if object is greater than another [AgDM:??] */
-inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
+inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp)
 {
     return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_GT;
 }
 
 
                          /* gets read-only handle to object payload [AgDM:??] */
-extern ag_hot ag_pure const void *ag_object_payload(const ag_object *ctx);
+extern ag_hot ag_pure const ag_memblock_t *ag_object_payload(
+        const ag_object_t *ctx);
 
 
                         /* gets read-write handle to object payload [AgDM:??] */
-extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
+extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 
 
                             /* gets string representation of object [AgDM:??] */
-extern ag_pure const char *ag_object_str(const ag_object *ctx);
+extern ag_pure const char *ag_object_str(const ag_object_t *ctx);
 
 
                                       /* registers object list type [AgDM:??] */
@@ -533,7 +529,7 @@ inline bool ag_object_list_gt(const ag_object_list *ctx,
 
 
                        /* gets string representation of object list [AgDM:??] */
-inline const char *ag_object_list_str(const ag_object *ctx)
+inline const char *ag_object_list_str(const ag_object_t *ctx)
 {
     return ag_object_str(ctx);
 }
@@ -547,24 +543,25 @@ extern bool ag_object_list_next(ag_object_list **ctx);
 
 
            /* gets object at currently iterated node of object list [AgDM:??] */
-extern ag_object *ag_object_list_get(const ag_object_list *ctx);
+extern ag_object_t *ag_object_list_get(const ag_object_list *ctx);
 
 
                      /* gets object at 1-based index of object list [AgDM:??] */
-extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx);
+extern ag_object_t *ag_object_list_get_at(const ag_object_list *ctx,
+        size_t idx);
 
 
            /* sets object at currently iterated node of object list [AgDM:??] */
-extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val);
+extern void ag_object_list_set(ag_object_list **ctx, const ag_object_t *val);
 
 
                      /* sets object at 1-based index of object list [AgDM:??] */
 extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
-        const ag_object *val);
+        const ag_object_t *val);
 
 
                              /* pushes object to end of object list [AgDM:??] */
-extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val);
+extern void ag_object_list_push(ag_object_list **ctx, const ag_object_t *val);
 
 
                            /* iterates through nodes of object list [AgDM:??] */
