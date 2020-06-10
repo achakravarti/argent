@@ -62,11 +62,11 @@ ag_threadlocal struct {
 static inline struct node *node_new(unsigned key, 
         const struct ag_object_method *val, struct node *nxt)
 {
-    struct node *n = ag_mempool_new(sizeof *n);
+    struct node *n = ag_memblock_new(sizeof *n);
     n->key = key;
     n->nxt = nxt;
 
-    n->val = ag_mempool_new(sizeof *n->val);
+    n->val = ag_memblock_new(sizeof *n->val);
     n->val->copy = val->copy;
     n->val->dispose = val->dispose;
     n->val->sz = val->sz;
@@ -82,8 +82,8 @@ static inline struct node *node_new(unsigned key,
                                                  /* disposes a node [AgDM:??] */
 static inline void node_dispose(struct node *n)
 {
-    ag_mempool_free((void **) &n->val);
-    ag_mempool_free((void **) &n);
+    ag_memblock_free((ag_memblock_t **) &n->val);
+    ag_memblock_free((ag_memblock_t **) &n);
 }
 
 
@@ -106,9 +106,9 @@ extern void ag_object_vtable_init(size_t len)
 {
     if (ag_likely (!vtable)) {
         ag_assert (len);
-        vtable = ag_mempool_new(sizeof *vtable);
+        vtable = ag_memblock_new(sizeof *vtable);
 
-        vtable->bkt = ag_mempool_new(sizeof *vtable->bkt * len);
+        vtable->bkt = ag_memblock_new(sizeof *vtable->bkt * len);
         vtable->len = len;
     }
 }

@@ -35,7 +35,7 @@ struct payload {
                                  /* pushes object into payload list [AgDM:??] */
 static void payload_push(struct payload *ctx, const ag_object *val)
 {
-    struct node *n = ag_mempool_new(sizeof *n);
+    struct node *n = ag_memblock_new(sizeof *n);
     n->val = ag_object_copy(val);
     n->nxt = NULL;
 
@@ -53,7 +53,7 @@ static void payload_push(struct payload *ctx, const ag_object *val)
                                     /* creates new payload instance [AgDM:??] */
 static struct payload *payload_new(const struct node *head)
 {
-    struct payload *p = ag_mempool_new(sizeof *p);
+    struct payload *p = ag_memblock_new(sizeof *p);
     p->len = p->sz = 0;
 
     if (!head) {
@@ -91,7 +91,7 @@ static void method_dispose(void *ctx)
         i = i->nxt;
 
         ag_object_dispose(&tmp->val);
-        ag_mempool_free((void **) &tmp);
+        ag_memblock_free((ag_memblock_t **) &tmp);
     };
 }
 

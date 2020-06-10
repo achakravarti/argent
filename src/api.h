@@ -205,29 +205,8 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 
 
 /*******************************************************************************
- *                                MEMORY POOL
+ *                                 MEMORY BLOCK
  */
-
-
-                                             /* allocate heap block [AgDM:??] */
-extern void *ag_mempool_new(size_t sz);
-
-
-                                     /* allocate aligned heap block [AgDM:??] */
-extern void *ag_mempool_new_aligned(size_t align, size_t sz);
-
-
-                                               /* resize heap block [AgDM:??] */
-void ag_mempool_resize(void **bfr, size_t sz);
-
-
-                                       /* resize aligned heap block [AgDM:??] */
-extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
-
-
-                                       /* free allocated heap block [AgDM:??] */
-extern void ag_mempool_free(void **bfr);
-
 
                                             /* block of heap memory [AgDM:??] */
 typedef void ag_memblock_t;
@@ -275,19 +254,19 @@ enum ag_object_cmp {
 
 
                                    /* method to copy object payload [AgDM:??] */
-typedef void *(ag_object_method_copy)(const void *payload);
+typedef void *(ag_object_method_copy)(const ag_memblock_t *payload);
 
 
                                 /* method to dispose object payload [AgDM:??] */
-typedef void (ag_object_method_dispose)(void *payload);
+typedef void (ag_object_method_dispose)(ag_memblock_t *payload);
 
 
                             /* method to get size of object payload [AgDM:??] */
-typedef size_t (ag_object_method_sz)(const void *payload);
+typedef size_t (ag_object_method_sz)(const ag_memblock_t *payload);
 
 
                           /* method to get length of object payload [AgDM:??] */
-typedef size_t (ag_object_method_len)(const void *payload);
+typedef size_t (ag_object_method_len)(const ag_memblock_t *payload);
 
 
                                     /* method to get hash of object [AgDM:??] */
@@ -359,11 +338,12 @@ extern void ag_object_register(unsigned type,
 
                                               /* creates new object [AgDM:??] */
 extern ag_hot ag_object *ag_object_new(unsigned type, unsigned id, 
-        void *payload);
+        ag_memblock_t *payload);
 
 
                                    /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object *ag_object_new_noid(unsigned type, void *payload);
+extern ag_hot ag_object *ag_object_new_noid(unsigned type, 
+        ag_memblock_t *payload);
 
 
                                                   /* copies object [AgDM:??] */
@@ -432,11 +412,12 @@ inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp)
 
 
                          /* gets read-only handle to object payload [AgDM:??] */
-extern ag_hot ag_pure const void *ag_object_payload(const ag_object *ctx);
+extern ag_hot ag_pure const ag_memblock_t *ag_object_payload(
+        const ag_object *ctx);
 
 
                         /* gets read-write handle to object payload [AgDM:??] */
-extern ag_hot void *ag_object_payload_mutable(ag_object **ctx);
+extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object **ctx);
 
 
                             /* gets string representation of object [AgDM:??] */
