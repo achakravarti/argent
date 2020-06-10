@@ -226,7 +226,7 @@ extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
                                        /* free allocated heap block [AgDM:??] */
 extern void ag_mempool_free(void **bfr);
 
-typedef uintptr_t ag_mblock_t;
+typedef void ag_mblock_t;
 
 extern ag_mblock_t *ag_mblock_new(size_t sz);
 
@@ -236,19 +236,18 @@ extern void ag_mblock_resize(ag_mblock_t **bfr, size_t sz);
 
 extern void ag_mblock_free(ag_mblock_t **bfr);
 
+extern size_t ag_mblock_alignment(const ag_mblock_t *bfr);
+
 inline const void *ag_mblock_data(const ag_mblock_t *bfr)
 {
-    return bfr + 1;
+    ag_assert (bfr);
+    return (const void *) ((uintptr_t) bfr + 1);
 }
 
 inline void *ag_mblock_data_mutable(ag_mblock_t *bfr)
 {
-    return bfr + 1;
-}
-
-inline size_t ag_mblock_alignment(const ag_mblock_t *bfr)
-{
-    return bfr[0];
+    ag_assert (bfr);
+    return (void *) ((uintptr_t) bfr + 1);
 }
 
 
