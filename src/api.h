@@ -246,6 +246,11 @@ inline void *ag_mblock_data_mutable(ag_mblock_t *bfr)
     return bfr + 1;
 }
 
+inline size_t ag_mblock_alignment(const ag_mblock_t *bfr)
+{
+    return bfr[0];
+}
+
 
 /*******************************************************************************
  *                                OBJECT MODEL
