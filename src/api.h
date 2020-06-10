@@ -122,6 +122,8 @@ enum ag_erno {
     AG_ERNO_NULL = 0x0,
     AG_ERNO_MEMPOOL_NEW,
     AG_ERNO_MEMPOOL_RESIZE,
+    AG_ERNO_MEMBLOCK_NEW,
+    AG_ERNO_MEMBLOCK_RESIZE,
     AG_ERNO_LEN
 };
 
@@ -226,29 +228,14 @@ extern void ag_mempool_resize_aligned(void **bfr, size_t align, size_t sz);
                                        /* free allocated heap block [AgDM:??] */
 extern void ag_mempool_free(void **bfr);
 
-typedef void ag_mblock_t;
+typedef void ag_memblock_t;
 
-extern ag_mblock_t *ag_mblock_new(size_t sz);
+extern ag_memblock_t *ag_memblock_new(size_t sz);
 
-extern ag_mblock_t *ag_mblock_new_aligned(size_t align, size_t sz);
+extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
-extern void ag_mblock_resize(ag_mblock_t **bfr, size_t sz);
+extern void ag_memblock_free(ag_memblock_t **bfr);
 
-extern void ag_mblock_free(ag_mblock_t **bfr);
-
-extern size_t ag_mblock_alignment(const ag_mblock_t *bfr);
-
-inline const void *ag_mblock_data(const ag_mblock_t *bfr)
-{
-    ag_assert (bfr);
-    return (const void *) ((uintptr_t) bfr + 1);
-}
-
-inline void *ag_mblock_data_mutable(ag_mblock_t *bfr)
-{
-    ag_assert (bfr);
-    return (void *) ((uintptr_t) bfr + 1);
-}
 
 
 /*******************************************************************************
