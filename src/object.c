@@ -33,7 +33,7 @@
 /*
  *      Expansion of the ag_object abstract data type [DM:??].
  */
-struct ag_object {
+struct ag_object_t {
     unsigned refc;
     unsigned type;
     unsigned id;
@@ -49,7 +49,7 @@ struct ag_object {
 
 
                                              /* default copy method [AgDM:??] */
-static inline void *copy_default(const ag_memblock_t *payload)
+static inline ag_memblock_t *copy_default(const ag_memblock_t *payload)
 {
     return (ag_memblock_t *) payload;
 }
@@ -79,15 +79,15 @@ static inline size_t len_default(const ag_memblock_t *payload)
 
 
                                              /* default hash method [AgDM:??] */
-static inline size_t hash_default(const ag_object *obj)
+static inline size_t hash_default(const ag_object_t *obj)
 {
     return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
 }
 
 
                                        /* default comparison method [AgDM:??] */
-static inline enum ag_object_cmp cmp_default(const ag_object *ctx, 
-        const ag_object *cmp)
+static inline enum ag_object_cmp cmp_default(const ag_object_t *ctx, 
+        const ag_object_t *cmp)
 {
     size_t llen = ag_object_len(ctx);
     size_t rlen = ag_object_len(cmp);
@@ -100,7 +100,7 @@ static inline enum ag_object_cmp cmp_default(const ag_object *ctx,
 
 
                                            /* default string method [AgDM:??] */
-static inline const char *str_default(const ag_object *ctx)
+static inline const char *str_default(const ag_object_t *ctx)
 {
     const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
 #   define LEN 64
@@ -114,9 +114,10 @@ static inline const char *str_default(const ag_object *ctx)
 
 
                                               /* creates new object [AgDM:??] */
-static ag_object *object_new(unsigned type, unsigned id, ag_memblock_t *payload)
+static ag_object_t *object_new(unsigned type, unsigned id, 
+        ag_memblock_t *payload)
 {
-    ag_object *ctx = ag_memblock_new(sizeof *ctx);
+    ag_object_t *ctx = ag_memblock_new(sizeof *ctx);
     ctx->refc = 1;
     ctx->type = type;
     ctx->id = id;
@@ -127,12 +128,12 @@ static ag_object *object_new(unsigned type, unsigned id, ag_memblock_t *payload)
 
 
                                        /* performs deep copy object [AgDM:??] */
-static inline void object_copy(ag_object **obj)
+static inline void object_copy(ag_object_t **obj)
 {
-    ag_object *hnd = *obj;
+    ag_object_t *hnd = *obj;
 
     if (hnd->refc > 1) {
-        ag_object *cp = ag_object_new(hnd->type, hnd->id, 
+        ag_object_t *cp = ag_object_new(hnd->type, hnd->id, 
                 ag_object_vtable_get(hnd->type)->copy(hnd->payload));
 
         ag_object_dispose(obj);
@@ -149,19 +150,19 @@ static inline void object_copy(ag_object **obj)
 
 
                                 /* declaration of ag_object_empty() [AgDM:??] */
-extern inline bool ag_object_empty(const ag_object *ctx);
+extern inline bool ag_object_empty(const ag_object_t *ctx);
 
 
                                    /* declaration of ag_object_lt() [AgDM:??] */
-extern inline bool ag_object_lt(const ag_object *ctx, const ag_object *cmp);
+extern inline bool ag_object_lt(const ag_object_t *ctx, const ag_object_t *cmp);
 
 
                                    /* declaration of ag_object_eq() [AgDM:??] */
-extern inline bool ag_object_eq(const ag_object *ctx, const ag_object *cmp);
+extern inline bool ag_object_eq(const ag_object_t *ctx, const ag_object_t *cmp);
 
 
                                    /* declaration of ag_object_gt() [AgDM:??] */
-extern inline bool ag_object_gt(const ag_object *ctx, const ag_object *cmp);
+extern inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp);
 
 
 
@@ -190,7 +191,7 @@ extern void ag_object_register(unsigned type,
 
 
                                /* implementation of ag_object_new() [AgDM:??] */
-extern ag_object *ag_object_new(unsigned type, unsigned id, 
+extern ag_object_t *ag_object_new(unsigned type, unsigned id, 
         ag_memblock_t *payload)
 {
     ag_assert (type && id && payload);
@@ -199,7 +200,7 @@ extern ag_object *ag_object_new(unsigned type, unsigned id,
 
 
                           /* implementation of ag_object_new_noid() [AgDM:??] */
-extern ag_object *ag_object_new_noid(unsigned type, ag_memblock_t *payload)
+extern ag_object_t *ag_object_new_noid(unsigned type, ag_memblock_t *payload)
 {
     const unsigned NOID = 0;
 
@@ -209,10 +210,10 @@ extern ag_object *ag_object_new_noid(unsigned type, ag_memblock_t *payload)
 
 
                               /* implementation of ag_object_copy() [AgDM:??] */
-extern ag_object *ag_object_copy(const ag_object *ctx)
+extern ag_object_t *ag_object_copy(const ag_object_t *ctx)
 {
     ag_assert (ctx);
-    ag_object *cp = (ag_object *) ctx;
+    ag_object_t *cp = (ag_object_t *) ctx;
     
     cp->refc++;
     return cp;
@@ -220,9 +221,9 @@ extern ag_object *ag_object_copy(const ag_object *ctx)
 
 
                            /* implementation of ag_object_dispose() [AgDM:??] */
-extern void ag_object_dispose(ag_object **ctx)
+extern void ag_object_dispose(ag_object_t **ctx)
 {
-    ag_object *hnd;
+    ag_object_t *hnd;
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
@@ -235,7 +236,7 @@ extern void ag_object_dispose(ag_object **ctx)
 
 
                               /* implementation of ag_object_type() [AgDM:??] */
-extern unsigned ag_object_type(const ag_object *ctx)
+extern unsigned ag_object_type(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->type;
@@ -243,7 +244,7 @@ extern unsigned ag_object_type(const ag_object *ctx)
 
 
                                 /* implementation of ag_object_id() [AgDM:??] */
-extern unsigned ag_object_id(const ag_object *ctx)
+extern unsigned ag_object_id(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->id;
@@ -251,7 +252,7 @@ extern unsigned ag_object_id(const ag_object *ctx)
 
 
                             /* implementation of ag_object_id_set() [AgDM:??] */
-extern void ag_object_id_set(ag_object **ctx, unsigned id)
+extern void ag_object_id_set(ag_object_t **ctx, unsigned id)
 {
     ag_assert (ctx && *ctx);
     object_copy(ctx);
@@ -262,7 +263,7 @@ extern void ag_object_id_set(ag_object **ctx, unsigned id)
 
 
                               /* implementation of ag_object_hash() [AgDM:??] */
-extern unsigned ag_object_hash(const ag_object *ctx)
+extern unsigned ag_object_hash(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ag_object_vtable_get(ctx->id)->hash(ctx);
@@ -270,7 +271,7 @@ extern unsigned ag_object_hash(const ag_object *ctx)
 
 
                                 /* implementation of ag_object_sz() [AgDM:??] */
-extern size_t ag_object_sz(const ag_object *ctx)
+extern size_t ag_object_sz(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ag_object_vtable_get(ctx->id)->sz(ctx);
@@ -278,7 +279,7 @@ extern size_t ag_object_sz(const ag_object *ctx)
 
 
                                /* implementation of ag_object_len() [AgDM:??] */
-extern size_t ag_object_len(const ag_object *ctx)
+extern size_t ag_object_len(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ag_object_vtable_get(ctx->id)->len(ctx);
@@ -286,8 +287,8 @@ extern size_t ag_object_len(const ag_object *ctx)
 
 
                                /* implementation of ag_object_cmp() [AgDM:??] */
-extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx, 
-        const ag_object *cmp)
+extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
+        const ag_object_t *cmp)
 {
     ag_assert (ctx && ag_object_type(ctx) == ag_object_type(cmp));
     return ag_object_vtable_get(ctx->id)->cmp(ctx, cmp);
@@ -295,7 +296,7 @@ extern enum ag_object_cmp ag_object_cmp(const ag_object *ctx,
 
 
                            /* implementation of ag_object_payload() [AgDM:??] */
-extern const ag_memblock_t *ag_object_payload(const ag_object *ctx)
+extern const ag_memblock_t *ag_object_payload(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->payload;
@@ -303,7 +304,7 @@ extern const ag_memblock_t *ag_object_payload(const ag_object *ctx)
 
 
                    /* implementation of ag_object_payload_mutable() [AgDM:??] */
-extern ag_memblock_t *ag_object_payload_mutable(ag_object **ctx)
+extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
 {
     ag_assert (ctx && *ctx);
     object_copy(ctx);
@@ -312,7 +313,7 @@ extern ag_memblock_t *ag_object_payload_mutable(ag_object **ctx)
 
 
                                /* implementation of ag_object_str() [AgDM:??] */
-extern const char *ag_object_str(const ag_object *ctx)
+extern const char *ag_object_str(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ag_object_vtable_get(ctx->id)->str(ctx);

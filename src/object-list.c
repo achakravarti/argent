@@ -10,7 +10,7 @@
 
                                /* singly linked list node of object [AgDM:??] */
 struct node {
-    ag_object *val;
+    ag_object_t *val;
     struct node *nxt;
 };
 
@@ -33,7 +33,7 @@ struct payload {
 
 
                                  /* pushes object into payload list [AgDM:??] */
-static void payload_push(struct payload *ctx, const ag_object *val)
+static void payload_push(struct payload *ctx, const ag_object_t *val)
 {
     struct node *n = ag_memblock_new(sizeof *n);
     n->val = ag_object_copy(val);
@@ -176,7 +176,7 @@ extern inline bool ag_object_list_gt(const ag_object_list *ctx,
 
 
                              /* declaration of ag_object_list_str() [AgDM:??] */
-extern inline const char *ag_object_list_str(const ag_object *ctx);
+extern inline const char *ag_object_list_str(const ag_object_t *ctx);
 
 
 
@@ -233,7 +233,7 @@ extern bool ag_object_list_next(ag_object_list **ctx)
 
 
                           /* implementation of ag_object_list_get() [AgDM:??] */
-extern ag_object *ag_object_list_get(const ag_object_list *ctx)
+extern ag_object_t *ag_object_list_get(const ag_object_list *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -244,7 +244,7 @@ extern ag_object *ag_object_list_get(const ag_object_list *ctx)
 
 
                        /* implementation of ag_object_list_get_at() [AgDM:??] */
-extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
+extern ag_object_t *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -259,7 +259,7 @@ extern ag_object *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
 
 
                           /* implementation of ag_object_list_set() [AgDM:??] */
-extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val)
+extern void ag_object_list_set(ag_object_list **ctx, const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -272,7 +272,7 @@ extern void ag_object_list_set(ag_object_list **ctx, const ag_object *val)
 
                        /* implementation of ag_object_list_set_at() [AgDM:??] */
 extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
-        const ag_object *val)
+        const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -289,7 +289,7 @@ extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx,
 
 
                          /* implementation of ag_object_list_push() [AgDM:??] */
-extern void ag_object_list_push(ag_object_list **ctx, const ag_object *val)
+extern void ag_object_list_push(ag_object_list **ctx, const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
