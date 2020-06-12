@@ -20,6 +20,7 @@
 
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -215,6 +216,12 @@ typedef void ag_memblock_t;
                                              /* allocate heap block [AgDM:??] */
 extern ag_memblock_t *ag_memblock_new(size_t sz);
 
+                                        /* copy existing heap block [AgDM:??] */
+extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
+
+                                         /* gets size of heap block [AgDM:??] */
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
+
                                                /* resize heap block [AgDM:??] */
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
@@ -235,7 +242,7 @@ typedef struct ag_object_t ag_object_t;
                                       /* smart version of ag_object [AgDM:??] */
 #if (defined __GNUC__ || defined __clang__)
 #   define ag_object_smart_t \
-            __attribute__((cleanup(ag_object_free))) ag_object_t
+            __attribute__((cleanup(ag_object_dispose))) ag_object_t
 #else
 #   define ag_object_smart_t ag_object_t
 #   warning "[!] ag_object_smart_t leaks memory on current compiler"
@@ -243,8 +250,8 @@ typedef struct ag_object_t ag_object_t;
 
 
                                            /* reserved object types [AgDM:??] */
-#define AG_OBJECT_TYPE_OBJECT ((unsigned) 0x0)
-#define AG_OBJECT_TYPE_OBJECT_LIST ((unsigned) 0x1)
+#define AG_OBJECT_TYPE_OBJECT ((size_t) 0x0)
+#define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
 
 
                         /* tristate result of comparing two objects [AgDM:??] */
@@ -255,97 +262,33 @@ enum ag_object_cmp {
 };
 
 
-                                   /* method to copy object payload [AgDM:??] */
-typedef ag_memblock_t *(ag_object_method_copy_f)(const ag_memblock_t *payload);
-
-
-                                /* method to dispose object payload [AgDM:??] */
-typedef void (ag_object_method_dispose_f)(ag_memblock_t *payload);
-
-
-                            /* method to get size of object payload [AgDM:??] */
-typedef size_t (ag_object_method_sz_f)(const ag_memblock_t *payload);
-
-
-                          /* method to get length of object payload [AgDM:??] */
-typedef size_t (ag_object_method_len_f)(const ag_memblock_t *payload);
-
-
-                                    /* method to get hash of object [AgDM:??] */
-typedef size_t (ag_object_method_hash_f)(const ag_object_t *obj);
-
-                                   /* method to compare two objects [AgDM:??] */
-typedef enum ag_object_cmp (ag_object_method_cmp_f)(const ag_object_t *lhs,
-        const ag_object_t *rhs);
-
-
-                   /* method to get string representation of object [AgDM:??] */
-typedef const char *(ag_object_method_str_f)(const ag_object_t *obj);
-
-
-                                              /* methods of object [AgDM:??] */
-struct ag_object_method {
-    ag_object_method_copy_f *copy;
-    ag_object_method_dispose_f *dispose;
-    ag_object_method_sz_f *sz;
-    ag_object_method_len_f *len;
-    ag_object_method_hash_f *hash;
-    ag_object_method_cmp_f *cmp;
-    ag_object_method_str_f *str;
+                                       /* v-table of object methods [AgDM:??] */
+struct ag_object_vtable {
+    ag_memblock_t *(*copy)(const ag_memblock_t *payload);
+    void (*dispose)(ag_memblock_t *payload);
+    size_t (*id)(const ag_object_t *obj);
+    size_t (*sz)(const ag_object_t *obj);
+    size_t (*len)(const ag_object_t *obj);
+    size_t (*hash)(const ag_object_t *obj);
+    enum ag_object_cmp (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
+    const char *(*str)(const ag_object_t *obj);
 };
 
 
-                                   /* singly linked list of objects [AgDM:??] */
-typedef ag_object_t ag_object_list;
+                                       /* initialises object system [AgDM:??] */
+extern void ag_object_init(size_t len);
 
 
-                                                      /* object list iterator */
-typedef void (ag_object_list_iterator)(const ag_object_t *node, void *opt);
-
-
-                                              /* mutable object list iterator */
-typedef void (ag_object_list_iterator_mutable)(ag_object_t **node, void *opt);
-
-
-                                 /* smart version of ag_object_list [AgDM:??] */
-#define ag_object_list_smart ag_object_smart_t
-
-
-                                      /* initialises object v-table [AgDM:??] */
-extern void ag_object_vtable_init(size_t len);
-
-
-                                       /* shuts down object v-table [AgDM:??] */
-extern void ag_object_vtable_exit(void);
-
-
-                         /* checks if methods for object type exist [AgDM:??] */
-extern ag_pure bool ag_object_vtable_exists(unsigned type);
-
-
-                                     /* gets methods of object type [AgDM:??] */
-extern ag_pure ag_hot const struct ag_object_method *ag_object_vtable_get(
-        unsigned type);
-
-
-                                     /* sets methods of object type [AgDM:??] */
-extern void ag_object_vtable_set(unsigned type, 
-        const struct ag_object_method *meth);
+                                        /* shuts down object system [AgDM:??] */
+extern void ag_object_exit(void);
 
 
                                                 /* registers object [AgDM:??] */
-extern void ag_object_register(unsigned type, 
-        const struct ag_object_method *meth);
+extern void ag_object_register(size_t type, const struct ag_object_vtable *vt);
 
 
                                               /* creates new object [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new(unsigned type, unsigned id, 
-        ag_memblock_t *payload);
-
-
-                                   /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new_noid(unsigned type, 
-        ag_memblock_t *payload);
+extern ag_hot ag_object_t *ag_object_new(size_t type, ag_memblock_t *payload);
 
 
                                                   /* copies object [AgDM:??] */
@@ -357,19 +300,19 @@ extern ag_hot void ag_object_dispose(ag_object_t **ctx);
 
 
                                                 /* gets object type [AgDM:??] */
-extern ag_pure unsigned ag_object_type(const ag_object_t *ctx);
+extern ag_pure size_t ag_object_type(const ag_object_t *ctx);
+
+
+                                     /* gets object reference count [AgDM:??] */
+extern size_t ag_object_refc(const ag_object_t *ctx);
 
 
                                                   /* gets object ID [AgDM:??] */
-extern ag_pure unsigned ag_object_id(const ag_object_t *ctx);
-
-
-                                                  /* sets object ID [AgDM:??] */
-extern ag_cold void ag_object_id_set(ag_object_t **ctx, unsigned id);
+extern ag_pure size_t ag_object_id(const ag_object_t *ctx);
 
 
                                              /* gets hash of object [AgDM:??] */
-extern ag_pure unsigned ag_object_hash(const ag_object_t *ctx);
+extern ag_pure size_t ag_object_hash(const ag_object_t *ctx);
 
 
                                                 /* gets object size [AgDM:??] */
@@ -426,151 +369,154 @@ extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 extern ag_pure const char *ag_object_str(const ag_object_t *ctx);
 
 
-                                      /* registers object list type [AgDM:??] */
-extern void ag_object_list_register(void);
 
 
-                                         /* creates new object list [AgDM:??] */
-extern ag_object_list *ag_object_list_new(void);
+/*******************************************************************************
+ *                              SINGLY LINKED LIST
+ */
 
 
-                                              /* copies object list [AgDM:??] */
-inline ag_object_list *ag_object_list_copy(const ag_object_list *ctx)
+                                   /* singly linked list of objects [AgDM:??] */
+typedef ag_object_t ag_list_t;
+
+
+                                 /* smart version of ag_list [AgDM:??] */
+#define ag_list_smart_t ag_object_smart_t
+
+
+                                                  /* registers list [AgDM:??] */
+extern void ag_list_register(void);
+
+
+                                                /* creates new list [AgDM:??] */
+extern ag_list_t *ag_list_new(void);
+
+
+                                                     /* copies list [AgDM:??] */
+inline ag_list_t *ag_list_copy(const ag_list_t *ctx)
 {
     return ag_object_copy(ctx);
 }
 
 
-                                            /* disposes object list [AgDM:??] */
-inline void ag_object_list_dispose(ag_object_list **ctx)
+                                                   /* disposes list [AgDM:??] */
+inline void ag_list_dispose(ag_list_t **ctx)
 {
     ag_object_dispose(ctx);
 }
 
 
-                                 /* gets object type of object list [AgDM:??] */
-inline unsigned ag_object_list_type(const ag_object_list *ctx)
+                                        /* gets object type of list [AgDM:??] */
+inline size_t ag_list_type(const ag_list_t *ctx)
 {
     return ag_object_type(ctx);
 }
 
 
-                                   /* gets object ID of object list [AgDM:??] */
-inline unsigned ag_object_list_id(const ag_object_list *ctx)
+                                          /* gets object ID of list [AgDM:??] */
+inline size_t ag_list_id(const ag_list_t *ctx)
 {
     return ag_object_id(ctx);
 }
 
 
-                                   /* sets object ID of object list [AgDM:??] */
-inline void ag_object_list_id_set(ag_object_list **ctx, unsigned id)
-{
-    ag_object_id_set(ctx, id);
-}
-
-
-                                        /* gets hash of object list [AgDM:??] */
-inline size_t ag_object_list_hash(const ag_object_list *ctx)
+                                               /* gets hash of list [AgDM:??] */
+inline size_t ag_list_hash(const ag_list_t *ctx)
 {
     return ag_object_hash(ctx);
 }
 
 
-                     /* gets sum of all object sizes in object list [AgDM:??] */
-inline size_t ag_object_list_sz(const ag_object_list *ctx)
+                            /* gets sum of all object sizes in list [AgDM:??] */
+inline size_t ag_list_sz(const ag_list_t *ctx)
 {
     return ag_object_sz(ctx);
 }
 
 
-                                     /* gets number of objects in object list */
-inline size_t ag_object_list_len(const ag_object_list *ctx)
+                                            /* gets number of objects in list */
+inline size_t ag_list_len(const ag_list_t *ctx)
 {
     return ag_object_len(ctx);
 }
 
 
-                                  /* checks if object list is empty [AgDM:??] */
-inline bool ag_object_list_empty(const ag_object_list *ctx)
+                                         /* checks if list is empty [AgDM:??] */
+inline bool ag_list_empty(const ag_list_t *ctx)
 {
     return ag_object_empty(ctx);
 }
 
 
-                                       /* compares two object lists [AgDM:??] */
-inline enum ag_object_cmp ag_object_list_cmp(const ag_object_list *ctx,
-        const ag_object_list *cmp)
+                                              /* compares two lists [AgDM:??] */
+inline enum ag_object_cmp ag_list_cmp(const ag_list_t *ctx, 
+        const ag_list_t *cmp)
 {
     return ag_object_cmp(ctx, cmp);
 }
 
 
-                      /* checks if object list is less than another [AgDM:??] */
-inline bool ag_object_list_lt(const ag_object_list *ctx, 
-        const ag_object_list *cmp)
+                             /* checks if list is less than another [AgDM:??] */
+inline bool ag_list_lt(const ag_list_t *ctx, const ag_list_t*cmp)
 {
     return ag_object_lt(ctx, cmp);
 }
 
 
-                  /* checks if object list is equivalent to another [AgDM:??] */
-inline bool ag_object_list_eq(const ag_object_list *ctx, 
-        const ag_object_list *cmp)
+                         /* checks if list is equivalent to another [AgDM:??] */
+inline bool ag_list_eq(const ag_list_t *ctx, const ag_list_t *cmp)
 {
     return ag_object_eq(ctx, cmp);
 }
 
 
-                   /* checks if object list is greater than another [AgDM:??] */
-inline bool ag_object_list_gt(const ag_object_list *ctx, 
-        const ag_object_list *cmp)
+                          /* checks if list is greater than another [AgDM:??] */
+inline bool ag_list_gt(const ag_list_t *ctx, const ag_list_t *cmp)
 {
     return ag_object_gt(ctx, cmp);
 }
 
 
-                       /* gets string representation of object list [AgDM:??] */
-inline const char *ag_object_list_str(const ag_object_t *ctx)
+                              /* gets string representation of list [AgDM:??] */
+inline const char *ag_list_str(const ag_object_t *ctx)
 {
     return ag_object_str(ctx);
 }
 
-                         /* starts internal iterator of object list [AgDM:??] */
-extern void ag_object_list_start(ag_object_list **ctx);
+                                /* starts internal iterator of list [AgDM:??] */
+extern void ag_list_start(ag_list_t **ctx);
 
 
-                         /* moves object list iterator to next node [AgDM:??] */
-extern bool ag_object_list_next(ag_object_list **ctx);
+                                /* moves list iterator to next node [AgDM:??] */
+extern bool ag_list_next(ag_list_t **ctx);
 
 
-           /* gets object at currently iterated node of object list [AgDM:??] */
-extern ag_object_t *ag_object_list_get(const ag_object_list *ctx);
+                  /* gets object at currently iterated node of list [AgDM:??] */
+extern ag_object_t *ag_list_get(const ag_list_t *ctx);
 
 
-                     /* gets object at 1-based index of object list [AgDM:??] */
-extern ag_object_t *ag_object_list_get_at(const ag_object_list *ctx,
-        size_t idx);
+                            /* gets object at 1-based index of list [AgDM:??] */
+extern ag_object_t *ag_list_get_at(const ag_list_t *ctx, size_t idx);
 
 
-           /* sets object at currently iterated node of object list [AgDM:??] */
-extern void ag_object_list_set(ag_object_list **ctx, const ag_object_t *val);
+                  /* sets object at currently iterated node of list [AgDM:??] */
+extern void ag_list_set(ag_list_t **ctx, const ag_object_t *val);
 
 
-                     /* sets object at 1-based index of object list [AgDM:??] */
-extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
-        const ag_object_t *val);
+                            /* sets object at 1-based index of list [AgDM:??] */
+extern void ag_list_set_at(ag_list_t **ctx, size_t idx, const ag_object_t *val);
 
 
-                             /* pushes object to end of object list [AgDM:??] */
-extern void ag_object_list_push(ag_object_list **ctx, const ag_object_t *val);
+                                    /* pushes object to end of list [AgDM:??] */
+extern void ag_list_push(ag_list_t **ctx, const ag_object_t *val);
 
 
-                           /* iterates through nodes of object list [AgDM:??] */
-extern void ag_object_list_iterate(const ag_object_list *ctx, 
-        ag_object_list_iterator *cbk, void *opt);
+                                  /* iterates through nodes of list [AgDM:??] */
+extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
+            const ag_object_t *node, void *opt), void *opt);
 
 
-                   /* iterates mutably through nodes of object list [AgDM:??] */
-extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
-        ag_object_list_iterator_mutable *cbk, void *opt);
+                          /* iterates mutably through nodes of list [AgDM:??] */
+extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
+        void *opt), void *opt);
 

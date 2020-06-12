@@ -74,6 +74,10 @@ doc:
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
 	$(DOC_VWR) $(DOC_DIR)/$(DOC_OUT).pdf &
 
+check: $(BIN_TEST)
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
+		--track-origins=yes --log-file=$(BIN_TEST).vglog         \
+		$(BIN_TEST)
 
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)

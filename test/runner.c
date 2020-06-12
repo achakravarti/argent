@@ -7,6 +7,7 @@ int main(int argc, char **argv)
     (void) argv;
 
     ag_test_memblock();
+    ag_test_object();
 
     return 0;
 }
