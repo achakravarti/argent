@@ -43,10 +43,16 @@ DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml *.toc *.loa \
 	*.lof *.lot *.idx *.ilg *.ind
 
 
+DIR_TEST = test
+SRC_TEST = $(sort $(wildcard $(DIR_TEST)/*.c))
+BIN_TEST = $(DIR_BLD)/ag-tests
 
 
 $(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
 	$(LINK.c) $^ -o $@
+
+$(BIN_TEST): $(SRC_TEST) $(BIN_LIB) | $(DIR_BLD)
+	$(CC) $(CFLAGS) $^ -o $@
 
 $(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
 	$(COMPILE.c) $^ -o $@
@@ -59,6 +65,8 @@ $(DIR_BLD):
 
 all: $(BIN_LIB)
 
+test: $(BIN_TEST)
+	./$(BIN_TEST)
 
 doc:
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
