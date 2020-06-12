@@ -84,6 +84,24 @@ static void test_payload(void)
 }
 
 
+static void test_payload_mutable(void)
+{
+    printf("ag_object_payload_mutable() gets a mutable handle to the payload");
+
+    ag_object_smart_t *obj = sample_object_nomethod();
+    ag_require (obj, AG_ERNO_TEST, NULL);
+
+    struct payload *p = ag_object_payload_mutable(&obj);
+    p->x = 666;
+    p->y = 555;
+    
+    ag_require (p->x == 666, AG_ERNO_TEST, NULL);
+    ag_require (p->y == 555, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
 extern void ag_test_object(void)
 {
     printf("===============================================================\n");
@@ -93,6 +111,7 @@ extern void ag_test_object(void)
     test_new();
     test_dispose();
     test_payload();
+    test_payload_mutable();
 
     printf("\n");
     test_teardown();
