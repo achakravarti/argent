@@ -235,7 +235,7 @@ typedef struct ag_object_t ag_object_t;
                                       /* smart version of ag_object [AgDM:??] */
 #if (defined __GNUC__ || defined __clang__)
 #   define ag_object_smart_t \
-            __attribute__((cleanup(ag_object_free))) ag_object_t
+            __attribute__((cleanup(ag_object_dispose))) ag_object_t
 #else
 #   define ag_object_smart_t ag_object_t
 #   warning "[!] ag_object_smart_t leaks memory on current compiler"
