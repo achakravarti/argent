@@ -69,3 +69,6 @@ dkms.conf
 *.toc
 *.xml
 
+# Build output
+/bld
+
