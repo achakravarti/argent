@@ -59,11 +59,26 @@ static void test_dispose(void)
 {
     printf("ag_object_dispose() releases an object");
     
-    ag_object_smart_t *obj = sample_object_nomethod();
+    ag_object_t *obj = sample_object_nomethod();
     ag_require (obj, AG_ERNO_TEST, NULL);
 
     ag_object_dispose(&obj);
     ag_require (!obj, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void test_payload(void)
+{
+    printf("ag_object_payload() gets a handle to the payload");
+
+    ag_object_smart_t *obj = sample_object_nomethod();
+    ag_require (obj, AG_ERNO_TEST, NULL);
+
+    const struct payload *p = ag_object_payload(obj);
+    ag_require (p->x == 555, AG_ERNO_TEST, NULL);
+    ag_require (p->y == 666, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -77,6 +92,7 @@ extern void ag_test_object(void)
     test_setup();
     test_new();
     test_dispose();
+    test_payload();
 
     printf("\n");
     test_teardown();
