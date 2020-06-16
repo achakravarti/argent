@@ -93,6 +93,18 @@ static void test_id(void)
 }
 
 
+static void test_hash(void)
+{
+    printf("ag_object_hash() gets 0 for an object with no ID");
+    
+    ag_object_smart_t *obj = sample_object_nomethod();
+    size_t h = ag_object_hash(obj);
+
+    ag_require (h == 0, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
 static void test_payload(void)
 {
     printf("ag_object_payload() gets a handle to the payload");
@@ -136,6 +148,7 @@ extern void ag_test_object(void)
     test_dispose();
     test_type();
     test_id();
+    test_hash();
     test_payload();
     test_payload_mutable();
 
