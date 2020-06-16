@@ -83,7 +83,7 @@ static void test_type(void)
 
 static void test_id(void)
 {
-    printf("ag_object_id() gets 0 for an object with no ID");
+    printf("ag_object_id() defaults to 0 for an object with no ID");
     
     ag_object_smart_t *obj = sample_object_nomethod();
     size_t id = ag_object_id(obj);
@@ -95,12 +95,36 @@ static void test_id(void)
 
 static void test_hash(void)
 {
-    printf("ag_object_hash() gets 0 for an object with no ID");
+    printf("ag_object_hash() defaults to 0 for an object with no ID");
     
     ag_object_smart_t *obj = sample_object_nomethod();
     size_t h = ag_object_hash(obj);
 
     ag_require (h == 0, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
+static void test_sz(void)
+{
+    printf("ag_object_sz() defaults to 0");
+    
+    ag_object_smart_t *obj = sample_object_nomethod();
+    size_t sz = ag_object_sz(obj);
+
+    ag_require (sz == 0, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
+static void test_len(void)
+{
+    printf("ag_object_len() defaults to 0");
+    
+    ag_object_smart_t *obj = sample_object_nomethod();
+    size_t l = ag_object_sz(obj);
+
+    ag_require (l == 0, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
@@ -149,6 +173,8 @@ extern void ag_test_object(void)
     test_type();
     test_id();
     test_hash();
+    test_sz();
+    test_len();
     test_payload();
     test_payload_mutable();
 
