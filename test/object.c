@@ -69,6 +69,18 @@ static void test_dispose(void)
 }
 
 
+static void test_type(void)
+{
+    printf("ag_object_type() gets the type of an object");
+    
+    ag_object_smart_t *obj = sample_object_nomethod();
+    size_t t = ag_object_type(obj);
+
+    ag_require (t == TEST_OBJECT_NOMETHODS, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
 static void test_payload(void)
 {
     printf("ag_object_payload() gets a handle to the payload");
@@ -110,6 +122,7 @@ extern void ag_test_object(void)
     test_setup();
     test_new();
     test_dispose();
+    test_type();
     test_payload();
     test_payload_mutable();
 
