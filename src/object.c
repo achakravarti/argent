@@ -266,7 +266,7 @@ extern void ag_object_id_set(ag_object_t **ctx, unsigned id)
 extern unsigned ag_object_hash(const ag_object_t *ctx)
 {
     ag_assert (ctx);
-    return ag_object_vtable_get(ctx->id)->hash(ctx);
+    return ag_object_vtable_get(ctx->type)->hash(ctx);
 }
 
 
@@ -274,7 +274,7 @@ extern unsigned ag_object_hash(const ag_object_t *ctx)
 extern size_t ag_object_sz(const ag_object_t *ctx)
 {
     ag_assert (ctx);
-    return ag_object_vtable_get(ctx->id)->sz(ctx);
+    return ag_object_vtable_get(ctx->type)->sz(ctx);
 }
 
 
@@ -282,7 +282,7 @@ extern size_t ag_object_sz(const ag_object_t *ctx)
 extern size_t ag_object_len(const ag_object_t *ctx)
 {
     ag_assert (ctx);
-    return ag_object_vtable_get(ctx->id)->len(ctx);
+    return ag_object_vtable_get(ctx->type)->len(ctx);
 }
 
 
@@ -290,8 +290,8 @@ extern size_t ag_object_len(const ag_object_t *ctx)
 extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
-    ag_assert (ctx && ag_object_type(ctx) == ag_object_type(cmp));
-    return ag_object_vtable_get(ctx->id)->cmp(ctx, cmp);
+    ag_assert (ctx && cmp && ag_object_type(ctx) == ag_object_type(cmp));
+    return ag_object_vtable_get(ctx->type)->cmp(ctx, cmp);
 }
 
 
@@ -316,6 +316,6 @@ extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
 extern const char *ag_object_str(const ag_object_t *ctx)
 {
     ag_assert (ctx);
-    return ag_object_vtable_get(ctx->id)->str(ctx);
+    return ag_object_vtable_get(ctx->type)->str(ctx);
 }
 
