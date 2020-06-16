@@ -74,7 +74,7 @@ static inline size_t sz_default(const ag_memblock_t *payload)
 static inline size_t len_default(const ag_memblock_t *payload)
 {
     (void) payload;
-    return 1;
+    return 0;
 }
 
 
