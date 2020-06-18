@@ -223,6 +223,18 @@ static void test_payload_mutable(void)
 }
 
 
+static void test_str(void)
+{
+    printf("ag_object_str() returns a string for a default object");
+
+    ag_object_smart_t *o = sample_object_nomethod();
+    const char *s = ag_object_str(o);
+
+    ag_require (s && *s, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
 extern void ag_test_object(void)
 {
     printf("===============================================================\n");
@@ -243,6 +255,7 @@ extern void ag_test_object(void)
     test_gt();
     test_payload();
     test_payload_mutable();
+    test_str();
 
     printf("\n");
     test_teardown();
