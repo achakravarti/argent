@@ -141,6 +141,55 @@ static void test_len(void)
 }
 
 
+static void test_cmp(void)
+{
+    printf("ag_object_cmp() returns AG_OBJECT_CMP_EQ for the same default"
+            "  object");
+
+    ag_object_smart_t *o1 = sample_object_nomethod();
+    ag_object_smart_t *o2 = sample_object_nomethod();
+
+    ag_require (ag_object_cmp(o1, o2) == AG_OBJECT_CMP_EQ, AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
+static void test_lt(void)
+{
+    printf("ag_object_lt() returns false for the same default object");
+
+    ag_object_smart_t *o1 = sample_object_nomethod();
+    ag_object_smart_t *o2 = sample_object_nomethod();
+
+    ag_require (!ag_object_lt(o1, o2), AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
+static void test_eq(void)
+{
+    printf("ag_object_eq() returns true for the same default object");
+
+    ag_object_smart_t *o1 = sample_object_nomethod();
+    ag_object_smart_t *o2 = sample_object_nomethod();
+
+    ag_require (ag_object_eq(o1, o2), AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
+static void test_gt(void)
+{
+    printf("ag_object_gt() returns false for the same default object");
+
+    ag_object_smart_t *o1 = sample_object_nomethod();
+    ag_object_smart_t *o2 = sample_object_nomethod();
+
+    ag_require (!ag_object_gt(o1, o2), AG_ERNO_TEST, NULL);
+    printf("...OK\n");
+}
+
+
 static void test_payload(void)
 {
     printf("ag_object_payload() gets a handle to the payload");
@@ -188,6 +237,10 @@ extern void ag_test_object(void)
     test_sz();
     test_len();
     test_empty();
+    test_cmp();
+    test_lt();
+    test_eq();
+    test_gt();
     test_payload();
     test_payload_mutable();
 
