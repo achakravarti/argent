@@ -189,7 +189,7 @@ extern inline const char *ag_object_list_str(const ag_object_t *ctx);
                      /* implementation of ag_object_list_register() [AgDM:??] */
 extern void ag_object_list_register(void)
 {
-    struct ag_object_method m = {
+    struct ag_object_vtable vt = {
         .copy = &method_copy,
         .dispose = &method_dispose,
         .sz = &method_sz,
@@ -199,7 +199,7 @@ extern void ag_object_list_register(void)
         .str = NULL
     };
 
-    ag_object_register(AG_OBJECT_TYPE_OBJECT_LIST, &m);
+    ag_object_register(AG_OBJECT_TYPE_OBJECT_LIST, &vt);
 }
 
 

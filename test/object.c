@@ -13,7 +13,7 @@ struct payload {
 
 static void test_setup(void)
 {
-    struct ag_object_method m = {
+    struct ag_object_vtable vt = {
         .copy = NULL,
         .dispose = NULL,
         .sz = NULL,
@@ -24,7 +24,7 @@ static void test_setup(void)
     };
 
     ag_object_init(32);
-    ag_object_register(TEST_OBJECT_NOMETHODS, &m);
+    ag_object_register(TEST_OBJECT_NOMETHODS, &vt);
 }
 
 

@@ -20,6 +20,7 @@
 
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -255,44 +256,17 @@ enum ag_object_cmp {
 };
 
 
-                                   /* method to copy object payload [AgDM:??] */
-typedef ag_memblock_t *(ag_object_method_copy_f)(const ag_memblock_t *payload);
-
-
-                                /* method to dispose object payload [AgDM:??] */
-typedef void (ag_object_method_dispose_f)(ag_memblock_t *payload);
-
-
-                            /* method to get size of object payload [AgDM:??] */
-typedef size_t (ag_object_method_sz_f)(const ag_memblock_t *payload);
-
-
-                          /* method to get length of object payload [AgDM:??] */
-typedef size_t (ag_object_method_len_f)(const ag_memblock_t *payload);
-
-
-                                    /* method to get hash of object [AgDM:??] */
-typedef size_t (ag_object_method_hash_f)(const ag_object_t *obj);
-
-                                   /* method to compare two objects [AgDM:??] */
-typedef enum ag_object_cmp (ag_object_method_cmp_f)(const ag_object_t *lhs,
-        const ag_object_t *rhs);
-
-
-                   /* method to get string representation of object [AgDM:??] */
-typedef const char *(ag_object_method_str_f)(const ag_object_t *obj);
-
-
-                                              /* methods of object [AgDM:??] */
-struct ag_object_method {
-    ag_object_method_copy_f *copy;
-    ag_object_method_dispose_f *dispose;
-    ag_object_method_sz_f *sz;
-    ag_object_method_len_f *len;
-    ag_object_method_hash_f *hash;
-    ag_object_method_cmp_f *cmp;
-    ag_object_method_str_f *str;
+                                       /* v-table of object methods [AgDM:??] */
+struct ag_object_vtable {
+    ag_memblock_t *(*copy)(const ag_memblock_t *payload);
+    void (*dispose)(ag_memblock_t *payload);
+    size_t (*sz)(const ag_memblock_t *payload);
+    size_t (*len)(const ag_memblock_t *payload);
+    size_t (*hash)(const ag_object_t *payload);
+    enum ag_object_cmp (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
+    const char *(*str)(const ag_object_t *obj);
 };
+
 
 
                                    /* singly linked list of objects [AgDM:??] */
@@ -320,8 +294,7 @@ extern void ag_object_exit(void);
 
 
                                                 /* registers object [AgDM:??] */
-extern void ag_object_register(unsigned type, 
-        const struct ag_object_method *meth);
+extern void ag_object_register(size_t type, const struct ag_object_vtable *vt);
 
 
                                               /* creates new object [AgDM:??] */

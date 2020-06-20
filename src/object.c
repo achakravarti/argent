@@ -26,53 +26,23 @@
 
 
 /*******************************************************************************
- *                               TYPE DEFINITIONS
+ *                            V-TABLE NODE INTERNALS
  */
-
-
-                                          /* expansion of ag_object [AgDM:??] */
-struct ag_object_t {
-    unsigned refc;
-    unsigned type;
-    unsigned id;
-    ag_memblock_t *payload;
-};
 
 
                                              /* v-table bucket node [AgDM:??] */
-struct node {
+struct vtable_node {
     unsigned key;
-    struct ag_object_method *val;
-    struct node *nxt;
+    struct ag_object_vtable *val;
+    struct vtable_node *nxt;
 };
 
 
-
-
-/*******************************************************************************
- *                                   GLOBALS
- */
-
-
-                                       /* v-table of object methods [AgDM:??] */
-static ag_threadlocal struct {
-    size_t len;
-    struct node **bkt;
-} *vtable = NULL;
-
-
-
-
-/*******************************************************************************
- *                            HELPER IMPLEMENTATION
- */
-
-
                                                 /* creates new node [AgDM:??] */
-static struct node *node_new(unsigned key, const struct ag_object_method *val, 
-        struct node *nxt)
+static struct vtable_node *vtable_node_new(size_t key, 
+        const struct ag_object_vtable *val, struct vtable_node *nxt)
 {
-    struct node *n = ag_memblock_new(sizeof *n);
+    struct vtable_node *n = ag_memblock_new(sizeof *n);
     n->key = key;
     n->nxt = nxt;
 
@@ -90,24 +60,40 @@ static struct node *node_new(unsigned key, const struct ag_object_method *val,
 
 
                                                  /* disposes a node [AgDM:??] */
-static inline void node_dispose(struct node *n)
+static inline void vtable_node_dispose(struct vtable_node *n)
 {
     ag_memblock_free((ag_memblock_t **) &n->val);
     ag_memblock_free((ag_memblock_t **) &n);
 }
 
 
+
+
+/*******************************************************************************
+ *                              V-TABLE INTERNALS
+ */
+
+
+                                       /* v-table of object methods [AgDM:??] */
+static ag_threadlocal struct {
+    size_t len;
+    struct vtable_node **bkt;
+} *vtable = NULL;
+
+
+
+
                                         /* gets hash of object type [AgDM:??] */
-static inline size_t type_hash(unsigned type)
+static inline size_t vtable_hash(size_t type)
 {
     return type % vtable->len;
 }
 
 
                          /* checks if methods for object type exist [AgDM:??] */
-static bool vtable_exists(unsigned type)
+static bool vtable_exists(size_t type)
 {
-    struct node *n = vtable->bkt[type_hash(type)];
+    struct vtable_node *n = vtable->bkt[vtable_hash(type)];
     while (n) {
         if (n->key == type)
             return true;
@@ -120,10 +106,9 @@ static bool vtable_exists(unsigned type)
 
 
                         /* gets methods of object type from v-table [AgDM:??] */
-static const struct ag_object_method *vtable_get(unsigned type)
+static const struct ag_object_vtable *vtable_get(size_t type)
 {
-    struct node *n = vtable->bkt[type_hash(type)];
-
+    struct vtable_node *n = vtable->bkt[vtable_hash(type)];
     while (n) {
         if (n->key == type)
             return n->val;
@@ -136,30 +121,46 @@ static const struct ag_object_method *vtable_get(unsigned type)
 
 
                                      /* sets methods of object type [AgDM:??] */
-static void vtable_set(unsigned type, const struct ag_object_method *meth)
+static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 {
-    unsigned h = type_hash(type);
-    struct node *n = node_new(type, meth, vtable->bkt[h]);
+    unsigned h = vtable_hash(type);
+    struct vtable_node *n = vtable_node_new(type, vt, vtable->bkt[h]);
     vtable->bkt[h] = n;
 }
 
 
+
+
+/*******************************************************************************
+ *                               OBJECT INTERNALS
+ */
+
+
+                                          /* expansion of ag_object [AgDM:??] */
+struct ag_object_t {
+    unsigned refc;
+    unsigned type;
+    unsigned id;
+    ag_memblock_t *payload;
+};
+
+
                                              /* default copy method [AgDM:??] */
-static inline ag_memblock_t *copy_default(const ag_memblock_t *payload)
+static inline ag_memblock_t *object_method_copy(const ag_memblock_t *payload)
 {
     return (ag_memblock_t *) payload;
 }
 
 
                                           /* default dispose method [AgDM:??] */
-static inline void dispose_default(ag_memblock_t *payload)
+static inline void object_method_dispose(ag_memblock_t *payload)
 {
     (void) payload;
 }
 
 
                                              /* default size method [AgDM:??] */
-static inline size_t sz_default(const ag_memblock_t *payload)
+static inline size_t object_method_sz(const ag_memblock_t *payload)
 {
     (void) payload;
     return 0;
@@ -167,7 +168,7 @@ static inline size_t sz_default(const ag_memblock_t *payload)
 
 
                                            /* default length method [AgDM:??] */
-static inline size_t len_default(const ag_memblock_t *payload)
+static inline size_t object_method_len(const ag_memblock_t *payload)
 {
     (void) payload;
     return 0;
@@ -175,14 +176,14 @@ static inline size_t len_default(const ag_memblock_t *payload)
 
 
                                              /* default hash method [AgDM:??] */
-static inline size_t hash_default(const ag_object_t *obj)
+static inline size_t object_method_hash(const ag_object_t *obj)
 {
     return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
 }
 
 
                                        /* default comparison method [AgDM:??] */
-static inline enum ag_object_cmp cmp_default(const ag_object_t *ctx, 
+static inline enum ag_object_cmp object_method_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
     size_t llen = ag_object_len(ctx);
@@ -196,7 +197,7 @@ static inline enum ag_object_cmp cmp_default(const ag_object_t *ctx,
 
 
                                            /* default string method [AgDM:??] */
-static inline const char *str_default(const ag_object_t *ctx)
+static inline const char *object_method_str(const ag_object_t *ctx)
 {
     const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
 #   define LEN 64
@@ -241,7 +242,7 @@ static inline void object_copy(ag_object_t **obj)
 
 
 /*******************************************************************************
- *                        INLINE INTERFACE DECLARATIONS
+ *                               OBJECT EXTERNALS
  */
 
 
@@ -259,13 +260,6 @@ extern inline bool ag_object_eq(const ag_object_t *ctx, const ag_object_t *cmp);
 
                                    /* declaration of ag_object_gt() [AgDM:??] */
 extern inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp);
-
-
-
-
-/*******************************************************************************
- *                           INTERFACE IMPLEMENTATION
- */
 
 
                               /* implementation of ag_object_init() [AgDM:??] */
@@ -287,12 +281,12 @@ extern void ag_object_exit(void)
     if (ag_unlikely (!vtable))
         return;
 
-    struct node *n, *nxt;
+    struct vtable_node *n, *nxt;
     for (register size_t i = 0; i < vtable->len; i++) {
         if ((n = vtable->bkt[i])) {
             do {
                 nxt = n->nxt;
-                node_dispose(n);
+                vtable_node_dispose(n);
                 n = nxt;
             } while (n);
         }
@@ -301,21 +295,20 @@ extern void ag_object_exit(void)
 
 
                           /* implementation of ag_object_register() [AgDM:??] */
-extern void ag_object_register(unsigned type, 
-        const struct ag_object_method *meth)
+extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
 {
-    struct ag_object_method m = {
-        .copy = meth->copy ? meth->copy : copy_default,
-        .dispose = meth->dispose? meth->dispose: dispose_default,
-        .sz = meth->sz ? meth->sz : sz_default,
-        .len = meth->len ? meth->len : len_default,
-        .hash = meth->hash ? meth->hash : hash_default,
-        .cmp = meth->cmp ? meth->cmp : cmp_default,
-        .str = meth->str ? meth->str : str_default
+    struct ag_object_vtable vtbl = {
+        .copy = vt->copy ? vt->copy : object_method_copy,
+        .dispose = vt->dispose? vt->dispose: object_method_dispose,
+        .sz = vt->sz ? vt->sz : object_method_sz,
+        .len = vt->len ? vt->len : object_method_len,
+        .hash = vt->hash ? vt->hash : object_method_hash,
+        .cmp = vt->cmp ? vt->cmp : object_method_cmp,
+        .str = vt->str ? vt->str : object_method_str
     };
 
     ag_assert (vtable && type && !vtable_exists(type));
-    vtable_set(type, &m);
+    vtable_set(type, &vtbl);
 }
 
 
@@ -352,9 +345,10 @@ extern ag_object_t *ag_object_copy(const ag_object_t *ctx)
                            /* implementation of ag_object_dispose() [AgDM:??] */
 extern void ag_object_dispose(ag_object_t **ctx)
 {
-    ag_object_t *hnd;
+    ag_assert (ctx);
+    ag_object_t *hnd = *ctx;
 
-    if (ag_likely (ctx && (hnd = *ctx))) {
+    if (ag_likely (hnd)) {
         if (!--hnd->refc) {
             ag_assert (vtable);
             vtable_get(hnd->type)->dispose(hnd->payload);
@@ -450,4 +444,5 @@ extern const char *ag_object_str(const ag_object_t *ctx)
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->str(ctx);
 }
+
 
