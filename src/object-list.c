@@ -4,7 +4,7 @@
 
 
 /*******************************************************************************
- *                               TYPE DEFINITIONS
+ *                                LIST INTERNALS
  */
 
 
@@ -23,13 +23,6 @@ struct payload {
     size_t len;
     size_t sz;
 };
-
-
-
-
-/*******************************************************************************
- *                            HELPER IMPLEMENTATION
- */
 
 
                                  /* pushes object into payload list [AgDM:??] */
@@ -115,79 +108,72 @@ static inline size_t method_len(const void *ctx)
 
 
 /*******************************************************************************
- *                        INLINE INTERFACE DECLARATIONS
+ *                                LIST EXTERNALS
  */
 
 
-                            /* declaration of ag_object_list_copy() [AgDM:??] */
-extern inline ag_object_list *ag_object_list_copy(const ag_object_list *ctx);
+                            /* declaration of ag_list_copy() [AgDM:??] */
+extern inline ag_list_t *ag_list_copy(const ag_list_t *ctx);
 
 
-                         /* declaration of ag_object_list_dispose() [AgDM:??] */
-extern inline void ag_object_list_dispose(ag_object_list **ctx);
+                         /* declaration of ag_list_dispose() [AgDM:??] */
+extern inline void ag_list_dispose(ag_list_t **ctx);
 
 
-                            /* declaration of ag_object_list_type() [AgDM:??] */
-extern inline unsigned ag_object_list_type(const ag_object_list *ctx);
+                            /* declaration of ag_list_type() [AgDM:??] */
+extern inline unsigned ag_list_type(const ag_list_t *ctx);
 
 
-                              /* declaration of ag_object_list_id() [AgDM:??] */
-extern inline unsigned ag_object_list_id(const ag_object_list *ctx);
+                              /* declaration of ag_list_id() [AgDM:??] */
+extern inline unsigned ag_list_id(const ag_list_t *ctx);
 
 
-                          /* declaration of ag_object_list_id_set() [AgDM:??] */
-extern inline void ag_object_list_id_set(ag_object_list **ctx, unsigned id);
+                          /* declaration of ag_list_id_set() [AgDM:??] */
+extern inline void ag_list_id_set(ag_list_t **ctx, unsigned id);
 
 
-                            /* declaration of ag_object_list_hash() [AgDM:??] */
-extern inline size_t ag_object_list_hash(const ag_object_list *ctx);
+                            /* declaration of ag_list_hash() [AgDM:??] */
+extern inline size_t ag_list_hash(const ag_list_t *ctx);
 
 
-                              /* declaration of ag_object_list_sz() [AgDM:??] */
-extern inline size_t ag_object_list_sz(const ag_object_list *ctx);
+                              /* declaration of ag_list_sz() [AgDM:??] */
+extern inline size_t ag_list_sz(const ag_list_t *ctx);
 
 
-                             /* declaration of ag_object_list_len() [AgDM:??] */
-extern inline size_t ag_object_list_len(const ag_object_list *ctx);
+                             /* declaration of ag_list_len() [AgDM:??] */
+extern inline size_t ag_list_len(const ag_list_t *ctx);
 
 
-                           /* declaration of ag_object_list_empty() [AgDM:??] */
-extern inline bool ag_object_list_empty(const ag_object_list *ctx);
+                           /* declaration of ag_list_empty() [AgDM:??] */
+extern inline bool ag_list_empty(const ag_list_t *ctx);
 
 
-                             /* declaration of ag_object_list_cmp() [AgDM:??] */
-extern inline enum ag_object_cmp ag_object_list_cmp(const ag_object_list *ctx,
-        const ag_object_list *cmp);
+                             /* declaration of ag_list_cmp() [AgDM:??] */
+extern inline enum ag_object_cmp ag_list_cmp(const ag_list_t *ctx,
+        const ag_list_t *cmp);
 
 
-                              /* declaration of ag_object_list_lt() [AgDM:??] */
-extern inline bool ag_object_list_lt(const ag_object_list *ctx, 
-        const ag_object_list *cmp);
+                              /* declaration of ag_list_lt() [AgDM:??] */
+extern inline bool ag_list_lt(const ag_list_t *ctx, 
+        const ag_list_t *cmp);
 
 
-                              /* declaration of ag_object_list_eq() [AgDM:??] */
-extern inline bool ag_object_list_eq(const ag_object_list *ctx, 
-        const ag_object_list *cmp);
+                              /* declaration of ag_list_eq() [AgDM:??] */
+extern inline bool ag_list_eq(const ag_list_t *ctx, 
+        const ag_list_t *cmp);
 
 
-                              /* declaration of ag_object_list_gt() [AgDM:??] */
-extern inline bool ag_object_list_gt(const ag_object_list *ctx, 
-        const ag_object_list *cmp);
+                              /* declaration of ag_list_gt() [AgDM:??] */
+extern inline bool ag_list_gt(const ag_list_t *ctx, 
+        const ag_list_t *cmp);
 
 
-                             /* declaration of ag_object_list_str() [AgDM:??] */
-extern inline const char *ag_object_list_str(const ag_object_t *ctx);
+                             /* declaration of ag_list_str() [AgDM:??] */
+extern inline const char *ag_list_str(const ag_object_t *ctx);
 
 
-
-
-/*******************************************************************************
- *                           INTERFACE IMPLEMENTATION
- */
-
-
-                     /* implementation of ag_object_list_register() [AgDM:??] */
-extern void ag_object_list_register(void)
+                     /* implementation of ag_list_register() [AgDM:??] */
+extern void ag_list_register(void)
 {
     struct ag_object_vtable vt = {
         .copy = &method_copy,
@@ -203,15 +189,15 @@ extern void ag_object_list_register(void)
 }
 
 
-                          /* implementation of ag_object_list_new() [AgDM:??] */
-extern ag_object_list *ag_object_list_new(void)
+                          /* implementation of ag_list_new() [AgDM:??] */
+extern ag_list_t *ag_list_new(void)
 {
     return ag_object_new_noid(AG_OBJECT_TYPE_OBJECT_LIST, payload_new(NULL));
 }
 
 
-                        /* implementation of ag_object_list_start() [AgDM:??] */
-extern void ag_object_list_start(ag_object_list **ctx)
+                        /* implementation of ag_list_start() [AgDM:??] */
+extern void ag_list_start(ag_list_t **ctx)
 {
     ag_assert (ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -221,8 +207,8 @@ extern void ag_object_list_start(ag_object_list **ctx)
 }
 
 
-                         /* implementation of ag_object_list_next() [AgDM:??] */
-extern bool ag_object_list_next(ag_object_list **ctx)
+                         /* implementation of ag_list_next() [AgDM:??] */
+extern bool ag_list_next(ag_list_t **ctx)
 {
     ag_assert (ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -232,8 +218,8 @@ extern bool ag_object_list_next(ag_object_list **ctx)
 }
 
 
-                          /* implementation of ag_object_list_get() [AgDM:??] */
-extern ag_object_t *ag_object_list_get(const ag_object_list *ctx)
+                          /* implementation of ag_list_get() [AgDM:??] */
+extern ag_object_t *ag_list_get(const ag_list_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -243,8 +229,8 @@ extern ag_object_t *ag_object_list_get(const ag_object_list *ctx)
 }
 
 
-                       /* implementation of ag_object_list_get_at() [AgDM:??] */
-extern ag_object_t *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
+                       /* implementation of ag_list_get_at() [AgDM:??] */
+extern ag_object_t *ag_list_get_at(const ag_list_t *ctx, size_t idx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -258,8 +244,8 @@ extern ag_object_t *ag_object_list_get_at(const ag_object_list *ctx, size_t idx)
 }
 
 
-                          /* implementation of ag_object_list_set() [AgDM:??] */
-extern void ag_object_list_set(ag_object_list **ctx, const ag_object_t *val)
+                          /* implementation of ag_list_set() [AgDM:??] */
+extern void ag_list_set(ag_list_t **ctx, const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -270,9 +256,8 @@ extern void ag_object_list_set(ag_object_list **ctx, const ag_object_t *val)
 }
 
 
-                       /* implementation of ag_object_list_set_at() [AgDM:??] */
-extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx, 
-        const ag_object_t *val)
+                       /* implementation of ag_list_set_at() [AgDM:??] */
+extern void ag_list_set_at(ag_list_t **ctx, size_t idx, const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -288,8 +273,8 @@ extern void ag_object_list_set_at(ag_object_list **ctx, size_t idx,
 }
 
 
-                         /* implementation of ag_object_list_push() [AgDM:??] */
-extern void ag_object_list_push(ag_object_list **ctx, const ag_object_t *val)
+                         /* implementation of ag_list_push() [AgDM:??] */
+extern void ag_list_push(ag_list_t **ctx, const ag_object_t *val)
 {
     ag_assert (ctx && *ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -299,12 +284,12 @@ extern void ag_object_list_push(ag_object_list **ctx, const ag_object_t *val)
 }
 
 
-                      /* implementation of ag_object_list_iterate() [AgDM:??] */
-extern void ag_object_list_iterate(const ag_object_list *ctx, 
-        ag_object_list_iterator *cbk, void *opt)
+                      /* implementation of ag_list_iterate() [AgDM:??] */
+extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
+            const ag_object_t *node, void *opt), void *opt)
 {
     ag_assert (ctx);
-    if (ag_unlikely (ag_object_list_empty(ctx)))
+    if (ag_unlikely (ag_list_empty(ctx)))
             return;
 
     const struct payload *p = ag_object_payload(ctx);
@@ -317,12 +302,12 @@ extern void ag_object_list_iterate(const ag_object_list *ctx,
 }
 
 
-              /* implementation of ag_object_list_iterate_mutable() [AgDM:??] */
-extern void ag_object_list_iterate_mutable(ag_object_list **ctx,
-        ag_object_list_iterator_mutable *cbk, void *opt)
+              /* implementation of ag_list_iterate_mutable() [AgDM:??] */
+extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
+        void *opt), void *opt)
 {
     ag_assert (ctx);
-    if (ag_unlikely (ag_object_list_empty(*ctx)))
+    if (ag_unlikely (ag_list_empty(*ctx)))
             return;
 
     struct payload *p = ag_object_payload_mutable(ctx);
