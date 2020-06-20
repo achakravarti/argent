@@ -185,14 +185,14 @@ extern void ag_list_register(void)
         .str = NULL
     };
 
-    ag_object_register(AG_OBJECT_TYPE_OBJECT_LIST, &vt);
+    ag_object_register(AG_OBJECT_TYPE_LIST, &vt);
 }
 
 
                           /* implementation of ag_list_new() [AgDM:??] */
 extern ag_list_t *ag_list_new(void)
 {
-    return ag_object_new_noid(AG_OBJECT_TYPE_OBJECT_LIST, payload_new(NULL));
+    return ag_object_new_noid(AG_OBJECT_TYPE_LIST, payload_new(NULL));
 }
 
 

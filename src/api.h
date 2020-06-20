@@ -245,7 +245,7 @@ typedef struct ag_object_t ag_object_t;
 
                                            /* reserved object types [AgDM:??] */
 #define AG_OBJECT_TYPE_OBJECT ((unsigned) 0x0)
-#define AG_OBJECT_TYPE_OBJECT_LIST ((unsigned) 0x1)
+#define AG_OBJECT_TYPE_LIST ((unsigned) 0x1)
 
 
                         /* tristate result of comparing two objects [AgDM:??] */
