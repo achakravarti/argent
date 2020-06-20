@@ -260,9 +260,9 @@ enum ag_object_cmp {
 struct ag_object_vtable {
     ag_memblock_t *(*copy)(const ag_memblock_t *payload);
     void (*dispose)(ag_memblock_t *payload);
-    size_t (*sz)(const ag_memblock_t *payload);
-    size_t (*len)(const ag_memblock_t *payload);
-    size_t (*hash)(const ag_object_t *payload);
+    size_t (*sz)(const ag_object_t *obj);
+    size_t (*len)(const ag_object_t *obj);
+    size_t (*hash)(const ag_object_t *obj);
     enum ag_object_cmp (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
     const char *(*str)(const ag_object_t *obj);
 };

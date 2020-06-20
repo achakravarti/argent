@@ -160,17 +160,17 @@ static inline void object_method_dispose(ag_memblock_t *payload)
 
 
                                              /* default size method [AgDM:??] */
-static inline size_t object_method_sz(const ag_memblock_t *payload)
+static inline size_t object_method_sz(const ag_object_t *obj)
 {
-    (void) payload;
+    (void) obj;
     return 0;
 }
 
 
                                            /* default length method [AgDM:??] */
-static inline size_t object_method_len(const ag_memblock_t *payload)
+static inline size_t object_method_len(const ag_object_t *obj)
 {
-    (void) payload;
+    (void) obj;
     return 0;
 }
 

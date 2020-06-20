@@ -90,17 +90,17 @@ static void method_dispose(void *ctx)
 
 
                                        /* method to get object size [AgDM:??] */
-static inline size_t method_sz(const void *ctx)
+static inline size_t method_sz(const ag_object_t *obj)
 {
-    const struct payload *p = (const struct payload *) ctx;
+    const struct payload *p = ag_object_payload(obj);
     return p->sz;
 }
 
 
                                                /* method to get object length */
-static inline size_t method_len(const void *ctx)
+static inline size_t method_len(const ag_object_t *obj)
 {
-    const struct payload *p = (const struct payload *) ctx;
+    const struct payload *p = ag_object_payload(obj);
     return p->len;
 }
 
