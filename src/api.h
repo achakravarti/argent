@@ -244,8 +244,8 @@ typedef struct ag_object_t ag_object_t;
 
 
                                            /* reserved object types [AgDM:??] */
-#define AG_OBJECT_TYPE_OBJECT ((unsigned) 0x0)
-#define AG_OBJECT_TYPE_LIST ((unsigned) 0x1)
+#define AG_OBJECT_TYPE_OBJECT ((size_t) 0x0)
+#define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
 
 
                         /* tristate result of comparing two objects [AgDM:??] */
@@ -281,12 +281,12 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt);
 
 
                                               /* creates new object [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new(unsigned type, unsigned id, 
+extern ag_hot ag_object_t *ag_object_new(size_t type, size_t id, 
         ag_memblock_t *payload);
 
 
                                    /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new_noid(unsigned type, 
+extern ag_hot ag_object_t *ag_object_new_noid(size_t type, 
         ag_memblock_t *payload);
 
 
@@ -299,19 +299,19 @@ extern ag_hot void ag_object_dispose(ag_object_t **ctx);
 
 
                                                 /* gets object type [AgDM:??] */
-extern ag_pure unsigned ag_object_type(const ag_object_t *ctx);
+extern ag_pure size_t ag_object_type(const ag_object_t *ctx);
 
 
                                                   /* gets object ID [AgDM:??] */
-extern ag_pure unsigned ag_object_id(const ag_object_t *ctx);
+extern ag_pure size_t ag_object_id(const ag_object_t *ctx);
 
 
                                                   /* sets object ID [AgDM:??] */
-extern ag_cold void ag_object_id_set(ag_object_t **ctx, unsigned id);
+extern ag_cold void ag_object_id_set(ag_object_t **ctx, size_t id);
 
 
                                              /* gets hash of object [AgDM:??] */
-extern ag_pure unsigned ag_object_hash(const ag_object_t *ctx);
+extern ag_pure size_t ag_object_hash(const ag_object_t *ctx);
 
 
                                                 /* gets object size [AgDM:??] */
@@ -406,21 +406,21 @@ inline void ag_list_dispose(ag_list_t **ctx)
 
 
                                         /* gets object type of list [AgDM:??] */
-inline unsigned ag_list_type(const ag_list_t *ctx)
+inline size_t ag_list_type(const ag_list_t *ctx)
 {
     return ag_object_type(ctx);
 }
 
 
                                           /* gets object ID of list [AgDM:??] */
-inline unsigned ag_list_id(const ag_list_t *ctx)
+inline size_t ag_list_id(const ag_list_t *ctx)
 {
     return ag_object_id(ctx);
 }
 
 
                                           /* sets object ID of list [AgDM:??] */
-inline void ag_list_id_set(ag_list_t **ctx, unsigned id)
+inline void ag_list_id_set(ag_list_t **ctx, size_t id)
 {
     ag_object_id_set(ctx, id);
 }

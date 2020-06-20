@@ -121,15 +121,15 @@ extern inline void ag_list_dispose(ag_list_t **ctx);
 
 
                             /* declaration of ag_list_type() [AgDM:??] */
-extern inline unsigned ag_list_type(const ag_list_t *ctx);
+extern inline size_t ag_list_type(const ag_list_t *ctx);
 
 
                               /* declaration of ag_list_id() [AgDM:??] */
-extern inline unsigned ag_list_id(const ag_list_t *ctx);
+extern inline size_t ag_list_id(const ag_list_t *ctx);
 
 
                           /* declaration of ag_list_id_set() [AgDM:??] */
-extern inline void ag_list_id_set(ag_list_t **ctx, unsigned id);
+extern inline void ag_list_id_set(ag_list_t **ctx, size_t id);
 
 
                             /* declaration of ag_list_hash() [AgDM:??] */

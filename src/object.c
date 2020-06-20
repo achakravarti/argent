@@ -138,9 +138,9 @@ static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 
                                           /* expansion of ag_object [AgDM:??] */
 struct ag_object_t {
-    unsigned refc;
-    unsigned type;
-    unsigned id;
+    size_t refc;
+    size_t type;
+    size_t id;
     ag_memblock_t *payload;
 };
 
@@ -211,7 +211,7 @@ static inline const char *object_method_str(const ag_object_t *ctx)
 
 
                                               /* creates new object [AgDM:??] */
-static ag_object_t *object_new(unsigned type, unsigned id, 
+static ag_object_t *object_new(size_t type, size_t id, 
         ag_memblock_t *payload)
 {
     ag_object_t *ctx = ag_memblock_new(sizeof *ctx);
@@ -313,7 +313,7 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
 
 
                                /* implementation of ag_object_new() [AgDM:??] */
-extern ag_object_t *ag_object_new(unsigned type, unsigned id, 
+extern ag_object_t *ag_object_new(size_t type, size_t id, 
         ag_memblock_t *payload)
 {
     ag_assert (type && id && payload);
@@ -322,9 +322,9 @@ extern ag_object_t *ag_object_new(unsigned type, unsigned id,
 
 
                           /* implementation of ag_object_new_noid() [AgDM:??] */
-extern ag_object_t *ag_object_new_noid(unsigned type, ag_memblock_t *payload)
+extern ag_object_t *ag_object_new_noid(size_t type, ag_memblock_t *payload)
 {
-    const unsigned NOID = 0;
+    const size_t NOID = 0;
 
     ag_assert (type && payload);
     return object_new(type, NOID, payload);
@@ -361,7 +361,7 @@ extern void ag_object_dispose(ag_object_t **ctx)
 
 
                               /* implementation of ag_object_type() [AgDM:??] */
-extern unsigned ag_object_type(const ag_object_t *ctx)
+extern size_t ag_object_type(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->type;
@@ -369,7 +369,7 @@ extern unsigned ag_object_type(const ag_object_t *ctx)
 
 
                                 /* implementation of ag_object_id() [AgDM:??] */
-extern unsigned ag_object_id(const ag_object_t *ctx)
+extern size_t ag_object_id(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->id;
@@ -377,7 +377,7 @@ extern unsigned ag_object_id(const ag_object_t *ctx)
 
 
                             /* implementation of ag_object_id_set() [AgDM:??] */
-extern void ag_object_id_set(ag_object_t **ctx, unsigned id)
+extern void ag_object_id_set(ag_object_t **ctx, size_t id)
 {
     ag_assert (ctx && *ctx);
     object_copy(ctx);
@@ -388,7 +388,7 @@ extern void ag_object_id_set(ag_object_t **ctx, unsigned id)
 
 
                               /* implementation of ag_object_hash() [AgDM:??] */
-extern unsigned ag_object_hash(const ag_object_t *ctx)
+extern size_t ag_object_hash(const ag_object_t *ctx)
 {
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->hash(ctx);
