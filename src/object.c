@@ -49,6 +49,7 @@ static struct vtable_node *vtable_node_new(size_t key,
     n->val = ag_memblock_new(sizeof *n->val);
     n->val->copy = val->copy;
     n->val->dispose = val->dispose;
+    n->val->id = val->id;
     n->val->sz = val->sz;
     n->val->len = val->len;
     n->val->hash = val->hash;
@@ -140,7 +141,6 @@ static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 struct ag_object_t {
     size_t refc;
     size_t type;
-    size_t id;
     ag_memblock_t *payload;
 };
 
@@ -156,6 +156,13 @@ static inline ag_memblock_t *object_method_copy(const ag_memblock_t *payload)
 static inline void object_method_dispose(ag_memblock_t *payload)
 {
     (void) payload;
+}
+
+
+static inline size_t object_method_id(const ag_object_t *obj)
+{
+    (void) obj;
+    return 0;
 }
 
 
@@ -178,7 +185,7 @@ static inline size_t object_method_len(const ag_object_t *obj)
                                              /* default hash method [AgDM:??] */
 static inline size_t object_method_hash(const ag_object_t *obj)
 {
-    return ((size_t) obj->id * (size_t) 2654435761) % (size_t) pow(2, 32);
+    return (ag_object_id(obj) * (size_t) 2654435761) % (size_t) pow(2, 32);
 }
 
 
@@ -203,7 +210,7 @@ static inline const char *object_method_str(const ag_object_t *ctx)
 #   define LEN 64
 
     static ag_threadlocal char bfr[LEN];
-    snprintf(bfr, LEN, FMT, ctx->id, ag_object_len(ctx), ctx->refc);
+    snprintf(bfr, LEN, FMT, ag_object_id(ctx), ag_object_len(ctx), ctx->refc);
 
     return bfr;
 #   undef LEN
@@ -211,13 +218,11 @@ static inline const char *object_method_str(const ag_object_t *ctx)
 
 
                                               /* creates new object [AgDM:??] */
-static ag_object_t *object_new(size_t type, size_t id, 
-        ag_memblock_t *payload)
+static ag_object_t *object_new(size_t type, ag_memblock_t *payload)
 {
     ag_object_t *ctx = ag_memblock_new(sizeof *ctx);
     ctx->refc = 1;
     ctx->type = type;
-    ctx->id = id;
     ctx->payload = payload;
     
     return ctx;
@@ -230,8 +235,8 @@ static inline void object_copy(ag_object_t **obj)
     ag_object_t *hnd = *obj;
 
     if (hnd->refc > 1) {
-        ag_object_t *cp = ag_object_new(hnd->type, hnd->id, 
-                vtable_get(hnd->type)->copy(hnd->payload));
+        ag_object_t *cp = object_new(hnd->type, vtable_get(hnd->type)->copy(
+                hnd->payload));
 
         ag_object_dispose(obj);
         *obj = cp;
@@ -300,6 +305,7 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
     struct ag_object_vtable vtbl = {
         .copy = vt->copy ? vt->copy : object_method_copy,
         .dispose = vt->dispose? vt->dispose: object_method_dispose,
+        .id = vt->id ? vt->id : object_method_id,
         .sz = vt->sz ? vt->sz : object_method_sz,
         .len = vt->len ? vt->len : object_method_len,
         .hash = vt->hash ? vt->hash : object_method_hash,
@@ -313,21 +319,10 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
 
 
                                /* implementation of ag_object_new() [AgDM:??] */
-extern ag_object_t *ag_object_new(size_t type, size_t id, 
-        ag_memblock_t *payload)
+extern ag_object_t *ag_object_new(size_t type, ag_memblock_t *payload)
 {
-    ag_assert (type && id && payload);
-    return object_new(type, id, payload);
-}
-
-
-                          /* implementation of ag_object_new_noid() [AgDM:??] */
-extern ag_object_t *ag_object_new_noid(size_t type, ag_memblock_t *payload)
-{
-    const size_t NOID = 0;
-
     ag_assert (type && payload);
-    return object_new(type, NOID, payload);
+    return object_new(type, payload);
 }
 
 
@@ -379,19 +374,8 @@ extern size_t ag_object_refc(const ag_object_t *ctx)
                                 /* implementation of ag_object_id() [AgDM:??] */
 extern size_t ag_object_id(const ag_object_t *ctx)
 {
-    ag_assert (ctx);
-    return ctx->id;
-}
-
-
-                            /* implementation of ag_object_id_set() [AgDM:??] */
-extern void ag_object_id_set(ag_object_t **ctx, size_t id)
-{
-    ag_assert (ctx && *ctx);
-    object_copy(ctx);
-
-    ag_assert (id);
-    (*ctx)->id = id;
+    ag_assert (ctx && vtable);
+    return vtable_get(ctx->type)->id(ctx);
 }
 
 

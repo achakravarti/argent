@@ -260,6 +260,7 @@ enum ag_object_cmp {
 struct ag_object_vtable {
     ag_memblock_t *(*copy)(const ag_memblock_t *payload);
     void (*dispose)(ag_memblock_t *payload);
+    size_t (*id)(const ag_object_t *obj);
     size_t (*sz)(const ag_object_t *obj);
     size_t (*len)(const ag_object_t *obj);
     size_t (*hash)(const ag_object_t *obj);
@@ -281,13 +282,7 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt);
 
 
                                               /* creates new object [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new(size_t type, size_t id, 
-        ag_memblock_t *payload);
-
-
-                                   /* creates new object without ID [AgDM:??] */
-extern ag_hot ag_object_t *ag_object_new_noid(size_t type, 
-        ag_memblock_t *payload);
+extern ag_hot ag_object_t *ag_object_new(size_t type, ag_memblock_t *payload);
 
 
                                                   /* copies object [AgDM:??] */
@@ -308,10 +303,6 @@ extern size_t ag_object_refc(const ag_object_t *ctx);
 
                                                   /* gets object ID [AgDM:??] */
 extern ag_pure size_t ag_object_id(const ag_object_t *ctx);
-
-
-                                                  /* sets object ID [AgDM:??] */
-extern ag_cold void ag_object_id_set(ag_object_t **ctx, size_t id);
 
 
                                              /* gets hash of object [AgDM:??] */
@@ -420,13 +411,6 @@ inline size_t ag_list_type(const ag_list_t *ctx)
 inline size_t ag_list_id(const ag_list_t *ctx)
 {
     return ag_object_id(ctx);
-}
-
-
-                                          /* sets object ID of list [AgDM:??] */
-inline void ag_list_id_set(ag_list_t **ctx, size_t id)
-{
-    ag_object_id_set(ctx, id);
 }
 
 

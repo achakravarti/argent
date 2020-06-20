@@ -128,10 +128,6 @@ extern inline size_t ag_list_type(const ag_list_t *ctx);
 extern inline size_t ag_list_id(const ag_list_t *ctx);
 
 
-                          /* declaration of ag_list_id_set() [AgDM:??] */
-extern inline void ag_list_id_set(ag_list_t **ctx, size_t id);
-
-
                             /* declaration of ag_list_hash() [AgDM:??] */
 extern inline size_t ag_list_hash(const ag_list_t *ctx);
 
@@ -178,6 +174,7 @@ extern void ag_list_register(void)
     struct ag_object_vtable vt = {
         .copy = &method_copy,
         .dispose = &method_dispose,
+        .id = NULL,
         .sz = &method_sz,
         .len = method_len,
         .hash = NULL,
@@ -192,7 +189,7 @@ extern void ag_list_register(void)
                           /* implementation of ag_list_new() [AgDM:??] */
 extern ag_list_t *ag_list_new(void)
 {
-    return ag_object_new_noid(AG_OBJECT_TYPE_LIST, payload_new(NULL));
+    return ag_object_new(AG_OBJECT_TYPE_LIST, payload_new(NULL));
 }
 
 

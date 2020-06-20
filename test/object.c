@@ -16,6 +16,7 @@ static void test_setup(void)
     struct ag_object_vtable vt = {
         .copy = NULL,
         .dispose = NULL,
+        .id = NULL,
         .sz = NULL,
         .len = NULL,
         .hash = NULL,
@@ -40,7 +41,7 @@ static ag_object_t *sample_object_nomethod(void)
     p->x = 555;
     p->y = 666;
 
-    return ag_object_new_noid(TEST_OBJECT_NOMETHODS, p);
+    return ag_object_new(TEST_OBJECT_NOMETHODS, p);
 }
 
 
