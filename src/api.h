@@ -302,6 +302,10 @@ extern ag_hot void ag_object_dispose(ag_object_t **ctx);
 extern ag_pure size_t ag_object_type(const ag_object_t *ctx);
 
 
+                                     /* gets object reference count [AgDM:??] */
+extern size_t ag_object_refc(const ag_object_t *ctx);
+
+
                                                   /* gets object ID [AgDM:??] */
 extern ag_pure size_t ag_object_id(const ag_object_t *ctx);
 

@@ -32,7 +32,7 @@
 
                                              /* v-table bucket node [AgDM:??] */
 struct vtable_node {
-    unsigned key;
+    size_t key;
     struct ag_object_vtable *val;
     struct vtable_node *nxt;
 };
@@ -123,7 +123,7 @@ static const struct ag_object_vtable *vtable_get(size_t type)
                                      /* sets methods of object type [AgDM:??] */
 static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 {
-    unsigned h = vtable_hash(type);
+    size_t h = vtable_hash(type);
     struct vtable_node *n = vtable_node_new(type, vt, vtable->bkt[h]);
     vtable->bkt[h] = n;
 }
@@ -365,6 +365,14 @@ extern size_t ag_object_type(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->type;
+}
+
+
+                              /* implementation of ag_object_refc() [AgDM:??] */
+extern size_t ag_object_refc(const ag_object_t *ctx)
+{
+    ag_assert (ctx);
+    return ctx->refc;
 }
 
 
