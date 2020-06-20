@@ -284,7 +284,7 @@ extern void ag_list_push(ag_list_t **ctx, const ag_object_t *val)
 }
 
 
-                      /* implementation of ag_list_iterate() [AgDM:??] */
+                      /* implementation of ag_list_map() [AgDM:??] */
 extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
             const ag_object_t *node, void *opt), void *opt)
 {
@@ -302,7 +302,7 @@ extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
 }
 
 
-              /* implementation of ag_list_iterate_mutable() [AgDM:??] */
+              /* implementation of ag_list_map_mutable() [AgDM:??] */
 extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
         void *opt), void *opt)
 {
