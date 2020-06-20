@@ -30,9 +30,7 @@
  */
 
 
-/*
- *      Expansion of the ag_object abstract data type [DM:??].
- */
+                                          /* expansion of ag_object [AgDM:??] */
 struct ag_object_t {
     unsigned refc;
     unsigned type;
@@ -41,11 +39,109 @@ struct ag_object_t {
 };
 
 
+                                             /* v-table bucket node [AgDM:??] */
+struct node {
+    unsigned key;
+    struct ag_object_method *val;
+    struct node *nxt;
+};
+
+
+
+
+/*******************************************************************************
+ *                                   GLOBALS
+ */
+
+
+                                       /* v-table of object methods [AgDM:??] */
+static ag_threadlocal struct {
+    size_t len;
+    struct node **bkt;
+} *vtable = NULL;
+
+
 
 
 /*******************************************************************************
  *                            HELPER IMPLEMENTATION
  */
+
+
+                                                /* creates new node [AgDM:??] */
+static struct node *node_new(unsigned key, const struct ag_object_method *val, 
+        struct node *nxt)
+{
+    struct node *n = ag_memblock_new(sizeof *n);
+    n->key = key;
+    n->nxt = nxt;
+
+    n->val = ag_memblock_new(sizeof *n->val);
+    n->val->copy = val->copy;
+    n->val->dispose = val->dispose;
+    n->val->sz = val->sz;
+    n->val->len = val->len;
+    n->val->hash = val->hash;
+    n->val->cmp = val->cmp;
+    n->val->str = val->str;
+
+    return n;
+}
+
+
+                                                 /* disposes a node [AgDM:??] */
+static inline void node_dispose(struct node *n)
+{
+    ag_memblock_free((ag_memblock_t **) &n->val);
+    ag_memblock_free((ag_memblock_t **) &n);
+}
+
+
+                                        /* gets hash of object type [AgDM:??] */
+static inline size_t type_hash(unsigned type)
+{
+    return type % vtable->len;
+}
+
+
+                         /* checks if methods for object type exist [AgDM:??] */
+static bool vtable_exists(unsigned type)
+{
+    struct node *n = vtable->bkt[type_hash(type)];
+    while (n) {
+        if (n->key == type)
+            return true;
+
+        n = n->nxt;
+    }
+
+    return false;
+}
+
+
+                        /* gets methods of object type from v-table [AgDM:??] */
+static const struct ag_object_method *vtable_get(unsigned type)
+{
+    struct node *n = vtable->bkt[type_hash(type)];
+
+    while (n) {
+        if (n->key == type)
+            return n->val;
+
+        n = n->nxt;
+    }
+
+    return NULL;
+}
+
+
+                                     /* sets methods of object type [AgDM:??] */
+static void vtable_set(unsigned type, const struct ag_object_method *meth)
+{
+    unsigned h = type_hash(type);
+    struct node *n = node_new(type, meth, vtable->bkt[h]);
+    vtable->bkt[h] = n;
+}
 
 
                                              /* default copy method [AgDM:??] */
@@ -134,7 +230,7 @@ static inline void object_copy(ag_object_t **obj)
 
     if (hnd->refc > 1) {
         ag_object_t *cp = ag_object_new(hnd->type, hnd->id, 
-                ag_object_vtable_get(hnd->type)->copy(hnd->payload));
+                vtable_get(hnd->type)->copy(hnd->payload));
 
         ag_object_dispose(obj);
         *obj = cp;
@@ -172,6 +268,38 @@ extern inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp);
  */
 
 
+                              /* implementation of ag_object_init() [AgDM:??] */
+extern void ag_object_init(size_t len)
+{
+    if (ag_likely (!vtable)) {
+        ag_assert (len);
+        vtable = ag_memblock_new(sizeof *vtable);
+
+        vtable->bkt = ag_memblock_new(sizeof *vtable->bkt * len);
+        vtable->len = len;
+    }
+}
+
+
+                              /* implementation of ag_object_exit() [AgDM:??] */
+extern void ag_object_exit(void)
+{
+    if (ag_unlikely (!vtable))
+        return;
+
+    struct node *n, *nxt;
+    for (register size_t i = 0; i < vtable->len; i++) {
+        if ((n = vtable->bkt[i])) {
+            do {
+                nxt = n->nxt;
+                node_dispose(n);
+                n = nxt;
+            } while (n);
+        }
+    }
+}
+
+
                           /* implementation of ag_object_register() [AgDM:??] */
 extern void ag_object_register(unsigned type, 
         const struct ag_object_method *meth)
@@ -186,7 +314,8 @@ extern void ag_object_register(unsigned type,
         .str = meth->str ? meth->str : str_default
     };
 
-    ag_object_vtable_set(type, &m);
+    ag_assert (vtable && type && !vtable_exists(type));
+    vtable_set(type, &m);
 }
 
 
@@ -227,7 +356,9 @@ extern void ag_object_dispose(ag_object_t **ctx)
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
-            ag_object_vtable_get(hnd->type)->dispose(hnd->payload);
+            ag_assert (vtable);
+            vtable_get(hnd->type)->dispose(hnd->payload);
+
             ag_memblock_free(&hnd->payload);
             ag_memblock_free((ag_memblock_t **) ctx);
         }
@@ -265,24 +396,24 @@ extern void ag_object_id_set(ag_object_t **ctx, unsigned id)
                               /* implementation of ag_object_hash() [AgDM:??] */
 extern unsigned ag_object_hash(const ag_object_t *ctx)
 {
-    ag_assert (ctx);
-    return ag_object_vtable_get(ctx->type)->hash(ctx);
+    ag_assert (ctx && vtable);
+    return vtable_get(ctx->type)->hash(ctx);
 }
 
 
                                 /* implementation of ag_object_sz() [AgDM:??] */
 extern size_t ag_object_sz(const ag_object_t *ctx)
 {
-    ag_assert (ctx);
-    return ag_object_vtable_get(ctx->type)->sz(ctx);
+    ag_assert (ctx && vtable);
+    return vtable_get(ctx->type)->sz(ctx);
 }
 
 
                                /* implementation of ag_object_len() [AgDM:??] */
 extern size_t ag_object_len(const ag_object_t *ctx)
 {
-    ag_assert (ctx);
-    return ag_object_vtable_get(ctx->type)->len(ctx);
+    ag_assert (ctx && vtable);
+    return vtable_get(ctx->type)->len(ctx);
 }
 
 
@@ -290,8 +421,9 @@ extern size_t ag_object_len(const ag_object_t *ctx)
 extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
-    ag_assert (ctx && cmp && ag_object_type(ctx) == ag_object_type(cmp));
-    return ag_object_vtable_get(ctx->type)->cmp(ctx, cmp);
+    ag_assert (ctx && vtable && cmp 
+            && ag_object_type(ctx) == ag_object_type(cmp));
+    return vtable_get(ctx->type)->cmp(ctx, cmp);
 }
 
 
@@ -315,7 +447,7 @@ extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
                                /* implementation of ag_object_str() [AgDM:??] */
 extern const char *ag_object_str(const ag_object_t *ctx)
 {
-    ag_assert (ctx);
-    return ag_object_vtable_get(ctx->type)->str(ctx);
+    ag_assert (ctx && vtable);
+    return vtable_get(ctx->type)->str(ctx);
 }
 

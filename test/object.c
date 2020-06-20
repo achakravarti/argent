@@ -23,14 +23,14 @@ static void test_setup(void)
         .str = NULL
     };
 
-    ag_object_vtable_init(32);
+    ag_object_init(32);
     ag_object_register(TEST_OBJECT_NOMETHODS, &m);
 }
 
 
 static inline void test_teardown(void)
 {
-    ag_object_vtable_exit();
+    ag_object_exit();
 }
 
 
