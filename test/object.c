@@ -238,6 +238,48 @@ static void base_test_str(void)
 }
 
 
+                                   /* test case #16 for base object [AgDM:??] */
+static void base_test_refc(void)
+{
+    printf("ag_object_refc() returns 1 when a base object is created");
+    
+    ag_object_smart_t *o = base_sample();
+    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+                                   /* test case #17 for base object [AgDM:??] */
+static void base_test_refc_2(void)
+{
+    printf("ag_object_refc() accounts for a base object being copied");
+    
+    ag_object_smart_t *o = base_sample();
+    ag_object_smart_t *cp1 = ag_object_copy(o);
+    ag_object_smart_t *cp2 = ag_object_copy(cp1);
+    ag_require (ag_object_refc(o) == 3, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+                                   /* test case #18 for base object [AgDM:??] */
+static void base_test_refc_3(void)
+{
+    printf("ag_object_refc() accounts for a base object being disposed");
+    
+    ag_object_t *o = base_sample();
+    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_t *cp2 = ag_object_copy(cp1);
+
+    ag_object_dispose(&o);
+    ag_object_dispose(&cp2);
+    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
 
 
 
@@ -557,6 +599,49 @@ static void derived_test_str(void)
 }
 
 
+                                /* test case #16 for derived object [AgDM:??] */
+static void derived_test_refc(void)
+{
+    printf("ag_object_refc() returns 1 when a derived object is created");
+    
+    ag_object_smart_t *o = derived_sample();
+    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+                                /* test case #17 for derived object [AgDM:??] */
+static void derived_test_refc_2(void)
+{
+    printf("ag_object_refc() accounts for a derived object being copied");
+    
+    ag_object_smart_t *o = derived_sample();
+    ag_object_smart_t *cp1 = ag_object_copy(o);
+    ag_object_smart_t *cp2 = ag_object_copy(cp1);
+    ag_require (ag_object_refc(o) == 3, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+                                /* test case #18 for derived object [AgDM:??] */
+static void derived_test_refc_3(void)
+{
+    printf("ag_object_refc() accounts for a derived object being disposed");
+    
+    ag_object_t *o = derived_sample();
+    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_t *cp2 = ag_object_copy(cp1);
+
+    ag_object_dispose(&o);
+    ag_object_dispose(&cp2);
+    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
 
 
 extern void ag_test_object(void)
@@ -604,6 +689,9 @@ extern void ag_test_object(void)
     base_test_payload();
     base_test_payload_mutable();
     base_test_str();
+    base_test_refc();
+    base_test_refc_2();
+    base_test_refc_3();
 
     derived_test_new();
     derived_test_dispose();
@@ -620,6 +708,9 @@ extern void ag_test_object(void)
     derived_test_payload();
     derived_test_payload_mutable();
     derived_test_str();
+    derived_test_refc();
+    derived_test_refc_2();
+    derived_test_refc_3();
 
     printf("\n");
     ag_object_exit();
