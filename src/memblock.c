@@ -19,6 +19,7 @@
  ******************************************************************************/
 
 
+#include <malloc.h>
 #include <string.h>
 #include "./api.h"
 
@@ -39,6 +40,13 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 
     memset(bfr, 0, sz);
     return bfr;
+}
+
+
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
+{
+    ag_assert (bfr);
+    return malloc_usable_size((void *) bfr);
 }
 
 

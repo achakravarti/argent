@@ -216,6 +216,9 @@ typedef void ag_memblock_t;
                                              /* allocate heap block [AgDM:??] */
 extern ag_memblock_t *ag_memblock_new(size_t sz);
 
+                                         /* gets size of heap block [AgDM:??] */
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
+
                                                /* resize heap block [AgDM:??] */
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
