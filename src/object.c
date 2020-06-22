@@ -148,7 +148,7 @@ struct ag_object_t {
                                              /* default copy method [AgDM:??] */
 static inline ag_memblock_t *object_method_copy(const ag_memblock_t *payload)
 {
-    return (ag_memblock_t *) payload;
+    return ag_memblock_copy(payload);
 }
 
 
@@ -226,21 +226,6 @@ static ag_object_t *object_new(size_t type, ag_memblock_t *payload)
     ctx->payload = payload;
     
     return ctx;
-}
-
-
-                                       /* performs deep copy object [AgDM:??] */
-static inline void object_copy(ag_object_t **obj)
-{
-    ag_object_t *hnd = *obj;
-
-    if (hnd->refc > 1) {
-        ag_object_t *cp = object_new(hnd->type, vtable_get(hnd->type)->copy(
-                hnd->payload));
-
-        ag_object_dispose(obj);
-        *obj = cp;
-    }
 }
 
 
@@ -340,10 +325,9 @@ extern ag_object_t *ag_object_copy(const ag_object_t *ctx)
                            /* implementation of ag_object_dispose() [AgDM:??] */
 extern void ag_object_dispose(ag_object_t **ctx)
 {
-    ag_assert (ctx);
-    ag_object_t *hnd = *ctx;
+    ag_object_t *hnd;
 
-    if (ag_likely (hnd)) {
+    if (ag_likely (ctx && (hnd = *ctx))) {
         if (!--hnd->refc) {
             ag_assert (vtable);
             vtable_get(hnd->type)->dispose(hnd->payload);
@@ -425,7 +409,13 @@ extern const ag_memblock_t *ag_object_payload(const ag_object_t *ctx)
 extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
 {
     ag_assert (ctx && *ctx);
-    object_copy(ctx);
+    ag_object_t *hnd = *ctx;
+
+    if (hnd->refc > 1) {
+        hnd->refc--;
+        *ctx = object_new(hnd->type, vtable_get(hnd->type)->copy(hnd->payload));
+    }
+
     return (*ctx)->payload;
 }
 

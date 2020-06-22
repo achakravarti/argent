@@ -259,6 +259,8 @@ static void base_test_refc_2(void)
     ag_object_smart_t *cp1 = ag_object_copy(o);
     ag_object_smart_t *cp2 = ag_object_copy(cp1);
     ag_require (ag_object_refc(o) == 3, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp1) == 3, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp2) == 3, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -270,12 +272,37 @@ static void base_test_refc_3(void)
     printf("ag_object_refc() accounts for a base object being disposed");
     
     ag_object_t *o = base_sample();
-    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_smart_t *cp1 = ag_object_copy(o);
     ag_object_t *cp2 = ag_object_copy(cp1);
 
     ag_object_dispose(&o);
     ag_object_dispose(&cp2);
     ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void base_test_refc_4(void)
+{
+    printf("ag_object_refc() accounts for mutable handles to base object"
+            " payloads");
+    
+    ag_object_t *o = base_sample();
+    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_t *cp2 = ag_object_copy(cp1);
+
+    struct base_payload *p = ag_object_payload_mutable(&cp1);
+    (void) p;
+
+    ag_require (ag_object_refc(o) == 2, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp2) == 2, AG_ERNO_TEST, NULL);
+
+    ag_object_dispose(&cp1);
+    ag_object_dispose(&cp2);
+    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
+    ag_object_dispose(&o);
 
     printf("...OK\n");
 }
@@ -631,12 +658,37 @@ static void derived_test_refc_3(void)
     printf("ag_object_refc() accounts for a derived object being disposed");
     
     ag_object_t *o = derived_sample();
-    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_smart_t *cp1 = ag_object_copy(o);
     ag_object_t *cp2 = ag_object_copy(cp1);
 
     ag_object_dispose(&o);
     ag_object_dispose(&cp2);
     ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void derived_test_refc_4(void)
+{
+    printf("ag_object_refc() accounts for mutable handles to derived object"
+            " payloads");
+    
+    ag_object_t *o = derived_sample();
+    ag_object_t *cp1 = ag_object_copy(o);
+    ag_object_t *cp2 = ag_object_copy(cp1);
+
+    struct base_payload *p = ag_object_payload_mutable(&cp1);
+    (void) p;
+
+    ag_require (ag_object_refc(o) == 2, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_refc(cp2) == 2, AG_ERNO_TEST, NULL);
+
+    ag_object_dispose(&cp1);
+    ag_object_dispose(&cp2);
+    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
+    ag_object_dispose(&o);
 
     printf("...OK\n");
 }
@@ -692,6 +744,7 @@ extern void ag_test_object(void)
     base_test_refc();
     base_test_refc_2();
     base_test_refc_3();
+    base_test_refc_4();
 
     derived_test_new();
     derived_test_dispose();
@@ -711,6 +764,7 @@ extern void ag_test_object(void)
     derived_test_refc();
     derived_test_refc_2();
     derived_test_refc_3();
+    derived_test_refc_4();
 
     printf("\n");
     ag_object_exit();
