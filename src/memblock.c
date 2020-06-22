@@ -43,6 +43,20 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 }
 
 
+                            /* implementation of ag_memblock_copy() [AgDM:??] */
+extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
+{
+    ag_assert (bfr);
+    size_t sz = ag_memblock_sz(bfr);
+
+    ag_memblock_t *cp = ag_memblock_new(sz);
+    memcpy(cp, bfr, sz);
+
+    return cp;
+}
+
+
+                              /* implementation of ag_memblock_sz() [AgDM:??] */
 extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
 {
     ag_assert (bfr);
