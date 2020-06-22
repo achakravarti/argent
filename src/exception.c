@@ -58,6 +58,9 @@ static ag_threadlocal const char *g_emsg[] = {
     "AG_ERNO_NULL: no error has occurred",
     "AG_ERNO_MEMPOOL_NEW: failed to allocate new heap memory",
     "AG_ERNO_MEMPOOL_RESIZE: failed to resize existing heap memory buffer"
+    "AG_ERNO_MEMBLOCK_NEW: failed to allocate new heap block",
+    "AG_ERNO_MEMBLOCK_RESIZE: failed to resize existing heap block",
+    "AG_ERNO_TEST: failed to pass unit test",
 };
 
 
