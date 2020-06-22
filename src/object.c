@@ -169,8 +169,7 @@ static inline size_t object_method_id(const ag_object_t *obj)
                                              /* default size method [AgDM:??] */
 static inline size_t object_method_sz(const ag_object_t *obj)
 {
-    (void) obj;
-    return 0;
+    return ag_memblock_sz(obj->payload);
 }
 
 
@@ -178,7 +177,7 @@ static inline size_t object_method_sz(const ag_object_t *obj)
 static inline size_t object_method_len(const ag_object_t *obj)
 {
     (void) obj;
-    return 0;
+    return 1;
 }
 
 

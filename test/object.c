@@ -103,10 +103,10 @@ static void base_test_sz(void)
 {
     printf("ag_object_sz() defaults to 0 for a base object");
     
-    ag_object_smart_t *obj = base_sample();
-    size_t sz = ag_object_sz(obj);
+    ag_object_smart_t *o = base_sample();
+    ag_require (ag_object_sz(o) == ag_memblock_sz(ag_object_payload(o)), 
+            AG_ERNO_TEST, NULL);
 
-    ag_require (!sz, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
@@ -114,12 +114,11 @@ static void base_test_sz(void)
                                     /* test case #7 for base object [AgDM:??] */
 static void base_test_empty(void)
 {
-    printf("ag_object_empty() defaults to true for a base object");
+    printf("ag_object_empty() defaults to false for a base object");
     
-    ag_object_smart_t *obj = base_sample();
-    bool e = ag_object_empty(obj);
+    ag_object_smart_t *o = base_sample();
+    ag_require (!ag_object_empty(o), AG_ERNO_TEST, NULL);
 
-    ag_require (e, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
@@ -127,12 +126,11 @@ static void base_test_empty(void)
                                     /* test case #8 for base object [AgDM:??] */
 static void base_test_len(void)
 {
-    printf("ag_object_len() defaults to 0 for a base object");
+    printf("ag_object_len() defaults to 1 for a base object");
     
-    ag_object_smart_t *obj = base_sample();
-    size_t l = ag_object_sz(obj);
+    ag_object_smart_t *o = base_sample();
+    ag_require (ag_object_len(o) == 1, AG_ERNO_TEST, NULL);
 
-    ag_require (l == 0, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
