@@ -35,6 +35,17 @@ static void test_resize(void)
 }
 
 
+static void test_sz(void)
+{
+    printf("ag_memblock_sz() gets the size of an existing heap memory block");
+
+    int *bfr = ag_memblock_new(sizeof *bfr);
+    ag_require (ag_memblock_sz(bfr) >= sizeof *bfr, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
 static void test_free(void)
 {
     printf("ag_memblock_free() releases an existing heap memory block");
@@ -56,6 +67,7 @@ extern void ag_test_memblock(void)
 
     test_new();
     test_resize();
+    test_sz();
     test_free();
 
     printf("\n");
