@@ -230,6 +230,81 @@ extern void ag_memblock_free(ag_memblock_t **bfr);
 
 
 
+
+/*******************************************************************************
+ *                                   STRINGS
+ */
+
+
+                                                    /* UTF-8 string [AgDM:??] */
+typedef char ag_string_t;
+
+
+                                    /* smart version of ag_string_t [AgDM:??] */
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_string_smart \
+            __attribute__((cleanup(ag_string_free))) ag_string
+#else
+#   define ag_string_smart_t ag_string_t
+#   warning "[!] ag_string_smart_t leaks memory on current compiler"
+#endif
+
+
+                                               /* create new string [AgDM:??] */
+extern ag_string_t *ag_string_new(const char *cstr);
+
+
+                                         /* create new empty string [AgDM:??] */
+extern ag_string_t *ag_string_new_empty(void);
+
+
+                                            /* copy existing string [AgDM:??] */
+extern ag_string_t *ag_string_copy(const ag_string_t *ctx);
+
+
+                                         /* dispose existing string [AgDM:??] */
+extern void ag_string_dispose(ag_string_t **ctx);
+
+
+                              /* get lexicographic length of string [AgDM:??] */
+extern size_t ag_string_len(const ag_string_t *ctx);
+
+
+                                     /* get size in bytes of string [AgDM:??] */
+extern size_t ag_string_sz(const ag_string_t *ctx);
+
+
+                                    /* compare two string instances [AgDM:??] */
+extern int ag_string_cmp(const ag_string_t *lhs, const ag_string_t *rhs);
+
+
+                            /* check if string is less than another [AgDM:??] */
+inline bool ag_string_lt(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return ag_string_cmp(lhs, rhs) < 0;
+}
+
+
+                             /* check if string is equal to another [AgDM:??] */
+inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return !ag_string_cmp(lhs, rhs);
+}
+
+
+                         /* check if string is greater than another [AgDM:??] */
+inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return ag_string_cmp(lhs, rhs) > 0;
+}
+
+
+                                           /* add string to another [AgDM:??] */
+extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat);
+
+
+
+
 /*******************************************************************************
  *                                OBJECT MODEL
  */
