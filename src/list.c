@@ -145,7 +145,7 @@ extern inline bool ag_list_empty(const ag_list_t *ctx);
 
 
                              /* declaration of ag_list_cmp() [AgDM:??] */
-extern inline enum ag_object_cmp ag_list_cmp(const ag_list_t *ctx,
+extern inline enum ag_tristate ag_list_cmp(const ag_list_t *ctx,
         const ag_list_t *cmp);
 
 

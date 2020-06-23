@@ -23,12 +23,9 @@
 #include "./api.h"
 
 
-
-
 /*******************************************************************************
  *                            V-TABLE NODE INTERNALS
  */
-
 
                                              /* v-table bucket node [AgDM:??] */
 struct vtable_node {
@@ -36,7 +33,6 @@ struct vtable_node {
     struct ag_object_vtable *val;
     struct vtable_node *nxt;
 };
-
 
                                                 /* creates new node [AgDM:??] */
 static struct vtable_node *vtable_node_new(size_t key, 
@@ -59,7 +55,6 @@ static struct vtable_node *vtable_node_new(size_t key,
     return n;
 }
 
-
                                                  /* disposes a node [AgDM:??] */
 static inline void vtable_node_dispose(struct vtable_node *n)
 {
@@ -68,12 +63,9 @@ static inline void vtable_node_dispose(struct vtable_node *n)
 }
 
 
-
-
 /*******************************************************************************
  *                              V-TABLE INTERNALS
  */
-
 
                                        /* v-table of object methods [AgDM:??] */
 static ag_threadlocal struct {
@@ -81,15 +73,11 @@ static ag_threadlocal struct {
     struct vtable_node **bkt;
 } *vtable = NULL;
 
-
-
-
                                         /* gets hash of object type [AgDM:??] */
 static inline size_t vtable_hash(size_t type)
 {
     return type % vtable->len;
 }
-
 
                          /* checks if methods for object type exist [AgDM:??] */
 static bool vtable_exists(size_t type)
@@ -105,7 +93,6 @@ static bool vtable_exists(size_t type)
     return false;
 }
 
-
                         /* gets methods of object type from v-table [AgDM:??] */
 static const struct ag_object_vtable *vtable_get(size_t type)
 {
@@ -120,7 +107,6 @@ static const struct ag_object_vtable *vtable_get(size_t type)
     return NULL;
 }
 
-
                                      /* sets methods of object type [AgDM:??] */
 static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 {
@@ -130,12 +116,9 @@ static void vtable_set(size_t type, const struct ag_object_vtable *vt)
 }
 
 
-
-
 /*******************************************************************************
  *                               OBJECT INTERNALS
  */
-
 
                                           /* expansion of ag_object [AgDM:??] */
 struct ag_object_t {
@@ -144,13 +127,11 @@ struct ag_object_t {
     ag_memblock_t *payload;
 };
 
-
                                              /* default copy method [AgDM:??] */
 static inline ag_memblock_t *object_method_copy(const ag_memblock_t *payload)
 {
     return ag_memblock_copy(payload);
 }
-
 
                                           /* default dispose method [AgDM:??] */
 static inline void object_method_dispose(ag_memblock_t *payload)
@@ -158,20 +139,18 @@ static inline void object_method_dispose(ag_memblock_t *payload)
     (void) payload;
 }
 
-
+                                               /* default ID method [AgDM:??] */
 static inline size_t object_method_id(const ag_object_t *obj)
 {
     (void) obj;
     return 0;
 }
 
-
                                              /* default size method [AgDM:??] */
 static inline size_t object_method_sz(const ag_object_t *obj)
 {
     return ag_memblock_sz(obj->payload);
 }
-
 
                                            /* default length method [AgDM:??] */
 static inline size_t object_method_len(const ag_object_t *obj)
@@ -180,41 +159,31 @@ static inline size_t object_method_len(const ag_object_t *obj)
     return 1;
 }
 
-
                                              /* default hash method [AgDM:??] */
 static inline size_t object_method_hash(const ag_object_t *obj)
 {
     return (ag_object_id(obj) * (size_t) 2654435761) % (size_t) pow(2, 32);
 }
 
-
                                        /* default comparison method [AgDM:??] */
-static inline enum ag_object_cmp object_method_cmp(const ag_object_t *ctx, 
+static inline enum ag_tristate object_method_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
     size_t llen = ag_object_len(ctx);
     size_t rlen = ag_object_len(cmp);
 
     if (llen == rlen)
-        return AG_OBJECT_CMP_EQ;
+        return AG_TRISTATE_GND;
 
-    return llen < rlen ? AG_OBJECT_CMP_LT : AG_OBJECT_CMP_GT;
+    return llen < rlen ? AG_TRISTATE_LO : AG_TRISTATE_HI;
 }
-
 
                                            /* default string method [AgDM:??] */
-static inline const char *object_method_str(const ag_object_t *ctx)
+static inline ag_string_t *object_method_str(const ag_object_t *ctx)
 {
-    const char *FMT = "object: (id = %u), (len = %lu), (refc = %lu)";
-#   define LEN 64
-
-    static ag_threadlocal char bfr[LEN];
-    snprintf(bfr, LEN, FMT, ag_object_id(ctx), ag_object_len(ctx), ctx->refc);
-
-    return bfr;
-#   undef LEN
+    (void) ctx;
+    return ag_string_new("object");
 }
-
 
                                               /* creates new object [AgDM:??] */
 static ag_object_t *object_new(size_t type, ag_memblock_t *payload)
@@ -228,28 +197,21 @@ static ag_object_t *object_new(size_t type, ag_memblock_t *payload)
 }
 
 
-
-
 /*******************************************************************************
  *                               OBJECT EXTERNALS
  */
 
-
                                 /* declaration of ag_object_empty() [AgDM:??] */
 extern inline bool ag_object_empty(const ag_object_t *ctx);
-
 
                                    /* declaration of ag_object_lt() [AgDM:??] */
 extern inline bool ag_object_lt(const ag_object_t *ctx, const ag_object_t *cmp);
 
-
                                    /* declaration of ag_object_eq() [AgDM:??] */
 extern inline bool ag_object_eq(const ag_object_t *ctx, const ag_object_t *cmp);
 
-
                                    /* declaration of ag_object_gt() [AgDM:??] */
 extern inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp);
-
 
                               /* implementation of ag_object_init() [AgDM:??] */
 extern void ag_object_init(size_t len)
@@ -262,7 +224,6 @@ extern void ag_object_init(size_t len)
         vtable->len = len;
     }
 }
-
 
                               /* implementation of ag_object_exit() [AgDM:??] */
 extern void ag_object_exit(void)
@@ -282,7 +243,6 @@ extern void ag_object_exit(void)
     }
 }
 
-
                           /* implementation of ag_object_register() [AgDM:??] */
 extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
 {
@@ -301,14 +261,12 @@ extern void ag_object_register(size_t type, const struct ag_object_vtable *vt)
     vtable_set(type, &vtbl);
 }
 
-
                                /* implementation of ag_object_new() [AgDM:??] */
 extern ag_object_t *ag_object_new(size_t type, ag_memblock_t *payload)
 {
     ag_assert (type && payload);
     return object_new(type, payload);
 }
-
 
                               /* implementation of ag_object_copy() [AgDM:??] */
 extern ag_object_t *ag_object_copy(const ag_object_t *ctx)
@@ -319,7 +277,6 @@ extern ag_object_t *ag_object_copy(const ag_object_t *ctx)
     cp->refc++;
     return cp;
 }
-
 
                            /* implementation of ag_object_dispose() [AgDM:??] */
 extern void ag_object_dispose(ag_object_t **ctx)
@@ -337,14 +294,12 @@ extern void ag_object_dispose(ag_object_t **ctx)
     }
 }
 
-
                               /* implementation of ag_object_type() [AgDM:??] */
 extern size_t ag_object_type(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->type;
 }
-
 
                               /* implementation of ag_object_refc() [AgDM:??] */
 extern size_t ag_object_refc(const ag_object_t *ctx)
@@ -353,14 +308,12 @@ extern size_t ag_object_refc(const ag_object_t *ctx)
     return ctx->refc;
 }
 
-
                                 /* implementation of ag_object_id() [AgDM:??] */
 extern size_t ag_object_id(const ag_object_t *ctx)
 {
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->id(ctx);
 }
-
 
                               /* implementation of ag_object_hash() [AgDM:??] */
 extern size_t ag_object_hash(const ag_object_t *ctx)
@@ -369,14 +322,12 @@ extern size_t ag_object_hash(const ag_object_t *ctx)
     return vtable_get(ctx->type)->hash(ctx);
 }
 
-
                                 /* implementation of ag_object_sz() [AgDM:??] */
 extern size_t ag_object_sz(const ag_object_t *ctx)
 {
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->sz(ctx);
 }
-
 
                                /* implementation of ag_object_len() [AgDM:??] */
 extern size_t ag_object_len(const ag_object_t *ctx)
@@ -385,9 +336,8 @@ extern size_t ag_object_len(const ag_object_t *ctx)
     return vtable_get(ctx->type)->len(ctx);
 }
 
-
                                /* implementation of ag_object_cmp() [AgDM:??] */
-extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
+extern enum ag_tristate ag_object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
     ag_assert (ctx && vtable && cmp 
@@ -395,14 +345,12 @@ extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx,
     return vtable_get(ctx->type)->cmp(ctx, cmp);
 }
 
-
                            /* implementation of ag_object_payload() [AgDM:??] */
 extern const ag_memblock_t *ag_object_payload(const ag_object_t *ctx)
 {
     ag_assert (ctx);
     return ctx->payload;
 }
-
 
                    /* implementation of ag_object_payload_mutable() [AgDM:??] */
 extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
@@ -418,12 +366,10 @@ extern ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx)
     return (*ctx)->payload;
 }
 
-
                                /* implementation of ag_object_str() [AgDM:??] */
-extern const char *ag_object_str(const ag_object_t *ctx)
+extern ag_string_t *ag_object_str(const ag_object_t *ctx)
 {
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->str(ctx);
 }
-
 

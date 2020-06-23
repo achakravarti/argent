@@ -108,6 +108,13 @@
 #endif
 
 
+enum ag_tristate {
+    AG_TRISTATE_LO = -1,
+    AG_TRISTATE_GND,
+    AG_TRISTATE_HI
+};
+
+
 
 
 /*******************************************************************************
@@ -230,6 +237,81 @@ extern void ag_memblock_free(ag_memblock_t **bfr);
 
 
 
+
+/*******************************************************************************
+ *                                   STRINGS
+ */
+
+                                                    /* UTF-8 string [AgDM:??] */
+typedef char ag_string_t;
+
+                                    /* smart version of ag_string_t [AgDM:??] */
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_string_smart_t \
+            __attribute__((cleanup(ag_string_dispose))) ag_string_t
+#else
+#   define ag_string_smart_t ag_string_t
+#   warning "[!] ag_string_smart_t leaks memory on current compiler"
+#endif
+
+                                               /* create new string [AgDM:??] */
+extern ag_string_t *ag_string_new(const char *cstr);
+
+                                         /* create new empty string [AgDM:??] */
+inline ag_string_t *ag_string_new_empty(void)
+{
+    return ag_string_new("");
+}
+
+                                     /* create new formatted string [AgDM:??] */
+extern ag_string_t *ag_string_new_fmt(const char *fmt, ...);
+
+                                            /* copy existing string [AgDM:??] */
+extern ag_string_t *ag_string_copy(const ag_string_t *ctx);
+
+                                         /* dispose existing string [AgDM:??] */
+extern void ag_string_dispose(ag_string_t **ctx);
+
+                              /* get lexicographic length of string [AgDM:??] */
+extern size_t ag_string_len(const ag_string_t *ctx);
+
+                                     /* get size in bytes of string [AgDM:??] */
+extern size_t ag_string_sz(const ag_string_t *ctx);
+
+                                    /* compare two string instances [AgDM:??] */
+extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, 
+        const ag_string_t *rhs);
+
+                            /* check if string is less than another [AgDM:??] */
+inline bool ag_string_lt(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO;
+}
+
+                             /* check if string is equal to another [AgDM:??] */
+inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND;
+}
+
+                         /* check if string is greater than another [AgDM:??] */
+inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs)
+{
+    return ag_string_cmp(lhs, rhs) == AG_TRISTATE_HI;
+}
+
+                                           /* add string to another [AgDM:??] */
+extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat);
+
+                                 /* add C-string to string instance [AgDM:??] */
+inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat)
+{
+    ag_string_smart_t *s = ag_string_new(cat);
+    ag_string_add(ctx, s);
+}
+
+
+
 /*******************************************************************************
  *                                OBJECT MODEL
  */
@@ -254,14 +336,6 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
 
 
-                        /* tristate result of comparing two objects [AgDM:??] */
-enum ag_object_cmp {
-    AG_OBJECT_CMP_LT = -1,
-    AG_OBJECT_CMP_EQ = 0,
-    AG_OBJECT_CMP_GT = 1
-};
-
-
                                        /* v-table of object methods [AgDM:??] */
 struct ag_object_vtable {
     ag_memblock_t *(*copy)(const ag_memblock_t *payload);
@@ -270,8 +344,8 @@ struct ag_object_vtable {
     size_t (*sz)(const ag_object_t *obj);
     size_t (*len)(const ag_object_t *obj);
     size_t (*hash)(const ag_object_t *obj);
-    enum ag_object_cmp (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
-    const char *(*str)(const ag_object_t *obj);
+    enum ag_tristate (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
+    ag_string_t *(*str)(const ag_object_t *obj);
 };
 
 
@@ -331,28 +405,28 @@ inline bool ag_object_empty(const ag_object_t *ctx)
 
 
                                             /* compares two objects [AgDM:??] */
-extern ag_pure enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
+extern ag_pure enum ag_tristate ag_object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp);
 
 
                            /* checks if object is less than another [AgDM:??] */
 inline bool ag_object_lt(const ag_object_t *ctx, const ag_object_t *cmp)
 {
-    return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_LT;
+    return ag_object_cmp(ctx, cmp) == AG_TRISTATE_LO;
 }
 
 
                        /* checks if object is equivalent to another [AgDM:??] */
 inline bool ag_object_eq(const ag_object_t *ctx, const ag_object_t *cmp)
 {
-    return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_EQ;
+    return ag_object_cmp(ctx, cmp) == AG_TRISTATE_GND;
 }
 
 
                         /* checks if object is greater than another [AgDM:??] */
 inline bool ag_object_gt(const ag_object_t *ctx, const ag_object_t *cmp)
 {
-    return ag_object_cmp(ctx, cmp) == AG_OBJECT_CMP_GT;
+    return ag_object_cmp(ctx, cmp) == AG_TRISTATE_HI;
 }
 
 
@@ -366,9 +440,7 @@ extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 
 
                             /* gets string representation of object [AgDM:??] */
-extern ag_pure const char *ag_object_str(const ag_object_t *ctx);
-
-
+extern ag_string_t *ag_object_str(const ag_object_t *ctx);
 
 
 /*******************************************************************************
@@ -449,7 +521,7 @@ inline bool ag_list_empty(const ag_list_t *ctx)
 
 
                                               /* compares two lists [AgDM:??] */
-inline enum ag_object_cmp ag_list_cmp(const ag_list_t *ctx, 
+inline enum ag_tristate ag_list_cmp(const ag_list_t *ctx, 
         const ag_list_t *cmp)
 {
     return ag_object_cmp(ctx, cmp);
