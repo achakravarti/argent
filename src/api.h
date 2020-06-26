@@ -255,7 +255,10 @@ extern ag_string_t *ag_string_new(const char *cstr);
 
 
                                          /* create new empty string [AgDM:??] */
-extern ag_string_t *ag_string_new_empty(void);
+inline ag_string_t *ag_string_new_empty(void)
+{
+    return ag_string_new("");
+}
 
 
                                             /* copy existing string [AgDM:??] */
