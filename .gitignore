@@ -69,6 +69,7 @@ dkms.conf
 *.toc
 *.xml
 
-# Build output
+# Development environment
 /bld
+tags
 
