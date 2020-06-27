@@ -242,8 +242,8 @@ typedef char ag_string_t;
 
                                     /* smart version of ag_string_t [AgDM:??] */
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_string_smart \
-            __attribute__((cleanup(ag_string_free))) ag_string
+#   define ag_string_smart_t \
+            __attribute__((cleanup(ag_string_dispose))) ag_string_t
 #else
 #   define ag_string_smart_t ag_string_t
 #   warning "[!] ag_string_smart_t leaks memory on current compiler"
