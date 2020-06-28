@@ -8,7 +8,7 @@
  */
 
                                    /* test case #1 for empty string [AgDM:??] */
-static void empty_test_new(void)
+static void empty_new(void)
 {
     printf("ag_string_new_empty() can create an empty string");
 
@@ -19,7 +19,7 @@ static void empty_test_new(void)
 }
 
                                    /* test case #2 for empty string [AgDM:??] */
-static void empty_test_copy(void)
+static void empty_copy(void)
 {
     printf("ag_string_copy() can copy an empty string");
 
@@ -31,7 +31,7 @@ static void empty_test_copy(void)
 }
 
                                    /* test case #3 for empty string [AgDM:??] */
-static void empty_test_len(void)
+static void empty_len(void)
 {
     printf("ag_string_len() reports 0 for an empty string");
 
@@ -42,7 +42,7 @@ static void empty_test_len(void)
 }
 
                                    /* test case #4 for empty string [AgDM:??] */
-static void empty_test_sz(void)
+static void empty_sz(void)
 {
     printf("ag_string_sz() reports 0 for an empty string");
 
@@ -53,7 +53,7 @@ static void empty_test_sz(void)
 }
 
                                    /* test case #5 for empty string [AgDM:??] */
-static void empty_test_cmp(void)
+static void empty_cmp(void)
 {
     printf("ag_string_cmp() detects two equal empty strings...");
 
@@ -64,8 +64,9 @@ static void empty_test_cmp(void)
     printf("...OK\n");
 }
 
+
                                    /* test case #6 for empty string [AgDM:??] */
-static void empty_test_add(void)
+static void empty_add(void)
 {
     printf("ag_string_add() adds two empty strings...");
 
@@ -76,15 +77,54 @@ static void empty_test_add(void)
     printf("...OK\n");
 }
 
+                                   /* test case #7 for empty string [AgDM:??] */
+static void empty_lt(void)
+{
+    printf("ag_string_lt() returns false for two empty strings...");
+
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_new_empty();
+    ag_require (!ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                   /* test case #8 for empty string [AgDM:??] */
+static void empty_eq(void)
+{
+    printf("ag_string_eq() returns true for two empty strings...");
+
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_new_empty();
+    ag_require (ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                   /* test case #9 for empty string [AgDM:??] */
+static void empty_gt(void)
+{
+    printf("ag_string_gt() returns false for two empty strings...");
+
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_new_empty();
+    ag_require (!ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
-    empty_test_new();
-    empty_test_copy();
-    empty_test_len();
-    empty_test_sz();
-    empty_test_cmp();
-    empty_test_add();
+    empty_new();
+    empty_copy();
+    empty_len();
+    empty_sz();
+    empty_cmp();
+    empty_add();
+    empty_lt();
+    empty_eq();
+    empty_gt();
 }
 
 
@@ -204,6 +244,84 @@ static void ascii_add(void)
     printf("OK\n");
 }
 
+                                  /* test case #10 for ASCII string [AgDM:??] */
+static void ascii_lt_1(void)
+{
+    printf("ag_string_lt() returns true if an ASCII string is lexicographically"
+            " less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Goodbye, moon?");
+    ag_string_smart_t *s2 = ag_string_new("Hello, world!");
+    ag_require (ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #11 for ASCII string [AgDM:??] */
+static void ascii_lt_2(void)
+{
+    printf("ag_string_lt() returns false if an ASCII string is not"
+            " lexicographically less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Hello, world!");
+    ag_string_smart_t *s2 = ag_string_new("Goodbye, moon?");
+    ag_require (!ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #12 for ASCII string [AgDM:??] */
+static void ascii_eq_1(void)
+{
+    printf("ag_string_eq() returns true if an ASCII string is lexicographically"
+            " equal to another");
+
+    ag_string_smart_t *s1 = ag_string_new("Hello, world!");
+    ag_string_smart_t *s2 = ag_string_new("Hello, world!");
+    ag_require (ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #13 for ASCII string [AgDM:??] */
+static void ascii_eq_2(void)
+{
+    printf("ag_string_eq() returns true if an ASCII string is lexicographically"
+            " not equal to another");
+
+    ag_string_smart_t *s1 = ag_string_new("Hello, world!");
+    ag_string_smart_t *s2 = ag_string_new("Goodbye, moon?");
+    ag_require (!ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #14 for ASCII string [AgDM:??] */
+static void ascii_gt_1(void)
+{
+    printf("ag_string_gt() returns true if an ASCII string is lexicographically"
+            " greater than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Hello, world!");
+    ag_string_smart_t *s2 = ag_string_new("Goodbye, moon?");
+    ag_require (ag_string_gt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #15 for ASCII string [AgDM:??] */
+static void ascii_gt_2(void)
+{
+    printf("ag_string_gt() returns false if an ASCII string is not"
+            " lexicographically greater than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Goodbye, moon?");
+    ag_string_smart_t *s2 = ag_string_new("Hello, world!");
+    ag_require (!ag_string_gt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                          /* runs ASCII string tests [AgDM:??] */
 static void ascii_test(void)
 {
@@ -216,6 +334,12 @@ static void ascii_test(void)
     ascii_cmp();
     ascii_cmp_4();
     ascii_add();
+    ascii_lt_1();
+    ascii_lt_2();
+    ascii_eq_1();
+    ascii_eq_2();
+    ascii_gt_1();
+    ascii_gt_2();
 }
 
 
@@ -336,6 +460,82 @@ static void unicode_add(void)
     printf("OK\n");
 }
 
+                                /* test case #11 for Unicode string [AgDM:??] */
+static void unicode_lt_1(void)
+{
+    printf("ag_string_lt() returns true if a Unicode string is"
+            " lexicographically less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("До свидания, луна?");
+    ag_string_smart_t *s2 = ag_string_new("Привет, мир!");
+    ag_require (ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                /* test case #12 for Unicode string [AgDM:??] */
+static void unicode_lt_2(void)
+{
+    printf("ag_string_lt() returns false if a Unicode string is not"
+            " lexicographically less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Привет, мир!");
+    ag_string_smart_t *s2 = ag_string_new("До свидания, луна?");
+    ag_require (!ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                /* test case #13 for Unicode string [AgDM:??] */
+static void unicode_eq_1(void)
+{
+    printf("ag_string_eq() returns true for two equal Unicode strings");
+
+    ag_string_smart_t *s1 = ag_string_new("Привет, мир!");
+    ag_string_smart_t *s2 = ag_string_new("Привет, мир!");
+    ag_require (ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                /* test case #14 for Unicode string [AgDM:??] */
+static void unicode_eq_2(void)
+{
+    printf("ag_string_eq() returns false for two unequal Unicode strings");
+
+    ag_string_smart_t *s1 = ag_string_new("До свидания, луна?");
+    ag_string_smart_t *s2 = ag_string_new("Привет, мир!");
+    ag_require (!ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("OK\n");
+}
+
+                                /* test case #15 for Unicode string [AgDM:??] */
+static void unicode_gt_1(void)
+{
+    printf("ag_string_gt() returns true if a Unicode string is"
+            " lexicographically less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("Привет, мир!");
+    ag_string_smart_t *s2 = ag_string_new("До свидания, луна?");
+    ag_require (ag_string_gt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                /* test case #16 for Unicode string [AgDM:??] */
+static void unicode_gt_2(void)
+{
+    printf("ag_string_gt() returns false if a Unicode string is not"
+            " lexicographically less than another");
+
+    ag_string_smart_t *s1 = ag_string_new("До свидания, луна?");
+    ag_string_smart_t *s2 = ag_string_new("Привет, мир!");
+    ag_require (!ag_string_gt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
 {
@@ -348,6 +548,12 @@ static void unicode_test(void)
     unicode_cmp_3();
     unicode_cmp_4();
     unicode_add();
+    unicode_lt_1();
+    unicode_lt_2();
+    unicode_eq_1();
+    unicode_eq_2();
+    unicode_gt_1();
+    unicode_gt_2();
 }
 
 
