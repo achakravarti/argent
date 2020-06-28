@@ -349,7 +349,7 @@ struct ag_object_vtable {
     size_t (*len)(const ag_object_t *obj);
     size_t (*hash)(const ag_object_t *obj);
     enum ag_tristate (*cmp)(const ag_object_t *lhs, const ag_object_t *rhs);
-    const char *(*str)(const ag_object_t *obj);
+    ag_string_t *(*str)(const ag_object_t *obj);
 };
 
 
@@ -444,7 +444,7 @@ extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 
 
                             /* gets string representation of object [AgDM:??] */
-extern ag_pure const char *ag_object_str(const ag_object_t *ctx);
+extern ag_string_t *ag_object_str(const ag_object_t *ctx);
 
 
 

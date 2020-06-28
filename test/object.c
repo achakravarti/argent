@@ -229,7 +229,7 @@ static void base_test_str(void)
     printf("ag_object_str() returns a string for a base object");
 
     ag_object_smart_t *o = base_sample();
-    const char *s = ag_object_str(o);
+    ag_string_smart_t *s = ag_object_str(o);
 
     ag_require (s && *s, AG_ERNO_TEST, NULL);
     printf("...OK\n");
@@ -396,10 +396,10 @@ static inline enum ag_tristate derived_method_cmp(const ag_object_t *lhs,
 
 
            /* method to get string representation of derived object [AgDM:??] */
-static inline const char *derived_method_str(const ag_object_t *obj)
+static inline ag_string_t *derived_method_str(const ag_object_t *obj)
 {
     (void) obj;
-    return "derived";
+    return ag_string_new("derived");
 }
 
 
@@ -618,7 +618,8 @@ static void derived_test_str(void)
             " object");
 
     ag_object_smart_t *o = derived_sample();
-    ag_require (!strcmp("derived", ag_object_str(o)), AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s = ag_object_str(o);
+    ag_require (!strcmp("derived", s), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
