@@ -70,9 +70,10 @@ static void empty_add(void)
 {
     printf("ag_string_add() adds two empty strings...");
 
-    ag_string_smart_t *test = ag_string_new_empty();
-    ag_string_add(&test, "");
-    ag_require (!*test, AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_new_empty();
+    ag_string_add(&s1, s2);
+    ag_require (!*s1, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -235,11 +236,15 @@ static void ascii_add(void)
 {
     printf("ag_string_add() adds two ASCII strings...");
 
-    ag_string_smart_t *test = ag_string_new("Hello");
-    ag_string_add(&test, ", ");
-    ag_string_add(&test, "world");
-    ag_string_add(&test, "!");
-    ag_require (!strcmp(test, "Hello, world!"), AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new("Hello");
+    ag_string_smart_t *s2 = ag_string_new(", ");
+    ag_string_smart_t *s3 = ag_string_new("world");
+    ag_string_smart_t *s4 = ag_string_new("!");
+
+    ag_string_add(&s1, s2);
+    ag_string_add(&s1, s3);
+    ag_string_add(&s1, s4);
+    ag_require (!strcmp(s1, "Hello, world!"), AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -450,11 +455,15 @@ static void unicode_add(void)
 {
     printf("ag_string_add() adds two Unicode strings...");
 
-    const ag_string_t *expect = "До свидания, луна?";
+    ag_string_smart_t *expect = ag_string_new("До свидания, луна?");
     ag_string_smart_t *test = ag_string_new("До свидания");
-    ag_string_add(&test, ", ");
-    ag_string_add(&test, "луна");
-    ag_string_add(&test, "?");
+    ag_string_smart_t *s1 = ag_string_new(", ");
+    ag_string_smart_t *s2 = ag_string_new("луна");
+    ag_string_smart_t *s3 = ag_string_new("?");
+
+    ag_string_add(&test, s1);
+    ag_string_add(&test, s2);
+    ag_string_add(&test, s3);
     ag_require (!strcmp(test, expect), AG_ERNO_TEST, NULL);
 
     printf("OK\n");
