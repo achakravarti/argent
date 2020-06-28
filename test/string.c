@@ -31,6 +31,23 @@ static void empty_copy(void)
 }
 
                                    /* test case #3 for empty string [AgDM:??] */
+static void empty_copy_2(void)
+{
+    printf("ag_string_copy() creates a mutually exclusive copy of an empty"
+           " string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_smart_t *cp = ag_string_copy(s);
+
+    ag_string_smart_t *add = ag_string_new("Hello!");
+    ag_string_add(&s, add);
+    ag_require (!strcmp(s, "Hello!"), AG_ERNO_TEST, NULL);
+    ag_require (!*cp, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                   /* test case #4 for empty string [AgDM:??] */
 static void empty_len(void)
 {
     printf("ag_string_len() reports 0 for an empty string");
@@ -41,7 +58,7 @@ static void empty_len(void)
     printf("...OK\n");
 }
 
-                                   /* test case #4 for empty string [AgDM:??] */
+                                   /* test case #5 for empty string [AgDM:??] */
 static void empty_sz(void)
 {
     printf("ag_string_sz() reports 0 for an empty string");
@@ -52,7 +69,7 @@ static void empty_sz(void)
     printf("...OK\n");
 }
 
-                                   /* test case #5 for empty string [AgDM:??] */
+                                   /* test case #6 for empty string [AgDM:??] */
 static void empty_cmp(void)
 {
     printf("ag_string_cmp() detects two equal empty strings...");
@@ -65,7 +82,7 @@ static void empty_cmp(void)
 }
 
 
-                                   /* test case #6 for empty string [AgDM:??] */
+                                   /* test case #7 for empty string [AgDM:??] */
 static void empty_add(void)
 {
     printf("ag_string_add() adds two empty strings...");
@@ -78,7 +95,7 @@ static void empty_add(void)
     printf("...OK\n");
 }
 
-                                   /* test case #7 for empty string [AgDM:??] */
+                                   /* test case #8 for empty string [AgDM:??] */
 static void empty_lt(void)
 {
     printf("ag_string_lt() returns false for two empty strings...");
@@ -90,7 +107,7 @@ static void empty_lt(void)
     printf("...OK\n");
 }
 
-                                   /* test case #8 for empty string [AgDM:??] */
+                                   /* test case #9 for empty string [AgDM:??] */
 static void empty_eq(void)
 {
     printf("ag_string_eq() returns true for two empty strings...");
@@ -102,7 +119,7 @@ static void empty_eq(void)
     printf("...OK\n");
 }
 
-                                   /* test case #9 for empty string [AgDM:??] */
+                                  /* test case #10 for empty string [AgDM:??] */
 static void empty_gt(void)
 {
     printf("ag_string_gt() returns false for two empty strings...");
@@ -119,6 +136,7 @@ static void empty_test(void)
 {
     empty_new();
     empty_copy();
+    empty_copy_2();
     empty_len();
     empty_sz();
     empty_cmp();
@@ -159,6 +177,23 @@ static void ascii_copy(void)
 }
 
                                    /* test case #3 for ASCII string [AgDM:??] */
+static void ascii_copy_2(void)
+{
+    printf("ag_string_copy() creates a mutually exclusive copy of an ASCII"
+           " string");
+
+    ag_string_smart_t *s = ag_string_new("Hello");
+    ag_string_smart_t *cp = ag_string_copy(s);
+
+    ag_string_smart_t *add = ag_string_new(", world!");
+    ag_string_add(&s, add);
+    ag_require (!strcmp(s, "Hello, world!"), AG_ERNO_TEST, NULL);
+    ag_require (!strcmp(cp, "Hello"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                   /* test case #4 for ASCII string [AgDM:??] */
 static void ascii_len(void)
 {
     printf("ag_string_len() reports the length of an ASCII string...");
@@ -169,7 +204,7 @@ static void ascii_len(void)
     printf("OK\n");
 }
 
-                                   /* test case #4 for ASCII string [AgDM:??] */
+                                   /* test case #5 for ASCII string [AgDM:??] */
 static void ascii_sz(void)
 {
     printf("ag_string_sz() reports the size of an ASCII string...");
@@ -181,7 +216,7 @@ static void ascii_sz(void)
     printf("OK\n");
 }
 
-                                   /* test case #5 for ASCII string [AgDM:??] */
+                                   /* test case #6 for ASCII string [AgDM:??] */
 static void ascii_cmp_1(void)
 {
     printf("ag_string_cmp() detects two equal ASCII strings...");
@@ -193,7 +228,7 @@ static void ascii_cmp_1(void)
     printf("OK\n");
 }
 
-                                   /* test case #6 for ASCII string [AgDM:??] */
+                                   /* test case #7 for ASCII string [AgDM:??] */
 static void ascii_cmp_2(void)
 {
     printf("ag_string_cmp() detects two unequal ASCII strings...");
@@ -205,7 +240,7 @@ static void ascii_cmp_2(void)
     printf("OK\n");
 }
 
-                                   /* test case #7 for ASCII string [AgDM:??] */
+                                   /* test case #8 for ASCII string [AgDM:??] */
 static void ascii_cmp(void)
 {
     printf("ag_string_cmp() detects a lexicographically smaller ASCII"
@@ -218,7 +253,7 @@ static void ascii_cmp(void)
     printf("OK\n");
 }
 
-                                   /* test case #8 for ASCII string [AgDM:??] */
+                                   /* test case #9 for ASCII string [AgDM:??] */
 static void ascii_cmp_4(void)
 {
     printf("ag_string_cmp() detects a lexicographically greater ASCII"
@@ -231,7 +266,7 @@ static void ascii_cmp_4(void)
     printf("OK\n");
 }
 
-                                   /* test case #9 for ASCII string [AgDM:??] */
+                                  /* test case #10 for ASCII string [AgDM:??] */
 static void ascii_add(void)
 {
     printf("ag_string_add() adds two ASCII strings...");
@@ -249,7 +284,7 @@ static void ascii_add(void)
     printf("OK\n");
 }
 
-                                  /* test case #10 for ASCII string [AgDM:??] */
+                                  /* test case #11 for ASCII string [AgDM:??] */
 static void ascii_lt_1(void)
 {
     printf("ag_string_lt() returns true if an ASCII string is lexicographically"
@@ -262,7 +297,7 @@ static void ascii_lt_1(void)
     printf("...OK\n");
 }
 
-                                  /* test case #11 for ASCII string [AgDM:??] */
+                                  /* test case #12 for ASCII string [AgDM:??] */
 static void ascii_lt_2(void)
 {
     printf("ag_string_lt() returns false if an ASCII string is not"
@@ -275,7 +310,7 @@ static void ascii_lt_2(void)
     printf("...OK\n");
 }
 
-                                  /* test case #12 for ASCII string [AgDM:??] */
+                                  /* test case #13 for ASCII string [AgDM:??] */
 static void ascii_eq_1(void)
 {
     printf("ag_string_eq() returns true if an ASCII string is lexicographically"
@@ -288,7 +323,7 @@ static void ascii_eq_1(void)
     printf("...OK\n");
 }
 
-                                  /* test case #13 for ASCII string [AgDM:??] */
+                                  /* test case #14 for ASCII string [AgDM:??] */
 static void ascii_eq_2(void)
 {
     printf("ag_string_eq() returns true if an ASCII string is lexicographically"
@@ -301,7 +336,7 @@ static void ascii_eq_2(void)
     printf("...OK\n");
 }
 
-                                  /* test case #14 for ASCII string [AgDM:??] */
+                                  /* test case #15 for ASCII string [AgDM:??] */
 static void ascii_gt_1(void)
 {
     printf("ag_string_gt() returns true if an ASCII string is lexicographically"
@@ -314,7 +349,7 @@ static void ascii_gt_1(void)
     printf("...OK\n");
 }
 
-                                  /* test case #15 for ASCII string [AgDM:??] */
+                                  /* test case #16 for ASCII string [AgDM:??] */
 static void ascii_gt_2(void)
 {
     printf("ag_string_gt() returns false if an ASCII string is not"
@@ -332,6 +367,7 @@ static void ascii_test(void)
 {
     ascii_new();
     ascii_copy();
+    ascii_copy_2();
     ascii_len();
     ascii_sz();
     ascii_cmp_1();
@@ -378,6 +414,23 @@ static void unicode_copy(void)
 }
 
                                  /* test case #3 for Unicode string [AgDM:??] */
+static void unicode_copy_2(void)
+{
+    printf("ag_string_copy() creates a mutually exclusive copy of a Unicode"
+           " string");
+
+    ag_string_smart_t *s = ag_string_new("Привет");
+    ag_string_smart_t *cp = ag_string_copy(s);
+
+    ag_string_smart_t *add = ag_string_new(", мир!");
+    ag_string_add(&s, add);
+    ag_require (!strcmp(s, "Привет, мир!"), AG_ERNO_TEST, NULL);
+    ag_require (!strcmp(cp, "Привет"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                 /* test case #4 for Unicode string [AgDM:??] */
 static void unicode_len(void)
 {
     printf("ag_string_len() reports the length of a Unicode string...");
@@ -388,7 +441,7 @@ static void unicode_len(void)
     printf("OK\n");
 }
 
-                                 /* test case #4 for Unicode string [AgDM:??] */
+                                 /* test case #5 for Unicode string [AgDM:??] */
 static void unicode_sz(void)
 {
     printf("ag_string_sz() reports the size of a Unicode string...");
@@ -400,7 +453,7 @@ static void unicode_sz(void)
     printf("OK\n");
 }
 
-                                 /* test case #5 for Unicode string [AgDM:??] */
+                                 /* test case #6 for Unicode string [AgDM:??] */
 static void unicode_cmp_1(void)
 {
     printf("ag_string_cmp() detects two equal Unicode strings...");
@@ -412,7 +465,7 @@ static void unicode_cmp_1(void)
     printf("OK\n");
 }
 
-                                 /* test case #6 for Unicode string [AgDM:??] */
+                                 /* test case #7 for Unicode string [AgDM:??] */
 static void unicode_cmp_2(void)
 {
     printf("ag_string_cmp() detects two unequal Unicode strings...");
@@ -424,7 +477,7 @@ static void unicode_cmp_2(void)
     printf("OK\n");
 }
 
-                                 /* test case #7 for Unicode string [AgDM:??] */
+                                 /* test case #8 for Unicode string [AgDM:??] */
 static void unicode_cmp_3(void)
 {
     printf("ag_string_cmp() detects a lexicographically smaller Unicode"
@@ -437,7 +490,7 @@ static void unicode_cmp_3(void)
     printf("OK\n");
 }
 
-                                 /* test case #8 for Unicode string [AgDM:??] */
+                                 /* test case #9 for Unicode string [AgDM:??] */
 static void unicode_cmp_4(void)
 {
     printf("ag_string_cmp() detects a lexicographically greater Unicode"
@@ -550,6 +603,7 @@ static void unicode_test(void)
 {
     unicode_new();
     unicode_copy();
+    unicode_copy_2();
     unicode_len();
     unicode_sz();
     unicode_cmp_1();
