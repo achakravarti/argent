@@ -59,7 +59,7 @@ static void empty_test_cmp(void)
 
     ag_string_smart_t *lhs = ag_string_new_empty();
     ag_string_smart_t *rhs = ag_string_new_empty();
-    ag_require (!ag_string_cmp(lhs, rhs), AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -147,7 +147,7 @@ static void ascii_cmp_1(void)
 
     ag_string_smart_t *lhs = ag_string_new("Hello, world!");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
-    ag_require (!ag_string_cmp(lhs, rhs), AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -159,7 +159,7 @@ static void ascii_cmp_2(void)
 
     ag_string_smart_t *lhs = ag_string_new("Hello, world!");
     ag_string_smart_t *rhs = ag_string_new("Goodbye, moon?");
-    ag_require (ag_string_cmp(lhs, rhs), AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) != AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -172,7 +172,7 @@ static void ascii_cmp(void)
 
     ag_string_smart_t *lhs = ag_string_new("Goodbye, moon?");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
-    ag_require (ag_string_cmp(lhs, rhs) < 0, AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -185,7 +185,7 @@ static void ascii_cmp_4(void)
 
     ag_string_smart_t *lhs = ag_string_new("Goodbye, moon?");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
-    ag_require (ag_string_cmp(rhs, lhs) > 0, AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(rhs, lhs) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -278,7 +278,7 @@ static void unicode_cmp_1(void)
 
     ag_string_smart_t *lhs = ag_string_new("Привет, мир!");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
-    ag_require (!ag_string_cmp(lhs, rhs), AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -290,7 +290,7 @@ static void unicode_cmp_2(void)
 
     ag_string_smart_t *lhs = ag_string_new("Привет, мир!");
     ag_string_smart_t *rhs = ag_string_new("До свидания, луна?");
-    ag_require (ag_string_cmp(lhs, rhs), AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) != AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -303,7 +303,7 @@ static void unicode_cmp_3(void)
 
     ag_string_smart_t *lhs = ag_string_new("До свидания, луна?");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
-    ag_require (ag_string_cmp(lhs, rhs) < 0, AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }
@@ -316,7 +316,7 @@ static void unicode_cmp_4(void)
 
     ag_string_smart_t *lhs = ag_string_new("До свидания, луна?");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
-    ag_require (ag_string_cmp(rhs, lhs) > 0, AG_ERNO_TEST, NULL);
+    ag_require (ag_string_cmp(rhs, lhs) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
     printf("OK\n");
 }

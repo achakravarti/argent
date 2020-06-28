@@ -77,10 +77,16 @@ extern size_t ag_string_sz(const ag_string_t *ctx)
 
 
                                /* implementation of ag_string_cmp() [AgDM:??] */
-extern int ag_string_cmp(const ag_string_t *lhs, const ag_string_t *rhs)
+extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, 
+        const ag_string_t *rhs)
 {
     ag_assert (lhs && rhs);
-    return strcmp(lhs, rhs);
+    int cmp = strcmp(lhs, rhs);
+
+    if (!cmp)
+        return AG_TRISTATE_GND;
+
+    return cmp > 0 ? AG_TRISTATE_HI : AG_TRISTATE_LO;
 }
 
 

@@ -189,16 +189,16 @@ static inline size_t object_method_hash(const ag_object_t *obj)
 
 
                                        /* default comparison method [AgDM:??] */
-static inline enum ag_object_cmp object_method_cmp(const ag_object_t *ctx, 
+static inline enum ag_tristate object_method_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
     size_t llen = ag_object_len(ctx);
     size_t rlen = ag_object_len(cmp);
 
     if (llen == rlen)
-        return AG_OBJECT_CMP_EQ;
+        return AG_TRISTATE_GND;
 
-    return llen < rlen ? AG_OBJECT_CMP_LT : AG_OBJECT_CMP_GT;
+    return llen < rlen ? AG_TRISTATE_LO : AG_TRISTATE_HI;
 }
 
 
@@ -387,7 +387,7 @@ extern size_t ag_object_len(const ag_object_t *ctx)
 
 
                                /* implementation of ag_object_cmp() [AgDM:??] */
-extern enum ag_object_cmp ag_object_cmp(const ag_object_t *ctx, 
+extern enum ag_tristate ag_object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)
 {
     ag_assert (ctx && vtable && cmp 

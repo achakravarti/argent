@@ -138,12 +138,12 @@ static void base_test_len(void)
                                     /* test case #9 for base object [AgDM:??] */
 static void base_test_cmp(void)
 {
-    printf("ag_object_cmp() returns AG_OBJECT_CMP_EQ for the same base object");
+    printf("ag_object_cmp() returns AG_TRISTATE_GND for the same base object");
 
     ag_object_smart_t *o1 = base_sample();
     ag_object_smart_t *o2 = base_sample();
 
-    ag_require (ag_object_cmp(o1, o2) == AG_OBJECT_CMP_EQ, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_cmp(o1, o2) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
@@ -382,16 +382,16 @@ static inline size_t derived_method_hash(const ag_object_t *obj)
 
 
                             /* method to compare two derived object [AgDM:??] */
-static inline enum ag_object_cmp derived_method_cmp(const ag_object_t *lhs, 
+static inline enum ag_tristate derived_method_cmp(const ag_object_t *lhs, 
         const ag_object_t *rhs)
 {
     size_t lid = ag_object_id(lhs);
     size_t rid = ag_object_id(rhs);
 
     if (lid == rid)
-        return AG_OBJECT_CMP_EQ;
+        return AG_TRISTATE_GND;
 
-    return lid < rid ? AG_OBJECT_CMP_LT : AG_OBJECT_CMP_GT;
+    return lid < rid ? AG_TRISTATE_LO : AG_TRISTATE_HI;
 }
 
 
@@ -525,13 +525,13 @@ static void derived_test_empty(void)
                                  /* test case #9 for derived object [AgDM:??] */
 static void derived_test_cmp(void)
 {
-    printf("ag_object_cmp() returns AG_OBJECT_CMP_EQ for the same derived"
+    printf("ag_object_cmp() returns AG_TRISTATE_GND for the same derived"
             " object");
 
     ag_object_smart_t *o1 = derived_sample();
     ag_object_smart_t *o2 = derived_sample();
 
-    ag_require (ag_object_cmp(o1, o2) == AG_OBJECT_CMP_EQ, AG_ERNO_TEST, NULL);
+    ag_require (ag_object_cmp(o1, o2) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
     printf("...OK\n");
 }
 
