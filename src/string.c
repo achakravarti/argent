@@ -6,18 +6,61 @@
  *                               STRING INTERNALS
  */
 
+                     /* index offset from string to reference count [AgDM:??] */
+#define STRING_OFFSET_REFC -2
+
+                                /* index offset from string to size [AgDM:??] */
+#define STRING_OFFSET_SZ -1
+
+                      /* size offset for terminating null character [AgDM:??] */
+#define STRING_OFFSET_NULL 1
+
+                                        /* index of reference count [AgDM:??] */
+#define STRING_INDEX_REFC 0
+
+                                                   /* index of size [AgDM:??[ */
+#define STRING_INDEX_SZ 1
+
+                                          /* index of string buffer [AgDM:??] */
+#define STRING_INDEX_STR 2
+
                                        /* creates new padded string [AgDM:??] */
 static inline char *string_new(size_t sz)
 {
-    size_t *p = ag_memblock_new(sizeof (size_t) + sz + 1);
-    p[0] = sz;
-    return (char *) &p[1];
+    size_t *p = ag_memblock_new(sizeof (size_t) * 2 + sz + STRING_OFFSET_NULL);
+    p[STRING_INDEX_REFC] = 1;
+    p[STRING_INDEX_SZ] = sz;
+    return (char *) &p[STRING_INDEX_STR];
 }
 
-                                    /* gets size metadata of string [AgDM:??] */
+                            /* gets starting point of padded string [AgDM:??] */
+static inline size_t *string_head(ag_string_t *ctx)
+{
+    return &((size_t *) ctx)[STRING_OFFSET_REFC];
+}
+
+                                  /* gets reference count of string [AgDM:??] */
 static inline size_t string_sz(const ag_string_t *ctx)
 {
-    return ((size_t *) ctx)[-1];
+    return ((size_t *) ctx)[STRING_OFFSET_SZ];
+}
+
+                                             /* gets size of string [AgDM:??] */
+static inline size_t string_refc(const ag_string_t *ctx)
+{
+    return ((size_t *) ctx)[STRING_OFFSET_REFC];
+}
+
+                             /* increases reference count of string [AgDM:??] */
+static inline void string_refc_inc(ag_string_t *ctx)
+{
+    ((size_t *) ctx)[STRING_OFFSET_REFC]++;
+}
+
+                             /* decreases reference count of string [AgDM:??] */
+static inline void string_refc_dec(ag_string_t *ctx)
+{
+    ((size_t *) ctx)[STRING_OFFSET_REFC]--;
 }
 
 
@@ -54,7 +97,10 @@ extern ag_string_t *ag_string_new(const char *cstr)
 extern ag_string_t *ag_string_copy(const ag_string_t *ctx)
 {
     ag_assert (ctx);
-    return ag_string_new(ctx);
+    ag_string_t *cp = (ag_string_t *) ctx;
+
+    string_refc_inc(cp);
+    return cp;
 }
 
                            /* implementation of ag_string_dispose() [AgDM:??] */
@@ -63,8 +109,12 @@ extern void ag_string_dispose(ag_string_t **ctx)
     ag_string_t *hnd;
 
     if (ag_likely (ctx && (hnd = *ctx))) {
-        size_t *p = &((size_t *) hnd)[-1];
-        ag_memblock_free((ag_memblock_t **) &p);
+        string_refc_dec(hnd);
+
+        if (!string_refc(hnd)) {
+            size_t *h = string_head(hnd);
+            ag_memblock_free((ag_memblock_t **) &h);
+        }
     }
 }
 
@@ -105,11 +155,14 @@ extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs,
                                /* implementation of ag_string_add() [AgDM:??] */
 extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat)
 {
+    ag_assert (cat);
+    if (ag_unlikely (!*cat))
+        return;
+
     ag_assert (ctx && *ctx);
     ag_string_t *oldstr = *ctx;
     size_t oldsz = string_sz(oldstr);
 
-    ag_assert (cat);
     size_t addsz = string_sz(cat);
     size_t newsz = oldsz + addsz;
 
