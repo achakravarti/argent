@@ -81,6 +81,9 @@ extern inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs);
                                    /* declaration of ag_string_gt() [AgDM:??] */
 extern inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs);
 
+                             /* declaration of ag_string_add_cstr() [AgDM:??] */
+extern inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat);
+
                                /* implementation of ag_string_new() [AgDM:??] */
 extern ag_string_t *ag_string_new(const char *cstr)
 {

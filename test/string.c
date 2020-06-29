@@ -72,7 +72,7 @@ static void empty_sz(void)
                                    /* test case #6 for empty string [AgDM:??] */
 static void empty_cmp(void)
 {
-    printf("ag_string_cmp() detects two equal empty strings...");
+    printf("ag_string_cmp() detects two equal empty strings");
 
     ag_string_smart_t *lhs = ag_string_new_empty();
     ag_string_smart_t *rhs = ag_string_new_empty();
@@ -85,7 +85,7 @@ static void empty_cmp(void)
                                    /* test case #7 for empty string [AgDM:??] */
 static void empty_add(void)
 {
-    printf("ag_string_add() adds two empty strings...");
+    printf("ag_string_add() has no effect on adding two empty strings");
 
     ag_string_smart_t *s1 = ag_string_new_empty();
     ag_string_smart_t *s2 = ag_string_new_empty();
@@ -98,7 +98,7 @@ static void empty_add(void)
                                    /* test case #8 for empty string [AgDM:??] */
 static void empty_lt(void)
 {
-    printf("ag_string_lt() returns false for two empty strings...");
+    printf("ag_string_lt() returns false for two empty strings");
 
     ag_string_smart_t *s1 = ag_string_new_empty();
     ag_string_smart_t *s2 = ag_string_new_empty();
@@ -110,7 +110,7 @@ static void empty_lt(void)
                                    /* test case #9 for empty string [AgDM:??] */
 static void empty_eq(void)
 {
-    printf("ag_string_eq() returns true for two empty strings...");
+    printf("ag_string_eq() returns true for two empty strings");
 
     ag_string_smart_t *s1 = ag_string_new_empty();
     ag_string_smart_t *s2 = ag_string_new_empty();
@@ -122,11 +122,24 @@ static void empty_eq(void)
                                   /* test case #10 for empty string [AgDM:??] */
 static void empty_gt(void)
 {
-    printf("ag_string_gt() returns false for two empty strings...");
+    printf("ag_string_gt() returns false for two empty strings");
 
     ag_string_smart_t *s1 = ag_string_new_empty();
     ag_string_smart_t *s2 = ag_string_new_empty();
     ag_require (!ag_string_lt(s1, s2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+                                  /* test case #11 for empty string [AgDM:??] */
+static void empty_add_cstr(void)
+{
+    printf("ag_string_add_cstr() has no effect on adding null string to an"
+            " empty string");
+
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_add_cstr(&s1, "");
+    ag_require (!*s1, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -144,6 +157,7 @@ static void empty_test(void)
     empty_lt();
     empty_eq();
     empty_gt();
+    empty_add_cstr();
 }
 
 
@@ -196,80 +210,80 @@ static void ascii_copy_2(void)
                                    /* test case #4 for ASCII string [AgDM:??] */
 static void ascii_len(void)
 {
-    printf("ag_string_len() reports the length of an ASCII string...");
+    printf("ag_string_len() reports the length of an ASCII string");
 
     ag_string_smart_t *test = ag_string_new("Hello, world!");
     ag_require (ag_string_len(test) == 13, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                    /* test case #5 for ASCII string [AgDM:??] */
 static void ascii_sz(void)
 {
-    printf("ag_string_sz() reports the size of an ASCII string...");
+    printf("ag_string_sz() reports the size of an ASCII string");
 
     const ag_string_t *sample = "Hello, world!";
     ag_string_smart_t *test = ag_string_new(sample);
     ag_require (ag_string_sz(test) == strlen(sample), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                    /* test case #6 for ASCII string [AgDM:??] */
 static void ascii_cmp_1(void)
 {
-    printf("ag_string_cmp() detects two equal ASCII strings...");
+    printf("ag_string_cmp() detects two equal ASCII strings");
 
     ag_string_smart_t *lhs = ag_string_new("Hello, world!");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
     ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                    /* test case #7 for ASCII string [AgDM:??] */
 static void ascii_cmp_2(void)
 {
-    printf("ag_string_cmp() detects two unequal ASCII strings...");
+    printf("ag_string_cmp() detects two unequal ASCII strings");
 
     ag_string_smart_t *lhs = ag_string_new("Hello, world!");
     ag_string_smart_t *rhs = ag_string_new("Goodbye, moon?");
     ag_require (ag_string_cmp(lhs, rhs) != AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                    /* test case #8 for ASCII string [AgDM:??] */
 static void ascii_cmp(void)
 {
     printf("ag_string_cmp() detects a lexicographically smaller ASCII"
-            " string...");
+            " string");
 
     ag_string_smart_t *lhs = ag_string_new("Goodbye, moon?");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
     ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                    /* test case #9 for ASCII string [AgDM:??] */
 static void ascii_cmp_4(void)
 {
     printf("ag_string_cmp() detects a lexicographically greater ASCII"
-            "string...");
+            "string");
 
     ag_string_smart_t *lhs = ag_string_new("Goodbye, moon?");
     ag_string_smart_t *rhs = ag_string_new("Hello, world!");
     ag_require (ag_string_cmp(rhs, lhs) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                   /* test case #10 for ASCII string [AgDM:??] */
 static void ascii_add(void)
 {
-    printf("ag_string_add() adds two ASCII strings...");
+    printf("ag_string_add() adds two ASCII strings");
 
     ag_string_smart_t *s1 = ag_string_new("Hello");
     ag_string_smart_t *s2 = ag_string_new(", ");
@@ -281,7 +295,7 @@ static void ascii_add(void)
     ag_string_add(&s1, s4);
     ag_require (!strcmp(s1, "Hello, world!"), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                   /* test case #11 for ASCII string [AgDM:??] */
@@ -362,6 +376,21 @@ static void ascii_gt_2(void)
     printf("...OK\n");
 }
 
+                                  /* test case #17 for ASCII string [AgDM:??] */
+static void ascii_add_cstr(void)
+{
+    printf("ag_string_add() adds a C-style ASCII string to a string instance");
+
+    ag_string_smart_t *s1 = ag_string_new("Hello");
+
+    ag_string_add_cstr(&s1, ", ");
+    ag_string_add_cstr(&s1, "world");
+    ag_string_add_cstr(&s1, "!");
+    ag_require (!strcmp(s1, "Hello, world!"), AG_ERNO_TEST, NULL);
+
+    printf("OK\n");
+}
+
                                          /* runs ASCII string tests [AgDM:??] */
 static void ascii_test(void)
 {
@@ -381,6 +410,7 @@ static void ascii_test(void)
     ascii_eq_2();
     ascii_gt_1();
     ascii_gt_2();
+    ascii_add_cstr();
 }
 
 
@@ -391,26 +421,26 @@ static void ascii_test(void)
                                  /* test case #1 for Unicode string [AgDM:??] */
 static void unicode_new(void)
 {
-    printf("ag_string_new() can create a Unicode string...");
+    printf("ag_string_new() can create a Unicode string");
 
     const ag_string_t *expect = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_require (test && !strcmp(test, expect), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #2 for Unicode string [AgDM:??] */
 static void unicode_copy(void)
 {
-    printf("ag_string_copy() can copy a Unicode string...");
+    printf("ag_string_copy() can copy a Unicode string");
 
     const ag_string_t *expect = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_string_smart_t *copy = ag_string_copy(test);
     ag_require (test && !strcmp(copy, expect), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #3 for Unicode string [AgDM:??] */
@@ -433,80 +463,80 @@ static void unicode_copy_2(void)
                                  /* test case #4 for Unicode string [AgDM:??] */
 static void unicode_len(void)
 {
-    printf("ag_string_len() reports the length of a Unicode string...");
+    printf("ag_string_len() reports the length of a Unicode string");
 
     ag_string_smart_t *test = ag_string_new("Привет, мир!");
     ag_require (ag_string_len(test) == 12, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #5 for Unicode string [AgDM:??] */
 static void unicode_sz(void)
 {
-    printf("ag_string_sz() reports the size of a Unicode string...");
+    printf("ag_string_sz() reports the size of a Unicode string");
 
     const ag_string_t *sample = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(sample);
     ag_require (ag_string_sz(test) == strlen(sample), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #6 for Unicode string [AgDM:??] */
 static void unicode_cmp_1(void)
 {
-    printf("ag_string_cmp() detects two equal Unicode strings...");
+    printf("ag_string_cmp() detects two equal Unicode strings");
 
     ag_string_smart_t *lhs = ag_string_new("Привет, мир!");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
     ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #7 for Unicode string [AgDM:??] */
 static void unicode_cmp_2(void)
 {
-    printf("ag_string_cmp() detects two unequal Unicode strings...");
+    printf("ag_string_cmp() detects two unequal Unicode strings");
 
     ag_string_smart_t *lhs = ag_string_new("Привет, мир!");
     ag_string_smart_t *rhs = ag_string_new("До свидания, луна?");
     ag_require (ag_string_cmp(lhs, rhs) != AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #8 for Unicode string [AgDM:??] */
 static void unicode_cmp_3(void)
 {
     printf("ag_string_cmp() detects a lexicographically smaller Unicode"
-            " string...");
+            " string");
 
     ag_string_smart_t *lhs = ag_string_new("До свидания, луна?");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
     ag_require (ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                  /* test case #9 for Unicode string [AgDM:??] */
 static void unicode_cmp_4(void)
 {
     printf("ag_string_cmp() detects a lexicographically greater Unicode"
-            " string...");
+            " string");
 
     ag_string_smart_t *lhs = ag_string_new("До свидания, луна?");
     ag_string_smart_t *rhs = ag_string_new("Привет, мир!");
     ag_require (ag_string_cmp(rhs, lhs) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                 /* test case #10 for Unicode string [AgDM:??] */
 static void unicode_add(void)
 {
-    printf("ag_string_add() adds two Unicode strings...");
+    printf("ag_string_add() adds two Unicode strings");
 
     ag_string_smart_t *expect = ag_string_new("До свидания, луна?");
     ag_string_smart_t *test = ag_string_new("До свидания");
@@ -519,7 +549,7 @@ static void unicode_add(void)
     ag_string_add(&test, s3);
     ag_require (!strcmp(test, expect), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                 /* test case #11 for Unicode string [AgDM:??] */
@@ -569,7 +599,7 @@ static void unicode_eq_2(void)
     ag_string_smart_t *s2 = ag_string_new("Привет, мир!");
     ag_require (!ag_string_eq(s1, s2), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
 }
 
                                 /* test case #15 for Unicode string [AgDM:??] */
@@ -598,6 +628,21 @@ static void unicode_gt_2(void)
     printf("...OK\n");
 }
 
+                                /* test case #17 for Unicode string [AgDM:??] */
+static void unicode_add_cstr(void)
+{
+    printf("ag_string_add() adds C-style Unicode string to a string instance");
+
+    ag_string_smart_t *expect = ag_string_new("До свидания, луна?");
+    ag_string_smart_t *s = ag_string_new("До свидания");
+    ag_string_add_cstr(&s, ", ");
+    ag_string_add_cstr(&s, "луна");
+    ag_string_add_cstr(&s, "?");
+    ag_require (!strcmp(s, expect), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
 {
@@ -617,6 +662,7 @@ static void unicode_test(void)
     unicode_eq_2();
     unicode_gt_1();
     unicode_gt_2();
+    unicode_add_cstr();
 }
 
 
