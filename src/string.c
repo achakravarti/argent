@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdarg.h>
 #include "./api.h"
 
 
@@ -93,6 +94,25 @@ extern ag_string_t *ag_string_new(const char *cstr)
 
     strncpy(s, cstr, sz);
     s[sz] = '\0';
+    return s;
+}
+
+                           /* implementation of ag_string_new_fmt() [AgDM:??] */
+extern ag_string_t *ag_string_new_fmt(const char *fmt, ...)
+{
+    va_list args;
+
+    ag_assert (fmt && *fmt);
+    va_start(args, fmt);
+    char *bfr = ag_memblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
+    va_end(args);
+
+    va_start(args, fmt);
+    (void) vsprintf(bfr, fmt, args);
+    va_end(args);
+
+    ag_string_t *s = ag_string_new(bfr);
+    ag_memblock_free((ag_memblock_t **) &bfr);
     return s;
 }
 

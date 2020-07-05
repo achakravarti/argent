@@ -263,6 +263,9 @@ inline ag_string_t *ag_string_new_empty(void)
     return ag_string_new("");
 }
 
+                                     /* create new formatted string [AgDM:??] */
+extern ag_string_t *ag_string_new_fmt(const char *fmt, ...);
+
                                             /* copy existing string [AgDM:??] */
 extern ag_string_t *ag_string_copy(const ag_string_t *ctx);
 
@@ -306,6 +309,7 @@ inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat)
     ag_string_smart_t *s = ag_string_new(cat);
     ag_string_add(ctx, s);
 }
+
 
 
 /*******************************************************************************
@@ -437,8 +441,6 @@ extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 
                             /* gets string representation of object [AgDM:??] */
 extern ag_string_t *ag_object_str(const ag_object_t *ctx);
-
-
 
 
 /*******************************************************************************
