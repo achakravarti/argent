@@ -388,7 +388,18 @@ static void ascii_add_cstr(void)
     ag_string_add_cstr(&s1, "!");
     ag_require (!strcmp(s1, "Hello, world!"), AG_ERNO_TEST, NULL);
 
-    printf("OK\n");
+    printf("...OK\n");
+}
+
+                                  /* test case #18 for ASCII string [AgDM:??] */
+static void ascii_new_fmt(void)
+{
+    printf("ag_string_new_fmt() creates a formatted ASCII string");
+
+    ag_string_smart_t *s = ag_string_new_fmt("Hello, #%d %s", 1, "world!");
+    ag_require (!strcmp(s, "Hello, #1 world!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
 }
 
                                          /* runs ASCII string tests [AgDM:??] */
@@ -411,6 +422,7 @@ static void ascii_test(void)
     ascii_gt_1();
     ascii_gt_2();
     ascii_add_cstr();
+    ascii_new_fmt();
 }
 
 
@@ -643,6 +655,17 @@ static void unicode_add_cstr(void)
     printf("...OK\n");
 }
 
+                                /* test case #18 for Unicode string [AgDM:??] */
+static void unicode_new_fmt(void)
+{
+    printf("ag_string_new_fmt() creates a formatted Unicode string");
+
+    ag_string_smart_t *s = ag_string_new_fmt("Привет, #%d %s", 1, "мир!");
+    ag_require (!strcmp(s, "Привет, #1 мир!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
 {
@@ -663,6 +686,7 @@ static void unicode_test(void)
     unicode_gt_1();
     unicode_gt_2();
     unicode_add_cstr();
+    unicode_new_fmt();
 }
 
 
