@@ -115,6 +115,19 @@ enum ag_tristate {
 };
 
 
+/*******************************************************************************
+ *                                   LOGGING
+ */
+
+
+extern void ag_log_emergency(const char *fmt, ...);
+extern void ag_log_alert(const char *fmt, ...);
+extern void ag_log_critical(const char *fmt, ...);
+extern void ag_log_error(const char *fmt, ...);
+extern void ag_log_warning(const char *fmt, ...);
+extern void ag_log_notice(const char *fmt, ...);
+extern void ag_log_info(const char *fmt, ...);
+extern void ag_log_debug(const char *fmt, ...);
 
 
 /*******************************************************************************
