@@ -8,5 +8,7 @@ extern void ag_test_string(void);
 
 extern void ag_test_object(void);
 
+extern void ag_test_log(void);
+
 #endif /* !defined ARGENT_TESTS */
 

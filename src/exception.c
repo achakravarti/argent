@@ -114,7 +114,10 @@ extern void ag_exception_handler_set(ag_exception_handler *eh)
 static void eh_default(const struct ag_exception *ex, void *opt)
 {
     (void) opt;
+
     printf("[!] unhandled exception: 0x%x [%s(), %s:%lu]\n%s\n", ex->erno, 
+            ex->func, ex->file, ex->line, ag_exception_message(ex->erno));
+    ag_log_err("unhandled exception: 0x%x [%s(), %s:%lu]\n%s\n", ex->erno, 
             ex->func, ex->file, ex->line, ag_exception_message(ex->erno));
 
     exit(EXIT_FAILURE);
