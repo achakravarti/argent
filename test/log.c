@@ -6,6 +6,7 @@
  *                                  TEST CASES
  */
 
+                                    /* test case for ag_log_emerg() [AgDM:??] */
 static void emergency_test(void)
 {
     printf("ag_log_emergency() logs an emergency message");
@@ -18,6 +19,7 @@ static void emergency_test(void)
     printf("...OK\n");
 }
 
+                                    /* test case for ag_log_alert() [AgDM:??] */
 static void alert_test(void)
 {
     printf("ag_log_alert() logs an alert message");
@@ -30,6 +32,7 @@ static void alert_test(void)
     printf("...OK\n");
 }
 
+                                     /* test case for ag_log_crit() [AgDM:??] */
 static void critical_test(void)
 {
     printf("ag_log_critical() logs a critical message");
@@ -42,6 +45,7 @@ static void critical_test(void)
     printf("...OK\n");
 }
 
+                                      /* test case for ag_log_err() [AgDM:??] */
 static void error_test(void)
 {
     printf("ag_log_error() logs an error message");
@@ -54,6 +58,7 @@ static void error_test(void)
     printf("...OK\n");
 }
 
+                                  /* test case for ag_log_warning() [AgDM:??] */
 static void warning_test(void)
 {
     printf("ag_log_warning() logs a warning message");
@@ -66,6 +71,7 @@ static void warning_test(void)
     printf("...OK\n");
 }
 
+                                   /* test case for ag_log_notice() [AgDM:??] */
 static void notice_test(void)
 {
     printf("ag_log_notice() logs a notice message");
@@ -78,6 +84,7 @@ static void notice_test(void)
     printf("...OK\n");
 }
 
+                                     /* test case for ag_log_info() [AgDM:??] */
 static void info_test(void)
 {
     printf("ag_log_info() logs an information message");
@@ -90,6 +97,7 @@ static void info_test(void)
     printf("...OK\n");
 }
 
+                                    /* test case for ag_log_debug() [AgDM:??] */
 static void debug_test(void)
 {
     printf("ag_log_debug() logs a debug message");
@@ -108,7 +116,7 @@ static void debug_test(void)
  *                                  TEST SUITE
  */
 
-                             /* implementation of string test suite [AgDM:??] */
+                            /* implementation of logging test suite [AgDM:??] */
 extern void ag_test_log(void)
 {
     printf("===============================================================\n");

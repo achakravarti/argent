@@ -4,10 +4,10 @@
 
 
 /*******************************************************************************
- *                              LOGGING EXTERNALS
+ *                              LOGGING INTERNALS
  */
 
-
+                                         /* writes a syslog message [AgDM:??] */
 static inline void log_write(int pr, const char *fmt, va_list ap)
 {
     openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
@@ -20,7 +20,7 @@ static inline void log_write(int pr, const char *fmt, va_list ap)
  *                              LOGGING EXTERNALS
  */
 
-
+                                /* implementation of ag_log_emerg() [AgDM:??] */
 extern void ag_log_emergency(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -31,7 +31,7 @@ extern void ag_log_emergency(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                                /* implementation of ag_log_alert() [AgDM:??] */
 extern void ag_log_alert(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -42,7 +42,7 @@ extern void ag_log_alert(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                                 /* implementation of ag_log_crit() [AgDM:??] */
 extern void ag_log_critical(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -53,7 +53,7 @@ extern void ag_log_critical(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                                  /* implementation of ag_log_err() [AgDM:??] */
 extern void ag_log_error(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -64,7 +64,7 @@ extern void ag_log_error(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                              /* implementation of ag_log_warning() [AgDM:??] */
 extern void ag_log_warning(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -75,7 +75,7 @@ extern void ag_log_warning(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                               /* implementation of ag_log_notice() [AgDM:??] */
 extern void ag_log_notice(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -86,7 +86,7 @@ extern void ag_log_notice(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                                 /* implementation of ag_log_info() [AgDM:??] */
 extern void ag_log_info(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -97,7 +97,7 @@ extern void ag_log_info(const char *fmt, ...)
     va_end(ap);
 }
 
-
+                                /* implementation of ag_log_debug() [AgDM:??] */
 extern void ag_log_debug(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
