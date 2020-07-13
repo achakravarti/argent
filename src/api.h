@@ -213,6 +213,8 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
         if (ag_unlikely (!(p))) {                              \
             printf("[!] assertion failed: %s [%s(), %s:%d]\n", \
                     #p, __func__, __FILE__, __LINE__);         \
+            ag_log_err("assertion failed: %s [%s(), %s:%d]\n", \
+                    #p, __func__, __FILE__, __LINE__);         \
             abort();                                           \
         }                                                      \
     } while (0)
