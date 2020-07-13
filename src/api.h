@@ -120,16 +120,16 @@ enum ag_tristate {
  */
 
                                        /* logs an emergency message [AgDM:??] */
-extern void ag_log_emergency(const char *fmt, ...);
+extern void ag_log_emerg(const char *fmt, ...);
 
                                            /* logs an alert message [AgDM:??] */
 extern void ag_log_alert(const char *fmt, ...);
 
                                          /* logs a critical message [AgDM:??] */
-extern void ag_log_critical(const char *fmt, ...);
+extern void ag_log_crit(const char *fmt, ...);
 
                                            /* logs an error message [AgDM:??] */
-extern void ag_log_error(const char *fmt, ...);
+extern void ag_log_err(const char *fmt, ...);
 
                                           /* logs a warning message [AgDM:??] */
 extern void ag_log_warning(const char *fmt, ...);

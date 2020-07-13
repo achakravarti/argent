@@ -7,10 +7,10 @@
  */
 
                                     /* test case for ag_log_emerg() [AgDM:??] */
-static void emergency_test(void)
+static void emerg_test(void)
 {
-    printf("ag_log_emergency() logs an emergency message");
-    ag_log_emergency("Testing ag_log_emergency()...");
+    printf("ag_log_emerg() logs an emergency message");
+    ag_log_emerg("Testing ag_log_emerg()...");
     
     char *cmd = "journaltcl -t ag-tests -p \"emerg\" -S \"5 sec ago\""
             " | grep \"No entries\"";
@@ -33,10 +33,10 @@ static void alert_test(void)
 }
 
                                      /* test case for ag_log_crit() [AgDM:??] */
-static void critical_test(void)
+static void crit_test(void)
 {
-    printf("ag_log_critical() logs a critical message");
-    ag_log_critical("Testing ag_log_critical()...");
+    printf("ag_log_crit() logs a critical message");
+    ag_log_crit("Testing ag_log_crit()...");
     
     char *cmd = "journaltcl -t ag-tests -p \"crit\" -S \"5 sec ago\""
             " | grep \"No entries\"";
@@ -46,10 +46,10 @@ static void critical_test(void)
 }
 
                                       /* test case for ag_log_err() [AgDM:??] */
-static void error_test(void)
+static void err_test(void)
 {
-    printf("ag_log_error() logs an error message");
-    ag_log_error("Testing ag_log_error()...");
+    printf("ag_log_err() logs an error message");
+    ag_log_err("Testing ag_log_err()...");
     
     char *cmd = "journaltcl -t ag-tests -p \"err\" -S \"5 sec ago\""
             " | grep \"No entries\"";
@@ -122,10 +122,10 @@ extern void ag_test_log(void)
     printf("===============================================================\n");
     printf("Starting logging interface test suite...\n\n");
 
-    emergency_test();
+    emerg_test();
     alert_test();
-    critical_test();
-    error_test();
+    crit_test();
+    err_test();
     warning_test();
     notice_test();
     info_test();
