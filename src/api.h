@@ -22,8 +22,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 
@@ -470,6 +472,187 @@ extern ag_hot ag_memblock_t *ag_object_payload_mutable(ag_object_t **ctx);
 
                             /* gets string representation of object [AgDM:??] */
 extern ag_string_t *ag_object_str(const ag_object_t *ctx);
+
+
+/*******************************************************************************
+ *                             DYNAMIC TYPE SYSTEM
+ */
+
+typedef intptr_t ag_int;
+typedef uintptr_t ag_uint;
+typedef double ag_float;
+
+#define AG_UINT_MIN ((ag_uint)0)
+#define AG_UINT_MAX UINTPTR_MAX
+
+#define AG_INT_MIN ((ag_int)(-(AG_UINT_MAX / (ag_uint)2)))
+#define AG_INT_MAX ((ag_int)((AG_UINT_MAX / (ag_uint)2) - (ag_uint)1))
+
+#define AG_FLOAT_MIN DBL_MIN
+#define AG_FLOAT_MAX DBL_MAX
+
+
+enum ag_value_type {
+    AG_VALUE_TYPE_OBJECT = 0, /* 0b000 */
+    AG_VALUE_TYPE_UINT = 1, /* 0b001 */
+    AG_VALUE_TYPE_STRING = 2, /* 0b010 */
+    AG_VALUE_TYPE_FLOAT = 4, /* 0b100 */
+    AG_VALUE_TYPE_INT = 6 /* 0b110 */
+};
+
+typedef void ag_value_t;
+
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_value_smart_t \
+            __attribute__((cleanup(ag_value_dispose))) ag_value_t
+#else
+#   define ag_value_smart_t ag_value_t
+#   warning "[!] ag_value_smart_t leaks memory on current compiler"
+#endif
+
+inline bool ag_int_lt(ag_int ctx, ag_int cmp)
+{
+    return ctx < cmp;
+}
+
+inline bool ag_int_eq(ag_int ctx, ag_int cmp)
+{
+    return ctx == cmp;
+}
+
+inline bool ag_int_gt(ag_int ctx, ag_int cmp)
+{
+    return ctx > cmp;
+}
+
+inline enum ag_tristate ag_int_cmp(ag_int ctx, ag_int cmp)
+{
+    if (ctx == cmp)
+        return AG_TRISTATE_GND;
+
+    return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
+
+inline bool ag_uint_lt(ag_uint ctx, ag_uint cmp)
+{
+    return ctx < cmp;
+}
+
+inline bool ag_uint_eq(ag_uint ctx, ag_uint cmp)
+{
+    return ctx == cmp;
+}
+
+inline bool ag_uint_gt(ag_uint ctx, ag_uint cmp)
+{
+    return ctx > cmp;
+}
+
+inline enum ag_tristate ag_uint_cmp(ag_uint ctx, ag_uint cmp)
+{
+    if (ctx == cmp)
+        return AG_TRISTATE_GND;
+
+    return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
+
+inline bool ag_float_lt(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return (cmp - ctx) > ((fabs(ctx) < fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline bool ag_float_eq(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return fabs(ctx - cmp) <= ((fabs(ctx) > fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline bool ag_float_gt(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return (ctx - cmp) > ( (fabs(ctx) < fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline enum ag_tristate ag_float_cmp(ag_float ctx, ag_float cmp)
+{
+    if (ag_float_eq(ctx, cmp))
+        return AG_TRISTATE_GND;
+
+    return ag_float_lt(ctx, cmp) ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
+
+extern ag_value_t *ag_value_new_int(ag_int val);
+
+extern ag_value_t *ag_value_new_uint(ag_uint val);
+
+extern ag_value_t *ag_value_new_float(ag_float val);
+
+extern ag_value_t *ag_value_new_string(const ag_string_t *val);
+
+extern ag_value_t *ag_value_new_object(const ag_object_t *val);
+
+extern ag_value_t *ag_value_copy(const ag_value_t *ctx);
+
+extern void ag_value_dispose(ag_value_t **ctx);
+
+extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx, 
+    const ag_value_t *cmp);
+
+inline bool ag_value_lt(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_LO;
+}
+
+inline bool ag_value_eq(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_GND;
+}
+
+inline bool ag_value_gt(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_HI;
+}
+
+extern enum ag_value_type ag_value_type(const ag_value_t *ctx);
+
+inline bool ag_value_is_int(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_INT;
+}
+
+inline bool ag_value_is_uint(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_UINT;
+}
+
+inline bool ag_value_is_float(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_FLOAT;
+}
+
+inline bool ag_value_is_string(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_STRING;
+}
+
+inline bool ag_value_is_object(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
+}
+
+extern ag_int ag_value_int(const ag_value_t *ctx);
+
+extern ag_uint ag_value_uint(const ag_value_t *ctx);
+
+extern ag_float ag_value_float(const ag_value_t *ctx);
+
+extern ag_string_t *ag_value_string(const ag_value_t *ctx);
+
+extern ag_object_t *ag_value_object(const ag_value_t *ctx);
 
 
 /*******************************************************************************
