@@ -473,6 +473,48 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx);
 
 
 /*******************************************************************************
+ *                             DYNAMIC TYPE SYSTEM
+ */
+
+
+typedef uintptr_t ag_value_t;
+
+extern ag_value_t ag_value_new_int(int val);
+
+extern ag_value_t ag_value_new_uint(unsigned int val);
+
+extern ag_value_t ag_value_new_float(double val);
+
+extern ag_value_t ag_value_new_string(const ag_string_t *val);
+
+extern ag_value_t ag_value_new_object(const ag_object_t *val);
+
+extern ag_value_t ag_value_copy(ag_value_t ctx);
+
+extern void ag_value_dispose(ag_value_t *ctx);
+
+extern bool ag_value_is_int(ag_value_t ctx);
+
+extern bool ag_value_is_uint(ag_value_t ctx);
+
+extern bool ag_value_is_float(ag_value_t ctx);
+
+extern bool ag_value_is_string(ag_value_t ctx);
+
+extern bool ag_value_is_object(ag_value_t ctx);
+
+extern int ag_value_int(ag_value_t ctx);
+
+extern unsigned int ag_value_uint(ag_value_t ctx);
+
+extern double ag_value_float(ag_value_t ctx);
+
+extern ag_string_t *ag_value_string(ag_value_t ctx);
+
+extern ag_object_t *ag_value_object(ag_value_t ctx);
+
+
+/*******************************************************************************
  *                              SINGLY LINKED LIST
  */
 
