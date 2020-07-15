@@ -53,19 +53,16 @@ extern ag_value_t ag_value_copy(ag_value_t ctx)
 {
     ag_assert (ctx);
 
-    if (ag_value_is_int(ctx))
-        return ag_value_new_int(ag_value_int(ctx));
-
-    if (ag_value_is_uint(ctx))
-        return ag_value_new_uint(ag_value_uint(ctx));
-
     if (ag_value_is_float(ctx))
         return ag_value_new_float(ag_value_float(ctx));
 
     if (ag_value_is_string(ctx))
         return ag_value_new_string(ag_value_string(ctx));
 
-    return ag_value_new_object(ag_value_object(ctx));
+    if (ag_value_is_object(ctx))
+        return ag_value_new_object(ag_value_object(ctx));
+
+    return ctx;
 }
 
 
@@ -75,6 +72,9 @@ extern void ag_value_dispose(ag_value_t *ctx)
     ag_value_t v = *ctx;
 
     if (ag_likely (v)) {
+        if (ag_value_is_float(v))
+            ag_memblock_free((void **) ctx);
+
         if (ag_value_is_string(v)) {
             ag_string_t *s = ag_value_string(v);
             ag_string_dispose(&s);
