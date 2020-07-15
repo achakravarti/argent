@@ -10,6 +10,7 @@ int main(int argc, char **argv)
     ag_test_string();
     ag_test_object();
     ag_test_log();
+    ag_test_value();
 
     return 0;
 }

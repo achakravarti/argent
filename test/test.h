@@ -10,5 +10,7 @@ extern void ag_test_object(void);
 
 extern void ag_test_log(void);
 
+extern void ag_test_value(void);
+
 #endif /* !defined ARGENT_TESTS */
 
