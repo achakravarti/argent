@@ -1,159 +1,187 @@
 #include "./api.h"
 
-#define MASK_TAG ((uintptr_t) (8 - 1))
+#define MASK_TAG ((uintptr_t)(8 - 1))
 #define MASK_PTR (~MASK_TAG)
 
-#define TAG_OBJECT ((uintptr_t) 0) // 0b000
-#define TAG_INT ((uintptr_t) 1) // 0b001
-#define TAG_STRING ((uintptr_t) 2) // 0b010
-#define TAG_FLOAT ((uintptr_t) 4) // 0b100
-#define TAG_UINT ((uintptr_t) 6) // 0b110
+#define TAG_OBJECT ((uintptr_t)0) // 0b000
+#define TAG_INT ((uintptr_t)1) // 0b001
+#define TAG_STRING ((uintptr_t)2) // 0b010
+#define TAG_FLOAT ((uintptr_t)4) // 0b100
+#define TAG_UINT ((uintptr_t)6) // 0b110
 
-#define SHIFT_INT ((uintptr_t) 1)
-#define SHIFT_UINT ((uintptr_t) 3)
+#define SHIFT_INT ((uintptr_t)1)
+#define SHIFT_UINT ((uintptr_t)3)
 
 
-extern ag_value_t ag_value_new_int(int val)
+static inline bool tag_check(const ag_value_t *ctx, uintptr_t tag)
 {
-    return ((uintptr_t) val << SHIFT_INT) | TAG_INT;
+    return ((uintptr_t)ctx & tag) == tag;
 }
 
 
-extern ag_value_t ag_value_new_uint(unsigned int val)
+extern ag_value_t *ag_value_new_int(int64_t val)
 {
-    return ((uintptr_t) val << SHIFT_UINT) | TAG_UINT;
+    intptr_t bits = ((intptr_t) val << SHIFT_INT) | TAG_INT;
+    return (ag_value_t *)bits;
 }
 
 
-extern ag_value_t ag_value_new_float(double val)
+extern ag_value_t *ag_value_new_uint(unsigned int val)
+{
+    uintptr_t bits = ((uintptr_t) val << SHIFT_UINT) | TAG_UINT;
+    return (ag_value_t *)bits;
+}
+
+
+extern ag_value_t *ag_value_new_float(double val)
 {
     double *d = ag_memblock_new(sizeof *d);
     *d = val;
 
-    ag_value_t v = (uintptr_t) d;
-    return v | TAG_FLOAT;
+    uintptr_t bits = (uintptr_t) d | TAG_FLOAT;
+    return (ag_value_t *)bits;
 }
 
 
-extern ag_value_t ag_value_new_string(const ag_string_t *val)
+extern ag_value_t *ag_value_new_string(const ag_string_t *val)
 {
-    ag_value_t v = (uintptr_t) ag_string_copy(val);
-    return v | TAG_STRING;
+    //ag_value_t v = (uintptr_t) ag_string_copy(val);
+    //return v | TAG_STRING;
+    
+    ag_value_t *v = ag_string_copy(val);
+    uintptr_t bits = (uintptr_t) v | TAG_STRING;
+    return (ag_value_t *)bits;    
 }
 
 
-extern ag_value_t ag_value_new_object(const ag_object_t *val)
+extern ag_value_t *ag_value_new_object(const ag_object_t *val)
 {
-    ag_value_t v = (uintptr_t) ag_object_copy(val);
-    return v | TAG_OBJECT;
+    //ag_value_t v = (uintptr_t) ag_object_copy(val);
+    //return v | TAG_OBJECT;
+
+    ag_value_t *v = ag_object_copy(val);
+    uintptr_t bits = (uintptr_t) v | TAG_OBJECT;
+    return (ag_value_t *)bits;
 }
 
 
-extern ag_value_t ag_value_copy(ag_value_t ctx)
+extern ag_value_t *ag_value_copy(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-
-    if (ag_value_is_float(ctx))
-        return ag_value_new_float(ag_value_float(ctx));
-
-    if (ag_value_is_string(ctx))
-        return ag_value_new_string(ag_value_string(ctx));
 
     if (ag_value_is_object(ctx))
         return ag_value_new_object(ag_value_object(ctx));
+    
+    if (ag_value_is_string(ctx))
+        return ag_value_new_string(ag_value_string(ctx));
+    
+    if (ag_value_is_float(ctx))
+        return ag_value_new_float(ag_value_float(ctx));
 
-    return ctx;
+    return (ag_value_t *)ctx;
 }
 
 
-extern void ag_value_dispose(ag_value_t *ctx)
+extern void ag_value_dispose(ag_value_t **ctx)
 {
     ag_assert (ctx);
-    ag_value_t v = *ctx;
+    ag_value_t *v = *ctx;
 
     if (ag_likely (v)) {
-        if (ag_value_is_float(v))
-            ag_memblock_free((void **) ctx);
+        if (ag_value_is_object(v)) {
+            ag_object_t *o = ag_value_object(v);
+            ag_object_dispose(&o);
+        }
 
         if (ag_value_is_string(v)) {
             ag_string_t *s = ag_value_string(v);
             ag_string_dispose(&s);
         }
 
-        if (ag_value_is_object(v)) {
-            ag_object_t *o = ag_value_object(v);
-            ag_object_dispose(&o);
-        }
+        if (ag_value_is_float(v))
+            ag_memblock_free(ctx);
     }
 }
 
 
-extern bool ag_value_is_int(ag_value_t ctx)
+extern bool ag_value_is_int(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return (ctx & TAG_INT) == TAG_INT;
+    return tag_check(ctx, TAG_INT);
 }
 
 
-extern bool ag_value_is_uint(ag_value_t ctx)
+extern bool ag_value_is_uint(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return (ctx & TAG_UINT) == TAG_UINT;
+    if (tag_check(ctx, TAG_INT))
+        return false;
+
+    return tag_check(ctx, TAG_UINT);
 }
 
 
-extern bool ag_value_is_float(ag_value_t ctx)
+extern bool ag_value_is_float(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return (ctx & TAG_FLOAT) == TAG_FLOAT;
+    if (tag_check(ctx, TAG_INT))
+        return false;
+
+    return tag_check(ctx, TAG_FLOAT);
 }
 
 
-extern bool ag_value_is_string(ag_value_t ctx)
+extern bool ag_value_is_string(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return (ctx & TAG_STRING) == TAG_STRING;
+    if (tag_check(ctx, TAG_INT))
+        return false;
+
+    return tag_check(ctx, TAG_STRING);
 }
 
 
-extern bool ag_value_is_object(ag_value_t ctx)
+extern bool ag_value_is_object(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return (ctx & TAG_OBJECT) == TAG_OBJECT;
+    if (tag_check(ctx, TAG_INT))
+        return false;
+
+    return tag_check(ctx, TAG_OBJECT);
 }
 
 
-extern int ag_value_int(ag_value_t ctx)
+extern int64_t ag_value_int(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_int(ctx));
-    return ctx >> SHIFT_INT;
+    return (intptr_t)ctx >> SHIFT_INT;
 }
 
 
-extern unsigned int ag_value_uint(ag_value_t ctx)
+extern uint64_t ag_value_uint(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_uint(ctx));
-    return ctx >> SHIFT_UINT;
+    return (uintptr_t)ctx >> SHIFT_UINT;
 }
 
 
-extern double ag_value_float(ag_value_t ctx)
+extern double ag_value_float(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_float(ctx));
-    return *((double *) (ctx & MASK_PTR));
+    return *((double *)((uintptr_t)ctx & MASK_PTR));
 }
 
 
-extern ag_string_t *ag_value_string(ag_value_t ctx)
+extern ag_string_t *ag_value_string(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_string(ctx));
-    return (ag_string_t *) (ctx & MASK_PTR);
+    return (ag_string_t *)((uintptr_t)ctx & MASK_PTR);
 }
 
 
-extern ag_object_t *ag_value_object(ag_value_t ctx)
+extern ag_object_t *ag_value_object(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_object(ctx));
-    return (ag_object_t *) (ctx & MASK_PTR);
+    return (ag_object_t *)((uintptr_t)ctx & MASK_PTR);
 }
 
