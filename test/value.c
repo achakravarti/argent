@@ -184,54 +184,83 @@ static void uint_test(void)
 static void float_new(void)
 {
     printf("ag_value_new_float() creates a new float value");
+    
+    ag_value_smart_t *v = ag_value_new_float(-123.456);
+    ag_require (v && ag_value_float(v) == -123.456, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_copy(void)
 {
     printf("ag_value_copy() copies a float value");
+
+    ag_value_smart_t *v = ag_value_new_float(123.456);
+    ag_value_smart_t *cp = ag_value_copy(v);
+    ag_require (ag_value_float(v) == ag_value_float(cp), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_is_int(void)
 {
     printf("ag_value_is_int() is false for a float value");
+    
+    ag_value_smart_t *v = ag_value_new_float(-123456.789);
+    ag_require (v && !ag_value_is_int(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_is_uint(void)
 {
     printf("ag_value_is_uint() is false for a float value");
+    
+    ag_value_smart_t *v = ag_value_new_float(123456.789);
+    ag_require (v && !ag_value_is_uint(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_is_float(void)
 {
     printf("ag_value_is_float() is true for a float value");
+    
+    ag_value_smart_t *v = ag_value_new_float(-789.123456);
+    ag_require (v && ag_value_is_float(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_is_string(void)
 {
     printf("ag_value_is_string() is false for a float value");
+    
+    ag_value_smart_t *v = ag_value_new_float(789.123456);
+    ag_require (v && !ag_value_is_string(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_is_object(void)
 {
     printf("ag_value_is_object is false for a float value ");
+    
+    ag_value_smart_t *v = ag_value_new_float(-9876.5433);
+    ag_require (v && !ag_value_is_object(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void float_test(void)
 {
-    /*float_new();
+    float_new();
     float_copy();
     float_is_int();
     float_is_uint();
     float_is_float();
     float_is_string();
-    float_is_object();*/
+    float_is_object();
 }
 
 /*******************************************************************************
