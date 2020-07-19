@@ -104,51 +104,31 @@ extern void ag_value_dispose(ag_value_t **ctx)
 }
 
 
-extern bool ag_value_is_int(const ag_value_t *ctx)
+extern enum ag_value_type ag_value_type(const ag_value_t *ctx)
 {
     ag_assert (ctx);
-    return tag_check(ctx, TAG_INT);
+    uintptr_t bits = (uintptr_t)ctx;
+
+    if ((bits & AG_VALUE_TYPE_INT) == AG_VALUE_TYPE_INT)
+        return AG_VALUE_TYPE_INT;
+
+    return bits & MASK_TAG;
 }
 
 
-extern bool ag_value_is_uint(const ag_value_t *ctx)
-{
-    ag_assert (ctx);
-    if (tag_check(ctx, TAG_INT))
-        return false;
-
-    return tag_check(ctx, TAG_UINT);
-}
+extern inline bool ag_value_is_int(const ag_value_t *ctx);
 
 
-extern bool ag_value_is_float(const ag_value_t *ctx)
-{
-    ag_assert (ctx);
-    if (tag_check(ctx, TAG_INT))
-        return false;
-
-    return tag_check(ctx, TAG_FLOAT);
-}
+extern inline bool ag_value_is_uint(const ag_value_t *ctx);
 
 
-extern bool ag_value_is_string(const ag_value_t *ctx)
-{
-    ag_assert (ctx);
-    if (tag_check(ctx, TAG_INT))
-        return false;
-
-    return tag_check(ctx, TAG_STRING);
-}
+extern inline bool ag_value_is_float(const ag_value_t *ctx);
 
 
-extern bool ag_value_is_object(const ag_value_t *ctx)
-{
-    ag_assert (ctx);
-    if (tag_check(ctx, TAG_INT))
-        return false;
+extern inline bool ag_value_is_string(const ag_value_t *ctx);
 
-    return tag_check(ctx, TAG_OBJECT);
-}
+
+extern inline bool ag_value_is_object(const ag_value_t *ctx);
 
 
 extern int64_t ag_value_int(const ag_value_t *ctx)

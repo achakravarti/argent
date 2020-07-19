@@ -476,6 +476,13 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx);
  *                             DYNAMIC TYPE SYSTEM
  */
 
+enum ag_value_type {
+    AG_VALUE_TYPE_OBJECT = 0, /* 0b000 */
+    AG_VALUE_TYPE_INT = 1, /* 0b001 */
+    AG_VALUE_TYPE_STRING = 2, /* 0b010 */
+    AG_VALUE_TYPE_FLOAT = 4, /* 0b100 */
+    AG_VALUE_TYPE_UINT = 6 /* 0b110 */
+};
 
 typedef void ag_value_t;
 
@@ -501,15 +508,32 @@ extern ag_value_t *ag_value_copy(const ag_value_t *ctx);
 
 extern void ag_value_dispose(ag_value_t **ctx);
 
-extern bool ag_value_is_int(const ag_value_t *ctx);
+extern enum ag_value_type ag_value_type(const ag_value_t *ctx);
 
-extern bool ag_value_is_uint(const ag_value_t *ctx);
+inline bool ag_value_is_int(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_INT;
+}
 
-extern bool ag_value_is_float(const ag_value_t *ctx);
+inline bool ag_value_is_uint(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_UINT;
+}
 
-extern bool ag_value_is_string(const ag_value_t *ctx);
+inline bool ag_value_is_float(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_FLOAT;
+}
 
-extern bool ag_value_is_object(const ag_value_t *ctx);
+inline bool ag_value_is_string(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_STRING;
+}
+
+inline bool ag_value_is_object(const ag_value_t *ctx)
+{
+    return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
+}
 
 extern int64_t ag_value_int(const ag_value_t *ctx);
 
