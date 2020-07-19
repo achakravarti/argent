@@ -10,6 +10,10 @@
 static void int_new(void)
 {
     printf("ag_value_new_int() creates a new int value");
+
+    ag_value_smart_t *v = ag_value_new_int(-123456);
+    ag_require (v && ag_value_int(v) == -123456, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -22,6 +26,9 @@ static void int_copy(void)
 static void int_is_int(void)
 {
     printf("ag_value_is_int() is true for an int value");
+
+    ag_value_smart_t *v = ag_value_new_int(11111);
+    ag_require (v && ag_value_is_int(v), AG_ERNO_TEST, NULL);
     
     printf("...OK\n");
 }
@@ -29,24 +36,40 @@ static void int_is_int(void)
 static void int_is_uint(void)
 {
     printf("ag_value_is_uint() is false for an int value");
+    
+    ag_value_smart_t *v = ag_value_new_int(-1111);
+    ag_require (v && !ag_value_is_uint(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void int_is_float(void)
 {
     printf("ag_value_is_float() is false for an int value");
+
+    ag_value_smart_t *v = ag_value_new_int(1111);
+    ag_require (v && !ag_value_is_float(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void int_is_string(void)
 {
     printf("ag_value_is_string() is false of an int value");
+
+    ag_value_smart_t *v = ag_value_new_int(-987654321);
+    ag_require (v && !ag_value_is_string(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void int_is_object(void)
 {
     printf("ag_value_is_object() is false for an int value");
+
+    ag_value_smart_t *v = ag_value_new_int(987654321);
+    ag_require (v && !ag_value_is_object(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
