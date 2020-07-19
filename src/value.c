@@ -3,11 +3,11 @@
 #define MASK_TAG ((uintptr_t)(8 - 1))
 #define MASK_PTR (~MASK_TAG)
 
-#define TAG_OBJECT ((uintptr_t)0) // 0b000
+/*#define TAG_OBJECT ((uintptr_t)0) // 0b000
 #define TAG_INT ((uintptr_t)1) // 0b001
 #define TAG_STRING ((uintptr_t)2) // 0b010
 #define TAG_FLOAT ((uintptr_t)4) // 0b100
-#define TAG_UINT ((uintptr_t)6) // 0b110
+#define TAG_UINT ((uintptr_t)6) // 0b110*/
 
 #define SHIFT_INT ((uintptr_t)1)
 #define SHIFT_UINT ((uintptr_t)3)
@@ -21,14 +21,14 @@ static inline bool tag_check(const ag_value_t *ctx, uintptr_t tag)
 
 extern ag_value_t *ag_value_new_int(int64_t val)
 {
-    intptr_t bits = ((intptr_t) val << SHIFT_INT) | TAG_INT;
+    intptr_t bits = ((intptr_t) val << SHIFT_INT) | AG_VALUE_TYPE_INT;
     return (ag_value_t *)bits;
 }
 
 
 extern ag_value_t *ag_value_new_uint(unsigned int val)
 {
-    uintptr_t bits = ((uintptr_t) val << SHIFT_UINT) | TAG_UINT;
+    uintptr_t bits = ((uintptr_t) val << SHIFT_UINT) | AG_VALUE_TYPE_UINT;
     return (ag_value_t *)bits;
 }
 
@@ -38,7 +38,7 @@ extern ag_value_t *ag_value_new_float(double val)
     double *d = ag_memblock_new(sizeof *d);
     *d = val;
 
-    uintptr_t bits = (uintptr_t) d | TAG_FLOAT;
+    uintptr_t bits = (uintptr_t) d | AG_VALUE_TYPE_FLOAT;
     return (ag_value_t *)bits;
 }
 
@@ -49,7 +49,7 @@ extern ag_value_t *ag_value_new_string(const ag_string_t *val)
     //return v | TAG_STRING;
     
     ag_value_t *v = ag_string_copy(val);
-    uintptr_t bits = (uintptr_t) v | TAG_STRING;
+    uintptr_t bits = (uintptr_t) v | AG_VALUE_TYPE_STRING;
     return (ag_value_t *)bits;    
 }
 
@@ -60,7 +60,7 @@ extern ag_value_t *ag_value_new_object(const ag_object_t *val)
     //return v | TAG_OBJECT;
 
     ag_value_t *v = ag_object_copy(val);
-    uintptr_t bits = (uintptr_t) v | TAG_OBJECT;
+    uintptr_t bits = (uintptr_t) v | AG_VALUE_TYPE_OBJECT;
     return (ag_value_t *)bits;
 }
 
@@ -98,9 +98,13 @@ extern void ag_value_dispose(ag_value_t **ctx)
             ag_string_dispose(&s);
         }
 
-        if (ag_value_is_float(v))
-            ag_memblock_free(ctx);
+        if (ag_value_is_float(v)) {
+            void *ptr = (void *)((uintptr_t)v & MASK_PTR);
+            ag_memblock_free((void **) &ptr);
+        }
     }
+
+    *ctx = NULL;
 }
 
 
