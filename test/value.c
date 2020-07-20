@@ -283,7 +283,7 @@ static void string_new(void)
 {
     printf("ag_value_new_string() creates a new string value");
 
-    ag_string_smart_t *v = string_sample_ascii();
+    ag_value_smart_t *v = string_sample_ascii();
     ag_value_smart_t *s = ag_string_new("Hello, world!");
     ag_require (v && ag_string_eq(ag_value_string(v), s), AG_ERNO_TEST, NULL);
 
@@ -368,57 +368,143 @@ static void string_test(void)
  *                              OBJECT VALUE TESTS
  */
 
+struct object_payload {
+    int x;
+    int y;
+};
+
+#define OBJECT_CLASS 103
+
+static inline enum ag_tristate object_cmp(const ag_object_t *lhs, 
+    const ag_object_t *rhs)
+{
+    const struct object_payload *p1 = ag_object_payload(lhs);
+    const struct object_payload *p2 = ag_object_payload(rhs);
+
+    if (p1->x == p2->x && p1->y == p2->y)
+        return AG_TRISTATE_GND;
+
+    return AG_TRISTATE_LO;
+}
+
+static inline void object_register(void)
+{
+    struct ag_object_vtable vt = {
+        .copy = NULL,
+        .dispose = NULL,
+        .id = NULL,
+        .sz = NULL,
+        .len = NULL,
+        .hash = NULL,
+        .cmp = &object_cmp,
+        .str = NULL
+    };
+
+    ag_object_init(32);
+    ag_object_register(OBJECT_CLASS, &vt);
+}
+
+
+static ag_object_t *object_sample(void)
+{
+    struct object_payload *p = ag_memblock_new(sizeof *p);
+    p->x = 555;
+    p->y = 666;
+    return ag_object_new(OBJECT_CLASS, p);
+}
+
+static inline ag_value_t *object_sample_value(void)
+{
+    ag_object_smart_t *o = object_sample();
+    return ag_value_new_object(o);
+}
+
+
 static void object_new(void)
 {
     printf("ag_value_new_object() creates a new object value");
+
+    ag_object_smart_t *o = object_sample();
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (v && ag_object_eq(ag_value_object(o), o), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_copy(void)
 {
     printf("ag_value_copy() copies an object value");
+    
+    ag_value_smart_t *v = object_sample_value();
+    ag_value_smart_t *cp = ag_value_copy(v);
+    ag_require (ag_object_eq(ag_value_object(v), ag_value_object(cp)), 
+        AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_is_int(void)
 {
     printf("ag_value_is_int() is false for an object value");
+
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (!ag_value_is_int(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_is_uint(void)
 {
     printf("ag_value_is_uint() is false for an object value");
+
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (!ag_value_is_uint(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_is_float(void)
 {
     printf("ag_value_is_float() is false for an object value");
+
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (!ag_value_is_float(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_is_string(void)
 {
     printf("ag_value_is_string() is false for an object value");
+
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (!ag_value_is_string(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_is_object(void)
 {
     printf("ag_value_is_object() is true for an object value");
+
+    ag_value_smart_t *v = object_sample_value();
+    ag_require (ag_value_is_object(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void object_test(void)
 {
-    /*object_new();
+
+    object_register();
+
+    object_new();
     object_copy();
     object_is_int();
     object_is_uint();
     object_is_float();
     object_is_string();
-    object_is_object();*/
+    object_is_object();
 }
 
 
