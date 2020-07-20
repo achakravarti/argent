@@ -267,57 +267,100 @@ static void float_test(void)
  *                              STRING VALUE TESTS
  */
 
+static inline ag_value_t *string_sample_ascii(void)
+{
+    ag_string_smart_t *s = ag_string_new("Hello, world!");
+    return ag_value_new_string(s);
+}
+
+static inline ag_value_t *string_sample_unicode(void)
+{
+    ag_string_smart_t *s = ag_string_new("Привет, мир!");
+    return ag_value_new_string(s);
+}
+
 static void string_new(void)
 {
     printf("ag_value_new_string() creates a new string value");
+
+    ag_string_smart_t *v = string_sample_ascii();
+    ag_value_smart_t *s = ag_string_new("Hello, world!");
+    ag_require (v && ag_string_eq(ag_value_string(v), s), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_copy(void)
 {
     printf("ag_value_copy() copies a string value");
+    
+    ag_value_smart_t *v = string_sample_unicode();
+    ag_value_smart_t *cp = ag_value_copy(v);
+    ag_require (ag_string_eq(ag_value_string(v), ag_value_string(cp)),
+        AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_is_int(void)
 {
     printf("ag_value_is_int() is false for a string value");
+
+    ag_value_smart_t *v = string_sample_ascii();
+    ag_require (!ag_value_is_int(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_is_uint(void)
 {
     printf("ag_value_is_uint() is false for a string value");
+    
+    ag_value_smart_t *v = string_sample_unicode();
+    ag_require (!ag_value_is_int(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_is_float(void)
 {
     printf("ag_value_is_float() is false for a string value");
+    
+    ag_value_smart_t *v = string_sample_ascii();
+    ag_require (!ag_value_is_float(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_is_string(void)
 {
     printf("ag_value_is_string() is true for a string value");
+    
+    ag_value_smart_t *v = string_sample_unicode();
+    ag_require (ag_value_is_string(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_is_object(void)
 {
     printf("ag_value_is_object() is false for a string value");
+    
+    ag_value_smart_t *v = string_sample_ascii();
+    ag_require (!ag_value_is_object(v), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
 static void string_test(void)
 {
-    /*string_new();
+    string_new();
     string_copy();
     string_is_int();
     string_is_uint();
     string_is_float();
     string_is_string();
-    string_is_object();*/
+    string_is_object();
 }
 
 
