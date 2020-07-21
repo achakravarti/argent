@@ -109,6 +109,55 @@ extern void ag_value_dispose(ag_value_t **ctx)
     *ctx = NULL;
 }
 
+extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx, 
+    const ag_value_t *cmp)
+{
+    ag_assert (ctx && cmp && ag_value_type(ctx) == ag_value_type(cmp));
+
+    switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_OBJECT:
+            return ag_object_cmp(ag_value_object(ctx), ag_value_object(cmp));
+            break;
+
+        case AG_VALUE_TYPE_STRING:
+            return ag_string_cmp(ag_value_string(ctx), ag_value_string(cmp));
+            break;
+
+        case AG_VALUE_TYPE_FLOAT: {
+            double lhs = ag_value_float(ctx);
+            double rhs = ag_value_float(cmp);
+            
+            if (lhs == rhs)
+                return AG_TRISTATE_GND;
+
+            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+            break;
+        }
+
+        case AG_VALUE_TYPE_UINT: {
+            uint64_t lhs = ag_value_uint(ctx);
+            uint64_t rhs = ag_value_uint(cmp);
+            
+            if (lhs == rhs)
+                return AG_TRISTATE_GND;
+
+            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+            break;
+        }
+
+        default: {
+            int64_t lhs = ag_value_int(ctx);
+            int64_t rhs = ag_value_int(cmp);
+            
+            if (lhs == rhs)
+                return AG_TRISTATE_GND;
+
+            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+            break;
+        }
+    };
+}
+
 extern enum ag_value_type ag_value_type(const ag_value_t *ctx)
 {
     ag_assert (ctx);

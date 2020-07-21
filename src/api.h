@@ -508,6 +508,24 @@ extern ag_value_t *ag_value_copy(const ag_value_t *ctx);
 
 extern void ag_value_dispose(ag_value_t **ctx);
 
+extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx, 
+    const ag_value_t *cmp);
+
+inline bool ag_value_lt(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_LO;
+}
+
+inline bool ag_value_eq(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_GND;
+}
+
+inline bool ag_value_gt(const ag_value_t *ctx, const ag_value_t *cmp)
+{
+    return ag_value_cmp(ctx, cmp) == AG_TRISTATE_HI;
+}
+
 extern enum ag_value_type ag_value_type(const ag_value_t *ctx);
 
 inline bool ag_value_is_int(const ag_value_t *ctx)
