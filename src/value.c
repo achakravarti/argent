@@ -33,13 +33,13 @@ extern inline bool ag_value_is_string(const ag_value_t *ctx);
 
 extern inline bool ag_value_is_object(const ag_value_t *ctx);
 
-extern ag_value_t *ag_value_new_int(int64_t val)
+extern ag_value_t *ag_value_new_int(ag_int val)
 {
     intptr_t bits = ((intptr_t)val << SHIFT_INT) | AG_VALUE_TYPE_INT;
     return (ag_value_t *)bits;
 }
 
-extern ag_value_t *ag_value_new_uint(unsigned int val)
+extern ag_value_t *ag_value_new_uint(ag_uint val)
 {
     uintptr_t bits = ((uintptr_t)val << SHIFT_UINT) | AG_VALUE_TYPE_UINT;
     return (ag_value_t *)bits;
@@ -124,8 +124,8 @@ extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx,
             break;
 
         case AG_VALUE_TYPE_FLOAT: {
-            double lhs = ag_value_float(ctx);
-            double rhs = ag_value_float(cmp);
+            ag_float lhs = ag_value_float(ctx);
+            ag_float rhs = ag_value_float(cmp);
             
             if (lhs == rhs)
                 return AG_TRISTATE_GND;
@@ -135,8 +135,8 @@ extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx,
         }
 
         case AG_VALUE_TYPE_UINT: {
-            uint64_t lhs = ag_value_uint(ctx);
-            uint64_t rhs = ag_value_uint(cmp);
+            ag_uint lhs = ag_value_uint(ctx);
+            ag_uint rhs = ag_value_uint(cmp);
             
             if (lhs == rhs)
                 return AG_TRISTATE_GND;
@@ -146,8 +146,8 @@ extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx,
         }
 
         default: {
-            int64_t lhs = ag_value_int(ctx);
-            int64_t rhs = ag_value_int(cmp);
+            ag_int lhs = ag_value_int(ctx);
+            ag_int rhs = ag_value_int(cmp);
             
             if (lhs == rhs)
                 return AG_TRISTATE_GND;
@@ -169,19 +169,19 @@ extern enum ag_value_type ag_value_type(const ag_value_t *ctx)
     return bits & MASK_TAG;
 }
 
-extern int64_t ag_value_int(const ag_value_t *ctx)
+extern ag_int ag_value_int(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_int(ctx));
     return (intptr_t)ctx >> SHIFT_INT;
 }
 
-extern uint64_t ag_value_uint(const ag_value_t *ctx)
+extern ag_uint ag_value_uint(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_uint(ctx));
     return (uintptr_t)ctx >> SHIFT_UINT;
 }
 
-extern double ag_value_float(const ag_value_t *ctx)
+extern ag_float ag_value_float(const ag_value_t *ctx)
 {
     ag_assert (ctx && ag_value_is_float(ctx));
     return *((double *)((uintptr_t)ctx & MASK_PTR));

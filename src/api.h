@@ -476,6 +476,12 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx);
  *                             DYNAMIC TYPE SYSTEM
  */
 
+typedef intptr_t ag_int;
+typedef uintptr_t ag_uint;
+typedef double ag_float;
+
+
+
 enum ag_value_type {
     AG_VALUE_TYPE_OBJECT = 0, /* 0b000 */
     AG_VALUE_TYPE_INT = 1, /* 0b001 */
@@ -494,11 +500,11 @@ typedef void ag_value_t;
 #   warning "[!] ag_value_smart_t leaks memory on current compiler"
 #endif
 
-extern ag_value_t *ag_value_new_int(int64_t val);
+extern ag_value_t *ag_value_new_int(ag_int val);
 
-extern ag_value_t *ag_value_new_uint(unsigned int val);
+extern ag_value_t *ag_value_new_uint(ag_uint val);
 
-extern ag_value_t *ag_value_new_float(double val);
+extern ag_value_t *ag_value_new_float(ag_float val);
 
 extern ag_value_t *ag_value_new_string(const ag_string_t *val);
 
@@ -553,11 +559,11 @@ inline bool ag_value_is_object(const ag_value_t *ctx)
     return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
 }
 
-extern int64_t ag_value_int(const ag_value_t *ctx);
+extern ag_int ag_value_int(const ag_value_t *ctx);
 
-extern uint64_t ag_value_uint(const ag_value_t *ctx);
+extern ag_uint ag_value_uint(const ag_value_t *ctx);
 
-extern double ag_value_float(const ag_value_t *ctx);
+extern ag_float ag_value_float(const ag_value_t *ctx);
 
 extern ag_string_t *ag_value_string(const ag_value_t *ctx);
 
