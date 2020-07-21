@@ -122,7 +122,7 @@ static void int_eq_1(void)
 
 static void int_eq_2(void)
 {
-    printf("ag_value_lt() returns false for -123 == 123");
+    printf("ag_value_eq() returns false for -123 == 123");
 
     ag_value_smart_t *v1 = ag_value_new_int(-123);
     ag_value_smart_t *v2 = ag_value_new_int(123);
@@ -259,6 +259,91 @@ static void uint_is_object(void)
     printf("...OK\n");
 }
 
+static void uint_lt_1(void)
+{
+    printf("ag_value_lt() returns true for 123 < 124");
+
+    ag_value_smart_t *v1 = ag_value_new_uint(123);
+    ag_value_smart_t *v2 = ag_value_new_uint(124);
+    ag_require (ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_lt_2(void)
+{
+    printf("ag_value_lt() returns false for 123 < 123");
+
+    ag_value_smart_t *v = ag_value_new_uint(123);
+    ag_require (!ag_value_lt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_lt_3(void)
+{
+    printf("ag_value_lt() returns false for 124 < 123");
+
+    ag_value_smart_t *v1 = ag_value_new_uint(124);
+    ag_value_smart_t *v2 = ag_value_new_uint(123);
+    ag_require (!ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_eq_1(void)
+{
+    printf("ag_value_eq() returns true for 123 == 123");
+
+    ag_value_smart_t *v = ag_value_new_uint(123);
+    ag_require (ag_value_eq(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_eq_2(void)
+{
+    printf("ag_value_eq() returns false for 123 == 124");
+
+    ag_value_smart_t *v1 = ag_value_new_uint(123);
+    ag_value_smart_t *v2 = ag_value_new_uint(124);
+    ag_require (!ag_value_eq(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_gt_1(void)
+{
+    printf("ag_value_gt() returns true for 124 > 123");
+
+    ag_value_smart_t *v1 = ag_value_new_uint(124);
+    ag_value_smart_t *v2 = ag_value_new_uint(123);
+    ag_require (ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_gt_2(void)
+{
+    printf("ag_value_gt() returns false for 123 > 123");
+
+    ag_value_smart_t *v = ag_value_new_uint(123);
+    ag_require (!ag_value_gt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void uint_gt_3(void)
+{
+    printf("ag_value_gt() returns false for 123 > 124");
+
+    ag_value_smart_t *v1 = ag_value_new_uint(123);
+    ag_value_smart_t *v2 = ag_value_new_uint(124);
+    ag_require (!ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
 static void uint_test(void)
 {
     uint_new();
@@ -268,6 +353,14 @@ static void uint_test(void)
     uint_is_float();
     uint_is_string();
     uint_is_object();
+    uint_lt_1();
+    uint_lt_2();
+    uint_lt_3();
+    uint_eq_1();
+    uint_eq_2();
+    uint_gt_1();
+    uint_gt_2();
+    uint_gt_3();
 }
 
 
