@@ -22,8 +22,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 
@@ -499,6 +501,81 @@ typedef void ag_value_t;
 #   define ag_value_smart_t ag_value_t
 #   warning "[!] ag_value_smart_t leaks memory on current compiler"
 #endif
+
+inline bool ag_int_lt(ag_int ctx, ag_int cmp)
+{
+    return ctx < cmp;
+}
+
+inline bool ag_int_eq(ag_int ctx, ag_int cmp)
+{
+    return ctx == cmp;
+}
+
+inline bool ag_int_gt(ag_int ctx, ag_int cmp)
+{
+    return ctx > cmp;
+}
+
+inline enum ag_tristate ag_int_cmp(ag_int ctx, ag_int cmp)
+{
+    if (ctx == cmp)
+        return AG_TRISTATE_GND;
+
+    return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
+
+inline bool ag_uint_lt(ag_uint ctx, ag_uint cmp)
+{
+    return ctx < cmp;
+}
+
+inline bool ag_uint_eq(ag_uint ctx, ag_uint cmp)
+{
+    return ctx == cmp;
+}
+
+inline bool ag_uint_gt(ag_uint ctx, ag_uint cmp)
+{
+    return ctx > cmp;
+}
+
+inline enum ag_tristate ag_uint_cmp(ag_uint ctx, ag_uint cmp)
+{
+    if (ctx == cmp)
+        return AG_TRISTATE_GND;
+
+    return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
+
+inline bool ag_float_lt(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return (cmp - ctx) > ((fabs(ctx) < fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline bool ag_float_eq(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return fabs(ctx - cmp) <= ((fabs(ctx) > fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline bool ag_float_gt(ag_float ctx, ag_float cmp)
+{
+    /* https://stackoverflow.com/questions/17333 */
+    return (ctx - cmp) > ( (fabs(ctx) < fabs(cmp) 
+        ? fabs(cmp) : fabs(ctx)) * DBL_EPSILON);
+}
+
+inline enum ag_tristate ag_float_cmp(ag_float ctx, ag_float cmp)
+{
+    if (ag_float_eq(ctx, cmp))
+        return AG_TRISTATE_GND;
+
+    return ag_float_lt(ctx, cmp) ? AG_TRISTATE_LO: AG_TRISTATE_HI;
+}
 
 extern ag_value_t *ag_value_new_int(ag_int val);
 

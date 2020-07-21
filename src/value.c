@@ -20,6 +20,26 @@ static inline bool tag_check(const ag_value_t *ctx, uintptr_t tag)
 
 
 /*******************************************************************************
+ *                              NUMERIC EXTERNALS
+ */
+
+extern inline bool ag_int_lt(ag_int ctx, ag_int cmp);
+extern inline bool ag_int_eq(ag_int ctx, ag_int cmp);
+extern inline bool ag_int_gt(ag_int ctx, ag_int cmp);
+extern inline enum ag_tristate ag_int_cmp(ag_int ctx, ag_int cmp);
+
+extern inline bool ag_uint_lt(ag_uint ctx, ag_uint cmp);
+extern inline bool ag_uint_eq(ag_uint ctx, ag_uint cmp);
+extern inline bool ag_uint_gt(ag_uint ctx, ag_uint cmp);
+extern inline enum ag_tristate ag_uint_cmp(ag_uint ctx, ag_uint cmp);
+
+extern inline bool ag_float_lt(ag_float ctx, ag_float cmp);
+extern inline bool ag_float_eq(ag_float ctx, ag_float cmp);
+extern inline bool ag_float_gt(ag_float ctx, ag_float cmp);
+extern inline enum ag_tristate ag_float_cmp(ag_float ctx, ag_float cmp);
+
+
+/*******************************************************************************
  *                               VALUE EXTERNALS
  */
 
@@ -123,38 +143,17 @@ extern enum ag_tristate ag_value_cmp(const ag_value_t *ctx,
             return ag_string_cmp(ag_value_string(ctx), ag_value_string(cmp));
             break;
 
-        case AG_VALUE_TYPE_FLOAT: {
-            ag_float lhs = ag_value_float(ctx);
-            ag_float rhs = ag_value_float(cmp);
-            
-            if (lhs == rhs)
-                return AG_TRISTATE_GND;
-
-            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+        case AG_VALUE_TYPE_FLOAT:
+            return ag_float_cmp(ag_value_float(ctx), ag_value_float(cmp));
             break;
-        }
 
-        case AG_VALUE_TYPE_UINT: {
-            ag_uint lhs = ag_value_uint(ctx);
-            ag_uint rhs = ag_value_uint(cmp);
-            
-            if (lhs == rhs)
-                return AG_TRISTATE_GND;
-
-            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+        case AG_VALUE_TYPE_UINT:
+            return ag_uint_cmp(ag_value_uint(ctx), ag_value_uint(cmp));
             break;
-        }
 
-        default: {
-            ag_int lhs = ag_value_int(ctx);
-            ag_int rhs = ag_value_int(cmp);
-            
-            if (lhs == rhs)
-                return AG_TRISTATE_GND;
-
-            return lhs < rhs ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+        default:
+            return ag_int_cmp(ag_value_int(ctx), ag_value_int(cmp));
             break;
-        }
     };
 }
 
