@@ -43,6 +43,12 @@ extern inline enum ag_tristate ag_float_cmp(ag_float ctx, ag_float cmp);
  *                               VALUE EXTERNALS
  */
 
+extern inline bool ag_value_lt(const ag_value_t *ctx, const ag_value_t *cmp);
+
+extern inline bool ag_value_eq(const ag_value_t *ctx, const ag_value_t *cmp);
+
+extern inline bool ag_value_gt(const ag_value_t *ctx, const ag_value_t *cmp);
+
 extern inline bool ag_value_is_int(const ag_value_t *ctx);
 
 extern inline bool ag_value_is_uint(const ag_value_t *ctx);

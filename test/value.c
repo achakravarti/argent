@@ -78,6 +78,92 @@ static void int_is_object(void)
     printf("...OK\n");
 }
 
+static void int_lt_1(void)
+{
+    printf("ag_value_lt() returns true for -123 < 123");
+
+    ag_value_smart_t *v1 = ag_value_new_int(-123);
+    ag_value_smart_t *v2 = ag_value_new_int(123);
+    ag_require (ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_lt_2(void)
+{
+    printf("ag_value_lt() returns false for -123 < -123");
+
+    ag_value_smart_t *v = ag_value_new_int(-123);
+    ag_require (!ag_value_lt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_lt_3(void)
+{
+    printf("ag_value_lt() returns false for 123 < -123");
+
+    ag_value_smart_t *v1 = ag_value_new_int(123);
+    ag_value_smart_t *v2 = ag_value_new_int(-123);
+    ag_require (!ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_eq_1(void)
+{
+    printf("ag_value_eq() returns true for -123 == -123");
+
+    ag_value_smart_t *v = ag_value_new_int(-123);
+    ag_require (ag_value_eq(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_eq_2(void)
+{
+    printf("ag_value_lt() returns false for -123 == 123");
+
+    ag_value_smart_t *v1 = ag_value_new_int(-123);
+    ag_value_smart_t *v2 = ag_value_new_int(123);
+    ag_require (!ag_value_eq(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_gt_1(void)
+{
+    printf("ag_value_gt() returns true for 123 > -123");
+
+    ag_value_smart_t *v1 = ag_value_new_int(123);
+    ag_value_smart_t *v2 = ag_value_new_int(-123);
+    ag_require (ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_gt_2(void)
+{
+    printf("ag_value_gt() returns false for -123 > -123");
+
+    ag_value_smart_t *v = ag_value_new_int(-123);
+    ag_require (!ag_value_gt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void int_gt_3(void)
+{
+    printf("ag_value_gt() returns false for -123 > 123");
+
+    ag_value_smart_t *v1 = ag_value_new_int(-123);
+    ag_value_smart_t *v2 = ag_value_new_int(123);
+    ag_require (!ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
 static void int_test(void)
 {
     int_new();
@@ -87,6 +173,14 @@ static void int_test(void)
     int_is_float();
     int_is_string();
     int_is_object();
+    int_lt_1();
+    int_lt_2();
+    int_lt_3();
+    int_eq_1();
+    int_eq_2();
+    int_gt_1();
+    int_gt_2();
+    int_gt_3();
 }
 
 
