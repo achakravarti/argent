@@ -439,6 +439,91 @@ static void float_is_object(void)
     printf("...OK\n");
 }
 
+static void float_lt_1(void)
+{
+    printf("ag_value_lt() returns true for 123.456 < 123.4567");
+
+    ag_value_smart_t *v1 = ag_value_new_float(123.456);
+    ag_value_smart_t *v2 = ag_value_new_float(124.4567);
+    ag_require (ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_lt_2(void)
+{
+    printf("ag_value_lt() returns false for 123.456 < 123.456");
+
+    ag_value_smart_t *v = ag_value_new_float(123.456);
+    ag_require (!ag_value_lt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_lt_3(void)
+{
+    printf("ag_value_lt() returns false for 123.4567 < 123.456");
+
+    ag_value_smart_t *v1 = ag_value_new_float(123.4567);
+    ag_value_smart_t *v2 = ag_value_new_float(123.456);
+    ag_require (!ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_eq_1(void)
+{
+    printf("ag_value_eq() returns true for -123.4567 == -123.4567");
+
+    ag_value_smart_t *v = ag_value_new_float(-123.4567);
+    ag_require (ag_value_eq(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_eq_2(void)
+{
+    printf("ag_value_eq() returns false for -123.456 == -123.4567");
+
+    ag_value_smart_t *v1 = ag_value_new_float(-123);
+    ag_value_smart_t *v2 = ag_value_new_float(123.4567);
+    ag_require (!ag_value_eq(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_gt_1(void)
+{
+    printf("ag_value_gt() returns true for 123.4567 > 123.456");
+
+    ag_value_smart_t *v1 = ag_value_new_float(123.4567);
+    ag_value_smart_t *v2 = ag_value_new_float(123.456);
+    ag_require (ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_gt_2(void)
+{
+    printf("ag_value_gt() returns false for 123.4567 > 123.4567");
+
+    ag_value_smart_t *v = ag_value_new_float(123.4567);
+    ag_require (!ag_value_gt(v, v), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+static void float_gt_3(void)
+{
+    printf("ag_value_gt() returns false for 123.456 > 123.4567");
+
+    ag_value_smart_t *v1 = ag_value_new_float(123.456);
+    ag_value_smart_t *v2 = ag_value_new_float(123.4567);
+    ag_require (!ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
 static void float_test(void)
 {
     float_new();
@@ -448,6 +533,14 @@ static void float_test(void)
     float_is_float();
     float_is_string();
     float_is_object();
+    float_lt_1();
+    float_lt_2();
+    float_lt_3();
+    float_eq_1();
+    float_eq_2();
+    float_gt_1();
+    float_gt_2();
+    float_gt_3();
 }
 
 /*******************************************************************************
