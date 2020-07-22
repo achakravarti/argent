@@ -1,0 +1,31 @@
+\chapter{Memory Block Module}
+
+\begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
+  \small
+  \begin{tabular}{l l}
+    \faPlug & \verb|src/api.h| \\
+    \faWrench & \verb|src/api.h| \\
+    \faBalanceScale & \verb|test/memblock.c| \\
+    \faBook & \verb|doc/chp/memblock.tex| \\
+  \end{tabular}
+\end{bclogo}
+
+\renewcommand\arraystretch{1.1}
+\begin{table}[!htbp]
+  \small
+  \centering
+  \caption{Synopsis of functions}
+  \label{tab:synopsis-memblock-functions}
+  \begin{tabular}[t]{>{\centering}m{0.4\linewidth}
+    >{\raggedright\arraybackslash}m{0.5\linewidth}}
+    \toprule
+    \textbf{Function} & \textbf{Synopsis} \\
+    \midrule
+    \verb|ag_memblock_new()| & Allocates a new memory block \\
+    \verb|ag_memblock_copy()| & Copies a memory block \\
+    \verb|ag_memblock_sz()| & Gets the size of a memory block \\
+    \verb|ag_memblock_resize()| & Resizes a memory block \\
+    \verb|ag_memblock_free()| & Releases a memory block \\
+    \bottomrule
+  \end{tabular}
+\end{table}
