@@ -1,0 +1,335 @@
+%
+% document colours
+%
+\definecolor{pastelblue}{RGB}{68,78,81}
+\definecolor{green}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{purple}{rgb}{0.58,0,0.82}
+\definecolor{silver}{rgb}{0.75,0.75,0.75}
+
+
+%
+% code declaration list style
+%
+\lstdefinestyle{declaration}{
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=none,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+
+%
+% code definition list style
+%
+\lstdefinestyle{definition}{
+  backgroundcolor=\color{silver},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=single,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+%
+% command aliases for ag_memblock_t interface functions
+%
+\newcommand{\agMemblockNew}{\texttt{ag\_memblock\_new()}}
+\newcommand{\agMemblockCopy}{\texttt{ag\_memblock\_copy()}}
+\newcommand{\agMemblockSz}{\texttt{ag\_memblock\_sz()}}
+\newcommand{\agMemblockResize}{\texttt{ag\_memblock\_resize()}}
+\newcommand{\agMemblockFree}{\texttt{ag\_memblock\_free()}}
+
+
+%
+% command to show function synopsis
+% \agFnSynopsis{description}{linerange}{parameters}
+%
+\newcommand{\agFnSynopsis}[3]{
+  \begin{wrapfigure}{l}{0.6\textwidth}
+  \begin{minipage}{0.6\textwidth}
+  \vspace{-1em}
+  \begin{noteblock}
+  \small
+  #1.
+  \lstset{style=declaration}
+  \lstinputlisting[linerange={#2}]{../src/api.h}
+  #3.
+  \end{noteblock}
+  \end{minipage}
+  \end{wrapfigure}
+}
+
+
+%
+% command to show show algorithm
+% \agAlgorithm{label}{caption}{algorithm}
+%
+\newcommand{\agAlgorithm}[3]{
+  \begin{wrapfigure}{r}{.6\textwidth}
+  \begin{minipage}{0.6\textwidth}
+  \vspace{-1em}
+  \begin{algorithm}[H]
+  \small
+  \caption{#2}
+  \label{#1}
+  \begin{algorithmic}
+  \scriptsize{}
+  #3
+  \end{algorithmic}
+  \end{algorithm}
+  \end{minipage}
+  \end{wrapfigure}
+}
+
+
+\chapter{Memory Block Module}
+\ThisULCornerWallPaper{0.5}{kirsty-paget.jpg}
+\newpage
+
+
+%
+% section ag_memblock_new()
+%
+\section{Function \agMemblockNew}
+\agFnSynopsis{\agMemblockNew---allocates block of heap memory; returns allocated
+  block of heap memory}{265-265}{\texttt{sz} = size in bytes to allocate}
+
+\agMemblockNew{}  is responsible for allocating a new block of heap memory. The 
+size in bytes to allocate is passed through the \verb|sz| parameter. The value 
+of \verb|sz| is required to be greater than zero; this condition is asserted in 
+debug builds.
+
+If successful, a handle to the new block of heap memory is returned. In case of 
+failure to allocate heap memory, \agMemblockNew{} raises an exception with the 
+\verb|AG_MEMBLOCK_NEW| error code, which is left for the exception handler 
+callback function (defined by client code) to process. Hence, there is no need 
+to check for the returned handle being non-\verb|NULL| in the normal 
+flow of code.
+
+It is important to note that the actual size of the allocated block may well be
+greater than that specified by \verb|sz|. This is because the underlying
+\verb|malloc()| function may allocate a larger block in order to account for
+alignment and minimum size constraints.
+
+\agAlgorithm{alg:agMemblockNew}{\agMemblockNew}{
+  \Require{} $sz > 0$
+  \Procedure{ag\_memblock\_new}{$sz$}
+  \State{} $bfr \gets malloc(sz)$
+  \State{} $bfr \gets memset(0)$
+  \State{}  return $bfr$
+  \EndProcedure{}
+  \Ensure{} $bfr \neq null$
+}
+
+The two most likely reasons for failure are the value of \verb|sz| being
+larger than the amount of heap memory physically available, and excess
+fragmentation of the heap. Neither of these failure conditions have been tested,
+though.
+
+The implementation of \agMemblockNew{} is quite straight-forward, essentially
+being a wrapper around the standard \verb|malloc()| function along with an
+in-built check for success. The algorithm for \agMemblockNew{} is given by 
+Algorithm\ \ref{alg:agMemblockNew}.
+
+We start off by asserting that the size of allocation specified through the
+\verb|sz| parameter is $>$ 0, and then call \verb|malloc()| to allocated the
+required amount of heap memory. We ensure that the handle to the allocated block
+is valid; if not, we raise the \verb|AG_ERNO_MEMBLOCK_NEW| exception, passing
+control to the client-provided exception handler callback without any extra
+data. If the alloction has been successful, then we initialise the allocated
+memory to zero before returning the handle to it.
+
+
+%
+% section ag_memblock_copy()
+%
+\section{Function \agMemblockCopy}
+\agFnSynopsis{\agMemblockCopy---copies existing block of heap memory; returns
+  copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
+
+\agMemblockCopy{} makes a deep copy of an existing block of heap memory, passed as
+a handle to its only parameter \verb|bfr|. \verb|bfr| is required to be valid;
+this is asserted in debug builds. Additionally, it is required for \verb|bfr| to
+have been allocated on the heap by an earlier call to \agMemblockNew{}  (or 
+\agMemblockCopy{} itself); passing a handle to a block of memory on the stack is
+an error, leading to undefined behaviour (most likely a segmentation fault).
+
+\agAlgorithm{alg:agMemblockCopy}{\agMemblockCopy}{
+	\Require{} $bfr \neq null$
+  \Procedure{ag\_memblock\_copy}{$bfr$}
+  \State{} $sz \gets ag\_memblock\_sz(bfr)$
+  \State{} $cp \gets ag\_memblock\_new(sz)$ 
+  \State{} $cp \gets memcpy(bfr)$ 
+  \State{} return $cp$
+  \EndProcedure
+}
+
+On successful completion, \agMemblockCopy{} \\ returns a handle to the newly 
+allocated copy of \verb|bfr|. In case of failure to do so, the 
+\verb|AG_ERNO_MEMBLOCK_NEW| exception is raised, and control is passed to the 
+client-provided exception handler. Since in the normal flow of control the newly
+allocated copy is guaranteed to be valid, there is no need for client code to 
+make a further check on the return value.
+
+Since \agMemblockCopy{} relies on a non-standard \verb|libc| call, it is 
+important to remember the portability restrictions this entails; see section
+\ref{sec:agMemblockSz} on page\ \pageref{sec:agMemblockSz} for more details.
+
+The algorithm for \agMemblockCopy{} is given by Algorithm\ 
+\ref{alg:agMemblockCopy}. We start by asserting that the \verb|bfr| argument is
+valid and computing its allocated size through a call to
+\verb|ag_memblock_sz()|. We then create a new a new block of heap memory of the
+same size, copy the contents of \verb|bfr| to this newly allocated block, and
+then return the handle to this new block.
+
+
+%
+% section ag_memblock_sz()
+%
+\section{Function \agMemblockSz}
+\label{sec:agMemblockSz}
+
+\agFnSynopsis{\agMemblockSz---gets size of block of heap memory; returns size in
+  bytes of heap block}{283-283}{\texttt{bfr} = heap block to query}
+
+Sometimes it is useful to be determine the size of a block of heap memory that
+was allocated earlier without having to resort to storing the size in a separate
+variable. The interface function \agMemblockSz{} provides a way to do so, 
+allowing client code to query the size of a block of heap memory \verb|bfr| that
+was allocated by \agMemblockNew{} or \agMemblockCopy{}. 
+
+\agMemblockSz{} requires that \verb|bfr| be a valid handle to a block of heap 
+memory; this function asserts in debug builds that the handle is not 
+\verb|NULL|. Passing a pointer to the stack memory is an error, and will result 
+in undefined behaviour, most likely being a segmentation fault.
+
+As in the case of \agMemblockNew{}, it is important to remember that the size
+returned by \agMemblockSz{} may be greater than that which had been originally
+requested at the time of allocation, since the underlying \verb|malloc()| call
+needs to take into account alignment and size restrictions.
+
+\agAlgorithm{alg:agMemblockSz}{\agMemblockSz}{
+  \Require{} $bfr \neq null$
+  \Procedure{ag\_memblock\_sz}{$bfr$}
+  \State{} return $malloc\_usable\_size(bfr)$
+  \EndProcedure{}
+}
+
+There is an important caveat regarding portability. The C standard does not
+define a way to query the size of the heap block returned by \verb|malloc()|,
+and so we need to rely on the functionality provided by the underlying
+\verb|libc| implementation. As of the current version, \agMemblockSz{} is
+guaranteed to work on GNU/Linux, Cygwin and the various BSDs.
+
+The algorithm for \agMemblockSz{} is given by Algorithm\ \ref{alg:agMemblockSz}.
+We assert that the block of heap memory to query is valid and pass it to \\
+\texttt{malloc\_usable\_size()}, returning the value thereby obtained. \\
+\verb|malloc_usable_size()| is a non-standard function supported by both
+\verb|glibc| and BSD \verb|libc|.
+
+
+%
+% section ag_memblock_resize()
+%
+\section{Function \agMemblockResize}
+\agFnSynopsis{\agMemblockResize---resizes allocated block of heap memory}
+  {292-292}{\texttt{bfr} = heap block to resize,\par\texttt{sz} = new size in
+  bytes}
+
+The \agMemblockResize{} \\ function is responsible for resizing the amount of 
+memory allocated to an existing block of heap memory. Although this function is 
+not used commonly within the Argent Library itself, it may prove to be useful 
+for client code, especially for the resizing of dynamic data structures that can
+grow and shrink, such as vectors.
+
+\agMemblockResize{} takes two arguments, the first being the handle to the heap
+buffer \texttt{bfr} that is to be allocated, and the second being the new size 
+\texttt{sz} value. \texttt{bfr} is expected to be a valid pointer to a pointer 
+to a memory block, and \texttt{sz} is expected to be greater than zero; these 
+two conditions are asserted in debug builds.
+
+\agAlgorithm{alg:agMemblockResize}{\agMemblockResize}{
+	\Require{} $bfr \neq null$
+  \Require{} $*bfr \neq null$
+  \Require{} $sz > 0$
+  \Procedure{ag\_memblock\_resize}{$bfr, sz$}
+  \State{} $*bfr \gets realloc(*bfr, sz)$
+  \EndProcedure{}
+  \Ensure{} $*bfr \neq null$
+}
+
+If successful, the heap memory block pointed to by \texttt{bfr} will be resized 
+to the value specified by \texttt{sz}. Note that, as in the case of 
+\agMemblockNew, the actual size of the heap buffer may be larger than that
+requested in order to account for alignment and minimum size constraints. In
+case the resizing operation failed, the \texttt{AG\_MEMBLOCK\_RESIZE} exception 
+is raised. Since \agMemblockResize{} is guaranteed to either succeed, or to raise
+an exception, there is no need to test whether the heap buffer pointed to by 
+\texttt{bfr} is valid after the operation.
+
+The algorithm for \agMemblockResize{} is given by Algorithm\ 
+\ref{alg:agMemblockResize}. We assert that both the pointer to the heap memory 
+buffer and the heap buffer itself are valid, and that the new size requested is 
+greater than zero. We then call the standard C function \texttt{realloc()} to 
+resize the heap buffer to the requested size, and subsequently ensure that the 
+resizing operation has been successful.
+
+%
+% section ag_memblock_free()
+%
+\section{Function \agMemblockFree}
+\agFnSynopsis{\agMemblockFree---releases allocated block of heap memory}
+  {300-300}{\texttt{bfr} = heap block to release}
+
+After \agMemblockNew{}, the \agMemblockFree{} function is perhaps the most
+important one in the memory module of the Argent Library. \agMemblockFree{}
+is responsible for releasing the heap memory that has been allocated through 
+either \agMemblockNew{} or \agMemblockCopy{}.
+
+\agMemblockFree{} accepts only one argument \texttt{bfr}, which is a pointer to
+the heap memory block that has been allocated earlier. If both \texttt{bfr} and
+the heap memory block pointed by it are valid (i.e. non-\texttt{\textsc{NULL}}),
+then the latter is released and the former is set to \texttt{\textsc{NULL}}.
+This ensures that \texttt{bfr} is not a dangling pointer after the memory block
+it points to has been released.
+
+\agAlgorithm{alg:agMemblockFree}{\agMemblockFree}{
+  \Procedure{ag\_memblock\_free}{$bfr$}
+  \If{$bfr$ and $*bfr \neq NULL$}
+  \State{} $free(*bfr)$
+  \State{} $*bfr \gets NULL$
+  \EndIf{}
+  \EndProcedure{}
+}
+
+\agMemblockFree{} is designed to be robust, and performs a safe no-op if either
+\texttt{bfr} or the heap memory block pointed to by it are invalid (i.e.
+\texttt{NULL}). This allows \agMemblockFree{} to be safely called even in
+exception conditions. However, it is important to remember that passing a
+\texttt{bfr} to \agMemblockFree{} that has not been created by either
+\agMemblockNew{} or \agMemblockCopy{} will result in undefined behaviour.
+
+The algorithm for \agMemblockFree{} is given by Algorithm\ 
+\ref{alg:agMemblockFree}. We first check that both \texttt{bfr} and the heap 
+memory block pointed by it are valid; if so, we proceed to release the heap
+memory block pointed by \texttt{bfr} using the standard \texttt{free()} function
+and then set \texttt{bfr} to \texttt{NULL}.

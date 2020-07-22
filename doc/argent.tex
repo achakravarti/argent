@@ -1,0 +1,75 @@
+\documentclass[twoside,12pt,english]{book}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				    PREAMBLE
+%
+
+
+%
+% required packages
+%
+\usepackage{algorithm}        % for algorithms
+\usepackage{algpseudocode}    % """
+\usepackage{awesomebox}       % for stylised sideboxes 
+\usepackage[backend=biber,
+  bibencoding=utf8,
+  citestyle=authoryear,
+  maxbibnames=5,
+  minbibnames=5,
+  style=alphabetic]{biblatex} % for bibliography
+\usepackage{fancyhdr}         % for header & footer styling
+\usepackage{fourier-orns}     % """
+\usepackage{listings}         % for source code listings
+\usepackage{wallpaper}        % for page image backgrounds
+\usepackage{wrapfig}          % for wrapping sideboxes
+\usepackage{wrapfig}          % for wrapping sideboxes
+\usepackage{kantlipsum}           % for dummy text -- REMOVE
+
+
+
+%
+% Header and footer style
+%
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Argent}
+\fancyhead[RE,LO]{v1.0.0}
+\fancyfoot[LE,RO]{\nouppercase{\leftmark}}
+\fancyfoot[RE,LO]{\thepage}
+\renewcommand{\footrulewidth}{0.2pt}
+\renewcommand\headrule{{\color{pastelblue}\raisebox{-2.1pt}[10pt][10pt]{
+  \decoone}\hrulefill\raisebox{-2.1pt}[10pt][10pt]{
+  ~~~\decofourleft\decotwo\decofourright~~~}\hrulefill\raisebox{-2.1pt}
+  [10pt][10pt]{\decoone}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				   DOCUMENT 
+%
+
+
+\begin{document}
+
+
+%
+% title page
+%
+\begin{titlepage}
+\centering
+\includegraphics[width=0.95\textwidth]{the-great-sea.jpg}\par\vspace{1em}
+\Huge Argent Library\par\vspace{0.5em}\large v0.1.0\par\vspace{0.5em} 
+\LARGE Developer Manual\par\vspace{5em} Abhishek Chakravarti\par
+\vspace{0.5em}\small abhishek@taranjali.org\vfill\large May 2020
+\end{titlepage}
+
+
+%
+% chapters
+%
+\input{chp/memblock}
+
+
+\end{document}
+

@@ -1,0 +1,245 @@
+%https://www.overleaf.com/learn/latex/code_listing
+\definecolor{GREEN}{rgb}{0,0.6,0}
+\definecolor{GRAY}{rgb}{0.5,0.5,0.5}
+\definecolor{PURPLE}{rgb}{0.58,0,0.82}
+\definecolor{BACKGROUND}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CODE}{
+  backgroundcolor=\color{BACKGROUND},
+  commentstyle=\color{GREEN},
+  keywordstyle=\color{blue},
+  numberstyle=\tiny\color{GRAY},
+  stringstyle=\color{PURPLE},
+  basicstyle=\ttfamily\scriptsize,
+  language=C,
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\lstdefinestyle{SYNOPSIS}{
+  backgroundcolor=\color{white},
+  keywordstyle=\color{blue},
+  basicstyle=\ttfamily\scriptsize,
+  language=C,
+  directivestyle=\color{blue},
+  frame=none,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+\newenvironment{WrapText}[1][r]
+  {\wrapfigure{#1}{0.5\textwidth}\tcolorbox}
+  {\endtcolorbox\endwrapfigure}
+
+\chapter{Memory Block Module}
+
+\begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
+\small
+\begin{tabular}{l l}
+\faPlug & \verb|src/api.h| \\
+\faWrench & \verb|src/api.h| \\
+\faBalanceScale & \verb|test/memblock.c| \\
+\faBook & \verb|doc/chp/memblock.tex| \\
+\end{tabular}
+\end{bclogo}
+
+\renewcommand\arraystretch{1.1}
+\begin{table}[!htbp]
+  \small
+  \centering
+  \caption{Synopsis of functions}
+  \label{tab:synopsis-memblock-functions}
+  \begin{tabular}[t]{>{\centering}m{0.4\linewidth}
+    >{\raggedright\arraybackslash}m{0.5\linewidth}}
+    \toprule
+    \textbf{Function} & \textbf{Synopsis} \\
+    \midrule
+    \verb|ag_memblock_new()| & Allocates a new memory block \\
+    \verb|ag_memblock_copy()| & Copies a memory block \\
+    \verb|ag_memblock_sz()| & Gets the size of a memory block \\
+    \verb|ag_memblock_resize()| & Resizes a memory block \\
+    \verb|ag_memblock_free()| & Releases a memory block \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_new()
+%
+
+\section{Function \texttt{ag\_memblock\_new()}}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_new()|---allocates block of heap memory; returns allocated
+block of heap memory.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern ag_memblock_t *ag_memblock_new(size_t sz);
+\end{lstlisting}
+\verb|sz| = size in bytes to allocate.
+\end{noteblock}
+
+The algorithm for the implementation of \verb|ag_memblock_new()| is given by
+Algorithm \ref{alg:ag_memblock_new}.
+
+\begin{WrapText}
+
+\begin{algorithm}
+\caption{\texttt{ag\_memblock\_new()}}
+\label{alg:ag_memblock_new}
+\begin{algorithmic}
+\Require $sz \geq 0$
+\Procedure{ag\_memblock\_new}{$sz$}
+\State $bfr \gets malloc(sz)$
+\State $bfr \gets memset(0)$
+\State return $bfr$
+\EndProcedure
+\Ensure $bfr \neq null$
+\end{algorithmic}
+\end{algorithm}
+
+\end{WrapText}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={35-43},caption=Definition of ag\_memblock\_new()]
+  {../src/memblock.c}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_copy()
+%
+
+
+\section{Function \texttt{ag\_memblock\_copy()}}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_copy()|---copies existing block of heap memory; returns copied
+block of heap memory.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
+\end{lstlisting}
+\verb|bfr| = heap block to copy.
+\end{noteblock}
+
+The algorithm for the implementation of \verb|ag_memblock_copy()| is given by
+Algorithm \ref{alg:ag_memblock_copy}.
+
+\begin{algorithm}
+\scriptsize
+\caption{\texttt{ag\_memblock\_copy()}}
+\label{alg:ag_memblock_copy}
+\begin{algorithmic}
+\Require $bfr \neq null$
+\Procedure{ag\_memblock\_copy}{$bfr$}
+\State $sz \gets ag\_memblock\_sz(bfr)$ \Comment{compute size of bfr}
+\State $cp \gets ag\_memblock\_new(sz)$ \Comment{create new block of size sz}
+\State $cp \gets memcpy(bfr)$ \Comment{copy bfr to cp}
+\State return $cp$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={47-56},caption=Definition of ag\_memblock\_copy()]
+  {../src/memblock.c}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		       Section: Function ag_memblock_sz()
+%
+
+
+\section{Function \texttt{ag\_memblock\_sz()}}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_sz()|---gets size block of heap memory; returns size in bytes
+of heap block.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
+\end{lstlisting}
+\verb|bfr| = heap block to query.
+\end{noteblock}
+
+The algorithm for the implementation of \verb|ag_memblock_sz()| is given by
+Algorithm \ref{alg:ag_memblock_sz}.
+
+\begin{algorithm}
+\scriptsize
+\caption{\texttt{ag\_memblock\_sz()}}
+\label{alg:ag_memblock_sz}
+\begin{algorithmic}
+\Require $bfr \neq null$
+\Procedure{ag\_memblock\_copy}{$bfr$}
+\State $sz \gets ag\_memblock\_sz(bfr)$ \Comment{compute size of bfr}
+\State $cp \gets ag\_memblock\_new(sz)$ \Comment{create new block of size sz}
+\State $cp \gets memcpy(bfr)$ \Comment{copy bfr to cp}
+\State return $cp$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={60-64},caption=Definition of ag\_memblock\_sz()]
+  {../src/memblock.c}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		     Section: Function ag_memblock_resize()
+%
+
+
+\section{Function \texttt{ag\_memblock\_resize()}}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_resize()|---resizes allocated block of heap memory.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
+\end{lstlisting}
+\verb|bfr| = heap block to resize, \par
+\verb|sz| = new size in bytes.
+\end{noteblock}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={68-73},caption=Definition of ag\_memblock\_resize()]
+  {../src/memblock.c}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_free()
+%
+
+
+\section{Function \texttt{ag\_memblock\_free()}}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_free()|---releases allocated block of heap memory
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}
+#include <argent/api.h>
+extern void ag_memblock_free(ag_memblock_t **bfr);
+\end{lstlisting}
+\verb|bfr| = heap block to release.
+\end{noteblock}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={77-83},caption=Definition of ag\_memblock\_resize()]
+  {../src/memblock.c}
