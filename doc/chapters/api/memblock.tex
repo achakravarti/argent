@@ -65,6 +65,10 @@
 \end{table}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_new()
+%
+
 \section{Function \texttt{ag\_memblock\_new()}}
   \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
     {Synopsis}
@@ -76,6 +80,26 @@ extern ag_memblock_t *ag_memblock_new(size_t sz);
   \scriptsize
   \texttt{sz} = \emph{allocation size in bytes}
   \end{bclogo}
+
+\lstset{style=CODE}
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Definition of ag\_memblock\_new()]
+extern ag_memblock_t *ag_memblock_new(size_t sz)
+{
+    ag_assert (sz);
+    void *bfr = malloc(sz);
+    ag_require (bfr, AG_ERNO_MEMBLOCK_NEW, NULL);
+
+    memset(bfr, 0, sz);
+    return bfr;
+}
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_copy()
+%
+
 
 \section{Function \texttt{ag\_memblock\_copy()}}
   \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
@@ -89,6 +113,27 @@ extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
   \texttt{bfr} = \emph{buffer to copy}
   \end{bclogo}
 
+\lstset{style=CODE}
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Definition of ag\_memblock\_copy()]
+extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
+{
+    ag_assert (bfr);
+    size_t sz = ag_memblock_sz(bfr);
+
+    ag_memblock_t *cp = ag_memblock_new(sz);
+    memcpy(cp, bfr, sz);
+
+    return cp;
+}
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		       Section: Function ag_memblock_sz()
+%
+
+
 \section{Function \texttt{ag\_memblock\_sz()}}
   \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
     {Synopsis}
@@ -100,6 +145,22 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
   \scriptsize
   \texttt{bfr} = \emph{buffer for which to determine size}
   \end{bclogo}
+
+\lstset{style=CODE}
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Definition of ag\_memblock\_sz()]
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
+{
+    ag_assert (bfr);
+    return malloc_usable_size((void *) bfr);
+}
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		     Section: Function ag_memblock_resize()
+%
+
 
 \section{Function \texttt{ag\_memblock\_resize()}}
   \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
@@ -114,6 +175,23 @@ extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
   \texttt{sz} = \emph{new size in bytes}
   \end{bclogo}
 
+\lstset{style=CODE}
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Definition of ag\_memblock\_resize()]
+extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
+{
+    ag_assert (bfr && *bfr && sz);
+    *bfr = realloc(*bfr, sz);
+    ag_require (*bfr, AG_ERNO_MEMBLOCK_RESIZE, NULL);
+}
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		      Section: Function ag_memblock_free()
+%
+
+
 \section{Function \texttt{ag\_memblock\_free()}}
   \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
     {Synopsis}
@@ -125,4 +203,17 @@ extern void ag_memblock_free(ag_memblock_t **bfr);
   \scriptsize
   \texttt{bfr} = \emph{buffer to release} \\
   \end{bclogo}
+
+\lstset{style=CODE}
+\begin{lstlisting}[linewidth=1.0\linewidth,
+    caption=Definition of ag\_memblock\_free()]
+extern void ag_memblock_free(ag_memblock_t **bfr)
+{
+    if (ag_likely (bfr && *bfr)) {
+        free(*bfr);
+        *bfr = NULL;
+    }
+}
+
+\end{lstlisting}
 
