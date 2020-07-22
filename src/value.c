@@ -9,8 +9,8 @@
 #define MASK_TAG ((uintptr_t)(8 - 1))
 #define MASK_PTR (~MASK_TAG)
 
-#define SHIFT_INT ((uintptr_t)1)
-#define SHIFT_UINT ((uintptr_t)3)
+#define SHIFT_UINT ((uintptr_t)1)
+#define SHIFT_INT ((uintptr_t)3)
 
 
 static inline bool tag_check(const ag_value_t *ctx, uintptr_t tag)
@@ -168,8 +168,8 @@ extern enum ag_value_type ag_value_type(const ag_value_t *ctx)
     ag_assert (ctx);
     uintptr_t bits = (uintptr_t)ctx;
 
-    if ((bits & AG_VALUE_TYPE_INT) == AG_VALUE_TYPE_INT)
-        return AG_VALUE_TYPE_INT;
+    if ((bits & AG_VALUE_TYPE_UINT) == AG_VALUE_TYPE_UINT)
+        return AG_VALUE_TYPE_UINT;
 
     return bits & MASK_TAG;
 }

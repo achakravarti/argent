@@ -486,10 +486,12 @@ typedef double ag_float;
 
 enum ag_value_type {
     AG_VALUE_TYPE_OBJECT = 0, /* 0b000 */
-    AG_VALUE_TYPE_INT = 1, /* 0b001 */
+    //AG_VALUE_TYPE_INT = 1, /* 0b001 */
+    AG_VALUE_TYPE_UINT = 1, /* 0b001 */
     AG_VALUE_TYPE_STRING = 2, /* 0b010 */
     AG_VALUE_TYPE_FLOAT = 4, /* 0b100 */
-    AG_VALUE_TYPE_UINT = 6 /* 0b110 */
+    //AG_VALUE_TYPE_UINT = 6 /* 0b110 */
+    AG_VALUE_TYPE_INT = 6 /* 0b110 */
 };
 
 typedef void ag_value_t;
