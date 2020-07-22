@@ -482,15 +482,21 @@ typedef intptr_t ag_int;
 typedef uintptr_t ag_uint;
 typedef double ag_float;
 
+#define AG_UINT_MIN ((ag_uint)0)
+#define AG_UINT_MAX UINTPTR_MAX
+
+#define AG_INT_MIN ((ag_int)(-(AG_UINT_MAX / (ag_uint)2)))
+#define AG_INT_MAX ((ag_int)((AG_UINT_MAX / (ag_uint)2) - (ag_uint)1))
+
+#define AG_FLOAT_MIN DBL_MIN
+#define AG_FLOAT_MAX DBL_MAX
 
 
 enum ag_value_type {
     AG_VALUE_TYPE_OBJECT = 0, /* 0b000 */
-    //AG_VALUE_TYPE_INT = 1, /* 0b001 */
     AG_VALUE_TYPE_UINT = 1, /* 0b001 */
     AG_VALUE_TYPE_STRING = 2, /* 0b010 */
     AG_VALUE_TYPE_FLOAT = 4, /* 0b100 */
-    //AG_VALUE_TYPE_UINT = 6 /* 0b110 */
     AG_VALUE_TYPE_INT = 6 /* 0b110 */
 };
 
