@@ -564,7 +564,7 @@ static void string_new(void)
     printf("ag_value_new_string() creates a new string value");
 
     ag_value_smart_t *v = string_sample_ascii();
-    ag_value_smart_t *s = ag_string_new("Hello, world!");
+    ag_string_smart_t *s = ag_string_new("Hello, world!");
     ag_require (v && ag_string_eq(ag_value_string(v), s), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
