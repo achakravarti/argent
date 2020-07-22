@@ -1,3 +1,37 @@
+%https://www.overleaf.com/learn/latex/code_listing
+\definecolor{GREEN}{rgb}{0,0.6,0}
+\definecolor{GRAY}{rgb}{0.5,0.5,0.5}
+\definecolor{PURPLE}{rgb}{0.58,0,0.82}
+\definecolor{BACKGROUND}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CODE}{
+  backgroundcolor=\color{BACKGROUND},
+  commentstyle=\color{GREEN},
+  keywordstyle=\color{blue},
+  numberstyle=\tiny\color{GRAY},
+  stringstyle=\color{PURPLE},
+  basicstyle=\ttfamily\scriptsize,
+  language=C,
+  tabsize=4,
+  showspaces=false,
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\lstdefinestyle{SYNOPSIS}{
+  backgroundcolor=\color{white},
+  keywordstyle=\color{blue},
+  basicstyle=\ttfamily\scriptsize,
+  language=C,
+  directivestyle=\color{blue},
+  frame=none,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
 \chapter{Memory Block Module}
 
 \begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
@@ -29,3 +63,66 @@
     \bottomrule
   \end{tabular}
 \end{table}
+
+
+\section{Function \texttt{ag\_memblock\_new()}}
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+  \lstset{style=SYNOPSIS}
+  \begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern ag_memblock_t *ag_memblock_new(size_t sz);
+  \end{lstlisting}
+  \scriptsize
+  \texttt{sz} = \emph{allocation size in bytes}
+  \end{bclogo}
+
+\section{Function \texttt{ag\_memblock\_copy()}}
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+  \lstset{style=SYNOPSIS}
+  \begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
+  \end{lstlisting}
+  \scriptsize
+  \texttt{bfr} = \emph{buffer to copy}
+  \end{bclogo}
+
+\section{Function \texttt{ag\_memblock\_sz()}}
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+  \lstset{style=SYNOPSIS}
+  \begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
+  \end{lstlisting}
+  \scriptsize
+  \texttt{bfr} = \emph{buffer for which to determine size}
+  \end{bclogo}
+
+\section{Function \texttt{ag\_memblock\_resize()}}
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+  \lstset{style=SYNOPSIS}
+  \begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
+  \end{lstlisting}
+  \scriptsize
+  \texttt{bfr} = \emph{buffer to resize} \\
+  \texttt{sz} = \emph{new size in bytes}
+  \end{bclogo}
+
+\section{Function \texttt{ag\_memblock\_free()}}
+  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+    {Synopsis}
+  \lstset{style=SYNOPSIS}
+  \begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern void ag_memblock_free(ag_memblock_t **bfr);
+  \end{lstlisting}
+  \scriptsize
+  \texttt{bfr} = \emph{buffer to release} \\
+  \end{bclogo}
+
