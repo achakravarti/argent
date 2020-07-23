@@ -71,19 +71,17 @@
 
 \section{Function \texttt{ag\_memblock\_new()}}
 
-
-\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-  {Synopsis}
+\begin{noteblock}
+\small
+\verb|ag_memblock_new()|---allocates block of heap memory; returns allocated
+block of heap memory.
 \lstset{style=SYNOPSIS}
-
 \begin{lstlisting}[linewidth=1.0\linewidth]
 #include <argent/api.h>
 extern ag_memblock_t *ag_memblock_new(size_t sz);
 \end{lstlisting}
-
-\scriptsize
-\texttt{sz} = \emph{allocation size in bytes}
-\end{bclogo}
+\verb|sz| = size in bytes to allocate.
+\end{noteblock}
 
 The algorithm for the implementation of \verb|ag_memblock_new()| is given by
 Algorithm \ref{alg:ag_memblock_new}.
@@ -113,17 +111,18 @@ Algorithm \ref{alg:ag_memblock_new}.
 
 
 \section{Function \texttt{ag\_memblock\_copy()}}
-\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-  {Synopsis}
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_copy()|---copies existing block of heap memory; returns copied
+block of heap memory.
 \lstset{style=SYNOPSIS}
 \begin{lstlisting}[linewidth=1.0\linewidth]
 #include <argent/api.h>
 extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
 \end{lstlisting}
-\scriptsize
-\texttt{bfr} = \emph{buffer to copy}
-\end{bclogo}
-
+\verb|bfr| = heap block to copy.
+\end{noteblock}
 
 The algorithm for the implementation of \verb|ag_memblock_copy()| is given by
 Algorithm \ref{alg:ag_memblock_copy}.
@@ -154,16 +153,18 @@ Algorithm \ref{alg:ag_memblock_copy}.
 
 
 \section{Function \texttt{ag\_memblock\_sz()}}
-  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-    {Synopsis}
-  \lstset{style=SYNOPSIS}
-  \begin{lstlisting}[linewidth=1.0\linewidth]
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_sz()|---gets size block of heap memory; returns size in bytes
+of heap block.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
 #include <argent/api.h>
 extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
-  \end{lstlisting}
-  \scriptsize
-  \texttt{bfr} = \emph{buffer for which to determine size}
-  \end{bclogo}
+\end{lstlisting}
+\verb|bfr| = heap block to query.
+\end{noteblock}
 
 \lstset{style=CODE}
 \lstinputlisting[linerange={60-64},caption=Definition of ag\_memblock\_sz()]
@@ -176,21 +177,18 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
 
 
 \section{Function \texttt{ag\_memblock\_resize()}}
-  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-    {Synopsis}
-  \lstset{style=SYNOPSIS}
-  \begin{lstlisting}[linewidth=1.0\linewidth]
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_resize()|---resizes allocated block of heap memory.
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}[linewidth=1.0\linewidth]
 #include <argent/api.h>
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
-  \end{lstlisting}
-  \scriptsize
-  \texttt{bfr} = \emph{buffer to resize} \\
-  \texttt{sz} = \emph{new size in bytes}
-  \end{bclogo}
-
-\lstset{style=CODE}
-\lstinputlisting[linerange={68-73},caption=Definition of ag\_memblock\_resize()]
-  {../src/memblock.c}
+\end{lstlisting}
+\verb|bfr| = heap block to resize, \par
+\verb|sz| = new size in bytes.
+\end{noteblock}
 
 \lstset{style=CODE}
 \lstinputlisting[linerange={68-73},caption=Definition of ag\_memblock\_resize()]
@@ -204,16 +202,17 @@ extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
 
 \section{Function \texttt{ag\_memblock\_free()}}
-  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-    {Synopsis}
-  \lstset{style=SYNOPSIS}
-  \begin{lstlisting}[linewidth=1.0\linewidth]
+
+\begin{noteblock}
+\small
+\verb|ag_memblock_free()|---releases allocated block of heap memory
+\lstset{style=SYNOPSIS}
+\begin{lstlisting}
 #include <argent/api.h>
 extern void ag_memblock_free(ag_memblock_t **bfr);
-  \end{lstlisting}
-  \scriptsize
-  \texttt{bfr} = \emph{buffer to release} \\
-  \end{bclogo}
+\end{lstlisting}
+\verb|bfr| = heap block to release.
+\end{noteblock}
 
 \lstset{style=CODE}
 \lstinputlisting[linerange={77-83},caption=Definition of ag\_memblock\_resize()]
