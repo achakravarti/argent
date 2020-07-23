@@ -70,31 +70,40 @@
 %
 
 \section{Function \texttt{ag\_memblock\_new()}}
-  \begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
-    {Synopsis}
-  \lstset{style=SYNOPSIS}
-  \begin{lstlisting}[linewidth=1.0\linewidth]
+
+
+\begin{bclogo}[logo=\bccrayon, noborder=true, barre=snake, couleurBarre=gray]
+  {Synopsis}
+\lstset{style=SYNOPSIS}
+
+\begin{lstlisting}[linewidth=1.0\linewidth]
 #include <argent/api.h>
 extern ag_memblock_t *ag_memblock_new(size_t sz);
-  \end{lstlisting}
-  \scriptsize
-  \texttt{sz} = \emph{allocation size in bytes}
-  \end{bclogo}
-
-\lstset{style=CODE}
-\begin{lstlisting}[linewidth=1.0\linewidth,
-    caption=Definition of ag\_memblock\_new()]
-extern ag_memblock_t *ag_memblock_new(size_t sz)
-{
-    ag_assert (sz);
-    void *bfr = malloc(sz);
-    ag_require (bfr, AG_ERNO_MEMBLOCK_NEW, NULL);
-
-    memset(bfr, 0, sz);
-    return bfr;
-}
 \end{lstlisting}
 
+\scriptsize
+\texttt{sz} = \emph{allocation size in bytes}
+\end{bclogo}
+
+The algorithm for the implementation of \verb|ag_memblock_new()| is given by
+Algorithm \ref{alg:ag_memblock_new}.
+
+\begin{algorithm}
+\scriptsize
+\caption{\texttt{ag\_memblock\_new()}}
+\label{alg:ag_memblock_new}
+
+\begin{algorithmic}
+\Procedure{ag\_memblock\_new}{$sz$}
+\Require $sz \geq 0$
+\State $bfr \gets malloc(sz)$
+\Ensure $bfr \neq null$
+\State $bfr \gets memset(0)$
+\State return $bfr$
+\EndProcedure
+\end{algorithmic}
+
+\end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %		      Section: Function ag_memblock_copy()
