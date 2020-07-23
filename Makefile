@@ -72,7 +72,7 @@ doc:
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
 	$(DOC_BIB) $(DOC_OUT)
 	$(DOC_GEN) $(DOC_FLG) $(DOC_OUT)
-	$(DOC_VWR) $(DOC_DIR)/$(DOC_OUT).pdf &
+	(DOC_VWR) $(DOC_DIR)/$(DOC_OUT).pdf &
 
 check: $(BIN_TEST)
 	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
