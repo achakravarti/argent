@@ -92,7 +92,6 @@ Algorithm \ref{alg:ag_memblock_new}.
 \scriptsize
 \caption{\texttt{ag\_memblock\_new()}}
 \label{alg:ag_memblock_new}
-
 \begin{algorithmic}
 \Require $sz \geq 0$
 \Procedure{ag\_memblock\_new}{$sz$}
@@ -102,8 +101,11 @@ Algorithm \ref{alg:ag_memblock_new}.
 \EndProcedure
 \Ensure $bfr \neq null$
 \end{algorithmic}
-
 \end{algorithm}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={35-43},caption=Definition of ag\_memblock\_new()]
+  {../src/memblock.c}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %		      Section: Function ag_memblock_copy()
@@ -130,7 +132,6 @@ Algorithm \ref{alg:ag_memblock_copy}.
 \scriptsize
 \caption{\texttt{ag\_memblock\_copy()}}
 \label{alg:ag_memblock_copy}
-
 \begin{algorithmic}
 \Require $bfr \neq null$
 \Procedure{ag\_memblock\_copy}{$bfr$}
@@ -140,27 +141,11 @@ Algorithm \ref{alg:ag_memblock_copy}.
 \State return $cp$
 \EndProcedure
 \end{algorithmic}
-
 \end{algorithm}
 
-
-
-
-
 \lstset{style=CODE}
-\begin{lstlisting}[linewidth=1.0\linewidth,
-    caption=Definition of ag\_memblock\_copy()]
-extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
-{
-    ag_assert (bfr);
-    size_t sz = ag_memblock_sz(bfr);
-
-    ag_memblock_t *cp = ag_memblock_new(sz);
-    memcpy(cp, bfr, sz);
-
-    return cp;
-}
-\end{lstlisting}
+\lstinputlisting[linerange={47-56},caption=Definition of ag\_memblock\_copy()]
+  {../src/memblock.c}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,14 +166,8 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
   \end{bclogo}
 
 \lstset{style=CODE}
-\begin{lstlisting}[linewidth=1.0\linewidth,
-    caption=Definition of ag\_memblock\_sz()]
-extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
-{
-    ag_assert (bfr);
-    return malloc_usable_size((void *) bfr);
-}
-\end{lstlisting}
+\lstinputlisting[linerange={60-64},caption=Definition of ag\_memblock\_sz()]
+  {../src/memblock.c}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -210,15 +189,13 @@ extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
   \end{bclogo}
 
 \lstset{style=CODE}
-\begin{lstlisting}[linewidth=1.0\linewidth,
-    caption=Definition of ag\_memblock\_resize()]
-extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
-{
-    ag_assert (bfr && *bfr && sz);
-    *bfr = realloc(*bfr, sz);
-    ag_require (*bfr, AG_ERNO_MEMBLOCK_RESIZE, NULL);
-}
-\end{lstlisting}
+\lstinputlisting[linerange={68-73},caption=Definition of ag\_memblock\_resize()]
+  {../src/memblock.c}
+
+\lstset{style=CODE}
+\lstinputlisting[linerange={68-73},caption=Definition of ag\_memblock\_resize()]
+  {../src/memblock.c}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,15 +216,5 @@ extern void ag_memblock_free(ag_memblock_t **bfr);
   \end{bclogo}
 
 \lstset{style=CODE}
-\begin{lstlisting}[linewidth=1.0\linewidth,
-    caption=Definition of ag\_memblock\_free()]
-extern void ag_memblock_free(ag_memblock_t **bfr)
-{
-    if (ag_likely (bfr && *bfr)) {
-        free(*bfr);
-        *bfr = NULL;
-    }
-}
-
-\end{lstlisting}
-
+\lstinputlisting[linerange={77-83},caption=Definition of ag\_memblock\_resize()]
+  {../src/memblock.c}
