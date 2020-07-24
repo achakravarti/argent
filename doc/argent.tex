@@ -23,58 +23,9 @@
 \usepackage{listings}         % for source code listings
 \usepackage{wallpaper}        % for page image backgrounds
 \usepackage{wrapfig}          % for wrapping sideboxes
+\usepackage{wrapfig}          % for wrapping sideboxes
+\usepackage{kantlipsum}           % for dummy text -- REMOVE
 
-
-%
-% document colours
-%
-\definecolor{pastelblue}{RGB}{68,78,81}
-\definecolor{green}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{purple}{rgb}{0.58,0,0.82}
-\definecolor{silver}{rgb}{0.75,0.75,0.75}
-
-
-%
-% code declaration list style
-%
-\lstdefinestyle{definition}{
-  backgroundcolor=\color{white},
-  basicstyle=\ttfamily\scriptsize,
-  breaklines=true,
-  captionpos=b,
-  commentstyle=\color{green},
-  frame=single,
-  keywordstyle=\color{blue},
-  language=C,
-  numberstyle=\tiny\color{green},
-  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
-  showspaces=false,
-  showstringspaces=false,
-  stringstyle=\color{orange},
-  tabsize=4,
-}
-
-
-%
-% code definition list style
-%
-\lstdefinestyle{definition}{
-  backgroundcolor=\color{silver},
-  basicstyle=\ttfamily\scriptsize,
-  breaklines=true,
-  captionpos=b,
-  commentstyle=\color{green},
-  frame=single,
-  keywordstyle=\color{blue},
-  language=C,
-  numberstyle=\tiny\color{green},
-  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
-  showspaces=false,
-  showstringspaces=false,
-  stringstyle=\color{orange},
-  tabsize=4,
-}
 
 
 %
@@ -84,7 +35,7 @@
 \fancyhf{}
 \fancyhead[LE,RO]{Argent}
 \fancyhead[RE,LO]{v1.0.0}
-\fancyfoot[LE,RO]{\leftmark}
+\fancyfoot[LE,RO]{\nouppercase{\leftmark}}
 \fancyfoot[RE,LO]{\thepage}
 \renewcommand{\footrulewidth}{0.2pt}
 \renewcommand\headrule{{\color{pastelblue}\raisebox{-2.1pt}[10pt][10pt]{
@@ -112,6 +63,12 @@
 \LARGE Developer Manual\par\vspace{5em} Abhishek Chakravarti\par
 \vspace{0.5em}\small abhishek@taranjali.org\vfill\large May 2020
 \end{titlepage}
+
+
+%
+% chapters
+%
+\input{chp/memblock}
 
 
 \end{document}

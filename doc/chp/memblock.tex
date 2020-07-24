@@ -1,0 +1,101 @@
+%
+% document colours
+%
+\definecolor{pastelblue}{RGB}{68,78,81}
+\definecolor{green}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{purple}{rgb}{0.58,0,0.82}
+\definecolor{silver}{rgb}{0.75,0.75,0.75}
+
+
+%
+% code declaration list style
+%
+\lstdefinestyle{declaration}{
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=none,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+
+%
+% code definition list style
+%
+\lstdefinestyle{definition}{
+  backgroundcolor=\color{silver},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=single,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+
+\chapter{Memory Block Module}
+\ThisULCornerWallPaper{0.5}{kirsty-paget.jpg}
+\newpage
+
+
+\section{Function \texttt{ag\_memblock\_new()}}
+
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+\begin{minipage}{0.6\textwidth}
+\vspace{-1em}
+\begin{noteblock}
+\small
+\verb|ag_memblock_new()|---allocates block of heap memory; returns allocated
+block of heap memory.
+\lstset{style=declaration}
+\begin{lstlisting}[linewidth=1.0\linewidth]
+#include <argent/api.h>
+extern ag_memblock_t *ag_memblock_new(size_t sz);
+\end{lstlisting}
+\verb|sz| = size in bytes to allocate.
+\end{noteblock}
+\end{minipage}
+\end{wrapfigure}
+
+\kant[1]
+
+\begin{wrapfigure}{r}{.6\textwidth}
+\begin{minipage}{0.6\textwidth}
+\vspace{-1em}
+\begin{algorithm}[H]
+\small
+\caption{\texttt{ag\_memblock\_new()}}
+\label{alg:ag_memblock_new}
+\begin{algorithmic}
+\Require $sz \geq 0$
+\Procedure{ag\_memblock\_new}{$sz$}
+\State $bfr \gets malloc(sz)$
+\State $bfr \gets memset(0)$
+\State return $bfr$
+\EndProcedure
+\Ensure $bfr \neq null$
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\end{wrapfigure}
+
+\kant[2]
+
