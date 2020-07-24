@@ -1,0 +1,118 @@
+\documentclass[twoside,12pt,english]{book}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				    PREAMBLE
+%
+
+
+%
+% required packages
+%
+\usepackage{algorithm}        % for algorithms
+\usepackage{algpseudocode}    % """
+\usepackage{awesomebox}       % for stylised sideboxes 
+\usepackage[backend=biber,
+  bibencoding=utf8,
+  citestyle=authoryear,
+  maxbibnames=5,
+  minbibnames=5,
+  style=alphabetic]{biblatex} % for bibliography
+\usepackage{fancyhdr}         % for header & footer styling
+\usepackage{fourier-orns}     % """
+\usepackage{listings}         % for source code listings
+\usepackage{wallpaper}        % for page image backgrounds
+\usepackage{wrapfig}          % for wrapping sideboxes
+
+
+%
+% document colours
+%
+\definecolor{pastelblue}{RGB}{68,78,81}
+\definecolor{green}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{purple}{rgb}{0.58,0,0.82}
+\definecolor{silver}{rgb}{0.75,0.75,0.75}
+
+
+%
+% code declaration list style
+%
+\lstdefinestyle{definition}{
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=single,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+
+%
+% code definition list style
+%
+\lstdefinestyle{definition}{
+  backgroundcolor=\color{silver},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{green},
+  frame=single,
+  keywordstyle=\color{blue},
+  language=C,
+  numberstyle=\tiny\color{green},
+  postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space},
+  showspaces=false,
+  showstringspaces=false,
+  stringstyle=\color{orange},
+  tabsize=4,
+}
+
+
+%
+% Header and footer style
+%
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Argent}
+\fancyhead[RE,LO]{v1.0.0}
+\fancyfoot[LE,RO]{\leftmark}
+\fancyfoot[RE,LO]{\thepage}
+\renewcommand{\footrulewidth}{0.2pt}
+\renewcommand\headrule{{\color{pastelblue}\raisebox{-2.1pt}[10pt][10pt]{
+  \decoone}\hrulefill\raisebox{-2.1pt}[10pt][10pt]{
+  ~~~\decofourleft\decotwo\decofourright~~~}\hrulefill\raisebox{-2.1pt}
+  [10pt][10pt]{\decoone}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				   DOCUMENT 
+%
+
+
+\begin{document}
+
+
+%
+% title page
+%
+\begin{titlepage}
+\centering
+\includegraphics[width=0.95\textwidth]{the-great-sea.jpg}\par\vspace{1em}
+\Huge Argent Library\par\vspace{0.5em}\large v0.1.0\par\vspace{0.5em} 
+\LARGE Developer Manual\par\vspace{5em} Abhishek Chakravarti\par
+\vspace{0.5em}\small abhishek@taranjali.org\vfill\large May 2020
+\end{titlepage}
+
+
+\end{document}
+

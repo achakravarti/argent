@@ -38,7 +38,7 @@ DOC_GEN = cd $(DOC_DIR) && pdflatex
 DOC_BIB = cd $(DOC_DIR) && biber
 DOC_VWR = xdg-open
 DOC_FLG = --halt-on-error
-DOC_OUT = argent-manual
+DOC_OUT = argent
 DOC_TMP = *.aux *.bbl *.bcf *.blg *.log *.pdf *.synctex.gz *.xml *.toc *.loa \
 	*.lof *.lot *.idx *.ilg *.ind
 
