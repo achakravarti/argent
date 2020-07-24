@@ -32,16 +32,20 @@
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
 
+\newenvironment{WrapText}[1][r]
+  {\wrapfigure{#1}{0.5\textwidth}\tcolorbox}
+  {\endtcolorbox\endwrapfigure}
+
 \chapter{Memory Block Module}
 
 \begin{bclogo}[logo=\bctrombone, noborder=true, couleurBarre=blue!30]{Files}
-  \small
-  \begin{tabular}{l l}
-    \faPlug & \verb|src/api.h| \\
-    \faWrench & \verb|src/api.h| \\
-    \faBalanceScale & \verb|test/memblock.c| \\
-    \faBook & \verb|doc/chp/memblock.tex| \\
-  \end{tabular}
+\small
+\begin{tabular}{l l}
+\faPlug & \verb|src/api.h| \\
+\faWrench & \verb|src/api.h| \\
+\faBalanceScale & \verb|test/memblock.c| \\
+\faBook & \verb|doc/chp/memblock.tex| \\
+\end{tabular}
 \end{bclogo}
 
 \renewcommand\arraystretch{1.1}
@@ -86,8 +90,9 @@ extern ag_memblock_t *ag_memblock_new(size_t sz);
 The algorithm for the implementation of \verb|ag_memblock_new()| is given by
 Algorithm \ref{alg:ag_memblock_new}.
 
+\begin{WrapText}
+
 \begin{algorithm}
-\scriptsize
 \caption{\texttt{ag\_memblock\_new()}}
 \label{alg:ag_memblock_new}
 \begin{algorithmic}
@@ -100,6 +105,8 @@ Algorithm \ref{alg:ag_memblock_new}.
 \Ensure $bfr \neq null$
 \end{algorithmic}
 \end{algorithm}
+
+\end{WrapText}
 
 \lstset{style=CODE}
 \lstinputlisting[linerange={35-43},caption=Definition of ag\_memblock\_new()]
@@ -165,6 +172,25 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
 \end{lstlisting}
 \verb|bfr| = heap block to query.
 \end{noteblock}
+
+The algorithm for the implementation of \verb|ag_memblock_sz()| is given by
+Algorithm \ref{alg:ag_memblock_sz}.
+
+\begin{algorithm}
+\scriptsize
+\caption{\texttt{ag\_memblock\_sz()}}
+\label{alg:ag_memblock_sz}
+\begin{algorithmic}
+\Require $bfr \neq null$
+\Procedure{ag\_memblock\_copy}{$bfr$}
+\State $sz \gets ag\_memblock\_sz(bfr)$ \Comment{compute size of bfr}
+\State $cp \gets ag\_memblock\_new(sz)$ \Comment{create new block of size sz}
+\State $cp \gets memcpy(bfr)$ \Comment{copy bfr to cp}
+\State return $cp$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
 
 \lstset{style=CODE}
 \lstinputlisting[linerange={60-64},caption=Definition of ag\_memblock\_sz()]
