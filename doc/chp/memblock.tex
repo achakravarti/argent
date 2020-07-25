@@ -61,7 +61,8 @@
 
 %
 % command to show function synopsis
-\newcommand{\agFnSynopsis}[3]{%
+%
+\newcommand{\agFnSynopsis}[3]{
   \begin{wrapfigure}{l}{0.6\textwidth}
   \begin{minipage}{0.6\textwidth}
   \vspace{-1em}
@@ -76,6 +77,27 @@
   \end{wrapfigure}
 }
 
+
+%
+% command to show show algorithm
+%
+\newcommand{\agAlgorithm}[3]{
+  \begin{wrapfigure}{r}{.6\textwidth}
+  \begin{minipage}{0.6\textwidth}
+  \vspace{-1em}
+  \begin{algorithm}[H]
+  \small
+  \caption{#2}
+  \label{#1}
+  \begin{algorithmic}
+  #3
+  \end{algorithmic}
+  \end{algorithm}
+  \end{minipage}
+  \end{wrapfigure}
+}
+
+
 \chapter{Memory Block Module}
 \ThisULCornerWallPaper{0.5}{kirsty-paget.jpg}
 \newpage
@@ -88,25 +110,15 @@
 
 \kant[1]
 
-\begin{wrapfigure}{r}{.6\textwidth}
-\begin{minipage}{0.6\textwidth}
-\vspace{-1em}
-\begin{algorithm}[H]
-\small
-\caption{\texttt{ag\_memblock\_new()}}
-\label{alg:ag_memblock_new}
-\begin{algorithmic}
-\Require $sz \geq 0$
-\Procedure{ag\_memblock\_new}{$sz$}
-\State $bfr \gets malloc(sz)$
-\State $bfr \gets memset(0)$
-\State return $bfr$
-\EndProcedure
-\Ensure $bfr \neq null$
-\end{algorithmic}
-\end{algorithm}
-\end{minipage}
-\end{wrapfigure}
+\agAlgorithm{alg:agMemblockNew}{\agMemblockNew}{
+  \Require $sz \geq 0$
+  \Procedure{ag\_memblock\_new}{$sz$}
+  \State $bfr \gets malloc(sz)$
+  \State $bfr \gets memset(0)$
+  \State return $bfr$
+  \EndProcedure
+  \Ensure $bfr \neq null$
+}
 
 \kant[2]
 
