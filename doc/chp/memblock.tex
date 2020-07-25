@@ -49,6 +49,32 @@
   tabsize=4,
 }
 
+%
+% command aliases for ag_memblock_t interface functions
+%
+\newcommand{\agMemblockNew}{\texttt{ag\_memblock\_new()}}
+\newcommand{\agMemblockCopy}{\texttt{ag\_memblock\_copy()}}
+\newcommand{\agMemblockSz}{\texttt{ag\_memblock\_sz()}}
+\newcommand{\agMemblockResize}{\texttt{ag\_memblock\_resize()}}
+\newcommand{\agMemblockFree}{\texttt{ag\_memblock\_free()}}
+
+
+%
+% command to show function synopsis
+\newcommand{\agFnSynopsis}[3]{%
+  \begin{wrapfigure}{l}{0.6\textwidth}
+  \begin{minipage}{0.6\textwidth}
+  \vspace{-1em}
+  \begin{noteblock}
+  \small
+  #1.
+  \lstset{style=declaration}
+  \lstinputlisting[linerange={#2}]{../src/api.h}
+  #3
+  \end{noteblock}
+  \end{minipage}
+  \end{wrapfigure}
+}
 
 \chapter{Memory Block Module}
 \ThisULCornerWallPaper{0.5}{kirsty-paget.jpg}
@@ -57,23 +83,8 @@
 
 \section{Function \texttt{ag\_memblock\_new()}}
 
-
-\begin{wrapfigure}{l}{0.6\textwidth}
-\begin{minipage}{0.6\textwidth}
-\vspace{-1em}
-\begin{noteblock}
-\small
-\verb|ag_memblock_new()|---allocates block of heap memory; returns allocated
-block of heap memory.
-\lstset{style=declaration}
-\begin{lstlisting}[linewidth=1.0\linewidth]
-#include <argent/api.h>
-extern ag_memblock_t *ag_memblock_new(size_t sz);
-\end{lstlisting}
-\verb|sz| = size in bytes to allocate.
-\end{noteblock}
-\end{minipage}
-\end{wrapfigure}
+\agFnSynopsis{\agMemblockNew---allocates block of heap memory; returns allocated
+  block of heap memory}{55-60}{\texttt{sz} = size in bytes to allocate}
 
 \kant[1]
 
