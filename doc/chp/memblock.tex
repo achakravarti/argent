@@ -127,7 +127,7 @@
 %
 \section{Function \agMemblockCopy}
 \agFnSynopsis{\agMemblockCopy---copies existing block of heap memory; returns
-copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
+  copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
 \kant[1]
 \agAlgorithm{alg:agMemblockCopy}{\agMemblockCopy}{
   \Require $bfr \neq null$
@@ -146,6 +146,15 @@ copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
 %
 \section{Function \agMemblockSz}
 \agFnSynopsis{\agMemblockSz---gets size of block of heap memory; returns size in
-bytes of heap block}{283-283}{\texttt{bfr} = heap block to query}
+  bytes of heap block}{283-283}{\texttt{bfr} = heap block to query}
 \kant[1]
 
+
+%
+% section ag_memblock_resize()
+%
+\section{Function \agMemblockResize}
+\agFnSynopsis{\agMemblockResize---resizes allocated block of heap memory}
+  {292-292}{\texttt{bfr} = heap block to resize,\par\texttt{sz} = new size in
+  bytes}
+\kant[1]
