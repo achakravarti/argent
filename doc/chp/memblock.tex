@@ -183,7 +183,41 @@ memory to zero before returning the handle to it.
 \section{Function \agMemblockSz}
 \agFnSynopsis{\agMemblockSz---gets size of block of heap memory; returns size in
   bytes of heap block}{283-283}{\texttt{bfr} = heap block to query}
-\kant[1]
+
+Sometimes it is useful to be determine the size of a block of heap memory that
+was allocated earlier without having to resort to storing the size in a separate
+variable. The interface function \agMemblockSz provides a way to do so, allowing
+client code to query the size of a block of heap memory \verb|bfr| that was 
+allocated by \agMemblockNew or \agMemblockCopy. 
+
+\agMemblockSz requires that \verb|bfr| be a valid handle to a block of heap 
+memory; this function asserts in debug builds that the handle is not 
+\verb|NULL|. Passing a pointer to the stack memory is an error, and will result 
+in undefined behaviour, most likely being a segmentation fault.
+
+As in the case of \agMemblockNew, it is important to remember that the size
+returned by \agMemblockSz may be greater than that which had been originally
+requested at the time of allocation, since the underlying \verb|malloc()| call
+needs to take into account alignment and size restrictions.
+
+\agAlgorithm{alg:agMemblockSz}{\agMemblockSz}{
+  \Require $bfr \neq null$
+  \Procedure{ag\_memblock\_sz}{$bfr$}
+  \State return $malloc\_usable\_size(bfr)$
+  \EndProcedure
+}
+
+There is an important caveat regarding portability. The C standard does not
+define a way to query the size of the heap block returned by \verb|malloc()|,
+and so we need to rely on the functionality provided by the underlying
+\verb|libc| implementation. As of the current version, \agMemblockSz is
+guaranteed to work on GNU/Linux, Cygwin and the various BSDs.
+
+The algorithm for \agMemblockSz is given by \ref{alg:agMemblockSz}. We assert
+that the block of heap memory to query is valid and pass it to
+\verb|malloc_usable_size()|, returning the value thereby obtained.
+\verb|malloc_usable_size()| is a non-standard function supported by both
+\verb|glibc| and BSD \verb|libc|.
 
 
 %
