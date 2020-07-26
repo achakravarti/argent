@@ -139,7 +139,7 @@ alignment and minimum size constraints.
   \Ensure $bfr \neq null$
 }
 
-The two most likely reasons for failure are the value of \texttt{sz} being
+The two most likely reasons for failure are the value of \verb|sz| being
 larger than the amount of heap memory physically available, and excess
 fragmentation of the heap. Neither of these failure conditions have been tested,
 though.
@@ -164,23 +164,42 @@ memory to zero before returning the handle to it.
 \section{Function \agMemblockCopy}
 \agFnSynopsis{\agMemblockCopy---copies existing block of heap memory; returns
   copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
-\kant[1]
+
+\agMemblockCopy makes a deep copy of an existing block of heap memory, passed as
+a handle to its only parameter \verb|bfr|. \verb|bfr| is required to be valid;
+this is asserted in debug builds. Additionally, it is required for \verb|bfr| to
+have been allocated on the heap by an earlier call to \agMemblockNew (or 
+\agMemblockCopy itself); passing a handle to a block of memory on the stack is
+an error, leading to undefined behaviour (most likely a segmentation fault).
+
+If successful, \agMemblockCopy returns a handle to the newly allocated copy of
+\verb|bfr|. In case of failure to do so, the \verb|AG_ERNO_MEMBLOCK_NEW|
+exception is raised, and control is passed to the client-provided exception
+handler. Since in the normal flow of control the newly allocated copy is
+guaranteed to be valid, there is no need for client code to make a further
+check on the return value.
+
+Since \agMemblockCopy relies on the non-standard \verb|libc| call, it is 
+important to remember the portability restrictions this entails; see section
+\ref{sec:agMemblockSz} on page \pageref{sec:agMemblockSz} for more details.
+
 \agAlgorithm{alg:agMemblockCopy}{\agMemblockCopy}{
   \Require $bfr \neq null$
   \Procedure{ag\_memblock\_copy}{$bfr$}
-  \State $sz \gets ag\_memblock\_sz(bfr)$ \Comment{compute size of bfr}
-  \State $cp \gets ag\_memblock\_new(sz)$ \Comment{create new block of size sz}
-  \State $cp \gets memcpy(bfr)$ \Comment{copy bfr to cp}
+  \State $sz \gets ag\_memblock\_sz(bfr)$
+  \State $cp \gets ag\_memblock\_new(sz)$ 
+  \State $cp \gets memcpy(bfr)$ 
   \State return $cp$
   \EndProcedure
 }
-\kant[2]
 
 
 %
 % section ag_memblock_sz()
 %
 \section{Function \agMemblockSz}
+\label{sec:agMemblockSz}
+
 \agFnSynopsis{\agMemblockSz---gets size of block of heap memory; returns size in
   bytes of heap block}{283-283}{\texttt{bfr} = heap block to query}
 
