@@ -61,6 +61,7 @@
 
 %
 % command to show function synopsis
+% \agFnSynopsis{description}{linerange}{parameters}
 %
 \newcommand{\agFnSynopsis}[3]{
   \begin{wrapfigure}{l}{0.6\textwidth}
@@ -80,6 +81,7 @@
 
 %
 % command to show show algorithm
+% \agAlgorithm{label}{caption}{algorithm}
 %
 \newcommand{\agAlgorithm}[3]{
   \begin{wrapfigure}{r}{.6\textwidth}
@@ -111,24 +113,19 @@
   block of heap memory}{265-265}{\texttt{sz} = size in bytes to allocate}
 
 \agMemblockNew  is responsible for allocating a new block of heap memory. The 
-size in bytes to allocate is passed through the \texttt{sz}
-parameter. The value of \texttt{sz} is required to be greater than zero; this
-condition is asserted in debug builds.
+size in bytes to allocate is passed through the \verb|sz| parameter. The value 
+of \verb|sz| is required to be greater than zero; this condition is asserted in 
+debug builds.
 
 If successful, a handle to the new block of heap memory is returned. In case of 
 failure to allocate heap memory, \agMemblockNew raises an exception with the 
 \verb|AG_MEMBLOCK_NEW| error code, which is left for the exception handler 
 callback function (defined by client code) to process. Hence, there is no need 
-to check for the returned handle being non-\texttt{NULL} in the normal 
+to check for the returned handle being non-\verb|NULL| in the normal 
 flow of code.
 
-The two most likely reasons for failure are the value of \texttt{sz} being
-larger than the amount of heap memory physically available, and excess
-fragmentation of the heap. Neither of these failure conditions have been tested,
-though.
-
 \agAlgorithm{alg:agMemblockNew}{\agMemblockNew}{
-  \Require $sz \geq 0$
+  \Require $sz > 0$
   \Procedure{ag\_memblock\_new}{$sz$}
   \State $bfr \gets malloc(sz)$
   \State $bfr \gets memset(0)$
@@ -136,7 +133,24 @@ though.
   \EndProcedure
   \Ensure $bfr \neq null$
 }
-\kant[2]
+
+The two most likely reasons for failure are the value of \texttt{sz} being
+larger than the amount of heap memory physically available, and excess
+fragmentation of the heap. Neither of these failure conditions have been tested,
+though.
+
+The implementation of \agMemblockNew is quite straight-forward, essentially
+being a wrapper around the standard \verb|malloc()| function along with an
+in-built check for success. The algorithm for \agMemblockNew is given by 
+Algorithm \ref{alg:agMemblockNew}.
+
+We start off by asserting that the size of allocation specified through the
+\verb|sz| parameter is $>$ 0, and then call \verb|malloc()| to allocated the
+required amount of heap memory. We ensure that the handle to the allocated block
+is valid; if not, we raise the \verb|AG_ERNO_MEMBLOCK_NEW| exception, passing
+control to the client-provided exception handler callback without any extra
+data. If the alloction has been successful, then we initialise the allocated
+memory to zero before returning the handle to it.
 
 
 %
