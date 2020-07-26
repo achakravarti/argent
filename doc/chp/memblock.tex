@@ -124,6 +124,11 @@ callback function (defined by client code) to process. Hence, there is no need
 to check for the returned handle being non-\verb|NULL| in the normal 
 flow of code.
 
+It is important to note that the actual size of the allocated block may well be
+greater than that specified by \verb|sz|. This is because the underlying
+\verb|malloc()| function may allocate a larger block in order to account for
+alignment and minimum size constraints.
+
 \agAlgorithm{alg:agMemblockNew}{\agMemblockNew}{
   \Require $sz > 0$
   \Procedure{ag\_memblock\_new}{$sz$}
