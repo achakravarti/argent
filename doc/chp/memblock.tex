@@ -172,17 +172,6 @@ have been allocated on the heap by an earlier call to \agMemblockNew (or
 \agMemblockCopy itself); passing a handle to a block of memory on the stack is
 an error, leading to undefined behaviour (most likely a segmentation fault).
 
-If successful, \agMemblockCopy returns a handle to the newly allocated copy of
-\verb|bfr|. In case of failure to do so, the \verb|AG_ERNO_MEMBLOCK_NEW|
-exception is raised, and control is passed to the client-provided exception
-handler. Since in the normal flow of control the newly allocated copy is
-guaranteed to be valid, there is no need for client code to make a further
-check on the return value.
-
-Since \agMemblockCopy relies on the non-standard \verb|libc| call, it is 
-important to remember the portability restrictions this entails; see section
-\ref{sec:agMemblockSz} on page \pageref{sec:agMemblockSz} for more details.
-
 \agAlgorithm{alg:agMemblockCopy}{\agMemblockCopy}{
   \Require $bfr \neq null$
   \Procedure{ag\_memblock\_copy}{$bfr$}
@@ -192,6 +181,24 @@ important to remember the portability restrictions this entails; see section
   \State return $cp$
   \EndProcedure
 }
+
+On successful completion, \agMemblockCopy \\ returns a handle to the newly 
+allocated copy of \verb|bfr|. In case of failure to do so, the 
+\verb|AG_ERNO_MEMBLOCK_NEW| exception is raised, and control is passed to the 
+client-provided exception handler. Since in the normal flow of control the newly
+allocated copy is guaranteed to be valid, there is no need for client code to 
+make a further check on the return value.
+
+Since \agMemblockCopy relies on a non-standard \verb|libc| call, it is 
+important to remember the portability restrictions this entails; see section
+\ref{sec:agMemblockSz} on page \pageref{sec:agMemblockSz} for more details.
+
+The algorithm for \agMemblockCopy is given by Algorithm
+\ref{alg:agMemblockCopy}. We start by asserting that the \verb|bfr| argument is
+valid and computing its allocated size through a call to
+\verb|ag_memblock_sz()|. We then create a new a new block of heap memory of the
+same size, copy the contents of \verb|bfr| to this newly allocated block, and
+then return the handle to this new block.
 
 
 %
