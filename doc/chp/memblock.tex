@@ -239,8 +239,8 @@ and so we need to rely on the functionality provided by the underlying
 \verb|libc| implementation. As of the current version, \agMemblockSz is
 guaranteed to work on GNU/Linux, Cygwin and the various BSDs.
 
-The algorithm for \agMemblockSz is given by \ref{alg:agMemblockSz}. We assert
-that the block of heap memory to query is valid and pass it to
+The algorithm for \agMemblockSz is given by Algorithm \ref{alg:agMemblockSz}. We
+assert that the block of heap memory to query is valid and pass it to
 \verb|malloc_usable_size()|, returning the value thereby obtained.
 \verb|malloc_usable_size()| is a non-standard function supported by both
 \verb|glibc| and BSD \verb|libc|.
@@ -250,11 +250,47 @@ that the block of heap memory to query is valid and pass it to
 % section ag_memblock_resize()
 %
 \section{Function \agMemblockResize}
+\label{sec:agMemblockResize}
+
 \agFnSynopsis{\agMemblockResize---resizes allocated block of heap memory}
   {292-292}{\texttt{bfr} = heap block to resize,\par\texttt{sz} = new size in
   bytes}
-\kant[1]
 
+Sometimes client code requires to resize an existing block of heap memory, even
+though this is a rare operation within the implementation of the Argent Library.
+In order to faciliate this, the interface function \agMemblockResize has \\
+been provided.
+
+The \agMemblockResize function takes two arguments, the first being a handle to
+the memory block that needs to be resized, and the second being the new size.
+The first argument is required to be a valid handle (a non-null double pointer
+to a block of heap memory, and the second argument is required to be greater
+than zero. The size specified by the second argument may be less than the
+original size of the memory block.
+
+\agAlgorithm{alg:agMemblockResize}{\agMemblockResize}{
+  \Require $bfr \neq null$
+  \Require $sz > 0$
+  \Procedure{ag\_memblock\_resize}{$bfr, sz$}
+  \State $bfr \gets realloc(bfr, sz)$
+  \EndProcedure
+  \Ensure $bfr \neq null$
+}
+
+Note that, as in the case of \agMemblockNew, if \agMemblockResize is successful,
+then the new size of the memory block passed as the first argument may be larger
+than the amount specified by the second argument owing to alignment 
+restrictions.
+
+In case \agMemblockResize fails to resize the memory block, then it raises the
+\texttt{AG\_ERNO\_MEMBLOCK\_RESIZE} error code, which is subsequently passed to 
+the exception handler (defined by client code) to process. 
+
+The algorithm for \agMemblockResize is given by Algorithm
+\ref{alg:agMemblockResize}. We assert that the block of heap memory to resize is
+valid, and that new size is greater than zero. We then call the standard C
+library function \texttt{realloc()} to resize the memory buffer and ensure that
+the resized buffer is valid.
 
 %
 % section ag_memblock_free()
