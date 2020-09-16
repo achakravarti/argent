@@ -112,13 +112,13 @@
 \agFnSynopsis{\agMemblockNew---allocates block of heap memory; returns allocated
   block of heap memory}{265-265}{\texttt{sz} = size in bytes to allocate}
 
-\agMemblockNew  is responsible for allocating a new block of heap memory. The 
+\agMemblockNew{}  is responsible for allocating a new block of heap memory. The 
 size in bytes to allocate is passed through the \verb|sz| parameter. The value 
 of \verb|sz| is required to be greater than zero; this condition is asserted in 
 debug builds.
 
 If successful, a handle to the new block of heap memory is returned. In case of 
-failure to allocate heap memory, \agMemblockNew raises an exception with the 
+failure to allocate heap memory, \agMemblockNew{} raises an exception with the 
 \verb|AG_MEMBLOCK_NEW| error code, which is left for the exception handler 
 callback function (defined by client code) to process. Hence, there is no need 
 to check for the returned handle being non-\verb|NULL| in the normal 
@@ -130,13 +130,13 @@ greater than that specified by \verb|sz|. This is because the underlying
 alignment and minimum size constraints.
 
 \agAlgorithm{alg:agMemblockNew}{\agMemblockNew}{
-  \Require $sz > 0$
+  \Require{} $sz > 0$
   \Procedure{ag\_memblock\_new}{$sz$}
-  \State $bfr \gets malloc(sz)$
-  \State $bfr \gets memset(0)$
-  \State return $bfr$
-  \EndProcedure
-  \Ensure $bfr \neq null$
+  \State{} $bfr \gets malloc(sz)$
+  \State{} $bfr \gets memset(0)$
+  \State{}  return $bfr$
+  \EndProcedure{}
+  \Ensure{} $bfr \neq null$
 }
 
 The two most likely reasons for failure are the value of \verb|sz| being
@@ -144,10 +144,10 @@ larger than the amount of heap memory physically available, and excess
 fragmentation of the heap. Neither of these failure conditions have been tested,
 though.
 
-The implementation of \agMemblockNew is quite straight-forward, essentially
+The implementation of \agMemblockNew{} is quite straight-forward, essentially
 being a wrapper around the standard \verb|malloc()| function along with an
-in-built check for success. The algorithm for \agMemblockNew is given by 
-Algorithm \ref{alg:agMemblockNew}.
+in-built check for success. The algorithm for \agMemblockNew{} is given by 
+Algorithm\ \ref{alg:agMemblockNew}.
 
 We start off by asserting that the size of allocation specified through the
 \verb|sz| parameter is $>$ 0, and then call \verb|malloc()| to allocated the
@@ -165,35 +165,35 @@ memory to zero before returning the handle to it.
 \agFnSynopsis{\agMemblockCopy---copies existing block of heap memory; returns
   copied block of heap memory}{274-274}{\texttt{bfr} = heap block to copy}
 
-\agMemblockCopy makes a deep copy of an existing block of heap memory, passed as
+\agMemblockCopy{} makes a deep copy of an existing block of heap memory, passed as
 a handle to its only parameter \verb|bfr|. \verb|bfr| is required to be valid;
 this is asserted in debug builds. Additionally, it is required for \verb|bfr| to
-have been allocated on the heap by an earlier call to \agMemblockNew (or 
-\agMemblockCopy itself); passing a handle to a block of memory on the stack is
+have been allocated on the heap by an earlier call to \agMemblockNew{}  (or 
+\agMemblockCopy{} itself); passing a handle to a block of memory on the stack is
 an error, leading to undefined behaviour (most likely a segmentation fault).
 
 \agAlgorithm{alg:agMemblockCopy}{\agMemblockCopy}{
-  \Require $bfr \neq null$
+	\Require{} $bfr \neq null$
   \Procedure{ag\_memblock\_copy}{$bfr$}
-  \State $sz \gets ag\_memblock\_sz(bfr)$
-  \State $cp \gets ag\_memblock\_new(sz)$ 
-  \State $cp \gets memcpy(bfr)$ 
-  \State return $cp$
+  \State{} $sz \gets ag\_memblock\_sz(bfr)$
+  \State{} $cp \gets ag\_memblock\_new(sz)$ 
+  \State{} $cp \gets memcpy(bfr)$ 
+  \State{} return $cp$
   \EndProcedure
 }
 
-On successful completion, \agMemblockCopy \\ returns a handle to the newly 
+On successful completion, \agMemblockCopy{} \\ returns a handle to the newly 
 allocated copy of \verb|bfr|. In case of failure to do so, the 
 \verb|AG_ERNO_MEMBLOCK_NEW| exception is raised, and control is passed to the 
 client-provided exception handler. Since in the normal flow of control the newly
 allocated copy is guaranteed to be valid, there is no need for client code to 
 make a further check on the return value.
 
-Since \agMemblockCopy relies on a non-standard \verb|libc| call, it is 
+Since \agMemblockCopy{} relies on a non-standard \verb|libc| call, it is 
 important to remember the portability restrictions this entails; see section
-\ref{sec:agMemblockSz} on page \pageref{sec:agMemblockSz} for more details.
+\ref{sec:agMemblockSz} on page\ \pageref{sec:agMemblockSz} for more details.
 
-The algorithm for \agMemblockCopy is given by Algorithm
+The algorithm for \agMemblockCopy{} is given by Algorithm\ 
 \ref{alg:agMemblockCopy}. We start by asserting that the \verb|bfr| argument is
 valid and computing its allocated size through a call to
 \verb|ag_memblock_sz()|. We then create a new a new block of heap memory of the
@@ -212,36 +212,36 @@ then return the handle to this new block.
 
 Sometimes it is useful to be determine the size of a block of heap memory that
 was allocated earlier without having to resort to storing the size in a separate
-variable. The interface function \agMemblockSz provides a way to do so, allowing
-client code to query the size of a block of heap memory \verb|bfr| that was 
-allocated by \agMemblockNew or \agMemblockCopy. 
+variable. The interface function \agMemblockSz{} provides a way to do so, 
+allowing client code to query the size of a block of heap memory \verb|bfr| that
+was allocated by \agMemblockNew{} or \agMemblockCopy{}. 
 
-\agMemblockSz requires that \verb|bfr| be a valid handle to a block of heap 
+\agMemblockSz{} requires that \verb|bfr| be a valid handle to a block of heap 
 memory; this function asserts in debug builds that the handle is not 
 \verb|NULL|. Passing a pointer to the stack memory is an error, and will result 
 in undefined behaviour, most likely being a segmentation fault.
 
-As in the case of \agMemblockNew, it is important to remember that the size
-returned by \agMemblockSz may be greater than that which had been originally
+As in the case of \agMemblockNew{}, it is important to remember that the size
+returned by \agMemblockSz{} may be greater than that which had been originally
 requested at the time of allocation, since the underlying \verb|malloc()| call
 needs to take into account alignment and size restrictions.
 
 \agAlgorithm{alg:agMemblockSz}{\agMemblockSz}{
-  \Require $bfr \neq null$
+  \Require{} $bfr \neq null$
   \Procedure{ag\_memblock\_sz}{$bfr$}
-  \State return $malloc\_usable\_size(bfr)$
-  \EndProcedure
+  \State{} return $malloc\_usable\_size(bfr)$
+  \EndProcedure{}
 }
 
 There is an important caveat regarding portability. The C standard does not
 define a way to query the size of the heap block returned by \verb|malloc()|,
 and so we need to rely on the functionality provided by the underlying
-\verb|libc| implementation. As of the current version, \agMemblockSz is
+\verb|libc| implementation. As of the current version, \agMemblockSz{} is
 guaranteed to work on GNU/Linux, Cygwin and the various BSDs.
 
-The algorithm for \agMemblockSz is given by Algorithm \ref{alg:agMemblockSz}. We
-assert that the block of heap memory to query is valid and pass it to
-\verb|malloc_usable_size()|, returning the value thereby obtained.
+The algorithm for \agMemblockSz{} is given by Algorithm\ \ref{alg:agMemblockSz}.
+We assert that the block of heap memory to query is valid and pass it to \\
+\texttt{malloc\_usable\_size()}, returning the value thereby obtained. \\
 \verb|malloc_usable_size()| is a non-standard function supported by both
 \verb|glibc| and BSD \verb|libc|.
 
@@ -256,27 +256,26 @@ assert that the block of heap memory to query is valid and pass it to
   {292-292}{\texttt{bfr} = heap block to resize,\par\texttt{sz} = new size in
   bytes}
 
-<<<<<<< HEAD
-The \agMemblockResize \\ function is responsible for resizing the amount of 
+The \agMemblockResize{} \\ function is responsible for resizing the amount of 
 memory allocated to an existing block of heap memory. Although this function is 
 not used commonly within the Argent Library itself, it may prove to be useful 
 for client code, especially for the resizing of dynamic data structures that can
 grow and shrink, such as vectors.
 
-\agMemblockResize takes two arguments, the first being the handle to the heap
+\agMemblockResize{} takes two arguments, the first being the handle to the heap
 buffer \texttt{bfr} that is to be allocated, and the second being the new size 
 \texttt{sz} value. \texttt{bfr} is expected to be a valid pointer to a pointer 
 to a memory block, and \texttt{sz} is expected to be greater than zero; these 
 two conditions are asserted in debug builds.
 
 \agAlgorithm{alg:agMemblockResize}{\agMemblockResize}{
-  \Require $bfr \neq null$
-  \Require $*bfr \neq null$
-  \Require $sz > 0$
+	\Require{} $bfr \neq null$
+  \Require{} $*bfr \neq null$
+  \Require{} $sz > 0$
   \Procedure{ag\_memblock\_resize}{$bfr, sz$}
-  \State $*bfr \gets realloc(*bfr, sz)$
+  \State{} $*bfr \gets realloc(*bfr, sz)$
   \EndProcedure
-  \Ensure $*bfr \neq null$
+  \Ensure{} $*bfr \neq null$
 }
 
 If successful, the heap memory block pointed to by \texttt{bfr} will be resized 
@@ -284,11 +283,11 @@ to the value specified by \texttt{sz}. Note that, as in the case of
 \agMemblockNew, the actual size of the heap buffer may be larger than that
 requested in order to account for alignment and minimum size constraints. In
 case the resizing operation failed, the \texttt{AG\_MEMBLOCK\_RESIZE} exception 
-is raised. Since \agMemblockResize is guaranteed to either succeed, or to raise
+is raised. Since \agMemblockResize{} is guaranteed to either succeed, or to raise
 an exception, there is no need to test whether the heap buffer pointed to by 
 \texttt{bfr} is valid after the operation.
 
-The algorithm for \agMemblockResize is given by Algorithm 
+The algorithm for \agMemblockResize{} is given by Algorithm\ 
 \ref{alg:agMemblockResize}. We assert that both the pointer to the heap memory 
 buffer and the heap buffer itself are valid, and that the new size requested is 
 greater than zero. We then call the standard C function \texttt{realloc()} to 
