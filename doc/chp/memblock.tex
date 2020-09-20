@@ -92,6 +92,7 @@
   \caption{#2}
   \label{#1}
   \begin{algorithmic}
+  \scriptsize{}
   #3
   \end{algorithmic}
   \end{algorithm}
@@ -274,7 +275,7 @@ two conditions are asserted in debug builds.
   \Require{} $sz > 0$
   \Procedure{ag\_memblock\_resize}{$bfr, sz$}
   \State{} $*bfr \gets realloc(*bfr, sz)$
-  \EndProcedure
+  \EndProcedure{}
   \Ensure{} $*bfr \neq null$
 }
 
@@ -300,4 +301,37 @@ resizing operation has been successful.
 \section{Function \agMemblockFree}
 \agFnSynopsis{\agMemblockFree---releases allocated block of heap memory}
   {300-300}{\texttt{bfr} = heap block to release}
-\kant[1]
+
+After \agMemblockNew{}, the \agMemblockFree{} function is perhaps the most
+important one in the memory module of the Argent Library. \agMemblockFree{}
+is responsible for releasing the heap memory that has been allocated through 
+either \agMemblockNew{} or \agMemblockCopy{}.
+
+\agMemblockFree{} accepts only one argument \texttt{bfr}, which is a pointer to
+the heap memory block that has been allocated earlier. If both \texttt{bfr} and
+the heap memory block pointed by it are valid (i.e. non-\texttt{\textsc{NULL}}),
+then the latter is released and the former is set to \texttt{\textsc{NULL}}.
+This ensures that \texttt{bfr} is not a dangling pointer after the memory block
+it points to has been released.
+
+\agAlgorithm{alg:agMemblockFree}{\agMemblockFree}{
+  \Procedure{ag\_memblock\_free}{$bfr$}
+  \If{$bfr$ and $*bfr \neq NULL$}
+  \State{} $free(*bfr)$
+  \State{} $*bfr \gets NULL$
+  \EndIf{}
+  \EndProcedure{}
+}
+
+\agMemblockFree{} is designed to be robust, and performs a safe no-op if either
+\texttt{bfr} or the heap memory block pointed to by it are invalid (i.e.
+\texttt{NULL}). This allows \agMemblockFree{} to be safely called even in
+exception conditions. However, it is important to remember that passing a
+\texttt{bfr} to \agMemblockFree{} that has not been created by either
+\agMemblockNew{} or \agMemblockCopy{} will result in undefined behaviour.
+
+The algorithm for \agMemblockFree{} is given by Algorithm\ 
+\ref{alg:agMemblockFree}. We first check that both \texttt{bfr} and the heap 
+memory block pointed by it are valid; if so, we proceed to release the heap
+memory block pointed by \texttt{bfr} using the standard \texttt{free()} function
+and then set \texttt{bfr} to \texttt{NULL}.
