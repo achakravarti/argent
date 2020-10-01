@@ -64,7 +64,26 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 }
 
 
-                         /* implementation of ag_memblock_copy() [AgDM:??] */
+/*
+ * `ag_memblock_copy()` makes a deep copy of an existing block of heap memory,
+ * passed as a handle to tis only parameter `bfr`. `bfr` is required to be
+ * valid; this is asserted in debug guilds. Additionally, it is required for
+ * `bfr` to have been allocated in the heap by an earlier call to
+ * `ag_memblock_new()` (or `ag_memblock_copy()` itself); passing a handle to a
+ * block of memory on the stack is an error, leading to undefined behavour (most
+ * likely a segmentation fault).
+ *
+ * On successful completion, `ag_memblock_copy()` returns a handle to the newly
+ * allocated copy of `bfr`. In case of failure to do so, the
+ * `AG_ERNO_MEMBLOCK_NEW` exception is raised, and control is passed to the
+ * client-provided exception handler. Since in the normal flow of control the
+ * newly allocated copy is guaranteed to be valid, there is no need for client
+ * code to make a further check on the return value.
+ *
+ * Since `ag_memblock_copy()` relies on a non-standard `libc` call, it is
+ * important to remember the portability restrictions this entails; see
+ * `ag_memblock_sz()` for more details.
+ */
 extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
 {
     ag_assert (bfr);
