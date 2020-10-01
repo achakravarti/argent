@@ -66,12 +66,12 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 
 /*
  * `ag_memblock_copy()` makes a deep copy of an existing block of heap memory,
- * passed as a handle to tis only parameter `bfr`. `bfr` is required to be
+ * passed as a handle to its only parameter `bfr`. `bfr` is required to be
  * valid; this is asserted in debug guilds. Additionally, it is required for
  * `bfr` to have been allocated in the heap by an earlier call to
  * `ag_memblock_new()` (or `ag_memblock_copy()` itself); passing a handle to a
- * block of memory on the stack is an error, leading to undefined behavour (most
- * likely a segmentation fault).
+ * block of memory on the stack is an error, leading to undefined behaviour 
+ * (most likely a segmentation fault).
  *
  * On successful completion, `ag_memblock_copy()` returns a handle to the newly
  * allocated copy of `bfr`. In case of failure to do so, the
@@ -96,7 +96,30 @@ extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
 }
 
 
-                              /* implementation of ag_memblock_sz() [AgDM:??] */
+/*
+ * Sometimes it is useful to be able to determine the size of a block of heap
+ * memory that was allocated earlier without having to resort to storing the
+ * size in a separate variable. The interface function `ag_memblock_sz()`
+ * provides a way to do os, allowing client code to query the size of a block of
+ * heap memory `bfr` that was allocated by either `ag_memblock_new()` or
+ * `ag_memblock_copy()`.
+ *
+ * `ag_memblock_sz()` requires that `bfr` be a valid handle to a block of heap
+ * memory; this function asserts in debug builds that the handle is not `NULL`.
+ * Passing a pointer to the stack memory is an error, and will result in
+ * undefined behavour, most likely leading to a segmentation fault.
+ *
+ * As in the case of `ag_memblock_new()`, it is important to remember that the
+ * size returned by `ag_memblock_sz()` may be greater than that which had been
+ * originally requested at the time of allocation, since the underlying
+ * `malloc()` call needs to take into account alignment and size restrictions.
+ *
+ * There is an important caveat regarding portability. The C standard does not
+ * define a way to query the size of the heap block returned by `malloc()`, and
+ * so we need to rely on the functionality provided by the underlying `libc`
+ * implementation. As of the current version, `ag_memblock_sz()` is guaranteed
+ * to work on GNU/Linux, Cygwin and the various BSDs.
+ */
 extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
 {
     ag_assert (bfr);
