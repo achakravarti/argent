@@ -31,7 +31,28 @@
  */
 
 
-                             /* implementation of ag_memblock_new() [AgDM:??] */
+/*
+ * `ag_memblock_new()` is responsible for allocating a new block of heap memory.
+ * The size in bytes to allocate is passed through the `sz` parameter. The value
+ * of `sz` is required to be greater than zero; this condition is asserted in
+ * debug builds.
+ *
+ * If successful, a handle to the new block of heap memory (initialised to zero)
+ * is returned. In case of failure to allocate heap memory, `ag_memblock_new()` 
+ * raises an exception with the `AG_ERNO_MEMBLOCK_NEW` error code, which is left
+ * for the exception handler callback function (defined by client code) to 
+ * process. Hence, there is no need to check for the returned handle being 
+ * non-`NULL` in the normal flow of code.
+ *
+ * It is important to note that the actual size of the allocated block may well
+ * be greater than that specified by `sz`. This is because the underlying
+ * `malloc()` function may allocate a larger block in order to account for
+ * alignment and minimum size constraints.
+ *
+ * The two most likely reasons for failure are the value of `sz` being larger
+ * than the amount of heap memory physically available, and excess fragmentation
+ * of the heap. Neither of these faiulre conditions have been tested, though.
+ */
 extern ag_memblock_t *ag_memblock_new(size_t sz)
 {
     ag_assert (sz);
@@ -43,7 +64,7 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 }
 
 
-                            /* implementation of ag_memblock_copy() [AgDM:??] */
+                         /* implementation of ag_memblock_copy() [AgDM:??] */
 extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
 {
     ag_assert (bfr);
