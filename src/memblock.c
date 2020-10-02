@@ -137,8 +137,8 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
  * `ag_memblock_resize()` takes two arguments, the first being the handle to the
  * heap buffer `bfr` that is to be allocated, and the second being the new size
  * `sz` value. `bfr` is expected to be a valid pointer to a pointer to a memory
- * block, and \texttt{sz} is expected to be greater than zero; these two
- * conditions are asserted in debug builds.
+ * block, and `sz` is expected to be greater than zero; these two conditions are
+ * asserted in debug builds.
  *
  * If successful, the heap memory block pointed to by `bfr` will be resized to
  * the value specified by \texttt{sz}. Note that, as in the case of
@@ -157,7 +157,26 @@ extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
 }
 
 
-                            /* implementation of ag_memblock_free() [AgDM:??] */
+/*
+ * After `ag_memblock_new()`, the `ag_memblock_free() function is perhaps the
+ * most important one in the memory module of the Argent Library.
+ * `ag_memblock_free()` is responsible for releasing the heap memory that has
+ * been allocated through either `ag_memblock_new()` or `ag_memblock_copy()`.
+ * 
+ * `ag_memblock_free()` accepts only one argument `bfr`, which is a pointer to
+ * the heap memory block that has been allocated earlier. If both `bfr` and the
+ * heap memory block pointed by it are valid (i.e.  non-`NULL`, then the latter
+ * is released and the former is set to `NULL`.  This ensures that `bfr` is not
+ * a dangling pointer after the memory block it points to has been released.
+ * 
+ * `ag_memblock_free()` is designed to be robust, and performs a safe no-op if
+ * either `bfr` or the heap memory block pointed to by it are invalid (i.e.
+ * `NULL`. This allows `ag_memblock_free()` to be safely called even in
+ * exception conditions. However, it is important to remember that passing a
+ * `bfr` to `ag_memblock_free()` that has not been created by either
+ * `ag_memblock_new()` or ag_memblock_copy()` will result in undefined
+ * behaviour.
+ */
 extern void ag_memblock_free(ag_memblock_t **bfr)
 {
     if (ag_likely (bfr && *bfr)) {
