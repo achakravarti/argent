@@ -70,7 +70,7 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
  * valid; this is asserted in debug guilds. Additionally, it is required for
  * `bfr` to have been allocated in the heap by an earlier call to
  * `ag_memblock_new()` (or `ag_memblock_copy()` itself); passing a handle to a
- * block of memory on the stack is an error, leading to undefined behaviour 
+ * block of memory on the stack is an error, leading to undefined behaviour
  * (most likely a segmentation fault).
  *
  * On successful completion, `ag_memblock_copy()` returns a handle to the newly
@@ -127,7 +127,28 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
 }
 
 
-                          /* implementation of ag_memblock_resize() [AgDM:??] */
+/* 
+ * The `ag_memblock_resize()` function is responsible for resizing the amount of
+ * memory allocated to an existing block of heap memory. Although this function
+ * is not used commonly within the Argent Library itself, it may prove to be
+ * useful for client code, especially for the resizing of dynamic data
+ * structures that can grow and shrink, such as vectors.
+ *
+ * `ag_memblock_resize()` takes two arguments, the first being the handle to the
+ * heap buffer `bfr` that is to be allocated, and the second being the new size
+ * `sz` value. `bfr` is expected to be a valid pointer to a pointer to a memory
+ * block, and \texttt{sz} is expected to be greater than zero; these two
+ * conditions are asserted in debug builds.
+ *
+ * If successful, the heap memory block pointed to by `bfr` will be resized to
+ * the value specified by \texttt{sz}. Note that, as in the case of
+ * `ag_memblock_new()`, the actual size of the heap buffer may be larger than
+ * that requested in order to account for alignment and minimum size
+ * constraints. In case the resizing operation failed, the `AG_MEMBLOCK_RESIZE`
+ * exception is raised. Since ag_memblock_resize() is guaranteed to either
+ * succeed, or to raise an exception, there is no need to test whether the heap
+ * buffer pointed to by `bfr` is valid after the operation.
+ */
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
 {
     ag_assert (bfr && *bfr && sz);
