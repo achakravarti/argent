@@ -252,6 +252,22 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 /*
  * Type    : `ag_memblock_t`
  * Synopsis: block of heap memory.
+ *
+ * The `ag_memblock_t` type represents a block of memory allocated on the heap.
+ * This type has been introduced to distinguish it from other pointers, and
+ * thereby improve code readability.
+ *
+ * The conventional approach is to typedef `void *`, but we have deliberately
+ * typedef'd to `void` instead so that it is necessary to declare an
+ * `ag_memblock_t` type with a `*`; again, this has been done to improve code
+ * readability.
+ *
+ * It is important to remember that `ag_memblock_t` values are not released
+ * automatically; it is up to the client code to ensure that they are released
+ * by passing them to `ag_memblock_free()`. If semi-automatic release is
+ * required, consider declaring this type with the GCC built-in extension
+ * `__attribute__((cleanup))`; for an example, see how the `ag_string_smart_t`
+ * type has been declared below.
  */
 typedef void ag_memblock_t;
 
