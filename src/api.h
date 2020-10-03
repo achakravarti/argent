@@ -250,52 +250,43 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 
 
 /*
- * Reference: 3.1
- * Type     : ag_memblock_t - block of heap memory
+ * Type    : `ag_memblock_t`
+ * Synopsis: block of heap memory.
  */
 typedef void ag_memblock_t;
 
 
 /*
- * Reference : 3.1
- * Function  : ag_memblock_new() - allocates block of heap memory
- * Parameters: sz - size in bytes to allocate
- * Return    : allocated block of heap memory
+ * Function: `ag_memblock_new()`
+ * See     : argent/src/memblock.c
  */
 extern ag_memblock_t *ag_memblock_new(size_t sz);
 
    
 /*
- * Reference : 3.1
- * Function  : ag_memblock_copy() - copies existing block of heap memory
- * Parameters: bfr - heap block to copy
- * Return    : copied block of heap memory
+ * Function: `ag_memblock_copy()`
+ * See     : argent/src/memblock.c
  */
 extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr);
 
 
 /*
- * Reference : 3.1
- * Function  : ag_memblock_sz() - gets size of block of heap memory
- * Parameters: bfr - heap block to query
- * Return    : size in bytes of heap block
+ * Function: `ag_memblock_sz()`
+ * See     : argent/src/memblock.c
  */
 extern size_t ag_memblock_sz(const ag_memblock_t *bfr);
 
 
 /*
- * Reference : 3.1
- * Function  : ag_memblock_resize() - resizes allocated block of heap memory
- * Parameters: bfr - heap block to resize
- *             sz  - new size in bytes
+ * Function: `ag_memblock_resize()`
+ * See     : argent/src/memblock.c
  */
 extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz);
 
 
 /*
- * Reference : 3.1
- * Function  : ag_memblock_free() - releases allocated block of heap memory
- * Parameters: bfr - heap block to release
+ * Function: `ag_memblock_free()`
+ * See     : argent/src/memblock.c
  */
 extern void ag_memblock_free(ag_memblock_t **bfr);
 

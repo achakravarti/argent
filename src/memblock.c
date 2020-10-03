@@ -32,6 +32,11 @@
 
 
 /*
+ * Function  : `ag_memblock_new()`
+ * Synopsis  : Allocates block of heap memory.
+ * Parameters: `sz` - size in bytes to allocate.
+ * Return    : Allocated block of heap memory.
+ *
  * `ag_memblock_new()` is responsible for allocating a new block of heap memory.
  * The size in bytes to allocate is passed through the `sz` parameter. The value
  * of `sz` is required to be greater than zero; this condition is asserted in
@@ -65,6 +70,11 @@ extern ag_memblock_t *ag_memblock_new(size_t sz)
 
 
 /*
+ * Function  :  `ag_memblock_copy()`
+ * Synopsis  : Copies existing block of heap memory.
+ * Parameters: `bfr` - heap block to copy.
+ * Return    : Copied block of heap memory.
+ *
  * `ag_memblock_copy()` makes a deep copy of an existing block of heap memory,
  * passed as a handle to its only parameter `bfr`. `bfr` is required to be
  * valid; this is asserted in debug guilds. Additionally, it is required for
@@ -97,6 +107,11 @@ extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
 
 
 /*
+ * Function  : `ag_memblock_sz()`
+ * Synopsis  : Gets size of block of heap memory.
+ * Parameters: `bfr` - heap block to query.
+ * Return    : size in bytes of heap block.
+ *
  * Sometimes it is useful to be able to determine the size of a block of heap
  * memory that was allocated earlier without having to resort to storing the
  * size in a separate variable. The interface function `ag_memblock_sz()`
@@ -128,6 +143,11 @@ extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
 
 
 /* 
+ * Function  : `ag_memblock_resize()`
+ * Synopsis  : Resizes allocated block of heap memory.
+ * Parameters: `bfr` - heap block to resize,
+ *             `sz` - new size in bytes.
+ *
  * The `ag_memblock_resize()` function is responsible for resizing the amount of
  * memory allocated to an existing block of heap memory. Although this function
  * is not used commonly within the Argent Library itself, it may prove to be
@@ -158,6 +178,10 @@ extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
 
 
 /*
+ * Function  : `ag_memblock_free()`
+ * Synopsis  : Releases allocated block of heap memory.
+ * Parameters: `bfr` - heap block to release.
+ *
  * After `ag_memblock_new()`, the `ag_memblock_free() function is perhaps the
  * most important one in the memory module of the Argent Library.
  * `ag_memblock_free()` is responsible for releasing the heap memory that has
