@@ -246,6 +246,24 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 
 /*******************************************************************************
  *                                 MEMORY BLOCK
+ *
+ * The Argent Library makes heavy use of the heap memory, and so an interface
+ * for managing heap memory is essential. We had initially considered using the
+ * Boehm Garbage Collector, but decided against it, favouring reference counting
+ * instead; see the documentation for the Object System for further details.
+ *
+ * The traditional approach to memory management in C code is to use `malloc()`
+ * and friends. However, there are some limitations to this approach for the
+ * Argent Library, since in some situations we require alignment guarantees (as
+ * in the case of the Value System). In order to do so, the Memory Management
+ * interface relies on non-standard extensions supported by the GNU and BSD
+ * `libc`-s.
+ *
+ * Although the Memory Management interface does not support garbage collection,
+ * semi-automatic cleanup of dynamically allocated heap memory is often
+ * desirable. To achieve this, the interfaces of the Argent Library often define
+ * a "smart" type that is a macro around the GCC (and Clang) built-in extension
+ * `__attribute__((cleanup))`.
  */
 
 
