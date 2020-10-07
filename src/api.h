@@ -162,6 +162,7 @@ enum ag_erno {
     AG_ERNO_MEMBLOCK_NEW,
     AG_ERNO_MEMBLOCK_RESIZE,
     AG_ERNO_TEST,
+    AG_ERNO_FCGI_INIT,
     AG_ERNO_LEN
 };
 
@@ -861,4 +862,18 @@ extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
                           /* iterates mutably through nodes of list [AgDM:??] */
 extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
         void *opt), void *opt);
+
+
+/*******************************************************************************
+ *                                   FAST CGI
+ */
+typedef void (ag_fcgi_handler)(void);
+
+extern void ag_fcgi_init(void);
+extern void ag_fcgi_exit(void);
+extern void ag_fcgi_register(ag_fcgi_handler *req);
+extern void ag_fcgi_run(void);
+extern void ag_fcgi_write(const char *fmt, ...);
+extern void ag_fcgi_write_html(const char *fmt, ...);
+extern void ag_fcgi_write_json(const char *fmt, ...);
 
