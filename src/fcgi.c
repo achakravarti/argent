@@ -4,17 +4,19 @@
 #include <ctype.h>
 
 
-static ag_threadlocal FCGX_Request  *g_request = NULL;
-
-
-static ag_threadlocal ag_fcgi_handler *g_handler = NULL;
+static ag_threadlocal struct {
+    FCGX_Request *req;
+    ag_fcgi_handler *cbk;
+    char *getp;
+    char *postp;
+}  *g_fcgi = NULL;
 
 
 static inline void content_write(const char *mime, const char *fmt, va_list ap)
 {
-    FCGX_FPrintF(g_request->out, "Content-type: %s\r\nStatus: 200 OK\r\n\r\n",
+    FCGX_FPrintF(g_fcgi->req->out, "Content-type: %s\r\nStatus: 200 OK\r\n\r\n",
             mime);
-    FCGX_FPrintF(g_request->out, fmt, ap);
+    FCGX_FPrintF(g_fcgi->req->out, fmt, ap);
 }
 
 
@@ -64,33 +66,42 @@ static ag_string_t *url_decode(const char *url)
 
 extern void ag_fcgi_init(void)
 {
-    ag_assert (!g_request);
-    g_request = ag_memblock_new(sizeof *g_request);
+    ag_assert (!g_fcgi);
+    g_fcgi = ag_memblock_new(sizeof *g_fcgi);
 
     ag_require (!FCGX_Init(), AG_ERNO_FCGI_INIT, NULL);
-    ag_require (!FCGX_InitRequest(g_request, 0, 0), AG_ERNO_FCGI_INIT, NULL);
+    ag_require (!FCGX_InitRequest(g_fcgi->req, 0, 0), AG_ERNO_FCGI_INIT, NULL);
+    
+    g_fcgi->cbk = NULL;
+    g_fcgi->getp = g_fcgi->postp = NULL;
 }
 
 
 extern void ag_fcgi_exit(void)
 {
-    ag_memblock_free((void **) &g_request);
+    if (g_fcgi) {
+        ag_memblock_free((void **) &g_fcgi->getp);
+        ag_memblock_free((void **) &g_fcgi->postp);
+        ag_memblock_free((void **) &g_fcgi);
+    };
+
 }
 
 
 extern void ag_fcgi_register(ag_fcgi_handler *req)
 {
-    ag_assert (g_request && req);
-    g_handler = req; 
+    ag_assert (g_fcgi && req);
+    g_fcgi->cbk = req;
 }
 
 
 extern void ag_fcgi_run(void)
 {
-    ag_assert (g_request && g_handler);
-    while (FCGX_Accept_r(g_request) >= 0) {
-        g_handler();
-        FCGX_Finish_r(g_request);
+    ag_assert (g_fcgi);
+    while (FCGX_Accept_r(g_fcgi->req) >= 0) {
+        ag_assert (g_fcgi->cbk);
+        g_fcgi->cbk();
+        FCGX_Finish_r(g_fcgi->req);
     }
 }
 
@@ -101,7 +112,8 @@ extern void ag_fcgi_write(const char *fmt, ...)
     va_list ap;
     va_start(ap, fmt);
 
-    FCGX_FPrintF(g_request->out, fmt, ap);
+    ag_assert (g_fcgi);
+    FCGX_FPrintF(g_fcgi->req->out, fmt, ap);
     va_end(ap);
 }
 
@@ -112,6 +124,7 @@ extern void ag_fcgi_write_html(const char *fmt, ...)
     va_list ap;
     va_start(ap, fmt);
 
+    ag_assert (g_fcgi);
     content_write("text/html", fmt, ap);
     va_end(ap);
 }
@@ -123,6 +136,7 @@ extern void ag_fcgi_write_json(const char *fmt, ...)
     va_list ap;
     va_start(ap, fmt);
 
+    ag_assert (g_fcgi);
     content_write("application/json", fmt, ap);
     va_end(ap);
 }
