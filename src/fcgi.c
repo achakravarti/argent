@@ -106,6 +106,15 @@ extern void ag_fcgi_run(void)
 }
 
 
+extern ag_string_t *ag_fcgi_env(const char *ev)
+{
+    ag_assert (g_fcgi);
+    const char *env = getenv(ev);
+
+    return env ? ag_string_new(env) : ag_string_new_empty();
+}
+
+
 extern void ag_fcgi_write(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);

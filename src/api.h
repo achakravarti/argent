@@ -873,6 +873,7 @@ extern void ag_fcgi_init(void);
 extern void ag_fcgi_exit(void);
 extern void ag_fcgi_register(ag_fcgi_handler *req);
 extern void ag_fcgi_run(void);
+extern ag_string_t *ag_fcgi_env(const char *ev);
 extern void ag_fcgi_write(const char *fmt, ...);
 extern void ag_fcgi_write_html(const char *fmt, ...);
 extern void ag_fcgi_write_json(const char *fmt, ...);
