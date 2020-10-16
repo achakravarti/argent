@@ -14,8 +14,8 @@ static ag_threadlocal struct {
 
 static inline void content_write(const char *mime, const char *fmt, va_list ap)
 {
-    FCGX_FPrintF(g_fcgi->req->out, "Content-type: %s\r\nStatus: 200 OK\r\n\r\n",
-            mime);
+    FCGX_FPrintF(g_fcgi->req->out, "Content-type: %s; charset=UTF-8\r\n"
+            "Status: 200 OK\r\n\r\n", mime);
     FCGX_FPrintF(g_fcgi->req->out, fmt, ap);
 }
 
