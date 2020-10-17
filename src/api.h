@@ -163,6 +163,7 @@ enum ag_erno {
     AG_ERNO_MEMBLOCK_RESIZE,
     AG_ERNO_TEST,
     AG_ERNO_FCGI_INIT,
+    AG_ERNO_FCGI_PARAM,
     AG_ERNO_LEN
 };
 

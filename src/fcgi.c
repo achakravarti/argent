@@ -36,41 +36,43 @@ static inline char param_decode(const char c)
 }
 
 
-#if 0
-// https://stackoverflow.com/questions/2673207
-static ag_string_t *param_decode(const char *param)
+static inline void param_get(void)
 {
-    const char *p = param;
-    char *bfr = ag_memblock_new(strlen(p) + 1);
-
-    while (*p) {
-        if (param_encoded(p)) {
-            *bfr++ = (16 * char_decode(p[1])) + char_decode(p[2]);
-            p += 3;
-        } else if (*p == '+') {
-            *bfr++ = ' ';
-            p++;
-        } else
-            *bfr++ = *p++;
-    }
-
-    ag_string_t *ret = ag_string_new(bfr);
-    ag_memblock_free((void **) &bfr);
-
-    return ret;
+    ag_string_dispose(&g_fcgi->param);
+    ag_string_new(getenv("QUERY_STRING"));
 }
-#endif
 
 
-// https://cboard.cprogramming.com/c-programming/13752-how-parse-query_string.html
-static inline void param_read(void)
+static inline void param_update(const char *bfr)
 {
-    if (!strcmp(getenv("REQUEST_METHOD"), "GET")) {
-        ag_memblock_free((void **) &g_fcgi->param);
-        ag_string_new(getenv("QUERY_STRING"));
-    } else {;
-        // TODO
-    }
+    ag_string_dispoose(&g_fcgi->param);
+    g_fcgi->param = ag_string_new(bfr);
+}
+
+// https://blog.ijun.org/2013/01/nginx-with-fastcgi-and-c.html
+static inline void param_post(void)
+{
+    char *bfr = NULL;
+    size_t sz = 1024;
+    size_t read = 0;
+    int err = 0;
+
+    do {
+        sz = sz << 1;
+        ag_memblock_resize((void **) &bfr, sz);
+
+        read += FCGX_GetStr(bfr + read, sz - read, g_fcgi->req->in);
+        if (ag_unlikely (!read || (err = FCGX_GetError(g_fcgi->req->in)))) {
+            ag_memblock_free((void **) &bfr);
+            param_update("");
+        }
+
+        ag_require (!err, AG_ERNO_FCGI_PARAM, NULL);
+    } while(read == sz);
+    
+    bfr[read] = '\0';
+    param_update(bfr);
+    ag_memblock_free((void **) &bfr);
 }
 
 
@@ -104,12 +106,14 @@ extern void ag_fcgi_register(ag_fcgi_handler *req)
 }
 
 
+// https://cboard.cprogramming.com/c-programming/13752-how-parse-query_string.html
 extern void ag_fcgi_run(void)
 {
     ag_assert (g_fcgi);
     while (FCGX_Accept_r(g_fcgi->req) >= 0) {
         ag_assert (getenv("REQUEST_METHOD"));
         param_read();
+        !strcmp(getenv("REQUEST_METHOD"), "GET") ? param_get : param_post();
 
         ag_assert (g_fcgi->cbk);
         g_fcgi->cbk();
