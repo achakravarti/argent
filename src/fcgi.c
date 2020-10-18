@@ -11,18 +11,48 @@ static ag_threadlocal struct {
 }  *g_http = NULL;
 
 
-static inline void write_fmt(const char *mime, const char *fmt, va_list ap)
+static inline const char *response_status(enum ag_http_status code)
+{
+    static const char *status[] = {
+        "200 OK",
+        "201 Created",
+        "202 Accepted",
+        "204 No Content",
+        "301 Moved Permanently",
+        "302 Found",
+        "303 See Other",
+        "304 Not Modified",
+        "307 Temporary Redirect",
+        "400 Bad Request",
+        "401 Unauthorized",
+        "403 Forbidden",
+        "404 Not Found",
+        "405 Method Not Allowed",
+        "406 Not Acceptable",
+        "412 Precondition Failed",
+        "415 Unsupported Media Type",
+        "500 Internal Server Error",
+        "501 Not Implemented",
+    };
+
+    return status[code];
+}
+
+
+static inline void response_fmt(const char *mime, enum ag_http_status code,
+        const char *fmt, va_list ap)
 {
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: 200 OK\r\n\r\n", mime);
+            "Status: %s\r\n\r\n", mime, response_status(code));
     FCGX_FPrintF(g_http->req->out, fmt, ap);
 }
 
 
-static inline void write_file(const char *mime, FILE *file)
+static inline void response_file(const char *mime, enum ag_http_status code,
+        FILE *file)
 {
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: 200 OK\r\n\r\n", mime);
+            "Status: %s\r\n\r\n", mime, response_status(code));
 
     register char c;
     do {
@@ -188,50 +218,50 @@ extern ag_string_t *ag_http_param(const char *key)
 }
 
 
-extern void ag_http_html(const char *fmt, ...)
+extern void ag_http_html(enum ag_http_status code, const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     ag_assert (g_http);
-    write_fmt("text/html", fmt, ap);
+    response_fmt("text/html", code, fmt, ap);
     va_end(ap);
 }
 
 
-extern void ag_http_html_file(const char *fpath)
+extern void ag_http_html_file(enum ag_http_status code, const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
     ag_require (file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert (g_http);
-    write_file("text/html", file);
+    response_file("text/html", code, file);
     fclose(file);
 }
 
 
-extern void ag_http_json(const char *fmt, ...)
+extern void ag_http_json(enum ag_http_status code, const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     ag_assert (g_http);
-    write_fmt("application/json", fmt, ap);
+    response_fmt("application/json", code, fmt, ap);
     va_end(ap);
 }
 
 
-extern void ag_http_json_file(const char *fpath)
+extern void ag_http_json_file(enum ag_http_status code, const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
     ag_require(file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert(g_http);
-    write_file("application/json", file);
+    response_file("application/json", code, file);
     fclose(file);
 }
 

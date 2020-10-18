@@ -883,25 +883,25 @@ enum ag_http_method {
 
 // https://restfulapi.net/http-status-codes/
 enum ag_http_status {
-    AG_HTTP_STATUS_200_OK = 200,
-    AG_HTTP_STATUS_201_CREATED = 201,
-    AG_HTTP_STATUS_202_ACCEPTED = 202,
-    AG_HTTP_STATUS_204_NO_CONTENT = 204,
-    AG_HTTP_STATUS_301_MOVED_PERMANENTLY = 301,
-    AG_HTTP_STATUS_302_FOUND = 302,
-    AG_HTTP_STATUS_303_SEE_OTHER = 303,
-    AG_HTTP_STATUS_304_NOT_MODIFIED = 304,
-    AG_HTTP_STATUS_307_TEMPORARY_REDIRECT = 307,
-    AG_HTTP_STATUS_400_BAD_REQUEST = 400,
-    AG_HTTP_STATUS_401_UNAUTHORIZED = 401,
-    AG_HTTP_STATUS_403_FORBIDDEN = 403,
-    AG_HTTP_STATUS_404_NOT_FOUND = 404,
-    AG_HTTP_STATUS_405_METHOD_NOT_ALLOWED = 405,
-    AG_HTTP_STATUS_406_NOT_ACCEPTABLE = 406,
-    AG_HTTP_STATUS_412_PRECONDITION_FAILED = 412,
-    AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE = 415,
-    AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR = 500,
-    AG_HTTP_STATUS_501_NOT_IMPLEMENTED = 501,
+    AG_HTTP_STATUS_200_OK,
+    AG_HTTP_STATUS_201_CREATED,
+    AG_HTTP_STATUS_202_ACCEPTED,
+    AG_HTTP_STATUS_204_NO_CONTENT,
+    AG_HTTP_STATUS_301_MOVED_PERMANENTLY,
+    AG_HTTP_STATUS_302_FOUND,
+    AG_HTTP_STATUS_303_SEE_OTHER,
+    AG_HTTP_STATUS_304_NOT_MODIFIED,
+    AG_HTTP_STATUS_307_TEMPORARY_REDIRECT,
+    AG_HTTP_STATUS_400_BAD_REQUEST,
+    AG_HTTP_STATUS_401_UNAUTHORIZED,
+    AG_HTTP_STATUS_403_FORBIDDEN,
+    AG_HTTP_STATUS_404_NOT_FOUND,
+    AG_HTTP_STATUS_405_METHOD_NOT_ALLOWED,
+    AG_HTTP_STATUS_406_NOT_ACCEPTABLE,
+    AG_HTTP_STATUS_412_PRECONDITION_FAILED,
+    AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,
+    AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR,
+    AG_HTTP_STATUS_501_NOT_IMPLEMENTED,
 };
 
 extern void ag_http_init(void);
@@ -911,8 +911,8 @@ extern void ag_http_run(void);
 extern ag_string_t *ag_http_env(const char *ev);
 extern enum ag_http_method ag_http_method(void);
 extern ag_string_t *ag_http_param(const char *key);
-extern void ag_http_html(const char *fmt, ...);
-extern void ag_http_html_file(const char *fpath);
-extern void ag_http_json(const char *fmt, ...);
-extern void ag_http_json_file(const char *fpath);
+extern void ag_http_html(enum ag_http_status code, const char *fmt, ...);
+extern void ag_http_html_file(enum ag_http_status code, const char *fpath);
+extern void ag_http_json(enum ag_http_status code, const char *fmt, ...);
+extern void ag_http_json_file(enum ag_http_status code, const char *fpath);
 
