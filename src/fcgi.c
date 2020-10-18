@@ -11,7 +11,7 @@ static ag_threadlocal struct {
 }  *g_http = NULL;
 
 
-static inline void content_write(const char *mime, const char *fmt, va_list ap)
+static inline void write_fmt(const char *mime, const char *fmt, va_list ap)
 {
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
             "Status: 200 OK\r\n\r\n", mime);
@@ -19,7 +19,7 @@ static inline void content_write(const char *mime, const char *fmt, va_list ap)
 }
 
 
-static inline void content_file(const char *mime, FILE *file)
+static inline void write_file(const char *mime, FILE *file)
 {
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
             "Status: 200 OK\r\n\r\n", mime);
@@ -179,62 +179,50 @@ extern ag_string_t *ag_http_param(const char *key)
 }
 
 
-extern void ag_http_write(const char *fmt, ...)
+extern void ag_http_html(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     ag_assert (g_http);
-    FCGX_FPrintF(g_http->req->out, fmt, ap);
+    write_fmt("text/html", fmt, ap);
     va_end(ap);
 }
 
 
-extern void ag_http_write_html(const char *fmt, ...)
-{
-    ag_assert (fmt && *fmt);
-    va_list ap;
-    va_start(ap, fmt);
-
-    ag_assert (g_http);
-    content_write("text/html", fmt, ap);
-    va_end(ap);
-}
-
-
-extern void ag_http_write_html_file(const char *fpath)
+extern void ag_http_html_file(const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
     ag_require (file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert (g_http);
-    content_file("text/html", file);
+    write_file("text/html", file);
     fclose(file);
 }
 
 
-extern void ag_http_write_json(const char *fmt, ...)
+extern void ag_http_json(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     ag_assert (g_http);
-    content_write("application/json", fmt, ap);
+    write_fmt("application/json", fmt, ap);
     va_end(ap);
 }
 
 
-extern void ag_http_write_json_file(const char *fpath)
+extern void ag_http_json_file(const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
     ag_require(file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert(g_http);
-    content_file("application/json", file);
+    write_file("application/json", file);
     fclose(file);
 }
 
