@@ -45,15 +45,16 @@ static inline void param_get(void)
 
 static inline void param_update(const char *bfr)
 {
-    ag_string_dispoose(&g_fcgi->param);
+    ag_string_dispose(&g_fcgi->param);
     g_fcgi->param = ag_string_new(bfr);
 }
 
 // https://blog.ijun.org/2013/01/nginx-with-fastcgi-and-c.html
 static inline void param_post(void)
 {
-    char *bfr = NULL;
     size_t sz = 1024;
+    char *bfr = ag_memblock_new(sz);
+
     size_t read = 0;
     int err = 0;
 
@@ -112,7 +113,6 @@ extern void ag_fcgi_run(void)
     ag_assert (g_fcgi);
     while (FCGX_Accept_r(g_fcgi->req) >= 0) {
         ag_assert (getenv("REQUEST_METHOD"));
-        param_read();
         !strcmp(getenv("REQUEST_METHOD"), "GET") ? param_get : param_post();
 
         ag_assert (g_fcgi->cbk);
