@@ -868,15 +868,15 @@ extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
 /*******************************************************************************
  *                                   FAST CGI
  */
-typedef void (ag_fcgi_handler)(void);
+typedef void (ag_http_handler)(void);
 
-extern void ag_fcgi_init(void);
-extern void ag_fcgi_exit(void);
-extern void ag_fcgi_register(ag_fcgi_handler *req);
-extern void ag_fcgi_run(void);
-extern ag_string_t *ag_fcgi_env(const char *ev);
-extern ag_string_t *ag_fcgi_param(const char *key);
-extern void ag_fcgi_write(const char *fmt, ...);
-extern void ag_fcgi_write_html(const char *fmt, ...);
-extern void ag_fcgi_write_json(const char *fmt, ...);
+extern void ag_http_init(void);
+extern void ag_http_exit(void);
+extern void ag_http_register(ag_http_handler *req);
+extern void ag_http_run(void);
+extern ag_string_t *ag_http_env(const char *ev);
+extern ag_string_t *ag_http_param(const char *key);
+extern void ag_http_write(const char *fmt, ...);
+extern void ag_http_write_html(const char *fmt, ...);
+extern void ag_http_write_json(const char *fmt, ...);
 
