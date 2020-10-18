@@ -61,8 +61,9 @@ static ag_threadlocal const char *g_emsg[] = {
     "AG_ERNO_MEMBLOCK_NEW: failed to allocate new heap block",
     "AG_ERNO_MEMBLOCK_RESIZE: failed to resize existing heap block",
     "AG_ERNO_TEST: failed to pass unit test",
-    "AG_ERNO_FCGI_INIT: failed to initalise HTTP server",
-    "AG_ERNO_FCGI_PARAM: failed to read HTTP parameters",
+    "AG_ERNO_HTTP_INIT: failed to initalise HTTP server",
+    "AG_ERNO_HTTP_PARAM: failed to read HTTP parameters",
+    "AG_ERNO_HTTP_FILE: failed to serve HTTP file",
 };
 
 

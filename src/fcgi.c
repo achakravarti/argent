@@ -19,6 +19,19 @@ static inline void content_write(const char *mime, const char *fmt, va_list ap)
 }
 
 
+static inline void content_file(const char *mime, FILE *file)
+{
+    FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
+            "Status: 200 OK\r\n\r\n", mime);
+
+    register char c;
+    do {
+        c = (char) fgetc(file);
+        FCGX_FPrintF(g_http->req->out,"%c", c);
+    } while (c != EOF);
+}
+
+
 static inline bool param_encoded(const char *param)
 {
     return *param == '%' && isxdigit(param[1]) && isxdigit(param[2]);
@@ -68,7 +81,7 @@ static inline void param_post(void)
             param_update("");
         }
 
-        ag_require (!err, AG_ERNO_FCGI_PARAM, NULL);
+        ag_require (!err, AG_ERNO_HTTP_PARAM, NULL);
     } while(read == sz);
     
     bfr[read] = '\0';
@@ -82,8 +95,8 @@ extern void ag_http_init(void)
     ag_assert (!g_http);
     g_http = ag_memblock_new(sizeof *g_http);
 
-    ag_require (!FCGX_Init(), AG_ERNO_FCGI_INIT, NULL);
-    ag_require (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_FCGI_INIT, NULL);
+    ag_require (!FCGX_Init(), AG_ERNO_HTTP_INIT, NULL);
+    ag_require (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_HTTP_INIT, NULL);
     
     g_http->cbk = NULL;
     g_http->param = NULL;
@@ -190,6 +203,16 @@ extern void ag_http_write_html(const char *fmt, ...)
 }
 
 
+extern void ag_http_write_html_file(const char *fpath)
+{
+    ag_assert (fpath && *fpath);
+    FILE *file = fopen(fpath, "r");
+
+    ag_require (file, AG_ERNO_HTTP_FILE, NULL);
+    content_file("text/html", file);
+}
+
+
 extern void ag_http_write_json(const char *fmt, ...)
 {
     ag_assert (fmt && *fmt);
@@ -199,5 +222,15 @@ extern void ag_http_write_json(const char *fmt, ...)
     ag_assert (g_http);
     content_write("application/json", fmt, ap);
     va_end(ap);
+}
+
+
+extern void ag_http_write_json_file(const char *fpath)
+{
+    ag_assert (fpath && *fpath);
+    FILE *file = fopen(fpath, "r");
+
+    ag_require (file, AG_ERNO_HTTP_FILE, NULL);
+    content_file("application/json", file);
 }
 
