@@ -879,5 +879,7 @@ extern ag_string_t *ag_http_env(const char *ev);
 extern ag_string_t *ag_http_param(const char *key);
 extern void ag_http_write(const char *fmt, ...);
 extern void ag_http_write_html(const char *fmt, ...);
+extern void ag_http_write_html_file(const char *fpath);
 extern void ag_http_write_json(const char *fmt, ...);
+extern void ag_http_write_json_file(const char *fpath);
 
