@@ -875,6 +875,9 @@ typedef void (ag_http_handler)(void);
 enum ag_http_method {
     AG_HTTP_METHOD_GET,
     AG_HTTP_METHOD_POST,
+    AG_HTTP_METHOD_PUT,
+    AG_HTTP_METHOD_PATCH,
+    AG_HTTP_METHOD_DELETE,
 };
 
 extern void ag_http_init(void);
