@@ -207,10 +207,11 @@ extern void ag_http_write_html_file(const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
-
     ag_require (file, AG_ERNO_HTTP_FILE, NULL);
+
     ag_assert (g_http);
     content_file("text/html", file);
+    fclose(file);
 }
 
 
@@ -230,9 +231,10 @@ extern void ag_http_write_json_file(const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
-
     ag_require(file, AG_ERNO_HTTP_FILE, NULL);
+
     ag_assert(g_http);
     content_file("application/json", file);
+    fclose(file);
 }
 
