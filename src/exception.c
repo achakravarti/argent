@@ -64,6 +64,7 @@ static ag_threadlocal const char *g_emsg[] = {
     "AG_ERNO_HTTP_INIT: failed to initalise HTTP server",
     "AG_ERNO_HTTP_PARAM: failed to read HTTP parameters",
     "AG_ERNO_HTTP_FILE: failed to serve HTTP file",
+    "AG_ERNO_HTTP_METHOD: failed to determine HTTP method",
 };
 
 

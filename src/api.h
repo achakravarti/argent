@@ -165,6 +165,7 @@ enum ag_erno {
     AG_ERNO_HTTP_INIT,
     AG_ERNO_HTTP_PARAM,
     AG_ERNO_HTTP_FILE,
+    AG_ERNO_HTTP_METHOD,
     AG_ERNO_LEN,
 };
 
@@ -871,11 +872,17 @@ extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
  */
 typedef void (ag_http_handler)(void);
 
+enum ag_http_method {
+    AG_HTTP_METHOD_GET,
+    AG_HTTP_METHOD_POST,
+};
+
 extern void ag_http_init(void);
 extern void ag_http_exit(void);
 extern void ag_http_register(ag_http_handler *req);
 extern void ag_http_run(void);
 extern ag_string_t *ag_http_env(const char *ev);
+extern enum ag_http_method ag_http_method(void);
 extern ag_string_t *ag_http_param(const char *key);
 extern void ag_http_html(const char *fmt, ...);
 extern void ag_http_html_file(const char *fpath);

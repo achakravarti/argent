@@ -125,8 +125,7 @@ extern void ag_http_run(void)
 {
     ag_assert (g_http);
     while (FCGX_Accept_r(g_http->req) >= 0) {
-        ag_assert (getenv("REQUEST_METHOD"));
-        !strcmp(getenv("REQUEST_METHOD"), "GET") ? param_get : param_post();
+        ag_http_method() == AG_HTTP_METHOD_GET ? param_get : param_post();
 
         ag_assert (g_http->cbk);
         g_http->cbk();
@@ -142,6 +141,16 @@ extern ag_string_t *ag_http_env(const char *ev)
     const char *env = getenv(ev);
 
     return env ? ag_string_new(env) : ag_string_new_empty();
+}
+
+
+extern enum ag_http_method ag_http_method(void)
+{
+    ag_assert (g_http);
+    const char *meth = getenv("REQUEST_METHOD");
+    ag_require (meth, AG_ERNO_HTTP_METHOD, NULL);
+
+    return !strcmp(meth, "GET") ? AG_HTTP_METHOD_GET : AG_HTTP_METHOD_POST;
 }
 
 
