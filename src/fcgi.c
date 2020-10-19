@@ -11,7 +11,8 @@ static ag_threadlocal struct {
 }  *g_http = NULL;
 
 
-static inline const char *response_status(enum ag_http_status code)
+static inline void response_head(enum ag_http_mime type, 
+        enum ag_http_status code)
 {
     static const char *status[] = {
         "200 OK",
@@ -35,30 +36,22 @@ static inline const char *response_status(enum ag_http_status code)
         "501 Not Implemented",
     };
 
-    return status[code];
-}
+    static const char *mime[] = {
+        "application/x-www-form-urlencoded",
+        "application/json",
+        "application/octet-stream",
+        "application/xml",
+        "multipart/form-data",
+        "text/css",
+        "text/csv",
+        "text/html",
+        "text/javascript",
+        "text/plain",
+        "text/xml",
+    };
 
-
-static inline void response_fmt(const char *mime, enum ag_http_status code,
-        const char *fmt, va_list ap)
-{
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n", mime, response_status(code));
-    FCGX_FPrintF(g_http->req->out, fmt, ap);
-}
-
-
-static inline void response_file(const char *mime, enum ag_http_status code,
-        FILE *file)
-{
-    FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n", mime, response_status(code));
-
-    register char c;
-    do {
-        c = (char) fgetc(file);
-        FCGX_FPrintF(g_http->req->out,"%c", c);
-    } while (c != EOF);
+            "Status: %s\r\n\r\n", mime[type], status[code]);
 }
 
 
@@ -218,50 +211,35 @@ extern ag_string_t *ag_http_param(const char *key)
 }
 
 
-extern void ag_http_html(enum ag_http_status code, const char *fmt, ...)
+extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
+        const char *fmt, ...)
 {
-    ag_assert (fmt && *fmt);
+    ag_assert (g_http && fmt && *fmt);
+    response_head(type, code);
+    
     va_list ap;
     va_start(ap, fmt);
-
-    ag_assert (g_http);
-    response_fmt("text/html", code, fmt, ap);
+    FCGX_FPrintF(g_http->req->out, fmt, ap);
     va_end(ap);
 }
 
 
-extern void ag_http_html_file(enum ag_http_status code, const char *fpath)
+extern void ag_http_respond_file(enum ag_http_mime type,
+        enum ag_http_status code, const char *fpath)
 {
     ag_assert (fpath && *fpath);
     FILE *file = fopen(fpath, "r");
     ag_require (file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert (g_http);
-    response_file("text/html", code, file);
-    fclose(file);
-}
+    response_head(type, code);
+    
+    register char c;
+    do {
+        c = (char) fgetc(file);
+        FCGX_FPrintF(g_http->req->out,"%c", c);
+    } while (c != EOF);
 
-
-extern void ag_http_json(enum ag_http_status code, const char *fmt, ...)
-{
-    ag_assert (fmt && *fmt);
-    va_list ap;
-    va_start(ap, fmt);
-
-    ag_assert (g_http);
-    response_fmt("application/json", code, fmt, ap);
-    va_end(ap);
-}
-
-
-extern void ag_http_json_file(enum ag_http_status code, const char *fpath)
-{
-    ag_assert (fpath && *fpath);
-    FILE *file = fopen(fpath, "r");
-    ag_require(file, AG_ERNO_HTTP_FILE, NULL);
-
-    ag_assert(g_http);
-    response_file("application/json", code, file);
     fclose(file);
 }
 
