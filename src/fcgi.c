@@ -170,10 +170,29 @@ extern ag_string_t *ag_http_env(const char *ev)
 extern enum ag_http_method ag_http_method(void)
 {
     ag_assert (g_http);
-    const char *meth = getenv("REQUEST_METHOD");
-    ag_require (meth, AG_ERNO_HTTP_METHOD, NULL);
+    const char *env = getenv("REQUEST_METHOD");
+    ag_require (env, AG_ERNO_HTTP_METHOD, NULL);
 
-    return !strcmp(meth, "GET") ? AG_HTTP_METHOD_GET : AG_HTTP_METHOD_POST;
+    ag_string_smart_t *meth = ag_string_new(env);
+    ag_string_lower(&meth);
+
+    if (ag_string_eq(meth, "get"))
+        return AG_HTTP_METHOD_GET;
+
+    if (ag_string_eq(meth, "post"))
+        return AG_HTTP_METHOD_POST;
+
+    if (ag_string_eq(meth, "put"))
+        return AG_HTTP_METHOD_PUT;
+
+    if (ag_string_eq(meth, "patch"))
+        return AG_HTTP_METHOD_PATCH;
+
+    if (ag_string_eq(meth, "delete"))
+        return AG_HTTP_METHOD_DELETE;
+
+    ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
+    return AG_HTTP_METHOD_GET;
 }
 
 
