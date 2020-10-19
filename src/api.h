@@ -904,6 +904,22 @@ enum ag_http_status {
     AG_HTTP_STATUS_501_NOT_IMPLEMENTED,
 };
 
+
+// https://github.com/cujojs/rest/blob/master/docs/mime.md
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+enum ag_http_mime {
+    AG_HTTP_MIME_TEXT_PLAIN,
+    AG_HTTP_MIME_TEXT_JS,
+    AG_HTTP_MIME_TEXT_HTML,
+    AG_HTTP_MIME_TEXT_CSS,
+    AG_HTTP_MIME_TEXT_CSV,
+    AG_HTTP_MIME_APPLICATION_OCTET,
+    AG_HTTP_MIME_APPLICATION_JSON,
+    AG_HTTP_MIME_APPLICATION_XML,
+    AG_HTTP_MIME_APPLICATION_FORM,
+    AG_HTTP_MIME_MULTIPART_FORM,
+};
+
 extern void ag_http_init(void);
 extern void ag_http_exit(void);
 extern void ag_http_register(ag_http_handler *req);
