@@ -930,7 +930,15 @@ struct ag_http_url {
     ag_string_t *host; // SERVER_NAME
     ag_string_t *port; // SERVER_PORT
     ag_string_t *path; // REQUEST_URI
-    ag_string_t *query; // QUERY_STRING
+};
+
+struct ag_http_request {
+    ag_string_t *method; // REQUEST_METHOD
+    ag_string_t *type; // CONTENT_TYPE
+    ag_string_t *browser; // HTTP_USER_AGENT
+    ag_string_t *ip; // REMOTE_ADDR
+    ag_string_t *host; // REMOTE_HOST
+    ag_string_t *port; // REMOTE_PORT
 };
 
 extern void ag_http_init(void);
