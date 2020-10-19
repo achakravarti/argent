@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include "./api.h"
 
 
@@ -197,4 +198,29 @@ extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat)
     ag_string_dispose(ctx);
     *ctx = s;
 }
+
+
+extern void ag_string_lower(ag_string_t **ctx)
+{
+    ag_assert (ctx && *ctx);
+    char *c = *ctx;
+
+    while (*c) {
+        *c = tolower(*c);
+        c++;
+    }
+}
+
+
+extern void ag_string_upper(ag_string_t **ctx)
+{
+    ag_assert (ctx && *ctx);
+    char *c = *ctx;
+
+    while (*c) {
+        *c = toupper(*c);
+        c++;
+    }
+}
+
 

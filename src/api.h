@@ -403,6 +403,10 @@ inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat)
     ag_string_add(ctx, s);
 }
 
+extern void ag_string_lower(ag_string_t **ctx);
+
+extern void ag_string_upper(ag_string_t **ctx);
+
 
 
 /*******************************************************************************
