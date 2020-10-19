@@ -75,13 +75,13 @@ static inline void string_refc_dec(ag_string_t *ctx)
 extern inline ag_string_t *ag_string_new_empty(void);
 
                                    /* declaration of ag_string_lt() [AgDM:??] */
-extern inline bool ag_string_lt(const ag_string_t *lhs, const ag_string_t *rhs);
+extern inline bool ag_string_lt(const ag_string_t *lhs, const char *rhs);
 
                                    /* declaration of ag_string_eq() [AgDM:??] */
-extern inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs);
+extern inline bool ag_string_eq(const ag_string_t *lhs, const char *rhs);
 
                                    /* declaration of ag_string_gt() [AgDM:??] */
-extern inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs);
+extern inline bool ag_string_gt(const ag_string_t *lhs, const char *rhs);
 
                              /* declaration of ag_string_add_cstr() [AgDM:??] */
 extern inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat);
@@ -164,8 +164,7 @@ extern size_t ag_string_sz(const ag_string_t *ctx)
 }
 
                                /* implementation of ag_string_cmp() [AgDM:??] */
-extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, 
-        const ag_string_t *rhs)
+extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, const char *rhs)
 {
     ag_assert (lhs && rhs);
     int cmp = strcmp(lhs, rhs);

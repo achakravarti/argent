@@ -373,23 +373,22 @@ extern size_t ag_string_len(const ag_string_t *ctx);
 extern size_t ag_string_sz(const ag_string_t *ctx);
 
                                     /* compare two string instances [AgDM:??] */
-extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, 
-        const ag_string_t *rhs);
+extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, const char *rhs);
 
                             /* check if string is less than another [AgDM:??] */
-inline bool ag_string_lt(const ag_string_t *lhs, const ag_string_t *rhs)
+inline bool ag_string_lt(const ag_string_t *lhs, const char *rhs)
 {
     return ag_string_cmp(lhs, rhs) == AG_TRISTATE_LO;
 }
 
                              /* check if string is equal to another [AgDM:??] */
-inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs)
+inline bool ag_string_eq(const ag_string_t *lhs, const char *rhs)
 {
     return ag_string_cmp(lhs, rhs) == AG_TRISTATE_GND;
 }
 
                          /* check if string is greater than another [AgDM:??] */
-inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs)
+inline bool ag_string_gt(const ag_string_t *lhs, const char *rhs)
 {
     return ag_string_cmp(lhs, rhs) == AG_TRISTATE_HI;
 }
