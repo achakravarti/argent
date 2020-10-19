@@ -166,6 +166,7 @@ enum ag_erno {
     AG_ERNO_HTTP_PARAM,
     AG_ERNO_HTTP_FILE,
     AG_ERNO_HTTP_METHOD,
+    AG_ERNO_HTTP_TYPE,
     AG_ERNO_LEN,
 };
 
@@ -931,6 +932,7 @@ extern void ag_http_register(ag_http_handler *req);
 extern void ag_http_run(void);
 extern ag_string_t *ag_http_env(const char *ev);
 extern enum ag_http_method ag_http_method(void);
+extern enum ag_http_mime ag_http_type(void);
 extern ag_string_t *ag_http_param(const char *key);
 extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
         const char *fmt, ...);

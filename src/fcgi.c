@@ -196,6 +196,35 @@ extern enum ag_http_method ag_http_method(void)
 }
 
 
+extern enum ag_http_mime ag_http_type(void)
+{
+    ag_assert (g_http);
+    const char *env = getenv("CONTENT_TYPE");
+    ag_require (env, AG_ERNO_HTTP_TYPE, NULL);
+
+    ag_string_smart_t *type = ag_string_new(env);
+    ag_string_lower(&type);
+
+    if (ag_string_eq(type, "application/x-www-form-urlencoded"))
+        return AG_HTTP_MIME_APPLICATION_FORM;
+
+    if (ag_string_eq(type, "application/json"))
+        return AG_HTTP_MIME_APPLICATION_JSON;
+
+    if (ag_string_eq(type, "application/xml"))
+        return AG_HTTP_MIME_APPLICATION_XML;
+
+    if (ag_string_eq(type, "multipart/form-data"))
+        return AG_HTTP_MIME_MULTIPART_FORM;
+
+    if (ag_string_eq(type, "text/plain"))
+        return AG_HTTP_MIME_TEXT_PLAIN;
+
+    ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
+    return AG_HTTP_MIME_TEXT_PLAIN;
+}
+
+
 extern ag_string_t *ag_http_param(const char *key)
 {
     ag_assert (g_http && g_http->param && key && *key);
