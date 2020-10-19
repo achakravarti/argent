@@ -144,6 +144,30 @@ static void empty_add_cstr(void)
     printf("...OK\n");
 }
 
+
+static void empty_lower(void)
+{
+    printf("ag_string_lower() has no effect on an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_lower(&s);
+    ag_require (!*s, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void empty_upper(void)
+{
+    printf("ag_string_upper() has no effect on an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_upper(&s);
+    ag_require (!*s, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
@@ -158,6 +182,8 @@ static void empty_test(void)
     empty_eq();
     empty_gt();
     empty_add_cstr();
+    empty_lower();
+    empty_upper();
 }
 
 
@@ -402,6 +428,31 @@ static void ascii_new_fmt(void)
     printf("...OK\n");
 }
 
+
+static void ascii_lower(void)
+{
+    printf("ag_string_lower() transforms an ASCII string to lowercase");
+
+    ag_string_smart_t *s = ag_string_new("Hello, WORld!");
+    ag_string_lower(&s);
+    ag_require (!strcmp(s, "hello, world!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void ascii_upper(void)
+{
+    printf("ag_string_upper() transforms an ASCII string to uppercase");
+
+    ag_string_smart_t *s = ag_string_new("Hello, WORld!");
+    ag_string_upper(&s);
+    ag_require (!strcmp(s, "HELLO, WORLD!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
                                          /* runs ASCII string tests [AgDM:??] */
 static void ascii_test(void)
 {
@@ -423,6 +474,8 @@ static void ascii_test(void)
     ascii_gt_2();
     ascii_add_cstr();
     ascii_new_fmt();
+    ascii_lower();
+    ascii_upper();
 }
 
 
