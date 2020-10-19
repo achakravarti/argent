@@ -132,7 +132,6 @@ extern void ag_http_exit(void)
         ag_string_dispose(&g_http->param);
         ag_memblock_free((void **) &g_http);
     };
-
 }
 
 
@@ -147,8 +146,14 @@ extern void ag_http_register(ag_http_handler *req)
 extern void ag_http_run(void)
 {
     ag_assert (g_http);
+    enum ag_http_method meth;
+
     while (FCGX_Accept_r(g_http->req) >= 0) {
-        ag_http_method() == AG_HTTP_METHOD_GET ? param_get : param_post();
+        meth = ag_http_method();
+        if (meth == AG_HTTP_METHOD_GET || meth == AG_HTTP_METHOD_DELETE)
+            param_get();
+        else
+            param_post();
 
         ag_assert (g_http->cbk);
         g_http->cbk();
