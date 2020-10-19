@@ -925,6 +925,14 @@ enum ag_http_mime {
     AG_HTTP_MIME_TEXT_XML,
 };
 
+struct ag_http_url {
+    ag_string_t *scheme; // HTTPS
+    ag_string_t *host; // SERVER_NAME
+    ag_string_t *port; // SERVER_PORT
+    ag_string_t *path; // REQUEST_URI
+    ag_string_t *query; // QUERY_STRING
+};
+
 extern void ag_http_init(void);
 extern void ag_http_exit(void);
 extern void ag_http_register(ag_http_handler *req);
