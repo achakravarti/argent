@@ -220,7 +220,7 @@ extern enum ag_http_mime ag_http_type(void)
     if (ag_string_eq(type, "text/plain"))
         return AG_HTTP_MIME_TEXT_PLAIN;
 
-    ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
+    ag_require (0, AG_ERNO_HTTP_TYPE, NULL);
     return AG_HTTP_MIME_TEXT_PLAIN;
 }
 
