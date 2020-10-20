@@ -149,7 +149,7 @@ extern void ag_http_run(void)
     enum ag_http_method meth;
 
     while (FCGX_Accept_r(g_http->req) >= 0) {
-        meth = ag_http_method();
+        meth = ag_http_request_method();
         if (meth == AG_HTTP_METHOD_GET || meth == AG_HTTP_METHOD_DELETE)
             param_get();
         else
@@ -169,35 +169,6 @@ extern ag_string_t *ag_http_env(const char *ev)
     const char *env = getenv(ev);
 
     return env ? ag_string_new(env) : ag_string_new_empty();
-}
-
-
-extern enum ag_http_method ag_http_method(void)
-{
-    ag_assert (g_http);
-    const char *env = getenv("REQUEST_METHOD");
-    ag_require (env, AG_ERNO_HTTP_METHOD, NULL);
-
-    ag_string_smart_t *meth = ag_string_new(env);
-    ag_string_lower(&meth);
-
-    if (ag_string_eq(meth, "get"))
-        return AG_HTTP_METHOD_GET;
-
-    if (ag_string_eq(meth, "post"))
-        return AG_HTTP_METHOD_POST;
-
-    if (ag_string_eq(meth, "put"))
-        return AG_HTTP_METHOD_PUT;
-
-    if (ag_string_eq(meth, "patch"))
-        return AG_HTTP_METHOD_PATCH;
-
-    if (ag_string_eq(meth, "delete"))
-        return AG_HTTP_METHOD_DELETE;
-
-    ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
-    return AG_HTTP_METHOD_GET;
 }
 
 
