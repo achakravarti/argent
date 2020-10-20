@@ -247,15 +247,15 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 
     
 static const char *g_method[] = {
-    "get",
-    "post",
-    "put",
-    "patch",
-    "delete",
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
 };
 
 
-extern ag_string_t *ag_http_method_string(enum ag_http_method meth)
+extern const char *ag_http_method_str(enum ag_http_method meth)
 {
     return ag_string_new(g_method[meth]);
 }
@@ -278,22 +278,9 @@ extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
     ag_string_smart_t *env = request_env("REQUEST_METHOD");
-    ag_string_lower(&env);
+    ag_string_upper(&env);
 
-    static const char *meth[] = {
-        "get",
-        "post",
-        "put",
-        "patch",
-        "delete",
-    };
-
-    for (register int i = 0; i < __AG_HTTP_METHOD_LEN; i++) {
-        if (ag_string_eq(env, meth[i]))
-            return i;
-    }
-
-    return AG_HTTP_METHOD_GET;
+    return ag_http_method_parse(env);
 }
 
 
