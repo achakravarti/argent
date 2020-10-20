@@ -886,6 +886,9 @@ enum ag_http_method {
 };
 
 
+extern ag_string_t *ag_http_method_string(enum ag_http_method meth);
+
+
 // https://restfulapi.net/http-status-codes/
 enum ag_http_status {
     AG_HTTP_STATUS_200_OK,

@@ -245,6 +245,21 @@ extern void ag_http_respond_file(enum ag_http_mime type,
     fclose(file);
 }
 
+    
+static const char *g_method[] = {
+    "get",
+    "post",
+    "put",
+    "patch",
+    "delete",
+};
+
+
+extern ag_string_t *ag_http_method_string(enum ag_http_method meth)
+{
+    return ag_string_new(g_method[meth]);
+}
+
 
 extern enum ag_http_method ag_http_request_method(void)
 {
