@@ -948,7 +948,7 @@ extern ag_string_t *ag_http_request_host(void);
 extern ag_string_t *ag_http_request_port(void);
 extern ag_string_t *ag_http_request_referer(void);
 
-extern ag_string_t *ag_http_request_url_scheme(void);
+extern bool ag_http_request_url_secure(void);
 extern ag_string_t *ag_http_request_url_host(void);
 extern ag_string_t *ag_http_request_url_port(void);
 extern ag_string_t *ag_http_request_url_path(void);

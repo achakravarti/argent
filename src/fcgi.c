@@ -347,10 +347,13 @@ extern ag_string_t *ag_http_request_referer(void)
 }
 
 
-extern ag_string_t *ag_http_request_url_scheme(void)
+extern bool ag_http_request_url_secure(void)
 {
     ag_assert (g_http);
-    return request_env("HTTPS");
+    ag_string_smart_t *https = request_env("HTTPS");
+
+    ag_string_lower(&https);
+    return ag_string_eq(https, "on");
 }
 
 extern ag_string_t *ag_http_request_url_host(void)
