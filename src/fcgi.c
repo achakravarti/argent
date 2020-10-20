@@ -151,10 +151,10 @@ extern void ag_http_run(void)
 
     while (FCGX_Accept_r(g_http->req) >= 0) {
         meth = ag_http_request_method();
-        if (meth == AG_HTTP_METHOD_GET || meth == AG_HTTP_METHOD_DELETE)
+        /*if (meth == AG_HTTP_METHOD_GET || meth == AG_HTTP_METHOD_DELETE)
             param_get();
         else
-            param_post();
+            param_post();*/
 
         ag_assert (g_http->cbk);
         g_http->cbk();
@@ -231,9 +231,10 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 }
 
 
-static inline ag_string_t *request_env(const char *ev)
+static inline ag_string_t *request_env(const char *key)
 {
-    const char *env = getenv(ev);
+    //const char *env = getenv(ev);
+    const char *env = FCGX_GetParam(key, g_http->req->envp);
     return env ? ag_string_new(env) : ag_string_new_empty();
 }
 
