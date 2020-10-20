@@ -246,7 +246,7 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 }
 
     
-static const char *g_method[] = {
+static ag_threadlocal const char *g_method[] = {
     "GET",
     "POST",
     "PUT",
