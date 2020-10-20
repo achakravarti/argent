@@ -330,10 +330,33 @@ extern enum ag_http_method ag_http_request_method(void)
 }
 
 
-extern ag_string_t *ag_http_request_type(void)
+extern enum ag_http_mime ag_http_request_type(void)
 {
     ag_assert (g_http);
-    return request_env("CONTENT_TYPE");
+    ag_string_smart_t *type = request_env("CONTENT_TYPE");
+    ag_string_lower(&type);
+
+    static const char *mime[] = {
+        "application/x-www-form-urlencoded",
+        "application/json",
+        "application/octet-stream",
+        "application/xml",
+        "multipart/form-data",
+        "text/css",
+        "text/csv",
+        "text/html",
+        "text/javascript",
+        "text/plain",
+        "text/xml",
+    };
+
+    for (register size_t i = 0; i < __AG_HTTP_MIME_LEN; i++) {
+        if (ag_string_eq(type, mime[i]))
+            return (enum ag_http_mime) i;
+    }
+
+    ag_require (0, AG_ERNO_HTTP_TYPE, NULL);
+    return AG_HTTP_MIME_TEXT_PLAIN;
 }
 
 extern ag_string_t *ag_http_request_browser(void)

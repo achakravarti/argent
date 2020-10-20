@@ -882,6 +882,7 @@ enum ag_http_method {
     AG_HTTP_METHOD_PUT,
     AG_HTTP_METHOD_PATCH,
     AG_HTTP_METHOD_DELETE,
+    __AG_HTTP_METHOD_LEN,
 };
 
 
@@ -906,6 +907,7 @@ enum ag_http_status {
     AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,
     AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR,
     AG_HTTP_STATUS_501_NOT_IMPLEMENTED,
+    __AG_HTTP_STATUS_LEN,
 };
 
 
@@ -923,6 +925,7 @@ enum ag_http_mime {
     AG_HTTP_MIME_TEXT_JS,
     AG_HTTP_MIME_TEXT_PLAIN,
     AG_HTTP_MIME_TEXT_XML,
+    __AG_HTTP_MIME_LEN,
 };
 
 
@@ -941,7 +944,7 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 
 
 extern enum ag_http_method ag_http_request_method(void);
-extern ag_string_t *ag_http_request_type(void);
+extern enum ag_http_mime ag_http_request_type(void);
 extern ag_string_t *ag_http_request_browser(void);
 extern ag_string_t *ag_http_request_ip(void);
 extern ag_string_t *ag_http_request_host(void);
