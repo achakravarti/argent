@@ -117,6 +117,7 @@ extern void ag_http_init(void)
 {
     ag_assert (!g_http);
     g_http = ag_memblock_new(sizeof *g_http);
+    g_http->req = ag_memblock_new(sizeof *g_http->req);
 
     ag_require (!FCGX_Init(), AG_ERNO_HTTP_INIT, NULL);
     ag_require (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_HTTP_INIT, NULL);
