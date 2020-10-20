@@ -296,3 +296,78 @@ extern void ag_http_respond_file(enum ag_http_mime type,
     fclose(file);
 }
 
+
+static inline ag_string_t *request_env(const char *ev)
+{
+    const char *env = getenv(ev);
+    return env ? ag_string_new(env) : ag_string_new_empty();
+}
+
+
+extern ag_string_t *ag_http_request_method(void)
+{
+    ag_assert (g_http);
+    return request_env("REQUEST_METHOD");
+}
+
+extern ag_string_t *ag_http_request_type(void)
+{
+    ag_assert (g_http);
+    return request_env("CONTENT_TYPE");
+}
+
+extern ag_string_t *ag_http_request_browser(void)
+{
+    ag_assert (g_http);
+    return request_env("HTTP_USER_AGENT");
+}
+
+extern ag_string_t *ag_http_request_ip(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_ADDR");
+}
+
+extern ag_string_t *ag_http_request_host(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_HOST");
+}
+
+extern ag_string_t *ag_http_request_port(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_PORT");
+}
+
+extern ag_string_t *ag_http_request_referer(void)
+{
+    ag_assert (g_http);
+    return request_env("HTTP_REFERER");
+}
+
+
+extern ag_string_t *ag_http_request_url_scheme(void)
+{
+    ag_assert (g_http);
+    return request_env("HTTPS");
+}
+
+extern ag_string_t *ag_http_request_url_host(void)
+{
+    ag_assert (g_http);
+    return request_env("SERVER_NAME");
+}
+
+extern ag_string_t *ag_http_request_url_port(void)
+{
+    ag_assert (g_http);
+    return request_env("SERVER_PORT");
+}
+
+extern ag_string_t *ag_http_request_url_path(void)
+{
+    ag_assert (g_http);
+    return request_env("REQUEST_URI");
+}
+

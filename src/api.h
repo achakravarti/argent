@@ -925,21 +925,6 @@ enum ag_http_mime {
     AG_HTTP_MIME_TEXT_XML,
 };
 
-struct ag_http_url {
-    ag_string_t *scheme; // HTTPS
-    ag_string_t *host; // SERVER_NAME
-    ag_string_t *port; // SERVER_PORT
-    ag_string_t *path; // REQUEST_URI
-};
-
-struct ag_http_request {
-    ag_string_t *method; // REQUEST_METHOD
-    ag_string_t *type; // CONTENT_TYPE
-    ag_string_t *browser; // HTTP_USER_AGENT
-    ag_string_t *ip; // REMOTE_ADDR
-    ag_string_t *host; // REMOTE_HOST
-    ag_string_t *port; // REMOTE_PORT
-};
 
 extern void ag_http_init(void);
 extern void ag_http_exit(void);
@@ -953,4 +938,18 @@ extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
         const char *fmt, ...);
 extern void ag_http_respond_file(enum ag_http_mime type,
         enum ag_http_status code, const char *fpath);
+
+
+extern ag_string_t *ag_http_request_method(void);
+extern ag_string_t *ag_http_request_type(void);
+extern ag_string_t *ag_http_request_browser(void);
+extern ag_string_t *ag_http_request_ip(void);
+extern ag_string_t *ag_http_request_host(void);
+extern ag_string_t *ag_http_request_port(void);
+extern ag_string_t *ag_http_request_referer(void);
+
+extern ag_string_t *ag_http_request_url_scheme(void);
+extern ag_string_t *ag_http_request_url_host(void);
+extern ag_string_t *ag_http_request_url_port(void);
+extern ag_string_t *ag_http_request_url_path(void);
 
