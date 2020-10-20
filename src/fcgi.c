@@ -304,11 +304,31 @@ static inline ag_string_t *request_env(const char *ev)
 }
 
 
-extern ag_string_t *ag_http_request_method(void)
+extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
-    return request_env("REQUEST_METHOD");
+    ag_string_smart_t *meth = request_env("REQUEST_METHOD");
+    ag_string_lower(&meth);
+
+    if (ag_string_eq(meth, "get"))
+        return AG_HTTP_METHOD_GET;
+
+    if (ag_string_eq(meth, "post"))
+        return AG_HTTP_METHOD_POST;
+
+    if (ag_string_eq(meth, "put"))
+        return AG_HTTP_METHOD_PUT;
+
+    if (ag_string_eq(meth, "patch"))
+        return AG_HTTP_METHOD_PATCH;
+
+    if (ag_string_eq(meth, "delete"))
+        return AG_HTTP_METHOD_DELETE;
+
+    ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
+    return AG_HTTP_METHOD_GET;
 }
+
 
 extern ag_string_t *ag_http_request_type(void)
 {
@@ -351,8 +371,8 @@ extern bool ag_http_request_url_secure(void)
 {
     ag_assert (g_http);
     ag_string_smart_t *https = request_env("HTTPS");
-
     ag_string_lower(&https);
+
     return ag_string_eq(https, "on");
 }
 

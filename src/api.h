@@ -940,7 +940,7 @@ extern void ag_http_respond_file(enum ag_http_mime type,
         enum ag_http_status code, const char *fpath);
 
 
-extern ag_string_t *ag_http_request_method(void);
+extern enum ag_http_method ag_http_request_method(void);
 extern ag_string_t *ag_http_request_type(void);
 extern ag_string_t *ag_http_request_browser(void);
 extern ag_string_t *ag_http_request_ip(void);
