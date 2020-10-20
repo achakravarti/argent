@@ -887,6 +887,7 @@ enum ag_http_method {
 
 
 extern ag_string_t *ag_http_method_string(enum ag_http_method meth);
+extern enum ag_http_method ag_http_method_parse(const char *str);
 
 
 // https://restfulapi.net/http-status-codes/

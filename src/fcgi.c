@@ -261,6 +261,19 @@ extern ag_string_t *ag_http_method_string(enum ag_http_method meth)
 }
 
 
+extern enum ag_http_method ag_http_method_parse(const char *str)
+{
+    ag_string_smart_t *method = ag_string_new(str);
+
+    for (register int i = 0; i < __AG_HTTP_METHOD_LEN; i++) {
+        if (ag_string_eq(method, g_method[i]))
+            return i;
+    }
+
+    return AG_HTTP_METHOD_GET;
+}
+
+
 extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
