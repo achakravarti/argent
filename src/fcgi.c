@@ -163,15 +163,6 @@ extern void ag_http_run(void)
 }
 
 
-extern ag_string_t *ag_http_env(const char *ev)
-{
-    ag_assert (g_http);
-    const char *env = getenv(ev);
-
-    return env ? ag_string_new(env) : ag_string_new_empty();
-}
-
-
 extern ag_string_t *ag_http_param(const char *key)
 {
     ag_assert (g_http && g_http->param && key && *key);
