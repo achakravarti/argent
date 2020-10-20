@@ -935,7 +935,6 @@ extern void ag_http_register(ag_http_handler *req);
 extern void ag_http_run(void);
 extern ag_string_t *ag_http_env(const char *ev);
 extern enum ag_http_method ag_http_method(void);
-extern enum ag_http_mime ag_http_type(void);
 extern ag_string_t *ag_http_param(const char *key);
 extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
         const char *fmt, ...);
