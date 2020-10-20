@@ -307,23 +307,21 @@ static inline ag_string_t *request_env(const char *ev)
 extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
-    ag_string_smart_t *meth = request_env("REQUEST_METHOD");
-    ag_string_lower(&meth);
+    ag_string_smart_t *env = request_env("REQUEST_METHOD");
+    ag_string_lower(&env);
 
-    if (ag_string_eq(meth, "get"))
-        return AG_HTTP_METHOD_GET;
+    static const char *meth[] = {
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+    };
 
-    if (ag_string_eq(meth, "post"))
-        return AG_HTTP_METHOD_POST;
-
-    if (ag_string_eq(meth, "put"))
-        return AG_HTTP_METHOD_PUT;
-
-    if (ag_string_eq(meth, "patch"))
-        return AG_HTTP_METHOD_PATCH;
-
-    if (ag_string_eq(meth, "delete"))
-        return AG_HTTP_METHOD_DELETE;
+    for (register int i = 0; i < __AG_HTTP_METHOD_LEN; i++) {
+        if (ag_string_eq(env, meth[i]))
+            return i;
+    }
 
     ag_require (0, AG_ERNO_HTTP_METHOD, NULL);
     return AG_HTTP_METHOD_GET;
@@ -333,8 +331,8 @@ extern enum ag_http_method ag_http_request_method(void)
 extern enum ag_http_mime ag_http_request_type(void)
 {
     ag_assert (g_http);
-    ag_string_smart_t *type = request_env("CONTENT_TYPE");
-    ag_string_lower(&type);
+    ag_string_smart_t *env = request_env("CONTENT_TYPE");
+    ag_string_lower(&env);
 
     static const char *mime[] = {
         "application/x-www-form-urlencoded",
@@ -350,9 +348,9 @@ extern enum ag_http_mime ag_http_request_type(void)
         "text/xml",
     };
 
-    for (register size_t i = 0; i < __AG_HTTP_MIME_LEN; i++) {
-        if (ag_string_eq(type, mime[i]))
-            return (enum ag_http_mime) i;
+    for (register int i = 0; i < __AG_HTTP_MIME_LEN; i++) {
+        if (ag_string_eq(env, mime[i]))
+            return i;
     }
 
     ag_require (0, AG_ERNO_HTTP_TYPE, NULL);
