@@ -211,6 +211,15 @@ extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
 }
 
 
+extern void ag_http_response_string(enum ag_http_mime type, 
+        enum ag_http_status code, const ag_string_t *str)
+{
+    ag_assert (g_http && str && *str);
+    response_head(type, code);
+    FCGX_FPrintF(g_http->req->out, str);
+}
+
+
 extern void ag_http_respond_file(enum ag_http_mime type,
         enum ag_http_status code, const char *fpath)
 {
