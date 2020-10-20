@@ -942,11 +942,12 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 
 extern enum ag_http_method ag_http_request_method(void);
 extern enum ag_http_mime ag_http_request_type(void);
-extern ag_string_t *ag_http_request_browser(void);
-extern ag_string_t *ag_http_request_ip(void);
-extern ag_string_t *ag_http_request_host(void);
-extern ag_string_t *ag_http_request_port(void);
 extern ag_string_t *ag_http_request_referer(void);
+
+extern ag_string_t *ag_http_request_user_agent(void);
+extern ag_string_t *ag_http_request_user_ip(void);
+extern ag_string_t *ag_http_request_user_host(void);
+extern ag_string_t *ag_http_request_user_port(void);
 
 extern bool ag_http_request_url_secure(void);
 extern ag_string_t *ag_http_request_url_host(void);

@@ -297,35 +297,36 @@ extern enum ag_http_mime ag_http_request_type(void)
     return AG_HTTP_MIME_TEXT_PLAIN;
 }
 
-extern ag_string_t *ag_http_request_browser(void)
-{
-    ag_assert (g_http);
-    return request_env("HTTP_USER_AGENT");
-}
-
-extern ag_string_t *ag_http_request_ip(void)
-{
-    ag_assert (g_http);
-    return request_env("REMOTE_ADDR");
-}
-
-extern ag_string_t *ag_http_request_host(void)
-{
-    ag_assert (g_http);
-    return request_env("REMOTE_HOST");
-}
-
-extern ag_string_t *ag_http_request_port(void)
-{
-    ag_assert (g_http);
-    return request_env("REMOTE_PORT");
-}
-
 extern ag_string_t *ag_http_request_referer(void)
 {
     ag_assert (g_http);
     return request_env("HTTP_REFERER");
 }
+
+extern ag_string_t *ag_http_request_user_agent(void)
+{
+    ag_assert (g_http);
+    return request_env("HTTP_USER_AGENT");
+}
+
+extern ag_string_t *ag_http_request_user_ip(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_ADDR");
+}
+
+extern ag_string_t *ag_http_request_user_host(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_HOST");
+}
+
+extern ag_string_t *ag_http_request_user_port(void)
+{
+    ag_assert (g_http);
+    return request_env("REMOTE_PORT");
+}
+
 
 
 extern bool ag_http_request_url_secure(void)
