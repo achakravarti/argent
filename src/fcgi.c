@@ -4,11 +4,89 @@
 #include <ctype.h>
 
 
-static ag_threadlocal struct {
-    FCGX_Request *req;
-    ag_http_handler *cbk;
-    ag_string_t *param;
-}  *g_http = NULL;
+
+
+/*******************************************************************************
+ *                              METHOD ENUMERATION
+ */
+
+
+static ag_threadlocal const char *g_method[] = {
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+};
+
+
+extern const char *ag_http_method_str(enum ag_http_method meth)
+{
+    return g_method[meth];
+}
+
+
+extern enum ag_http_method ag_http_method_parse(const char *str)
+{
+    ag_string_smart_t *method = ag_string_new(str);
+    ag_string_upper(&method);
+
+    for (register int i = 0; i < __AG_HTTP_METHOD_LEN; i++) {
+        if (ag_string_eq(method, g_method[i]))
+            return i;
+    }
+
+    return AG_HTTP_METHOD_GET;
+}
+
+
+
+
+/*******************************************************************************
+ *                               MIME ENUMERATION
+ */
+
+
+static ag_threadlocal const char *g_mime[] = {
+    "application/x-www-form-urlencoded",
+    "application/json",
+    "application/octet-stream",
+    "application/xml",
+    "multipart/form-data",
+    "text/css",
+    "text/csv",
+    "text/html",
+    "text/javascript",
+    "text/plain",
+    "text/xml",
+};
+
+
+extern const char *ag_http_mime_str(enum ag_http_mime type)
+{
+    return g_mime[type];
+}
+
+
+extern enum ag_http_mime ag_http_mime_parse(const char *str)
+{
+    ag_string_smart_t *mime = ag_string_new(str);
+    ag_string_lower(&mime);
+
+    for (register int i = 0; i < __AG_HTTP_MIME_LEN; i++) {
+        if (ag_string_eq(mime, g_mime[i]))
+            return i;
+    }
+
+    return AG_HTTP_MIME_TEXT_PLAIN;
+}
+
+
+
+
+/*******************************************************************************
+ *                              STATUS ENUMERATION
+ */
 
 
 static ag_threadlocal const char *g_status[] = {
@@ -34,31 +112,6 @@ static ag_threadlocal const char *g_status[] = {
 };
 
 
-static ag_threadlocal const char *g_method[] = {
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-};
-    
-static ag_threadlocal const char *g_mime[] = {
-    "application/x-www-form-urlencoded",
-    "application/json",
-    "application/octet-stream",
-    "application/xml",
-    "multipart/form-data",
-    "text/css",
-    "text/csv",
-    "text/html",
-    "text/javascript",
-    "text/plain",
-    "text/xml",
-};
-
-
-
-
 extern const char *ag_http_status_str(enum ag_http_status code)
 {
     ag_assert (code >= AG_HTTP_STATUS_200_OK && code < __AG_HTTP_STATUS_LEN);
@@ -80,12 +133,19 @@ extern enum ag_http_status ag_http_status_parse(const char *str)
 }
 
 
-static inline void response_head(enum ag_http_mime type, 
-        enum ag_http_status code)
-{
-    FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n", g_mime[type], g_status[code]);
-}
+
+
+/*******************************************************************************
+ *                              REQUEST INTERNALS
+ */
+
+
+static ag_threadlocal struct {
+    FCGX_Request *req;
+    ag_http_handler *cbk;
+    ag_string_t *param;
+}  *g_http = NULL;
+
 
 static inline ag_string_t *request_env(const char *key)
 {
@@ -150,6 +210,28 @@ static inline void param_post(void)
     param_update(bfr);
     ag_memblock_free((void **) &bfr);
 }
+
+
+
+
+/*******************************************************************************
+ *                              RESPONSE INTERNALS
+ */
+
+
+static inline void response_head(enum ag_http_mime type, 
+        enum ag_http_status code)
+{
+    FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
+            "Status: %s\r\n\r\n", g_mime[type], g_status[code]);
+}
+
+
+
+
+/*******************************************************************************
+ *                                 HTTP SERVER
+ */
 
 
 extern void ag_http_init(void)
@@ -279,26 +361,6 @@ extern void ag_http_respond_file(enum ag_http_mime type,
 }
 
     
-extern const char *ag_http_method_str(enum ag_http_method meth)
-{
-    return g_method[meth];
-}
-
-
-extern enum ag_http_method ag_http_method_parse(const char *str)
-{
-    ag_string_smart_t *method = ag_string_new(str);
-    ag_string_upper(&method);
-
-    for (register int i = 0; i < __AG_HTTP_METHOD_LEN; i++) {
-        if (ag_string_eq(method, g_method[i]))
-            return i;
-    }
-
-    return AG_HTTP_METHOD_GET;
-}
-
-
 extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
@@ -318,25 +380,6 @@ extern enum ag_http_mime ag_http_request_type(void)
     return ag_http_mime_parse(env);
 }
 
-
-extern const char *ag_http_mime_str(enum ag_http_mime type)
-{
-    return g_mime[type];
-}
-
-
-extern enum ag_http_mime ag_http_mime_parse(const char *str)
-{
-    ag_string_smart_t *mime = ag_string_new(str);
-    ag_string_lower(&mime);
-
-    for (register int i = 0; i < __AG_HTTP_MIME_LEN; i++) {
-        if (ag_string_eq(mime, g_mime[i]))
-            return i;
-    }
-
-    return AG_HTTP_MIME_TEXT_PLAIN;
-}
 
 extern ag_string_t *ag_http_request_referer(void)
 {
@@ -367,7 +410,6 @@ extern ag_string_t *ag_http_request_user_port(void)
     ag_assert (g_http);
     return request_env("REMOTE_PORT");
 }
-
 
 
 extern bool ag_http_request_url_secure(void)
