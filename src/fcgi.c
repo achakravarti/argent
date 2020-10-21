@@ -254,7 +254,7 @@ static ag_threadlocal const char *g_method[] = {
     "DELETE",
 };
     
-static const char *g_mime[] = {
+static ag_threadlocal const char *g_mime[] = {
     "application/x-www-form-urlencoded",
     "application/json",
     "application/octet-stream",
