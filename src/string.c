@@ -230,7 +230,7 @@ extern void ag_string_proper(ag_string_t **ctx)
 
     register size_t sz = string_sz(hnd);
     for (register size_t i = 0; i < sz; i++)
-        hnd[i] = (i || hnd[i - 1] == ' ')  ? toupper(hnd[i]) : tolower(hnd[i]);
+        hnd[i] = (!i || hnd[i - 1] == ' ')  ? toupper(hnd[i]) : tolower(hnd[i]);
 }
 
 

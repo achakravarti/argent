@@ -168,6 +168,18 @@ static void empty_upper(void)
     printf("...OK\n");
 }
 
+
+static void empty_proper(void)
+{
+    printf("ag_string_proper() has no effect on an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_proper(&s);
+    ag_require (!*s, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
@@ -184,6 +196,7 @@ static void empty_test(void)
     empty_add_cstr();
     empty_lower();
     empty_upper();
+    empty_proper();
 }
 
 
@@ -453,6 +466,18 @@ static void ascii_upper(void)
 }
 
 
+static void ascii_proper(void)
+{
+    printf("ag_string_proper() transforms an ASCII string to propercase");
+
+    ag_string_smart_t *s = ag_string_new("the OLD Man and tHe sEA!");
+    ag_string_proper(&s);
+    ag_require (!strcmp(s, "The Old Man And The Sea!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
                                          /* runs ASCII string tests [AgDM:??] */
 static void ascii_test(void)
 {
@@ -476,6 +501,7 @@ static void ascii_test(void)
     ascii_new_fmt();
     ascii_lower();
     ascii_upper();
+    ascii_proper();
 }
 
 
