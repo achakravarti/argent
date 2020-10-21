@@ -253,11 +253,25 @@ static ag_threadlocal const char *g_method[] = {
     "PATCH",
     "DELETE",
 };
+    
+static const char *g_mime[] = {
+    "application/x-www-form-urlencoded",
+    "application/json",
+    "application/octet-stream",
+    "application/xml",
+    "multipart/form-data",
+    "text/css",
+    "text/csv",
+    "text/html",
+    "text/javascript",
+    "text/plain",
+    "text/xml",
+};
 
 
 extern const char *ag_http_method_str(enum ag_http_method meth)
 {
-    return ag_string_new(g_method[meth]);
+    return g_method[meth];
 }
 
 
@@ -290,22 +304,22 @@ extern enum ag_http_mime ag_http_request_type(void)
     ag_string_smart_t *env = request_env("CONTENT_TYPE");
     ag_string_lower(&env);
 
-    static const char *mime[] = {
-        "application/x-www-form-urlencoded",
-        "application/json",
-        "application/octet-stream",
-        "application/xml",
-        "multipart/form-data",
-        "text/css",
-        "text/csv",
-        "text/html",
-        "text/javascript",
-        "text/plain",
-        "text/xml",
-    };
+    return ag_http_mime_parse(env);
+}
+
+
+extern const char *ag_http_mime_str(enum ag_http_mime type)
+{
+    return g_mime[type];
+}
+
+
+extern enum ag_http_mime ag_http_mime_parse(const char *str)
+{
+    ag_string_smart_t *mime = ag_string_new(str);
 
     for (register int i = 0; i < __AG_HTTP_MIME_LEN; i++) {
-        if (ag_string_eq(env, mime[i]))
+        if (ag_string_eq(mime, g_mime[i]))
             return i;
     }
 

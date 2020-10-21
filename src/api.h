@@ -932,6 +932,9 @@ enum ag_http_mime {
     __AG_HTTP_MIME_LEN,
 };
 
+extern const char *ag_http_mime_str(enum ag_http_mime type);
+extern enum ag_http_mime ag_http_mime_parse(const char *str);
+
 
 extern void ag_http_init(void);
 extern void ag_http_exit(void);
