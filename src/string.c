@@ -223,3 +223,14 @@ extern void ag_string_upper(ag_string_t **ctx)
 }
 
 
+extern void ag_string_proper(ag_string_t **ctx)
+{
+    ag_assert (ctx && *ctx);
+    char *hnd = *ctx;
+
+    register size_t sz = string_sz(hnd);
+    for (register size_t i = 0; i < sz; i++)
+        hnd[i] = (i || hnd[i - 1] == ' ')  ? toupper(hnd[i]) : tolower(hnd[i]);
+}
+
+

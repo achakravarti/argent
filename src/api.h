@@ -407,6 +407,7 @@ extern void ag_string_lower(ag_string_t **ctx);
 
 extern void ag_string_upper(ag_string_t **ctx);
 
+extern void ag_string_proper(ag_string_t **ctx);
 
 
 /*******************************************************************************
