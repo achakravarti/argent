@@ -36,22 +36,8 @@ static inline void response_head(enum ag_http_mime type,
         "501 Not Implemented",
     };
 
-    static const char *mime[] = {
-        "application/x-www-form-urlencoded",
-        "application/json",
-        "application/octet-stream",
-        "application/xml",
-        "multipart/form-data",
-        "text/css",
-        "text/csv",
-        "text/html",
-        "text/javascript",
-        "text/plain",
-        "text/xml",
-    };
-
     FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n", mime[type], status[code]);
+            "Status: %s\r\n\r\n", ag_http_mime_str(type), status[code]);
 }
 
 static inline ag_string_t *request_env(const char *key)
