@@ -916,6 +916,10 @@ enum ag_http_status {
 };
 
 
+extern const char *ag_http_status_str(enum ag_http_status code);
+extern enum ag_http_status ag_http_status_parse(const char *str);
+
+
 // https://github.com/cujojs/rest/blob/master/docs/mime.md
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 enum ag_http_mime {
