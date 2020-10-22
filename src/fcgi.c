@@ -375,7 +375,13 @@ extern ag_string_t *ag_http_request_url_port(void)
 extern ag_string_t *ag_http_request_url_path(void)
 {
     ag_assert (g_http);
-    return request_env("REQUEST_URI");
+    ag_string_smart_t *env = request_env("REQUEST_URI");
+
+    char *save;
+    char *tok = strtok_r(env, "?", &save);
+    tok = strtok_r(tok, "#", &save);
+
+    return ag_string_new(tok);
 }
 
 
