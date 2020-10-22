@@ -945,11 +945,6 @@ extern void ag_http_init(void);
 extern void ag_http_exit(void);
 extern void ag_http_register(ag_http_handler *req);
 extern void ag_http_run(void);
-extern ag_string_t *ag_http_param(const char *key);
-extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
-        const char *fmt, ...);
-extern void ag_http_respond_file(enum ag_http_mime type,
-        enum ag_http_status code, const char *fpath);
 
 
 extern enum ag_http_method ag_http_request_method(void);
@@ -966,11 +961,11 @@ extern ag_string_t *ag_http_request_url_host(void);
 extern ag_string_t *ag_http_request_url_port(void);
 extern ag_string_t *ag_http_request_url_path(void);
 
-extern void ag_http_response_string(enum ag_http_mime type, 
-        enum ag_http_status code, const ag_string_t *str);
+extern ag_string_t *ag_http_request_param(const char *key);
 
-extern void ag_http_response_header(enum ag_http_mime type, 
+extern void ag_http_response_begin(enum ag_http_mime type, 
         enum ag_http_status code);
-extern void ag_http_response_body(const char *str);
+extern void ag_http_response_string(const char *str);
 extern void ag_http_response_file(const char *fpath);
+#define ag_http_response_end()
 

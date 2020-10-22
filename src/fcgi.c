@@ -287,44 +287,6 @@ extern void ag_http_run(void)
 }
 
 
-extern ag_string_t *ag_http_param(const char *key)
-{
-    ag_assert (g_http && g_http->param && key && *key);
-    char *p = strstr(g_http->param, key);
-
-    if (p) {
-        p += strlen(key);
-        
-        if (*p == '=')
-            p++;
-        else
-            return ag_string_new_empty();
-    } else
-        return ag_string_new_empty();
-
-    char *val = ag_memblock_new(ag_string_sz(g_http->param) + 1);
-    char *v = val;
-
-    while (*p && *p != '&') {
-        printf("*p = %c\n", *p);
-        if (param_encoded(p)) {
-            *v++ = (16 * param_decode(p[1])) + param_decode(p[2]);
-            p += 3;
-        } else if (*p == '+') {
-            *v++ = ' ';
-            p++;
-        } else
-            *v++ = *p++;
-    }
-
-    *v = '\0';
-    ag_string_t *ret = ag_string_new(val);
-    ag_memblock_free((void **) &val);
-
-    return ret;
-}
-
-
 extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
         const char *fmt, ...)
 {
@@ -338,35 +300,6 @@ extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
 }
 
 
-extern void ag_http_response_string(enum ag_http_mime type, 
-        enum ag_http_status code, const ag_string_t *str)
-{
-    ag_assert (g_http && str && *str);
-    response_head(type, code);
-    FCGX_FPrintF(g_http->req->out, str);
-}
-
-
-extern void ag_http_respond_file(enum ag_http_mime type,
-        enum ag_http_status code, const char *fpath)
-{
-    ag_assert (fpath && *fpath);
-    FILE *file = fopen(fpath, "r");
-    ag_require (file, AG_ERNO_HTTP_FILE, NULL);
-
-    ag_assert (g_http);
-    response_head(type, code);
-    
-    register char c;
-    do {
-        c = (char) fgetc(file);
-        FCGX_FPrintF(g_http->req->out,"%c", c);
-    } while (c != EOF);
-
-    fclose(file);
-}
-
-    
 extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
@@ -446,7 +379,44 @@ extern ag_string_t *ag_http_request_url_path(void)
 }
 
 
-extern void ag_http_response_header(enum ag_http_mime type, 
+extern ag_string_t *ag_http_request_param(const char *key)
+{
+    ag_assert (g_http && g_http->param && key && *key);
+    char *p = strstr(g_http->param, key);
+
+    if (p) {
+        p += strlen(key);
+        
+        if (*p == '=')
+            p++;
+        else
+            return ag_string_new_empty();
+    } else
+        return ag_string_new_empty();
+
+    char *val = ag_memblock_new(ag_string_sz(g_http->param) + 1);
+    char *v = val;
+
+    while (*p && *p != '&') {
+        if (param_encoded(p)) {
+            *v++ = (16 * param_decode(p[1])) + param_decode(p[2]);
+            p += 3;
+        } else if (*p == '+') {
+            *v++ = ' ';
+            p++;
+        } else
+            *v++ = *p++;
+    }
+
+    *v = '\0';
+    ag_string_t *ret = ag_string_new(val);
+    ag_memblock_free((void **) &val);
+
+    return ret;
+}
+
+
+extern void ag_http_response_begin(enum ag_http_mime type, 
         enum ag_http_status code)
 {
     ag_assert (g_http);
@@ -457,7 +427,7 @@ extern void ag_http_response_header(enum ag_http_mime type,
 }
 
 
-extern void ag_http_response_body(const char *str)
+extern void ag_http_response_string(const char *str)
 {
     ag_assert (g_http && g_http->hdr);
     FCGX_FPrintF(g_http->req->out, str);
