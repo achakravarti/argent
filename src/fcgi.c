@@ -144,6 +144,7 @@ static ag_threadlocal struct {
     FCGX_Request *req;
     ag_http_handler *cbk;
     ag_string_t *param;
+    bool hdr;
 }  *g_http = NULL;
 
 
@@ -245,6 +246,7 @@ extern void ag_http_init(void)
     
     g_http->cbk = NULL;
     g_http->param = NULL;
+    g_http->hdr = false;
 }
 
 
@@ -441,5 +443,41 @@ extern ag_string_t *ag_http_request_url_path(void)
 {
     ag_assert (g_http);
     return request_env("REQUEST_URI");
+}
+
+
+extern void ag_http_response_header(enum ag_http_mime type, 
+        enum ag_http_status code)
+{
+    ag_assert (g_http);
+    FCGX_FPrintF(g_http->req->out, "Content-type: %s; charset=UTF-8\r\n"
+            "Status: %s\r\n\r\n", g_mime[type], g_status[code]);
+    
+    g_http->hdr = true;
+}
+
+
+extern void ag_http_response_body(const char *str)
+{
+    ag_assert (g_http && g_http->hdr);
+    FCGX_FPrintF(g_http->req->out, str);
+}
+
+
+extern void ag_http_response_file(const char *fpath)
+{
+    ag_assert (fpath && *fpath);
+    FILE *file = fopen(fpath, "r");
+    ag_require (file, AG_ERNO_HTTP_FILE, NULL);
+
+    ag_assert (g_http && g_http->hdr);
+    register char c;
+
+    do {
+        c = (char) fgetc(file);
+        FCGX_FPrintF(g_http->req->out,"%c", c);
+    } while (c != EOF);
+
+    fclose(file);
 }
 

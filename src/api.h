@@ -969,3 +969,8 @@ extern ag_string_t *ag_http_request_url_path(void);
 extern void ag_http_response_string(enum ag_http_mime type, 
         enum ag_http_status code, const ag_string_t *str);
 
+extern void ag_http_response_header(enum ag_http_mime type, 
+        enum ag_http_status code);
+extern void ag_http_response_body(const char *str);
+extern void ag_http_response_file(const char *fpath);
+
