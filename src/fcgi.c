@@ -290,28 +290,32 @@ extern ag_string_t *ag_http_param(const char *key)
     ag_assert (g_http && g_http->param && key && *key);
     char *p = strstr(g_http->param, key);
 
-    if (p)
+    if (p) {
         p += strlen(key);
-
-    if (*p == '=')
-        p++;
-    else
+        
+        if (*p == '=')
+            p++;
+        else
+            return ag_string_new_empty();
+    } else
         return ag_string_new_empty();
 
-    char *val = ag_memblock_new(ag_string_len(g_http->param) + 1);
+    char *val = ag_memblock_new(ag_string_sz(g_http->param) + 1);
+    char *v = val;
 
     while (*p && *p != '&') {
+        printf("*p = %c\n", *p);
         if (param_encoded(p)) {
-            *val++ = (16 * param_decode(p[1])) + param_decode(p[2]);
+            *v++ = (16 * param_decode(p[1])) + param_decode(p[2]);
             p += 3;
         } else if (*p == '+') {
-            *val++ = ' ';
+            *v++ = ' ';
             p++;
         } else
-            *val++ = *p++;
+            *v++ = *p++;
     }
 
-    *val = '\0';
+    *v = '\0';
     ag_string_t *ret = ag_string_new(val);
     ag_memblock_free((void **) &val);
 
