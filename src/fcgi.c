@@ -447,12 +447,9 @@ extern void ag_http_response_file(const char *fpath)
     ag_require (file, AG_ERNO_HTTP_FILE, NULL);
 
     ag_assert (g_http && g_http->hdr);
-    register char c;
-
-    do {
-        c = (char) fgetc(file);
-        FCGX_FPrintF(g_http->req->out,"%c", c);
-    } while (c != EOF);
+    register int c;
+    while ((c = fgetc(file)) != EOF)
+        FCGX_FPrintF(g_http->req->out, "%c", c);
 
     fclose(file);
 }
