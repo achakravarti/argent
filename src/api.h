@@ -938,12 +938,6 @@ enum ag_http_mime {
 };
 
 
-extern void ag_http_cookie_begin(const char *name, const char *val);
-extern void ag_http_cookie_domain_set(const char *val);
-extern void ag_http_cookie_path_set(const char *val);
-extern void ag_http_cookie_expires_set(const char *val);
-extern const char *ag_http_cookie_val(void);
-extern void ag_http_cookie_end(bool secure);
 
 
 extern const char *ag_http_mime_str(enum ag_http_mime type);
@@ -954,6 +948,13 @@ extern void ag_http_init(void);
 extern void ag_http_exit(void);
 extern void ag_http_register(ag_http_handler *req);
 extern void ag_http_run(void);
+
+extern void ag_http_cookie_param_set(const char *name, const char *val);
+extern void ag_http_cookie_domain_set(const char *val);
+extern void ag_http_cookie_path_set(const char *val);
+extern void ag_http_cookie_expires_set(const char *val);
+extern void ag_http_cookie_secure_set(void);
+extern const char *ag_http_cookie_val(void);
 
 
 extern enum ag_http_method ag_http_request_method(void);
@@ -972,11 +973,6 @@ extern ag_string_t *ag_http_request_url_path(void);
 
 extern ag_string_t *ag_http_request_param(const char *key);
 
-extern void ag_http_cookie_domain_set(const char *val);
-extern void ag_http_cookie_path_set(const char *val);
-extern void ag_http_cookie_expires_set(const char *val);
-extern void ag_http_cookie_secure_set(bool val);
-extern const char *ag_http_cookie_val(void);
 
 extern void ag_http_response_begin(enum ag_http_mime type, 
         enum ag_http_status code);

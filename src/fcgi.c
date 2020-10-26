@@ -422,33 +422,33 @@ extern ag_string_t *ag_http_request_param(const char *key)
 }
 
 
-extern void ag_http_cookie_begin(const char *name, const char *val)
+extern void ag_http_cookie_param_set(const char *key, const char *val)
 {
-    FCGX_FPrintF(g_http->req->out, "Set-Cookie: %s=%s", name, val);
+    FCGX_FPrintF(g_http->req->out, "Set-Cookie: %s=%s;\r\n", key, val);
 }
 
 
 extern void ag_http_cookie_domain_set(const char *val)
 {
-    FCGX_FPrintF(g_http->req->out, "; domain=%s", val);
+    ag_http_cookie_param_set("domain", val);
 }
 
 
 extern void ag_http_cookie_path_set(const char *val)
 {
-    FCGX_FPrintF(g_http->req->out, "; path=%s", val);
+    ag_http_cookie_param_set("path", val);
 }
 
 
 extern void ag_http_cookie_expires_set(const char *val)
 {
-    FCGX_FPrintF(g_http->req->out, "; expires=%s", val);
+    ag_http_cookie_param_set("expires", val);
 }
 
 
-extern void ag_http_cookie_end(bool secure)
+extern void ag_http_cookie_secure_set(void)
 {
-    FCGX_FPrintF(g_http->req->out, "%s\r\n", secure ? "; secure" : "");
+    FCGX_FPrintF(g_http->req->out, "Set-Cookie: secure\r\n");
 }
 
 
