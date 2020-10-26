@@ -937,6 +937,15 @@ enum ag_http_mime {
     __AG_HTTP_MIME_LEN,
 };
 
+
+extern void ag_http_cookie_begin(const char *name, const char *val);
+extern void ag_http_cookie_domain_set(const char *val);
+extern void ag_http_cookie_path_set(const char *val);
+extern void ag_http_cookie_expires_set(const char *val);
+extern const char *ag_http_cookie_val(void);
+extern void ag_http_cookie_end(bool secure);
+
+
 extern const char *ag_http_mime_str(enum ag_http_mime type);
 extern enum ag_http_mime ag_http_mime_parse(const char *str);
 
@@ -962,6 +971,12 @@ extern ag_string_t *ag_http_request_url_port(void);
 extern ag_string_t *ag_http_request_url_path(void);
 
 extern ag_string_t *ag_http_request_param(const char *key);
+
+extern void ag_http_cookie_domain_set(const char *val);
+extern void ag_http_cookie_path_set(const char *val);
+extern void ag_http_cookie_expires_set(const char *val);
+extern void ag_http_cookie_secure_set(bool val);
+extern const char *ag_http_cookie_val(void);
 
 extern void ag_http_response_begin(enum ag_http_mime type, 
         enum ag_http_status code);

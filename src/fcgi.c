@@ -422,6 +422,42 @@ extern ag_string_t *ag_http_request_param(const char *key)
 }
 
 
+extern void ag_http_cookie_begin(const char *name, const char *val)
+{
+    FCGX_FPrintF(g_http->req->out, "Set-Cookie: %s=%s", name, val);
+}
+
+
+extern void ag_http_cookie_domain_set(const char *val)
+{
+    FCGX_FPrintF(g_http->req->out, "; domain=%s", val);
+}
+
+
+extern void ag_http_cookie_path_set(const char *val)
+{
+    FCGX_FPrintF(g_http->req->out, "; path=%s", val);
+}
+
+
+extern void ag_http_cookie_expires_set(const char *val)
+{
+    FCGX_FPrintF(g_http->req->out, "; expires=%s", val);
+}
+
+
+extern void ag_http_cookie_end(bool secure)
+{
+    FCGX_FPrintF(g_http->req->out, "%s\r\n", secure ? "; secure" : "");
+}
+
+
+extern const char *ag_http_cookie_val(void)
+{
+    return request_env("HTTP_COOKIE");
+}
+
+
 extern void ag_http_response_begin(enum ag_http_mime type, 
         enum ag_http_status code)
 {
