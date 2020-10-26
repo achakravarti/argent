@@ -13,10 +13,12 @@
 #define SHIFT_INT ((uintptr_t)3)
 
 
+#if 0
 static inline bool tag_check(const ag_value_t *ctx, uintptr_t tag)
 {
     return ((uintptr_t)ctx & tag) == tag;
 }
+#endif
 
 
 /*******************************************************************************
