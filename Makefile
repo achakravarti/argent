@@ -26,7 +26,7 @@ SRC_LIB = $(sort $(shell find $(DIR_LIB)/ -type f -name '*.c'))
 OBJ_LIB = $(patsubst $(DIR_LIB)/%.c, $(DIR_BLD)/%.o, $(SRC_LIB))
 BIN_LIB = bld/libargent.so
 
-CC = ccache gcc
+CC = ccache cc
 CFLAGS = -fPIC -g -Wall -Wextra -I $(shell pg_config --includedir)
 LDFLAGS = -shared -L $(shell pg_config --libdir) -lpq -lfcgi
 
