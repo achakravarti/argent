@@ -19,7 +19,11 @@
  ******************************************************************************/
 
 
-#include <malloc.h>
+#if defined __FreeBSD__
+#   include <malloc_np.h>
+#else
+#   include <malloc.h>
+#endif
 #include <string.h>
 #include "./api.h"
 
