@@ -1007,7 +1007,7 @@ inline bool ag_url_gt(const ag_url_t *ctx, const ag_url_t *cmp)
     return ag_object_gt(ctx, cmp);
 }
 
-inline const char *ag_url_str(const ag_url_t *ctx)
+inline ag_string_t *ag_url_str(const ag_url_t *ctx)
 {
     return ag_object_str(ctx);
 }

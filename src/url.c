@@ -40,19 +40,40 @@ static void method_dispose(void *ctx)
 }
 
 
-static inline size_t method_sz(const ag_object_t *obj)
+static inline ag_string_t *method_str(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return sizeof p->secure + ag_string_sz(p->host) + ag_string_sz(p->port) 
-            + ag_string_sz(p->path);
+
+    if (*p->port) {
+        return ag_string_new_fmt("http%s://%s:%s%s", p->secure ? "s" : "",
+                p->host, p->port, p->path);
+    } else {
+        return ag_string_new_fmt("http%s://%s%s", p->secure ? "s" : "", p->host,
+                p->path);
+    }
+}
+
+
+static inline size_t method_sz(const ag_object_t *obj)
+{
+    ag_string_smart_t *s = method_str(obj);
+    return ag_string_sz(s);
 }
 
 
 static inline size_t method_len(const ag_object_t *obj)
 {
-    const struct payload *p = ag_object_payload(obj);
-    return ag_string_len(p->host) + ag_string_len(p->port) 
-            + ag_string_len(p->path);
+    ag_string_smart_t *s = method_str(obj);
+    return ag_string_len(s);
+}
+
+
+static enum ag_tristate method_cmp(const ag_object_t *lhs, 
+        const ag_object_t *rhs)
+{
+    ag_string_smart_t *s1 = method_str(lhs);
+    ag_string_smart_t *s2 = method_str(rhs);
+    return ag_string_cmp(s1, s2);
 }
 
 
@@ -65,8 +86,8 @@ extern void ag_url_register(void)
         .sz = &method_sz,
         .len = &method_len,
         .hash = NULL,
-        .cmp = NULL,
-        .str = NULL
+        .cmp = &method_cmp,
+        .str = &method_str
     };
 
     ag_object_register(AG_OBJECT_TYPE_URL, &vt);
@@ -95,7 +116,7 @@ extern inline enum ag_tristate ag_url_cmp(const ag_url_t *ctx,
 extern inline bool ag_url_lt(const ag_url_t *ctx, const ag_url_t *cmp);
 extern inline bool ag_url_eq(const ag_url_t *ctx, const ag_url_t *cmp);
 extern inline bool ag_url_gt(const ag_url_t *ctx, const ag_url_t *cmp);
-extern inline const char *ag_url_str(const ag_url_t *ctx);
+extern inline ag_string_t *ag_url_str(const ag_url_t *ctx);
 
 
 extern bool ag_url_secure(const ag_url_t *ctx)
