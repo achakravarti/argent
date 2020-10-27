@@ -144,6 +144,7 @@ static ag_threadlocal struct {
     FCGX_Request *req;
     ag_http_handler *cbk;
     ag_string_t *param;
+    ag_string_t *cookie;
     bool hdr;
 }  *g_http = NULL;
 
@@ -213,6 +214,11 @@ static inline void param_post(void)
 }
 
 
+static inline void cookie_read(void)
+{
+    ag_string_dispose(&g_http->cookie);
+    g_http->cookie = request_env("HTTP_COOKIE");
+}
 
 
 /*******************************************************************************
@@ -245,7 +251,7 @@ extern void ag_http_init(void)
     ag_require (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_HTTP_INIT, NULL);
     
     g_http->cbk = NULL;
-    g_http->param = NULL;
+    g_http->param = g_http->cookie = NULL;
     g_http->hdr = false;
 }
 
@@ -273,6 +279,8 @@ extern void ag_http_run(void)
     enum ag_http_method meth;
 
     while (FCGX_Accept_r(g_http->req) >= 0) {
+        cookie_read();
+
         meth = ag_http_request_method();
         if (meth == AG_HTTP_METHOD_GET || meth == AG_HTTP_METHOD_DELETE)
             param_get();
@@ -424,37 +432,42 @@ extern ag_string_t *ag_http_request_param(const char *key)
 
 extern void ag_http_cookie_param_set(const char *key, const char *val)
 {
+    ag_assert (g_http);
     FCGX_FPrintF(g_http->req->out, "Set-Cookie: %s=%s;\r\n", key, val);
 }
 
 
 extern void ag_http_cookie_domain_set(const char *val)
 {
+    ag_assert (g_http);
     ag_http_cookie_param_set("domain", val);
 }
 
 
 extern void ag_http_cookie_path_set(const char *val)
 {
+    ag_assert (g_http);
     ag_http_cookie_param_set("path", val);
 }
 
 
 extern void ag_http_cookie_expires_set(const char *val)
 {
+    ag_assert (g_http);
     ag_http_cookie_param_set("expires", val);
 }
 
 
 extern void ag_http_cookie_secure_set(void)
 {
+    ag_assert (g_http);
     FCGX_FPrintF(g_http->req->out, "Set-Cookie: secure\r\n");
 }
 
 
 extern const char *ag_http_cookie_val(void)
 {
-    return request_env("HTTP_COOKIE");
+    return (const char *) g_http->cookie;
 }
 
 
