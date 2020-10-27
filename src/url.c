@@ -23,9 +23,55 @@ static struct payload *payload_new(bool secure, const char *host,
 }
 
 
-typedef ag_object_t ag_url_t;
-#define ag_url_smart_t ag_object_smart_t
-extern void ag_url_register(void);
+static inline void *method_copy(const void *ctx)
+{
+    const struct payload *p = (const struct payload *) ctx;
+    return payload_new(p->secure, p->host, p->port, p->path);
+}
+
+
+static void method_dispose(void *ctx)
+{
+    struct payload *p = (struct payload *) ctx;
+
+    ag_string_dispose(&p->host);
+    ag_string_dispose(&p->port);
+    ag_string_dispose(&p->path);
+}
+
+
+static inline size_t method_sz(const ag_object_t *obj)
+{
+    const struct payload *p = ag_object_payload(obj);
+    return sizeof p->secure + ag_string_sz(p->host) + ag_string_sz(p->port) 
+            + ag_string_sz(p->path);
+}
+
+
+static inline size_t method_len(const ag_object_t *obj)
+{
+    const struct payload *p = ag_object_payload(obj);
+    return ag_string_len(p->host) + ag_string_len(p->port) 
+            + ag_string_len(p->path);
+}
+
+
+extern void ag_url_register(void)
+{
+    struct ag_object_vtable vt = {
+        .copy = &method_copy,
+        .dispose = &method_dispose,
+        .id = NULL,
+        .sz = &method_sz,
+        .len = &method_len,
+        .hash = NULL,
+        .cmp = NULL,
+        .str = NULL
+    };
+
+    ag_object_register(AG_OBJECT_TYPE_URL, &vt);
+}
+
 
 extern ag_url_t *ag_url_new(bool secure, const char *host, const char *port,
         const char *path)
