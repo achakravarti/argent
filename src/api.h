@@ -1060,3 +1060,5 @@ extern void ag_http_response_string(const char *str);
 extern void ag_http_response_file(const char *fpath);
 #define ag_http_response_end()
 
+extern ag_url_t *ag_http_request_url(void);
+
