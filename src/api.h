@@ -432,6 +432,7 @@ typedef struct ag_object_t ag_object_t;
                                            /* reserved object types [AgDM:??] */
 #define AG_OBJECT_TYPE_OBJECT ((size_t) 0x0)
 #define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
+#define AG_OBJECT_TYPE_URL ((size_t) 0x2)
 
 
                                        /* v-table of object methods [AgDM:??] */

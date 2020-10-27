@@ -9,12 +9,31 @@ struct payload {
 };
 
 
+static struct payload *payload_new(bool secure, const char *host, 
+        const char *port, const char *path)
+{
+    struct payload *p = ag_memblock_new(sizeof *p);
+
+    p->secure = secure;
+    p->host = ag_string_new(host);
+    p->port = ag_string_new(port);
+    p->path = ag_string_new(path);
+
+    return p;
+}
+
+
 typedef ag_object_t ag_url_t;
 #define ag_url_smart_t ag_object_smart_t
 extern void ag_url_register(void);
 
 extern ag_url_t *ag_url_new(bool secure, const char *host, const char *port,
-        const char *path);
+        const char *path)
+{
+    ag_assert (host && port && path);
+    return ag_object_new(AG_OBJECT_TYPE_URL, payload_new(secure, host, port,
+                path));
+}
 
 
 extern inline ag_url_t *ag_url_copy(const ag_url_t *ctx);
