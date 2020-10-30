@@ -2,16 +2,19 @@
 
 
 struct payload {
-    ag_string_t *head;
+    enum ag_http_mime type;
+    enum ag_http_status code;
     ag_string_t *body;
 };
 
 
-static struct payload *payload_new(const char *head, const char *body)
+static struct payload *payload_new(enum ag_http_mime type,
+        enum ag_http_status code, const char *body)
 {
     struct payload *p = ag_memblock_new(sizeof *p);
 
-    p->head = ag_string_new(head);
+    p->type = type;
+    p->code = code;
     p->body = ag_string_new(body);
 
     return p;
@@ -21,15 +24,13 @@ static struct payload *payload_new(const char *head, const char *body)
 static inline void *method_copy(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
-    return payload_new(p->head, p->body);
+    return payload_new(p->type, p->code, p->body);
 }
 
 
 static inline void method_dispose(void *ctx)
 {
     struct payload *p = (struct payload *) ctx;
-
-    ag_string_dispose(&p->head);
     ag_string_dispose(&p->body);
 }
 
@@ -37,7 +38,9 @@ static inline void method_dispose(void *ctx)
 static inline ag_string_t *method_str(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_new_fmt("%s%s", p->head, p->body);
+    return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
+            "Status: %s\r\n\r\n%s", ag_http_mime_str(p->type),
+            ag_http_status_str(p->code), p->body);
 }
 
 
@@ -164,7 +167,10 @@ extern ag_string_t *ag_response_header(const ag_response_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
-    return ag_string_copy(p->head);
+
+    return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
+            "Status: %s\r\n\r\n", ag_http_mime_str(p->type),
+            ag_http_status_str(p->code));
 }
 
 
