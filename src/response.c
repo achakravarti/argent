@@ -37,7 +37,7 @@ static inline void method_dispose(void *ctx)
 static inline ag_string_t *method_str(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_new_fmt("%s\r\n\r\n%s", p->head, p->body);
+    return ag_string_new_fmt("%s%s", p->head, p->body);
 }
 
 

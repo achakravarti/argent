@@ -511,3 +511,13 @@ extern void ag_http_response_file(const char *fpath)
 }
 
 
+extern void ag_http_response_respond(const ag_response_t *resp)
+{
+    ag_assert (resp);
+    ag_string_smart_t *s = ag_response_str(resp);
+
+    ag_assert (g_http);
+    FCGX_FPrintF(g_http->req->out, s);
+}
+
+

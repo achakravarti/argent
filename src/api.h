@@ -1144,3 +1144,5 @@ extern void ag_response_add_file(ag_response_t **ctx, const char *fpath);
 extern void ag_response_flush(ag_response_t **ctx);
 extern ag_string_t *ag_response_header(const ag_response_t *ctx);
 extern ag_string_t *ag_response_body(const ag_response_t *ctx);
+extern void ag_http_response_respond(const ag_response_t *resp);
+
