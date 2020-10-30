@@ -91,7 +91,7 @@ extern ag_response_t *ag_response_new(enum ag_http_mime type,
             " charset=UTF-8\r\nStatus: %s\r\n\r\n", ag_http_mime_str(type),
             ag_http_status_str(code));
     
-    return ag_object_new(AG_OBJECT_TYPE_RESPONSE, payload_new(head, ""));
+    return ag_object_new(AG_OBJECT_TYPE_RESPONSE, payload_new(type, code, ""));
 }
 
 

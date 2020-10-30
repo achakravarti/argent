@@ -875,9 +875,10 @@ extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
 
 
 /*******************************************************************************
- *                                   FAST CGI
+ *                                 HTTP METHOD
  */
-typedef void (ag_http_handler)(void);
+
+
 
 enum ag_http_method {
     AG_HTTP_METHOD_GET,
@@ -891,6 +892,11 @@ enum ag_http_method {
 
 extern const char *ag_http_method_str(enum ag_http_method meth);
 extern enum ag_http_method ag_http_method_parse(const char *str);
+
+
+/*******************************************************************************
+ *                                 HTTP STATUS
+ */
 
 
 // https://restfulapi.net/http-status-codes/
@@ -922,6 +928,11 @@ extern const char *ag_http_status_str(enum ag_http_status code);
 extern enum ag_http_status ag_http_status_parse(const char *str);
 
 
+/*******************************************************************************
+ *                                  HTTP MIME
+ */
+
+
 // https://github.com/cujojs/rest/blob/master/docs/mime.md
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 enum ag_http_mime {
@@ -938,6 +949,14 @@ enum ag_http_mime {
     AG_HTTP_MIME_TEXT_XML,
     __AG_HTTP_MIME_LEN,
 };
+
+extern const char *ag_http_mime_str(enum ag_http_mime type);
+extern enum ag_http_mime ag_http_mime_parse(const char *str);
+
+
+/*******************************************************************************
+ *                                   HTTP URL
+ */
 
 
 typedef ag_object_t ag_url_t;
@@ -1020,48 +1039,9 @@ extern ag_string_t *ag_url_port(const ag_url_t *ctx);
 extern ag_string_t *ag_url_path(const ag_url_t *ctx);
 
 
-
-extern const char *ag_http_mime_str(enum ag_http_mime type);
-extern enum ag_http_mime ag_http_mime_parse(const char *str);
-
-
-extern void ag_http_init(void);
-extern void ag_http_exit(void);
-extern void ag_http_register(ag_http_handler *req);
-extern void ag_http_run(void);
-
-extern void ag_http_cookie_param_set(const char *name, const char *val);
-extern void ag_http_cookie_domain_set(const char *val);
-extern void ag_http_cookie_path_set(const char *val);
-extern void ag_http_cookie_expires_set(const char *val);
-extern void ag_http_cookie_secure_set(void);
-extern const char *ag_http_cookie_val(void);
-
-
-extern enum ag_http_method ag_http_request_method(void);
-extern enum ag_http_mime ag_http_request_type(void);
-extern ag_string_t *ag_http_request_referer(void);
-
-extern ag_string_t *ag_http_request_user_agent(void);
-extern ag_string_t *ag_http_request_user_ip(void);
-extern ag_string_t *ag_http_request_user_host(void);
-extern ag_string_t *ag_http_request_user_port(void);
-
-extern bool ag_http_request_url_secure(void);
-extern ag_string_t *ag_http_request_url_host(void);
-extern ag_string_t *ag_http_request_url_port(void);
-extern ag_string_t *ag_http_request_url_path(void);
-
-extern ag_string_t *ag_http_request_param(const char *key);
-
-
-extern void ag_http_response_begin(enum ag_http_mime type, 
-        enum ag_http_status code);
-extern void ag_http_response_string(const char *str);
-extern void ag_http_response_file(const char *fpath);
-#define ag_http_response_end()
-
-extern ag_url_t *ag_http_request_url(void);
+/*******************************************************************************
+ *                                HTTP RESPONSE
+ */
 
 
 typedef ag_object_t ag_response_t;
@@ -1144,5 +1124,53 @@ extern void ag_response_add_file(ag_response_t **ctx, const char *fpath);
 extern void ag_response_flush(ag_response_t **ctx);
 extern ag_string_t *ag_response_header(const ag_response_t *ctx);
 extern ag_string_t *ag_response_body(const ag_response_t *ctx);
+
+
+
+
+
+
+
+typedef void (ag_http_handler)(void);
+
+extern void ag_http_init(void);
+extern void ag_http_exit(void);
+extern void ag_http_register(ag_http_handler *req);
+extern void ag_http_run(void);
+
+extern void ag_http_cookie_param_set(const char *name, const char *val);
+extern void ag_http_cookie_domain_set(const char *val);
+extern void ag_http_cookie_path_set(const char *val);
+extern void ag_http_cookie_expires_set(const char *val);
+extern void ag_http_cookie_secure_set(void);
+extern const char *ag_http_cookie_val(void);
+
+
+extern enum ag_http_method ag_http_request_method(void);
+extern enum ag_http_mime ag_http_request_type(void);
+extern ag_string_t *ag_http_request_referer(void);
+
+extern ag_string_t *ag_http_request_user_agent(void);
+extern ag_string_t *ag_http_request_user_ip(void);
+extern ag_string_t *ag_http_request_user_host(void);
+extern ag_string_t *ag_http_request_user_port(void);
+
+extern bool ag_http_request_url_secure(void);
+extern ag_string_t *ag_http_request_url_host(void);
+extern ag_string_t *ag_http_request_url_port(void);
+extern ag_string_t *ag_http_request_url_path(void);
+
+extern ag_string_t *ag_http_request_param(const char *key);
+
+
+extern void ag_http_response_begin(enum ag_http_mime type, 
+        enum ag_http_status code);
+extern void ag_http_response_string(const char *str);
+extern void ag_http_response_file(const char *fpath);
+#define ag_http_response_end()
+
+extern ag_url_t *ag_http_request_url(void);
+
+
 extern void ag_http_response_respond(const ag_response_t *resp);
 
