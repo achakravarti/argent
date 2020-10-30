@@ -433,6 +433,7 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_OBJECT ((size_t) 0x0)
 #define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
 #define AG_OBJECT_TYPE_URL ((size_t) 0x2)
+#define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x3)
 
 
                                        /* v-table of object methods [AgDM:??] */
@@ -1138,6 +1139,8 @@ inline ag_string_t *ag_response_str(const ag_response_t *ctx)
 }
 
 
-extern void ag_response_add(const ag_response_t *ctx);
-extern void ag_response_add_file(const char *fpath);
-
+extern void ag_response_add(ag_response_t **ctx, const char *str);
+extern void ag_response_add_file(ag_response_t **ctx, const char *fpath);
+extern void ag_response_flush(ag_response_t **ctx);
+extern ag_string_t *ag_response_header(const ag_response_t *ctx);
+extern ag_string_t *ag_response_body(const ag_response_t *ctx);
