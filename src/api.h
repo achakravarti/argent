@@ -959,84 +959,86 @@ extern enum ag_http_mime ag_http_mime_parse(const char *str);
  */
 
 
-typedef ag_object_t ag_url_t;
-#define ag_url_smart_t ag_object_smart_t
-extern void ag_url_register(void);
+typedef ag_object_t ag_http_url_t;
 
-extern ag_url_t *ag_url_new(bool secure, const char *host, const char *port,
-        const char *path);
+#define ag_http_url_smart_t ag_object_smart_t
 
-inline ag_url_t *ag_url_copy(const ag_url_t *ctx)
+extern void ag_http_url_register(void);
+
+extern ag_http_url_t *ag_http_url_new(bool secure, const char *host,
+        const char *port, const char *path);
+
+inline ag_http_url_t *ag_http_url_copy(const ag_http_url_t *ctx)
 {
     return ag_object_copy(ctx);
 }
 
-
-inline void ag_url_dispose(ag_url_t **ctx)
+inline void ag_http_url_dispose(ag_http_url_t **ctx)
 {
     ag_object_dispose(ctx);
 }
 
-inline size_t ag_url_typeid(const ag_url_t *ctx)
+inline size_t ag_http_url_typeid(const ag_http_url_t *ctx)
 {
     return ag_object_type(ctx);
 }
 
-inline size_t ag_url_objid(const ag_url_t *ctx)
+inline size_t ag_http_url_objid(const ag_http_url_t *ctx)
 {
     return ag_object_id(ctx);
 }
 
-inline size_t ag_url_hash(const ag_url_t *ctx)
+inline size_t ag_http_url_hash(const ag_http_url_t *ctx)
 {
     return ag_object_hash(ctx);
 }
 
-inline size_t ag_url_sz(const ag_url_t *ctx)
+inline size_t ag_http_url_sz(const ag_http_url_t *ctx)
 {
     return ag_object_sz(ctx);
 }
 
-inline size_t ag_url_len(const ag_url_t *ctx)
+inline size_t ag_http_url_len(const ag_http_url_t *ctx)
 {
     return ag_object_len(ctx);
 }
 
-inline bool ag_url_empty(const ag_url_t *ctx)
+inline bool ag_http_url_empty(const ag_http_url_t *ctx)
 {
     return ag_object_empty(ctx);
 }
 
-inline enum ag_tristate ag_url_cmp(const ag_url_t *ctx, const ag_url_t *cmp)
+inline enum ag_tristate ag_http_url_cmp(const ag_http_url_t *ctx,
+        const ag_http_url_t *cmp)
 {
     return ag_object_cmp(ctx, cmp);
 }
 
-inline bool ag_url_lt(const ag_url_t *ctx, const ag_url_t *cmp)
+inline bool ag_http_url_lt(const ag_http_url_t *ctx, const ag_http_url_t *cmp)
 {
     return ag_object_lt(ctx, cmp);
 }
 
-inline bool ag_url_eq(const ag_url_t *ctx, const ag_url_t *cmp)
+inline bool ag_http_url_eq(const ag_http_url_t *ctx, const ag_http_url_t *cmp)
 {
     return ag_object_eq(ctx, cmp);
 }
 
-inline bool ag_url_gt(const ag_url_t *ctx, const ag_url_t *cmp)
+inline bool ag_http_url_gt(const ag_http_url_t *ctx, const ag_http_url_t *cmp)
 {
     return ag_object_gt(ctx, cmp);
 }
 
-inline ag_string_t *ag_url_str(const ag_url_t *ctx)
+inline ag_string_t *ag_http_url_str(const ag_http_url_t *ctx)
 {
     return ag_object_str(ctx);
 }
 
 
-extern bool ag_url_secure(const ag_url_t *ctx);
-extern ag_string_t *ag_url_host(const ag_url_t *ctx);
-extern ag_string_t *ag_url_port(const ag_url_t *ctx);
-extern ag_string_t *ag_url_path(const ag_url_t *ctx);
+extern bool ag_http_url_secure(const ag_http_url_t *ctx);
+extern ag_string_t *ag_http_url_host(const ag_http_url_t *ctx);
+extern ag_string_t *ag_http_url_port(const ag_http_url_t *ctx);
+extern ag_string_t *ag_http_url_path(const ag_http_url_t *ctx);
 
 
 /*******************************************************************************
@@ -1169,7 +1171,7 @@ extern void ag_http_response_string(const char *str);
 extern void ag_http_response_file(const char *fpath);
 #define ag_http_response_end()
 
-extern ag_url_t *ag_http_request_url(void);
+extern ag_http_url_t *ag_http_request_url(void);
 
 
 extern void ag_http_response_respond(const ag_response_t *resp);
