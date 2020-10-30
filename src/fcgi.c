@@ -383,20 +383,20 @@ extern void ag_http_response_file(const char *fpath)
 }
 
 
-extern void ag_http_response_respond(const ag_response_t *resp)
+extern void ag_http_response_respond(const ag_http_response_t *resp)
 {
     ag_assert (resp);
-    ag_string_smart_t *s = ag_response_str(resp);
+    ag_string_smart_t *s = ag_http_response_str(resp);
 
     ag_assert (g_http);
     FCGX_FPrintF(g_http->req->out, s);
 }
 
 
-extern void ag_http_response_respond_part(const ag_response_t *resp)
+extern void ag_http_response_respond_part(const ag_http_response_t *resp)
 {
     ag_assert (resp);
-    ag_string_smart_t *b = ag_response_body(resp);
+    ag_string_smart_t *b = ag_http_response_body(resp);
 
     ag_assert (g_http);
     FCGX_FPrintF(g_http->req->out, b);

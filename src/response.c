@@ -1,6 +1,7 @@
 #include "./api.h"
 
 
+
 struct payload {
     enum ag_http_mime type;
     enum ag_http_status code;
@@ -67,7 +68,7 @@ static enum ag_tristate method_cmp(const ag_object_t *lhs,
 }
 
 
-extern void ag_response_register(void)
+extern void ag_http_response_register(void)
 {
     struct ag_object_vtable vt = {
         .copy = NULL,
@@ -84,7 +85,7 @@ extern void ag_response_register(void)
 }
 
 
-extern ag_response_t *ag_response_new(enum ag_http_mime type, 
+extern ag_http_response_t *ag_http_response_new(enum ag_http_mime type, 
         enum ag_http_status code)
 {
     ag_string_smart_t *head = ag_string_new_fmt("Content-type: %s;"
@@ -95,39 +96,40 @@ extern ag_response_t *ag_response_new(enum ag_http_mime type,
 }
 
 
-extern inline ag_response_t *ag_response_copy(const ag_response_t *ctx);
+extern inline ag_http_response_t *ag_http_response_copy(
+        const ag_http_response_t *ctx);
 
 
-extern inline void ag_response_dispose(ag_response_t **ctx);
+extern inline void ag_http_response_dispose(ag_http_response_t **ctx);
 
-extern inline size_t ag_response_typeid(const ag_response_t *ctx);
+extern inline size_t ag_http_response_typeid(const ag_http_response_t *ctx);
 
-extern inline size_t ag_response_objid(const ag_response_t *ctx);
+extern inline size_t ag_http_response_objid(const ag_http_response_t *ctx);
 
-extern inline size_t ag_response_hash(const ag_response_t *ctx);
+extern inline size_t ag_http_response_hash(const ag_http_response_t *ctx);
 
-extern inline size_t ag_response_sz(const ag_response_t *ctx);
+extern inline size_t ag_http_response_sz(const ag_http_response_t *ctx);
 
-extern inline size_t ag_response_len(const ag_response_t *ctx);
+extern inline size_t ag_http_response_len(const ag_http_response_t *ctx);
 
-extern inline bool ag_response_empty(const ag_response_t *ctx);
+extern inline bool ag_http_response_empty(const ag_http_response_t *ctx);
 
-extern inline enum ag_tristate ag_response_cmp(const ag_response_t *ctx, 
-        const ag_response_t *cmp);
+extern inline enum ag_tristate ag_http_response_cmp(
+        const ag_http_response_t *ctx, const ag_http_response_t *cmp);
 
-extern inline bool ag_response_lt(const ag_response_t *ctx, 
-        const ag_response_t *cmp);
+extern inline bool ag_http_response_lt(const ag_http_response_t *ctx, 
+        const ag_http_response_t *cmp);
 
-extern inline bool ag_response_eq(const ag_response_t *ctx, 
-        const ag_response_t *cmp);
+extern inline bool ag_http_response_eq(const ag_http_response_t *ctx, 
+        const ag_http_response_t *cmp);
 
-extern inline bool ag_response_gt(const ag_response_t *ctx, 
-        const ag_response_t *cmp);
+extern inline bool ag_http_response_gt(const ag_http_response_t *ctx, 
+        const ag_http_response_t *cmp);
 
-extern inline ag_string_t *ag_response_str(const ag_response_t *ctx);
+extern inline ag_string_t *ag_http_response_str(const ag_http_response_t *ctx);
 
 
-extern void ag_response_add(ag_response_t **ctx, const char *str)
+extern void ag_http_response_add(ag_http_response_t **ctx, const char *str)
 {
     ag_assert (ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -135,7 +137,8 @@ extern void ag_response_add(ag_response_t **ctx, const char *str)
 }
 
 
-extern void ag_response_add_file(ag_response_t **ctx, const char *fpath)
+extern void ag_http_response_add_file(ag_http_response_t **ctx,
+        const char *fpath)
 {
     ag_assert (ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -153,7 +156,7 @@ extern void ag_response_add_file(ag_response_t **ctx, const char *fpath)
 }
 
 
-extern void ag_response_flush(ag_response_t **ctx)
+extern void ag_http_response_flush(ag_http_response_t **ctx)
 {
     ag_assert (ctx);
     struct payload *p = ag_object_payload_mutable(ctx);
@@ -163,7 +166,7 @@ extern void ag_response_flush(ag_response_t **ctx)
 }
 
 
-extern ag_string_t *ag_response_header(const ag_response_t *ctx)
+extern ag_string_t *ag_http_response_header(const ag_http_response_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -174,7 +177,7 @@ extern ag_string_t *ag_response_header(const ag_response_t *ctx)
 }
 
 
-extern ag_string_t *ag_response_body(const ag_response_t *ctx)
+extern ag_string_t *ag_http_response_body(const ag_http_response_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
