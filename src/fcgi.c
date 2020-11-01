@@ -308,6 +308,7 @@ extern ag_string_t *ag_http_request_param(const char *key)
 }
 
 
+#if 0
 extern void ag_http_cookie_param_set(const char *key, const char *val)
 {
     ag_assert (g_http);
@@ -347,6 +348,7 @@ extern const char *ag_http_cookie_val(void)
 {
     return (const char *) g_http->cookie;
 }
+#endif
 
 
 extern void ag_http_response_begin(enum ag_http_mime type, 
