@@ -508,7 +508,7 @@ extern ag_pure size_t ag_object_id(const ag_object_t *ctx);
 
 
                                              /* gets hash of object [AgDM:??] */
-extern ag_pure size_t ag_object_hash(const ag_object_t *ctx);
+extern ag_pure ag_hash_t ag_object_hash(const ag_object_t *ctx);
 
 
                                                 /* gets object size [AgDM:??] */

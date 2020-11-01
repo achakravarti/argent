@@ -19,8 +19,9 @@
  ******************************************************************************/
 
 
-#include <math.h>
 #include "./api.h"
+
+
 
 
 /*******************************************************************************
@@ -160,9 +161,9 @@ static inline size_t object_method_len(const ag_object_t *obj)
 }
 
                                              /* default hash method [AgDM:??] */
-static inline size_t object_method_hash(const ag_object_t *obj)
+static inline ag_hash_t object_method_hash(const ag_object_t *obj)
 {
-    return (ag_object_id(obj) * (size_t) 2654435761) % (size_t) pow(2, 32);
+    return ag_hash_new(ag_object_id(obj));
 }
 
                                        /* default comparison method [AgDM:??] */
@@ -316,7 +317,7 @@ extern size_t ag_object_id(const ag_object_t *ctx)
 }
 
                               /* implementation of ag_object_hash() [AgDM:??] */
-extern size_t ag_object_hash(const ag_object_t *ctx)
+extern ag_hash_t ag_object_hash(const ag_object_t *ctx)
 {
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->hash(ctx);
