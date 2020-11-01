@@ -333,6 +333,22 @@ extern void ag_memblock_free(ag_memblock_t **bfr);
 
 
 /*******************************************************************************
+ *                                     HASH
+ */
+
+
+typedef size_t ag_hash_t;
+
+
+extern ag_hash_t ag_hash_new(size_t sz);
+
+
+extern ag_hash_t ag_hash_new_str(const char *str);
+
+
+
+
+/*******************************************************************************
  *                                   STRINGS
  */
 
