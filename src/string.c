@@ -234,3 +234,5 @@ extern void ag_string_proper(ag_string_t **ctx)
 }
 
 
+extern inline ag_hash_t ag_string_hash(const ag_string_t *ctx);
+

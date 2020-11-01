@@ -19,6 +19,7 @@ extern ag_hash_t ag_hash_new_str(const char *key)
     register ag_hash_t hash = 5381;
     register int c;
 
+    ag_assert (key);
     while ((c = *key++))
         hash = ((hash << 5) + hash) + c;
 

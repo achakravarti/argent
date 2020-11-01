@@ -425,6 +425,11 @@ extern void ag_string_upper(ag_string_t **ctx);
 
 extern void ag_string_proper(ag_string_t **ctx);
 
+inline ag_hash_t ag_string_hash(const ag_string_t *ctx)
+{
+    return ag_hash_new_str(ctx);
+}
+
 
 /*******************************************************************************
  *                                OBJECT MODEL
