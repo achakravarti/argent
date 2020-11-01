@@ -68,6 +68,13 @@ static inline size_t method_len(const ag_object_t *obj)
 }
 
 
+static inline ag_hash_t method_hash(const ag_object_t *obj)
+{
+    ag_string_smart_t *s = method_str(obj);
+    return ag_string_hash(s);
+}
+
+
 static enum ag_tristate method_cmp(const ag_object_t *lhs, 
         const ag_object_t *rhs)
 {
@@ -85,7 +92,7 @@ extern void ag_http_url_register(void)
         .id = NULL,
         .sz = &method_sz,
         .len = &method_len,
-        .hash = NULL,
+        .hash = &method_hash,
         .cmp = &method_cmp,
         .str = &method_str
     };

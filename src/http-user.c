@@ -71,6 +71,13 @@ static inline ag_string_t *vt_str(const ag_object_t *obj)
 }
 
 
+static inline ag_hash_t vt_hash(const ag_object_t *obj)
+{
+    ag_string_smart_t *s = vt_str(obj);
+    return ag_string_hash(s);
+}
+
+
 static inline enum ag_tristate vt_cmp(const ag_object_t *lhs, 
         const ag_object_t *rhs)
 {
@@ -95,7 +102,7 @@ extern void ag_http_user_register(void)
         .id = NULL,
         .sz = &vt_sz,
         .len = NULL,
-        .hash = NULL,
+        .hash = vt_hash,
         .cmp = &vt_cmp,
         .str = &vt_str
     };
