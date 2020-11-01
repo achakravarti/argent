@@ -456,6 +456,7 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_URL ((size_t) 0x2)
 #define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x3)
 #define AG_OBJECT_TYPE_HTTP_USER ((size_t) 0x4)
+#define AG_OBJECT_TYPE_HTTP_COOKIE ((size_t) 0x5)
 
 
                                        /* v-table of object methods [AgDM:??] */
@@ -1168,8 +1169,8 @@ typedef ag_object_t ag_http_cookie_t;
 
 extern void ag_http_cookie_register(void);
 
-extern ag_http_cookie_t *ag_http_cookie_new(const char *agent, const char *ip,
-        const char *host, const char *port);
+extern ag_http_cookie_t *ag_http_cookie_new(bool secure, const char *domain,
+        const char *path, const char *expires);
 
 inline ag_http_cookie_t *ag_http_cookie_copy(const ag_http_user_t *ctx)
 {
@@ -1251,8 +1252,8 @@ extern bool ag_http_cookie_secure(const ag_http_user_t *ctx);
 extern ag_string_t *ag_http_cookie_param(const ag_http_cookie_t *ctx,
         const char *key);
 
-extern void ag_http_cookie_param_set(const ag_http_cookie_t *ctx,
-        const char *key, const char *val);
+extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
+        const char *val);
 
 
 

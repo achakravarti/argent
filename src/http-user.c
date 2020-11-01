@@ -179,6 +179,7 @@ extern inline ag_string_t *ag_http_user_str(const ag_http_user_t *ctx);
 
 extern ag_string_t *ag_http_user_agent(const ag_http_user_t *ctx)
 {
+    ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
     return p->agent;
 }
@@ -186,6 +187,7 @@ extern ag_string_t *ag_http_user_agent(const ag_http_user_t *ctx)
 
 extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx)
 {
+    ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
     return p->ip;
 }
@@ -193,6 +195,7 @@ extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx)
 
 extern ag_string_t *ag_http_user_host(const ag_http_user_t *ctx)
 {
+    ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
     return p->host;
 }
@@ -200,6 +203,7 @@ extern ag_string_t *ag_http_user_host(const ag_http_user_t *ctx)
 
 extern ag_string_t *ag_http_user_port(const ag_http_user_t *ctx)
 {
+    ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
     return p->port;
 }
