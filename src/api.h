@@ -434,6 +434,7 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
 #define AG_OBJECT_TYPE_URL ((size_t) 0x2)
 #define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x3)
+#define AG_OBJECT_TYPE_HTTP_USER ((size_t) 0x4)
 
 
                                        /* v-table of object methods [AgDM:??] */
@@ -1052,7 +1053,8 @@ typedef ag_object_t ag_http_user_t;
 
 extern void ag_http_user_register(void);
 
-extern ag_http_user_t *ag_http_url_new(void);
+extern ag_http_user_t *ag_http_user_new(const char *agent, const char *ip,
+        const char *host, const char *port);
 
 inline ag_http_user_t *ag_http_user_copy(const ag_http_user_t *ctx)
 {
