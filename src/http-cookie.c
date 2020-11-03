@@ -1,4 +1,6 @@
 #include "./api.h"
+#include <string.h>
+#include <ctype.h>
 
 
 
@@ -56,6 +58,52 @@ static inline void vt_dispose(void *ctx)
     ag_string_dispose(&p->param);
 }
 
+
+
+
+/*******************************************************************************
+ *                            URL ENCODING/DECODING
+ */
+
+
+static inline bool url_encoded(const char *param)
+{
+    return *param == '%' && isxdigit(param[1]) && isxdigit(param[2]);
+}
+
+
+static inline char url_decode(char c)
+{
+    if (c >= 'a')
+        return c - ('a' - 'A');
+    else if (c >= 'A')
+        return c - ('A' - 10);
+    else
+        return c - '0';
+}
+
+
+static ag_string_t *url_encode(const char *str)
+{
+    ag_string_t *ret = ag_string_new_empty();
+
+    register int c;
+    char bfr[4];
+    while ((c = *str)) {
+        if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *str)) {
+            snprintf(bfr, 4, "%%%02X", c & 0xff);
+            bfr[3] = '\0';
+        } else {
+            bfr[0] = c;
+            bfr[1] = '\0';
+        }
+
+        ag_string_add_cstr(&ret, bfr);
+        str++;
+    }
+
+    return ret;
+}
 
 
 
@@ -182,6 +230,41 @@ extern bool ag_http_cookie_secure(const ag_http_user_t *ctx)
 extern ag_string_t *ag_http_cookie_param(const ag_http_cookie_t *ctx,
         const char *key)
 {
+    ag_assert (ctx);
+    const struct payload *p = ag_object_payload(ctx);
+
+    ag_assert (key && *key);
+    char *c = strstr(p->param, key);
+
+    if (c) {
+        c += strlen(key);
+
+        if (*c == '=')
+            c++;
+        else
+            return ag_string_new_empty();
+    } else
+        return ag_string_new_empty();
+
+    char *val =ag_memblock_new(ag_string_sz(p->param) + 1);
+    char *v = val;
+
+    while (*c && *c != '&') {
+        if (url_encoded(c)) {
+            *v++ = (16 * url_decode(c[1])) + url_decode(c[2]);
+            c += 3;
+        } else if (*c == '+') {
+            *v++ = ' ';
+            c++;
+        } else
+            *v++ = *c++;
+    }
+
+    *v = '\0';
+    ag_string_t *ret = ag_string_new(val);
+    ag_memblock_free((void **) &val);
+
+    return ret;
 }
 
 
@@ -199,6 +282,7 @@ extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
     ag_string_add(&p->param, "=");
 
     ag_assert (val);
-    ag_string_add(&p->param, val);
+    ag_string_smart_t *enc = url_encode(val);
+    ag_string_add(&p->param, enc);
 }
 
