@@ -243,20 +243,11 @@ extern void ag_string_url_encode(ag_string_t **ctx)
     ag_assert (ctx && *ctx);
     char *hnd = *ctx;
 
-    register int c;
-    register size_t n = 0;
-    while ((c = *hnd)) {
-         if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *hnd))
-             n++;
-
-         hnd++;
-    }
-
-    size_t newsz = string_sz(hnd) + (n * 2);
+    size_t newsz = string_sz(hnd) * 3;
     char *bfr = string_new(newsz);
-    hnd = *ctx;
-    n = 0;
-
+    
+    register size_t n = 0;
+    register int c;
     while ((c = *hnd)) {
         if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *hnd)) {
             snprintf(bfr + n, 4, "%%%02X", c & 0xff);
@@ -267,8 +258,9 @@ extern void ag_string_url_encode(ag_string_t **ctx)
         hnd++;
     }
 
-    bfr[newsz] = '\0';
+    bfr[n] = '\0';
     ag_string_dispose(ctx);
-    *ctx = bfr;
+    *ctx = ag_string_new(bfr);
+    ag_memblock_free((void **) bfr);
 }
 
