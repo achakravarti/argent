@@ -83,6 +83,7 @@ static inline char url_decode(char c)
 }
 
 
+// https://stackoverflow.com/questions/29414709
 static ag_string_t *url_encode(const char *str)
 {
     ag_string_t *ret = ag_string_new_empty();

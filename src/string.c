@@ -117,6 +117,7 @@ extern ag_string_t *ag_string_new_fmt(const char *fmt, ...)
     return s;
 }
 
+
                               /* implementation of ag_string_copy() [AgDM:??] */
 extern ag_string_t *ag_string_copy(const ag_string_t *ctx)
 {
@@ -235,4 +236,39 @@ extern void ag_string_proper(ag_string_t **ctx)
 
 
 extern inline ag_hash_t ag_string_hash(const ag_string_t *ctx);
+
+
+extern void ag_string_url_encode(ag_string_t **ctx)
+{
+    ag_assert (ctx && *ctx);
+    char *hnd = *ctx;
+
+    register int c;
+    register size_t n = 0;
+    while ((c = *hnd)) {
+         if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *hnd))
+             n++;
+
+         hnd++;
+    }
+
+    size_t newsz = string_sz(hnd) + (n * 2);
+    char *bfr = string_new(newsz);
+    hnd = *ctx;
+    n = 0;
+
+    while ((c = *hnd)) {
+        if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *hnd)) {
+            snprintf(bfr + n, 4, "%%%02X", c & 0xff);
+            n += 3;
+        } else
+            bfr[n++] = c;
+
+        hnd++;
+    }
+
+    bfr[newsz] = '\0';
+    ag_string_dispose(ctx);
+    *ctx = bfr;
+}
 
