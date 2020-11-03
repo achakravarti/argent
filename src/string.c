@@ -243,8 +243,10 @@ extern void ag_string_url_encode(ag_string_t **ctx)
     ag_assert (ctx && *ctx);
     char *hnd = *ctx;
 
-    size_t newsz = string_sz(hnd) * 3;
-    char *bfr = string_new(newsz);
+    if (!*hnd)
+        return;
+
+    char *bfr = ag_memblock_new(string_sz(hnd) * 3);
     
     register size_t n = 0;
     register int c;
@@ -262,5 +264,46 @@ extern void ag_string_url_encode(ag_string_t **ctx)
     ag_string_dispose(ctx);
     *ctx = ag_string_new(bfr);
     ag_memblock_free((void **) bfr);
+}
+
+
+static inline bool url_encoded(const char *str)
+{
+    return *str == '%' && isxdigit(str[1]) && isxdigit(str[2]);
+}
+
+
+static inline int url_decode(int c)
+{
+    if (c >= 'a')
+        return c - ('a' - 'A');
+    else if (c >= 'A')
+        return c - ('A' - 10);
+    else
+        return c - '0';
+}
+
+
+extern void ag_string_url_decode(ag_string_t **ctx)
+{
+    ag_assert (ctx && *ctx);
+    char *hnd = *ctx;
+
+    if (!*hnd)
+        return;
+
+    char *bfr = ag_memblock_new(string_sz(hnd));
+    char *c = bfr;
+
+    while (*hnd && *hnd != '&') {
+        if (url_encoded(hnd)) {
+            *c++ = (16 * url_decode(hnd[1])) + url_decode(hnd[2]);
+            hnd += 3;
+        } else if (*c == '+') {
+            *c++ = ' ';
+            hnd++;
+        } else
+            *c++ = *hnd++;
+    }
 }
 
