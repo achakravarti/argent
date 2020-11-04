@@ -180,6 +180,30 @@ static void empty_proper(void)
     printf("...OK\n");
 }
 
+
+static void empty_encode(void)
+{
+    printf("ag_string_url_encode() has no effect on an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_url_encode(&s);
+    ag_require (!*s, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void empty_decode(void)
+{
+    printf("ag_string_url_decode() has no effect on an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_string_url_decode(&s);
+    ag_require (!*s, AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
@@ -197,6 +221,8 @@ static void empty_test(void)
     empty_lower();
     empty_upper();
     empty_proper();
+    empty_encode();
+    empty_decode();
 }
 
 
