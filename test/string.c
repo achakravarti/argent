@@ -797,6 +797,34 @@ static void unicode_new_fmt(void)
     printf("...OK\n");
 }
 
+
+static void unicode_encode(void)
+{
+    printf("ag_string_url_encode() URL encodes a Unicode string");
+
+    ag_string_smart_t *s = ag_string_new("Привет, мир!");
+    ag_string_url_encode(&s);
+    ag_require (!strcmp(s, 
+            "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21"),
+            AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void unicode_decode(void)
+{
+    printf("ag_string_url_decode() URL decodes a Unicode string");
+    
+    ag_string_smart_t *s = ag_string_new(
+            "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21");
+    ag_string_url_decode(&s);
+    ag_require (!strcmp(s, "Привет, мир!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
 {
@@ -818,6 +846,8 @@ static void unicode_test(void)
     unicode_gt_2();
     unicode_add_cstr();
     unicode_new_fmt();
+    unicode_encode();
+    unicode_decode();
 }
 
 
