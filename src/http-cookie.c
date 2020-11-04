@@ -62,53 +62,6 @@ static inline void vt_dispose(void *ctx)
 
 
 /*******************************************************************************
- *                            URL ENCODING/DECODING
- */
-
-
-static inline bool url_encoded(const char *param)
-{
-    return *param == '%' && isxdigit(param[1]) && isxdigit(param[2]);
-}
-
-
-static inline char url_decode(char c)
-{
-    if (c >= 'a')
-        return c - ('a' - 'A');
-    else if (c >= 'A')
-        return c - ('A' - 10);
-    else
-        return c - '0';
-}
-
-
-// https://stackoverflow.com/questions/29414709
-static ag_string_t *url_encode(const char *str)
-{
-    ag_string_t *ret = ag_string_new_empty();
-
-    register int c;
-    char bfr[4];
-    while ((c = *str)) {
-        if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *str)) {
-            snprintf(bfr, 4, "%%%02X", c & 0xff);
-            bfr[3] = '\0';
-        } else {
-            bfr[0] = c;
-            bfr[1] = '\0';
-        }
-
-        ag_string_add_cstr(&ret, bfr);
-        str++;
-    }
-
-    return ret;
-}
-
-
-
-/*******************************************************************************
  *                              MANAGER EXTERNALS
  */
 
