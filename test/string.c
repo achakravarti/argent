@@ -504,6 +504,30 @@ static void ascii_proper(void)
 }
 
 
+static void ascii_encode(void)
+{
+    printf("ag_string_url_encode() URL encodes an ASCII string");
+
+    ag_string_smart_t *s = ag_string_new("Hello, world!");
+    ag_string_url_encode(&s);
+    ag_require (!strcmp(s, "Hello%2C%20world%21"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void ascii_decode(void)
+{
+    printf("ag_string_url_decode() URL encodes an ASCII string");
+
+    ag_string_smart_t *s = ag_string_new("Hello%2C%20world%21");
+    ag_string_url_decode(&s);
+    ag_require (!strcmp(s, "Hello, world!"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
                                          /* runs ASCII string tests [AgDM:??] */
 static void ascii_test(void)
 {
@@ -528,6 +552,8 @@ static void ascii_test(void)
     ascii_lower();
     ascii_upper();
     ascii_proper();
+    ascii_encode();
+    ascii_decode();
 }
 
 

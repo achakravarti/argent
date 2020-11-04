@@ -263,7 +263,7 @@ extern void ag_string_url_encode(ag_string_t **ctx)
     bfr[n] = '\0';
     ag_string_dispose(ctx);
     *ctx = ag_string_new(bfr);
-    ag_memblock_free((void **) bfr);
+    ag_memblock_free((void **) &bfr);
 }
 
 
@@ -305,5 +305,10 @@ extern void ag_string_url_decode(ag_string_t **ctx)
         } else
             *c++ = *hnd++;
     }
+
+    *c = '\0';
+    ag_string_dispose(ctx);
+    *ctx = ag_string_new(bfr);
+    ag_memblock_free((void **) &bfr);
 }
 
