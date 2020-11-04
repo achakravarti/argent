@@ -273,7 +273,7 @@ static inline bool url_encoded(const char *str)
 }
 
 
-static inline int url_decode(int c)
+static inline char url_decode(char c)
 {
     if (c >= 'a')
         return c - ('a' - 'A');
