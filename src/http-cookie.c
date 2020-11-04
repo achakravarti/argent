@@ -247,22 +247,14 @@ extern ag_string_t *ag_http_cookie_param(const ag_http_cookie_t *ctx,
     } else
         return ag_string_new_empty();
 
-    char *val =ag_memblock_new(ag_string_sz(p->param) + 1);
+    char *val = ag_memblock_new(ag_string_sz(p->param) + 1);
     char *v = val;
-
-    while (*c && *c != '&') {
-        if (url_encoded(c)) {
-            *v++ = (16 * url_decode(c[1])) + url_decode(c[2]);
-            c += 3;
-        } else if (*c == '+') {
-            *v++ = ' ';
-            c++;
-        } else
-            *v++ = *c++;
-    }
+    while (*c && *c != ';')
+        *v++ = *c++;
 
     *v = '\0';
     ag_string_t *ret = ag_string_new(val);
+    ag_string_url_decode(&ret);
     ag_memblock_free((void **) &val);
 
     return ret;
@@ -283,7 +275,8 @@ extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
     ag_string_add(&p->param, "=");
 
     ag_assert (val);
-    ag_string_smart_t *enc = url_encode(val);
+    ag_string_smart_t *enc = ag_string_new(val);
+    ag_string_url_encode(&enc);
     ag_string_add(&p->param, enc);
 }
 

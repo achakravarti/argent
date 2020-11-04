@@ -295,7 +295,7 @@ extern void ag_string_url_decode(ag_string_t **ctx)
     char *bfr = ag_memblock_new(string_sz(hnd));
     char *c = bfr;
 
-    while (*hnd && *hnd != '&') {
+    while (*hnd) {
         if (url_encoded(hnd)) {
             *c++ = (16 * url_decode(hnd[1])) + url_decode(hnd[2]);
             hnd += 3;
