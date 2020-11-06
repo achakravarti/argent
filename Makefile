@@ -21,13 +21,14 @@
 
 DIR_BLD = bld
 
+DIR_INC = -I $(shell pg_config --includedir)
 DIR_LIB = src
 SRC_LIB = $(sort $(shell find $(DIR_LIB)/ -type f -name '*.c'))
 OBJ_LIB = $(patsubst $(DIR_LIB)/%.c, $(DIR_BLD)/%.o, $(SRC_LIB))
 BIN_LIB = bld/libargent.so
 
 CC = ccache cc
-CFLAGS = -fPIC -g -Wall -Wextra -I $(shell pg_config --includedir)
+CFLAGS = -fPIC -g -Wall -Wextra $(DIR_INC)
 LDFLAGS = -shared -L $(shell pg_config --libdir) -lpq -lfcgi
 
 
