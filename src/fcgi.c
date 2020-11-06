@@ -270,7 +270,7 @@ extern ag_string_t *ag_http_request_url_path(void)
     return ag_string_new(tok);
 }
 
-
+#if 0
 extern ag_string_t *ag_http_request_param(const char *key)
 {
     ag_assert (g_http && g_http->param && key && *key);
@@ -306,7 +306,7 @@ extern ag_string_t *ag_http_request_param(const char *key)
 
     return ret;
 }
-
+#endif
 
 #if 0
 extern void ag_http_cookie_param_set(const char *key, const char *val)

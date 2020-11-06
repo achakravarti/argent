@@ -90,7 +90,7 @@ extern ag_string_t *ag_http_request_url_host(void);
 extern ag_string_t *ag_http_request_url_port(void);
 extern ag_string_t *ag_http_request_url_path(void);
 
-extern ag_string_t *ag_http_request_param(const char *key);
+//extern ag_string_t *ag_http_request_param(const char *key);
 
 
 extern void ag_http_response_begin(enum ag_http_mime type, 

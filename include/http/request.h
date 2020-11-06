@@ -2,7 +2,7 @@
 #define __ARGENT_HTTP_REQUEST_H__
 
 
-#include "./object.h"
+#include "../object.h"
 #include "./primitives.h"
 
 
@@ -83,13 +83,14 @@ inline ag_string_t *ag_http_request_str(const ag_http_request_t *ctx)
     return ag_object_str(ctx);
 }
 
-extern enum ag_http_method ag_http_request_method(void);
+extern enum ag_http_method ag_http_request_method(const ag_http_request_t *ctx);
 
-extern enum ag_http_mime ag_http_request_mime(void);
+extern enum ag_http_mime ag_http_request_mime(const ag_http_request_t *ctx);
 
-extern ag_string_t *ag_http_request_referer(void);
+extern ag_string_t *ag_http_request_referer(const ag_http_request_t *ctx);
 
-extern ag_string_t *ag_http_request_param(const char *key);
+extern ag_string_t *ag_http_request_param(const ag_http_request_t *ctx,
+        const char *key);
 
 
 #endif /* !defined __ARGENT_HTTP_REQUEST_H__ */
