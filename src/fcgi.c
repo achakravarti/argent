@@ -177,7 +177,7 @@ extern void ag_http_respond(enum ag_http_mime type, enum ag_http_status code,
     va_end(ap);
 }
 
-
+#if 0
 extern enum ag_http_method ag_http_request_method(void)
 {
     ag_assert (g_http);
@@ -186,6 +186,7 @@ extern enum ag_http_method ag_http_request_method(void)
 
     return ag_http_method_parse(env);
 }
+#endif
 
 
 extern enum ag_http_mime ag_http_request_type(void)
@@ -198,11 +199,13 @@ extern enum ag_http_mime ag_http_request_type(void)
 }
 
 
+#if 0
 extern ag_string_t *ag_http_request_referer(void)
 {
     ag_assert (g_http);
     return request_env("HTTP_REFERER");
 }
+#endif
 
 extern ag_string_t *ag_http_request_user_agent(void)
 {

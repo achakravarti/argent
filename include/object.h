@@ -37,6 +37,7 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x3)
 #define AG_OBJECT_TYPE_HTTP_USER ((size_t) 0x4)
 #define AG_OBJECT_TYPE_HTTP_COOKIE ((size_t) 0x5)
+#define AG_OBJECT_TYPE_HTTP_REQUEST ((size_t) 0x6)
 
 
                                        /* v-table of object methods [AgDM:??] */
