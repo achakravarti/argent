@@ -78,11 +78,11 @@ static inline ag_hash_t method_hash(const ag_object_t *obj)
 extern void ag_http_request_register(void)
 {
     struct ag_object_vtable vt = {
-        .copy = NULL,
-        .dispose = NULL,
+        .copy = &method_copy,
+        .dispose = &method_dispose,
         .id = NULL,
         .sz = &method_sz,
-        .len = &method_hash,
+        .len = &method_len,
         .hash = &method_hash,
         .cmp = &method_cmp,
         .str = &method_str,
