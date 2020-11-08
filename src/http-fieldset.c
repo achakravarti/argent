@@ -62,7 +62,7 @@ static inline enum ag_tristate object_cmp(const ag_object_t *lhs,
 }
 
 
-extern void ag_http_body_register(void)
+extern void ag_http_fieldset_register(void)
 {
     struct ag_object_vtable vt = {
         .copy = &payload_copy,
@@ -78,48 +78,50 @@ extern void ag_http_body_register(void)
     ag_object_register(AG_OBJECT_TYPE_HTTP_BODY, &vt);
 }
 
-extern ag_http_body_t *ag_http_body_new(const char *str, char delim)
+extern ag_http_fieldset_t *ag_http_fieldset_new(const char *str, char delim)
 {
     ag_assert (str && (delim == '&' || delim == ';'));
     return ag_object_new(AG_OBJECT_TYPE_HTTP_BODY, payload_new(str, delim));
 }
 
-extern ag_http_body_t *ag_http_body_new_encoded(const char *str, char delim)
+extern ag_http_fieldset_t *ag_http_fieldset_new_encoded(const char *str,
+        char delim)
 {
     ag_assert (str && (delim == '&' || delim == ';'));
     return ag_object_new(AG_OBJECT_TYPE_HTTP_BODY, payload_new(str, delim));
 }
 
-extern inline ag_http_body_t *ag_http_body_copy(const ag_http_body_t *ctx);
+extern inline ag_http_fieldset_t *ag_http_fieldset_copy(
+        const ag_http_fieldset_t *ctx);
 
-extern inline void ag_http_body_dispose(ag_http_body_t **ctx);
+extern inline void ag_http_fieldset_dispose(ag_http_fieldset_t **ctx);
 
-extern inline size_t ag_http_body_typeid(const ag_http_body_t *ctx);
+extern inline size_t ag_http_fieldset_typeid(const ag_http_fieldset_t *ctx);
 
-extern inline size_t ag_http_body_objid(const ag_http_body_t *ctx);
+extern inline size_t ag_http_fieldset_objid(const ag_http_fieldset_t *ctx);
 
-extern inline size_t ag_http_body_hash(const ag_http_body_t *ctx);
+extern inline size_t ag_http_fieldset_hash(const ag_http_fieldset_t *ctx);
 
-extern inline size_t ag_http_body_sz(const ag_http_body_t *ctx);
+extern inline size_t ag_http_fieldset_sz(const ag_http_fieldset_t *ctx);
 
-extern inline size_t ag_http_body_len(const ag_http_body_t *ctx);
+extern inline size_t ag_http_fieldset_len(const ag_http_fieldset_t *ctx);
 
-extern inline bool ag_http_body_empty(const ag_http_body_t *ctx);
+extern inline bool ag_http_fieldset_empty(const ag_http_fieldset_t *ctx);
 
-extern inline enum ag_tristate ag_http_body_cmp(const ag_http_body_t *ctx,
-        const ag_http_body_t *cmp);
+extern inline enum ag_tristate ag_http_fieldset_cmp(
+        const ag_http_fieldset_t *ctx, const ag_http_fieldset_t *cmp);
 
-extern inline bool ag_http_body_lt(const ag_http_body_t *ctx,
-        const ag_http_body_t *cmp);
+extern inline bool ag_http_fieldset_lt(const ag_http_fieldset_t *ctx,
+        const ag_http_fieldset_t *cmp);
 
-extern inline bool ag_http_body_eq(const ag_http_body_t *ctx,
-        const ag_http_body_t *cmp);
+extern inline bool ag_http_fieldset_eq(const ag_http_fieldset_t *ctx,
+        const ag_http_fieldset_t *cmp);
 
-extern inline bool ag_http_body_gt(const ag_http_body_t *ctx,
-        const ag_http_body_t *cmp);
+extern inline bool ag_http_fieldset_gt(const ag_http_fieldset_t *ctx,
+        const ag_http_fieldset_t *cmp);
 
-extern inline ag_string_t *ag_http_body_str(const ag_http_body_t *ctx);
+extern inline ag_string_t *ag_http_fieldset_str(const ag_http_fieldset_t *ctx);
 
-extern ag_string_t *ag_http_body_param(const ag_http_body_t *ctx,
+extern ag_string_t *ag_http_fieldset_param(const ag_http_fieldset_t *ctx,
         const char *key);
 
