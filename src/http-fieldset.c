@@ -4,16 +4,16 @@
 
 
 struct payload {
-    ag_string_t *str;
+    ag_string_t *fields;
     char delim;
 };
 
-static struct payload *payload_new(const char *str, char delim)
+static struct payload *payload_new(const char *fields, char delim)
 {
     struct payload *p = ag_memblock_new(sizeof *p);
 
     p->delim = delim;
-    p->str = ag_string_new(str);
+    p->fields = ag_string_new(fields);
 
     return p;
 }
@@ -21,37 +21,37 @@ static struct payload *payload_new(const char *str, char delim)
 static inline void *payload_copy(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
-    return payload_new(p->str, p->delim);
+    return payload_new(p->fields, p->delim);
 }
 
 static inline void payload_dispose(void *ctx)
 {
     struct payload *p = (struct payload *) ctx;
-    ag_string_dispose(&p->str);
+    ag_string_dispose(&p->fields);
 }
 
 static inline ag_string_t *object_str(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_copy(p->str);
+    return ag_string_copy(p->fields);
 }
 
 static inline size_t object_sz(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_sz(p->str);
+    return ag_string_sz(p->fields);
 }
 
 static inline size_t object_len(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_len(p->str);
+    return ag_string_len(p->fields);
 }
 
 static inline ag_hash_t object_hash(const ag_object_t *obj)
 {
     const struct payload *p = ag_object_payload(obj);
-    return ag_string_hash(p->str);
+    return ag_string_hash(p->fields);
 }
 
 static inline enum ag_tristate object_cmp(const ag_object_t *lhs,
@@ -59,7 +59,7 @@ static inline enum ag_tristate object_cmp(const ag_object_t *lhs,
 {
     const struct payload *p1 = ag_object_payload(lhs);
     const struct payload *p2 = ag_object_payload(rhs);
-    return ag_string_cmp(p1->str, p2->str);
+    return ag_string_cmp(p1->fields, p2->fields);
 }
 
 
@@ -139,17 +139,17 @@ static inline char url_decode(char c)
 }
 
 
-extern ag_string_t *ag_http_fieldset_param(const ag_http_fieldset_t *ctx,
-        const char *key)
+extern ag_string_t *ag_http_fieldset_field(const ag_http_fieldset_t *ctx,
+        const char *name)
 {
     ag_assert (ctx);
-    ag_assert (key && *key);
+    ag_assert (name && *name);
 
     const struct payload *p = ag_object_payload(ctx);
-    char *k = strstr(p->str, key);
+    char *k = strstr(p->fields, name);
     
     if (k) {
-        k += strlen(key);
+        k += strlen(name);
         
         if (*k == '=')
             k++;
@@ -158,7 +158,7 @@ extern ag_string_t *ag_http_fieldset_param(const ag_http_fieldset_t *ctx,
     } else
         return ag_string_new_empty();
     
-    char *val = ag_memblock_new(ag_string_sz(p->str) + 1);
+    char *val = ag_memblock_new(ag_string_sz(p->fields) + 1);
     char *v = val;
     
     while (*k && *k != p->delim) {
@@ -205,24 +205,24 @@ static ag_string_t *url_encode(const char *str)
 }
 
 
-extern void ag_http_fieldset_param_add(ag_http_fieldset_t **ctx, 
-        const char *param)
+extern void ag_http_fieldset_field_add(ag_http_fieldset_t **ctx, 
+        const char *field)
 {
     ag_assert (ctx && *ctx);
-    ag_assert (param && *param);
+    ag_assert (field && *field);
 
     struct payload *p = ag_object_payload_mutable(ctx);
-    ag_string_smart_t *enc = url_encode(param);
-    ag_string_add(&p->str, enc);
+    ag_string_smart_t *enc = url_encode(field);
+    ag_string_add(&p->fields, enc);
 }
 
 extern void ag_http_fieldset_param_add_encoded(ag_http_fieldset_t **ctx,
-        const char *param)
+        const char *field)
 {
     ag_assert (ctx && *ctx);
-    ag_assert (param && *param);
+    ag_assert (field && *field);
 
     struct payload *p = ag_object_payload_mutable(ctx);
-    ag_string_add(&p->str, param);
+    ag_string_add(&p->fields, field);
 }
 
