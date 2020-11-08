@@ -180,7 +180,7 @@ static void empty_proper(void)
     printf("...OK\n");
 }
 
-
+#if 0
 static void empty_encode(void)
 {
     printf("ag_string_url_encode() has no effect on an empty string");
@@ -203,7 +203,7 @@ static void empty_decode(void)
 
     printf("...OK\n");
 }
-
+#endif
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
@@ -221,8 +221,8 @@ static void empty_test(void)
     empty_lower();
     empty_upper();
     empty_proper();
-    empty_encode();
-    empty_decode();
+    //empty_encode();
+    //empty_decode();
 }
 
 
@@ -503,7 +503,7 @@ static void ascii_proper(void)
     printf("...OK\n");
 }
 
-
+#if 0
 static void ascii_encode(void)
 {
     printf("ag_string_url_encode() URL encodes an ASCII string");
@@ -526,6 +526,7 @@ static void ascii_decode(void)
 
     printf("...OK\n");
 }
+#endif
 
 
                                          /* runs ASCII string tests [AgDM:??] */
@@ -552,8 +553,8 @@ static void ascii_test(void)
     ascii_lower();
     ascii_upper();
     ascii_proper();
-    ascii_encode();
-    ascii_decode();
+    //ascii_encode();
+    //ascii_decode();
 }
 
 
@@ -797,7 +798,7 @@ static void unicode_new_fmt(void)
     printf("...OK\n");
 }
 
-
+#if 0
 static void unicode_encode(void)
 {
     printf("ag_string_url_encode() URL encodes a Unicode string");
@@ -823,7 +824,7 @@ static void unicode_decode(void)
 
     printf("...OK\n");
 }
-
+#endif
 
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
@@ -846,8 +847,8 @@ static void unicode_test(void)
     unicode_gt_2();
     unicode_add_cstr();
     unicode_new_fmt();
-    unicode_encode();
-    unicode_decode();
+    //unicode_encode();
+    //unicode_decode();
 }
 
 
