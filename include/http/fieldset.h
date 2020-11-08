@@ -87,6 +87,12 @@ inline ag_string_t *ag_http_fieldset_str(const ag_http_fieldset_t *ctx)
 extern ag_string_t *ag_http_fieldset_param(const ag_http_fieldset_t *ctx,
         const char *key);
 
+extern void ag_http_fieldset_param_add(ag_http_fieldset_t **ctx, 
+        const char *param);
+
+extern void ag_http_fieldset_param_add_encoded(ag_http_fieldset_t **ctx,
+        const char *param);
+
 
 #endif /* !defined __ARGENT_HTTP_FIELDSET_H__ */
 
