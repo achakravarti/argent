@@ -180,7 +180,7 @@ static void empty_proper(void)
     printf("...OK\n");
 }
 
-#if 0
+
 static void empty_encode(void)
 {
     printf("ag_string_url_encode() has no effect on an empty string");
@@ -203,7 +203,21 @@ static void empty_decode(void)
 
     printf("...OK\n");
 }
-#endif
+
+
+static void empty_has(void)
+{
+    printf("ag_string_has() returns false an empty string");
+
+    ag_string_smart_t *s = ag_string_new_empty();
+    ag_require (!ag_string_has(s, "="), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+
+
                                          /* runs empty string tests [AgDM:??] */
 static void empty_test(void)
 {
@@ -221,8 +235,10 @@ static void empty_test(void)
     empty_lower();
     empty_upper();
     empty_proper();
-    //empty_encode();
-    //empty_decode();
+    empty_encode();
+    empty_decode();
+    empty_has();
+
 }
 
 
@@ -503,7 +519,7 @@ static void ascii_proper(void)
     printf("...OK\n");
 }
 
-#if 0
+
 static void ascii_encode(void)
 {
     printf("ag_string_url_encode() URL encodes an ASCII string");
@@ -526,7 +542,18 @@ static void ascii_decode(void)
 
     printf("...OK\n");
 }
-#endif
+
+
+static void ascii_has(void)
+{
+    printf("ag_string_has() returns true for an ASCII string with substring");
+
+    ag_string_smart_t *s = ag_string_new("Hello, world!");
+    ag_require (ag_string_has(s, "world"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
 
 
                                          /* runs ASCII string tests [AgDM:??] */
@@ -553,8 +580,9 @@ static void ascii_test(void)
     ascii_lower();
     ascii_upper();
     ascii_proper();
-    //ascii_encode();
-    //ascii_decode();
+    ascii_encode();
+    ascii_decode();
+    ascii_has();
 }
 
 
@@ -798,7 +826,7 @@ static void unicode_new_fmt(void)
     printf("...OK\n");
 }
 
-#if 0
+
 static void unicode_encode(void)
 {
     printf("ag_string_url_encode() URL encodes a Unicode string");
@@ -824,7 +852,17 @@ static void unicode_decode(void)
 
     printf("...OK\n");
 }
-#endif
+
+
+static void unicode_has(void)
+{
+    printf("ag_string_has() returns true for a Unicode string with substring");
+
+    ag_string_smart_t *s = ag_string_new("До свидания, луна?");
+    ag_require (ag_string_has(s, "луна"), AG_ERNO_TEST, NULL);
+    
+    printf("...OK\n");
+}
 
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
@@ -847,8 +885,9 @@ static void unicode_test(void)
     unicode_gt_2();
     unicode_add_cstr();
     unicode_new_fmt();
-    //unicode_encode();
-    //unicode_decode();
+    unicode_encode();
+    unicode_decode();
+    unicode_has();
 }
 
 
