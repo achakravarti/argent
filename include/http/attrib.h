@@ -64,7 +64,7 @@ inline size_t ag_http_attrib_objid(const ag_http_attrib_t *ctx)
     return ag_object_id(ctx);
 }
 
-inline size_t ag_http_attrib_hash(const ag_http_attrib_t *ctx)
+inline ag_hash_t ag_http_attrib_hash(const ag_http_attrib_t *ctx)
 {
     return ag_object_hash(ctx);
 }

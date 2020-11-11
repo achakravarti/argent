@@ -101,6 +101,44 @@ extern ag_http_attrib_t *ag_http_attrib_new_nameonly(const char *name)
     return ag_object_new(AG_OBJECT_TYPE_HTTP_ATTRIB, payload_new(name));
 }
 
+
+extern inline ag_http_attrib_t *ag_http_attrib_copy(
+        const ag_http_attrib_t *ctx);
+
+extern inline void ag_http_attrib_dispose(ag_http_attrib_t **ctx);
+
+extern inline enum ag_tristate ag_http_attrib_cmp(const ag_http_attrib_t *ctx,
+        const ag_http_attrib_t *cmp);
+
+extern inline bool ag_http_attrib_lt(const ag_http_attrib_t *ctx,
+        const ag_http_attrib_t *cmp);
+
+extern inline bool ag_http_attrib_eq(const ag_http_attrib_t *ctx,
+        const ag_http_attrib_t *cmp);
+
+extern inline bool ag_http_attrib_gt(const ag_http_attrib_t *ctx,
+        const ag_http_attrib_t *cmp);
+
+extern inline bool ag_http_attrib_empty(const ag_http_attrib_t *ctx);
+
+extern bool ag_http_attrib_nameonly(const ag_http_attrib_t *ctx)
+{
+    ag_assert (ctx);
+
+    const struct payload *p = ag_object_payload(ctx);
+    return !ag_string_has(p->attrib, "=");
+}
+
+extern inline size_t ag_http_attrib_typeid(const ag_http_attrib_t *ctx);
+
+extern inline size_t ag_http_attrib_objid(const ag_http_attrib_t *ctx);
+
+extern inline ag_hash_t ag_http_attrib_hash(const ag_http_attrib_t *ctx);
+
+extern inline size_t ag_http_attrib_sz(const ag_http_attrib_t *ctx);
+
+extern inline size_t ag_http_attrib_len(const ag_http_attrib_t *ctx);
+
 extern ag_string_t *ag_http_attrib_name(const ag_http_attrib_t *ctx)
 {
     ag_assert (ctx);
@@ -116,4 +154,6 @@ extern ag_string_t *ag_http_attrib_value(const ag_http_attrib_t *ctx)
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_split_right(p->attrib, "=");
 }
+
+extern inline ag_string_t *ag_http_attrib_str(const ag_http_attrib_t *ctx);
 
