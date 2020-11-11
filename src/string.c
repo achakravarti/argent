@@ -325,14 +325,29 @@ extern bool ag_string_has(const ag_string_t *ctx, const char *needle)
 extern ag_string_t *ag_string_split_left(const ag_string_t *ctx,
         const char *pivot)
 {
-    ag_assert (ctx && pivot);
+    ag_assert (ctx && pivot && *pivot);
 
-    if (!*ctx || !strstr(ctx, pivot))
+    if (ag_unlikely (!*ctx || !strstr(ctx, pivot)))
         return ag_string_new_empty();
 
     char *save;
     ag_string_smart_t *cp = ag_string_new(ctx);
     return ag_string_new(strtok_r(cp, pivot, &save));
+}
+
+
+extern ag_string_t *ag_string_split_right(const ag_string_t *ctx,
+        const char *pivot)
+{
+    ag_assert (ctx && pivot && *pivot);
+    
+    if (ag_unlikely (!*ctx || !strstr(ctx, pivot)))
+        return ag_string_new_empty();
+
+    char *save;
+    ag_string_smart_t *cp = ag_string_new(ctx);
+    (void) strtok_r(cp, pivot, &save);
+    return ag_string_new(save);
 }
 
 
