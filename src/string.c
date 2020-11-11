@@ -313,3 +313,12 @@ extern void ag_string_url_decode(ag_string_t **ctx)
     ag_memblock_free((void **) &bfr);
 }
 
+
+extern bool ag_string_has(const ag_string_t *ctx, const char *needle)
+{
+    ag_assert (ctx);
+    ag_assert (needle);
+
+    return (bool) strstr(ctx, needle);
+}
+

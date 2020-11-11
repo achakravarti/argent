@@ -92,6 +92,7 @@ extern void ag_string_url_encode(ag_string_t **ctx);
 
 extern void ag_string_url_decode(ag_string_t **ctx);
 
+extern bool ag_string_has(const ag_string_t *ctx, const char *needle);
 
 #endif /* !defined __ARGENT_STRING_H__ */
 
