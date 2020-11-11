@@ -11,6 +11,7 @@
 #include "./value.h"
 #include "./list.h"
 #include "./http/primitives.h"
+#include "./http/attrib.h"
 #include "./http/fieldset.h"
 #include "./http/url.h"
 #include "./http/user.h"

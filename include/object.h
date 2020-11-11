@@ -39,6 +39,7 @@ typedef struct ag_object_t ag_object_t;
 #define AG_OBJECT_TYPE_HTTP_COOKIE ((size_t) 0x5)
 #define AG_OBJECT_TYPE_HTTP_REQUEST ((size_t) 0x6)
 #define AG_OBJECT_TYPE_HTTP_BODY ((size_t) 0x7)
+#define AG_OBJECT_TYPE_HTTP_ATTRIB ((size_t) 0x8)
 
 
                                        /* v-table of object methods [AgDM:??] */

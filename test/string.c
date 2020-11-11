@@ -864,6 +864,7 @@ static void unicode_has(void)
     printf("...OK\n");
 }
 
+
                                        /* runs Unicode string tests [AgDM:??] */
 static void unicode_test(void)
 {

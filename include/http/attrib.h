@@ -80,6 +80,7 @@ inline size_t ag_http_attrib_len(const ag_http_attrib_t *ctx)
 }
 
 extern ag_string_t *ag_http_attrib_name(const ag_http_attrib_t *ctx);
+
 extern ag_string_t *ag_http_attrib_value(const ag_http_attrib_t *ctx);
 
 inline ag_string_t *ag_http_attrib_str(const ag_http_attrib_t *ctx)
@@ -87,10 +88,5 @@ inline ag_string_t *ag_http_attrib_str(const ag_http_attrib_t *ctx)
     return ag_object_str(ctx);
 }
 
-extern void ag_http_attrib_encode(ag_http_attrib_t **ctx);
-extern void ag_http_attrib_decode(ag_http_attrib_t **ctx);
-
-
 #endif /* !defined __ARGENT_HTTP_ATTRIB_H__ */
-
 
