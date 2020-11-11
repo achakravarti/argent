@@ -316,9 +316,23 @@ extern void ag_string_url_decode(ag_string_t **ctx)
 
 extern bool ag_string_has(const ag_string_t *ctx, const char *needle)
 {
-    ag_assert (ctx);
-    ag_assert (needle);
+    ag_assert (ctx && needle);
 
     return (bool) strstr(ctx, needle);
 }
+
+
+extern ag_string_t *ag_string_split_left(const ag_string_t *ctx,
+        const char *pivot)
+{
+    ag_assert (ctx && pivot);
+
+    if (!*ctx || !strstr(ctx, pivot))
+        return ag_string_new_empty();
+
+    char *save;
+    ag_string_smart_t *cp = ag_string_new(ctx);
+    return ag_string_new(strtok_r(cp, pivot, &save));
+}
+
 

@@ -94,5 +94,8 @@ extern void ag_string_url_decode(ag_string_t **ctx);
 
 extern bool ag_string_has(const ag_string_t *ctx, const char *needle);
 
+extern ag_string_t *ag_string_split_left(const ag_string_t *ctx,
+        const char *pivot);
+
 #endif /* !defined __ARGENT_STRING_H__ */
 
