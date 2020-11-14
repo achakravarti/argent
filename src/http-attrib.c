@@ -40,7 +40,7 @@ static inline void payload_dispose(void *ctx)
 
 
 /*******************************************************************************
- *                              OBJECT INTERFNALS
+ *                               OBJECT INTERNALS
  */
 
 
