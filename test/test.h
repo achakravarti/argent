@@ -12,5 +12,7 @@ extern void ag_test_log(void);
 
 extern void ag_test_value(void);
 
+extern void ag_test_http_attrib(void);
+
 #endif /* !defined ARGENT_TESTS */
 

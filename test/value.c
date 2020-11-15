@@ -680,7 +680,6 @@ static inline void object_register(void)
         .str = NULL
     };
 
-    ag_object_init(32);
     ag_object_register(OBJECT_CLASS, &vt);
 }
 

@@ -708,7 +708,6 @@ extern void ag_test_object(void)
         .str = NULL
     };
     
-    ag_object_init(32);
     ag_object_register(BASE_OBJECT, &vt);
 
     vt.copy = &derived_method_copy;
@@ -766,5 +765,4 @@ extern void ag_test_object(void)
     derived_test_refc_4();
 
     printf("\n");
-    ag_object_exit();
 }
