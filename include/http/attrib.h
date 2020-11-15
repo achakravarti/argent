@@ -4,7 +4,22 @@
 #include "../object.h"
 
 
+
+
+/*******************************************************************************
+ *                                    TYPES
+ */
+
+
+/*
+ * ag_http_attrib_t: HTTP attribute.
+ */
 typedef ag_object_t ag_http_attrib_t;
+
+
+/*
+ * ag_http_attrib_smart_t: smart version of ag_http_attrib_t.
+ */
 #define ag_http_attrib_smart_t ag_object_smart_t
 
 

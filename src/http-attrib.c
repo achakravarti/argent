@@ -10,11 +10,21 @@
  */
 
 
+/*
+ * struct payload: object payload for HTTP attribute.
+ */
 struct payload {
     ag_string_t *attrib;
 };
 
 
+/*
+ * payload_new(): create new HTTP attribute payload.
+ *
+ * @attrib: attribute string.
+ *
+ * Return: new payload.
+ */
 static inline struct payload *payload_new(const char *attrib)
 {
     struct payload *p = ag_memblock_new(sizeof *p);
@@ -23,6 +33,13 @@ static inline struct payload *payload_new(const char *attrib)
 }
 
 
+/*
+ * payload_copy(): make deep copy of HTTP attribute payload.
+ *
+ * @ctx: contextual payload.
+ *
+ * Return: copy of @ctx.
+ */
 static inline void *payload_copy(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
@@ -30,6 +47,11 @@ static inline void *payload_copy(const void *ctx)
 }
 
 
+/*
+ * payload_dispose(): free up HTTP attribute payload resources.
+ *
+ * @ctx: contextual payload.
+ */
 static inline void payload_dispose(void *ctx)
 {
     struct payload *p = (struct payload *) ctx;
@@ -44,6 +66,16 @@ static inline void payload_dispose(void *ctx)
  */
 
 
+/*
+ * object_cmp(): compare two HTTP attribute objects.
+ *
+ * @ctx: contextual object.
+ * @cmp: comparison object.
+ *
+ * Return: AG_TRISTATE_LO - @ctx < @cmp,
+ *         AG_TRISTATE_EQ - @ctx == @cmp,
+ *         AG_TRISTATE_HI - @ctx > @cmp.
+ */
 static inline enum ag_tristate object_cmp(const ag_object_t *ctx,
         const ag_object_t *cmp)
 {
@@ -53,12 +85,27 @@ static inline enum ag_tristate object_cmp(const ag_object_t *ctx,
 }
 
 
+/*
+ * object_sz(): get HTTP attribute object size.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: size of @ctx.
+ */
 static inline size_t object_sz(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_sz(p->attrib);
 }
 
+
+/*
+ * object_len(): get HTTP attribute object length.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: length of @ctx.
+ */
 static inline size_t object_len(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
@@ -66,12 +113,28 @@ static inline size_t object_len(const ag_object_t *ctx)
     return ag_string_len(val);
 }
 
+
+/*
+ * object_hash(): get HTTP attribute object hash.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: hash of @ctx.
+ */
 static inline ag_hash_t object_hash(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_hash(p->attrib);
 }
 
+
+/*
+ * object_str(): get HTTP attribute object string representation.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: string representation of @ctx.
+ */
 static inline ag_string_t *object_str(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
