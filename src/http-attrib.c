@@ -183,7 +183,7 @@ extern ag_http_attrib_t *ag_http_attrib_new(const char *name, const char *val)
 }
 
 
-extern ag_http_attrib_t *ag_http_attrib_new_nameonly(const char *name)
+extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *name)
 {
     ag_assert (name && *name);
 

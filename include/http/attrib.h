@@ -48,13 +48,13 @@ extern ag_http_attrib_t *ag_http_attrib_new(const char *name, const char *val);
 
 
 /*
- * ag_http_attrib_new(): create new HTTP attribute with only a name.
+ * ag_http_attrib_new(): create new empty HTTP attribute.
  *
  * @name: attribute name.
  *
  * Return: new HTTP attribute.
  */
-extern ag_http_attrib_t *ag_http_attrib_new_nameonly(const char *name);
+extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *name);
 
 
 /*
