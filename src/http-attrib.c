@@ -166,28 +166,28 @@ extern void ag_http_attrib_register(void)
 }
 
 
-extern ag_http_attrib_t *ag_http_attrib_new(const char *name, const char *val)
+extern ag_http_attrib_t *ag_http_attrib_new(const char *key, const char *val)
 {
-    ag_assert (name && *name);
+    ag_assert (key && *key);
     ag_assert (val);
 
     ag_string_smart_t *s;
     if (*val) {
         ag_string_smart_t *v = ag_string_new(val);
         ag_string_url_encode(&v);
-        s = ag_string_new_fmt("%s=%s", name, v);
+        s = ag_string_new_fmt("%s=%s", key, v);
     } else
-        s = ag_string_new(name);
+        s = ag_string_new(key);
 
     return ag_object_new(AG_OBJECT_TYPE_HTTP_ATTRIB, payload_new(s));
 }
 
 
-extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *name)
+extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *key)
 {
-    ag_assert (name && *name);
+    ag_assert (key && *key);
 
-    return ag_object_new(AG_OBJECT_TYPE_HTTP_ATTRIB, payload_new(name));
+    return ag_object_new(AG_OBJECT_TYPE_HTTP_ATTRIB, payload_new(key));
 }
 
 
@@ -231,14 +231,6 @@ extern inline bool ag_http_attrib_gt(const ag_http_attrib_t *ctx,
 extern inline bool ag_http_attrib_empty(const ag_http_attrib_t *ctx);
 
 
-extern bool ag_http_attrib_nameonly(const ag_http_attrib_t *ctx)
-{
-    ag_assert (ctx);
-
-    const struct payload *p = ag_object_payload(ctx);
-    return !ag_string_has(p->attrib, "=");
-}
-
 extern inline size_t ag_http_attrib_typeid(const ag_http_attrib_t *ctx);
 
 
@@ -254,21 +246,29 @@ extern inline size_t ag_http_attrib_sz(const ag_http_attrib_t *ctx);
 extern inline size_t ag_http_attrib_len(const ag_http_attrib_t *ctx);
 
 
-extern ag_string_t *ag_http_attrib_name(const ag_http_attrib_t *ctx)
+extern ag_string_t *ag_http_attrib_key(const ag_http_attrib_t *ctx)
 {
     ag_assert (ctx);
 
     const struct payload *p = ag_object_payload(ctx);
-    return ag_string_split_left(p->attrib, "=");
+    return ag_string_has(p->attrib, "=") ? ag_string_split_left(p->attrib, "=")
+            : ag_string_copy(p->attrib);
 }
 
 
-extern ag_string_t *ag_http_attrib_value(const ag_http_attrib_t *ctx)
+extern ag_string_t *ag_http_attrib_val(const ag_http_attrib_t *ctx)
 {
     ag_assert (ctx);
 
     const struct payload *p = ag_object_payload(ctx);
-    return ag_string_split_right(p->attrib, "=");
+
+    if (ag_string_has(p->attrib, "=")) {
+        ag_string_t *val = ag_string_split_right(p->attrib, "=");
+        ag_string_url_decode(&val);
+        return val;
+    }
+
+    return ag_string_new_empty();
 }
 
 

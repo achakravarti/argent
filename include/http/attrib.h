@@ -39,22 +39,22 @@ extern void ag_http_attrib_register(void);
 /*
  * ag_http_attrib_new(): create new HTTP attribute.
  *
- * @name: attribute name.
+ * @key: attribute key.
  * @val: attribute value.
  *
  * Return: new HTTP attribute.
  */
-extern ag_http_attrib_t *ag_http_attrib_new(const char *name, const char *val);
+extern ag_http_attrib_t *ag_http_attrib_new(const char *key, const char *val);
 
 
 /*
  * ag_http_attrib_new(): create new empty HTTP attribute.
  *
- * @name: attribute name.
+ * @key: attribute key.
  *
  * Return: new HTTP attribute.
  */
-extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *name);
+extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *key);
 
 
 /*
@@ -175,17 +175,6 @@ inline bool ag_http_attrib_empty(const ag_http_attrib_t *ctx)
 
 
 /*
- * ag_http_attrib_nameonly(): check if HTTP attribute has only name.
- *
- * @ctx: contextual attribute.
- *
- * Return: true  - @ctx only has name,
- *         false - @ctx has name-value pair.
- */
-extern bool ag_http_attrib_nameonly(const ag_http_attrib_t *ctx);
-
-
-/*
  * ag_http_attrib_typeid(): get type ID of HTTP attribute.
  *
  * @ctx: contextual attribute.
@@ -251,23 +240,23 @@ inline size_t ag_http_attrib_len(const ag_http_attrib_t *ctx)
 
 
 /*
- * ag_http_attrib_name(): get name of HTTP attribute.
+ * ag_http_attrib_key(): get key of HTTP attribute.
  *
  * @ctx: contextual attribute.
  *
- * Return: name of @ctx.
+ * Return: key of @ctx.
  */
-extern ag_string_t *ag_http_attrib_name(const ag_http_attrib_t *ctx);
+extern ag_string_t *ag_http_attrib_key(const ag_http_attrib_t *ctx);
 
 
 /*
- * ag_http_attrib_value(): get value of HTTP attribute.
+ * ag_http_attrib_val(): get value of HTTP attribute.
  *
  * @ctx: contextual attribute.
  *
  * Return: value of @ctx.
  */
-extern ag_string_t *ag_http_attrib_value(const ag_http_attrib_t *ctx);
+extern ag_string_t *ag_http_attrib_val(const ag_http_attrib_t *ctx);
 
 
 /*
