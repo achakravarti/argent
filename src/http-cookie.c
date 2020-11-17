@@ -206,11 +206,11 @@ extern ag_string_t *ag_http_cookie_param(const ag_http_cookie_t *ctx,
         *v++ = *c++;
 
     *v = '\0';
-    ag_string_t *ret = ag_string_new(val);
-    ag_string_url_decode(&ret);
+    ag_string_smart_t *ret = ag_string_new(val);
+    ag_string_smart_t *ret1 = ag_string_url_decode(ret);
     ag_memblock_free((void **) &val);
 
-    return ret;
+    return ret1;
 }
 
 
@@ -229,7 +229,7 @@ extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
 
     ag_assert (val);
     ag_string_smart_t *enc = ag_string_new(val);
-    ag_string_url_encode(&enc);
-    ag_string_add(&p->param, enc);
+    ag_string_smart_t *enc1 = ag_string_url_encode(enc);
+    ag_string_add(&p->param, enc1);
 }
 

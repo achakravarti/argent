@@ -182,10 +182,10 @@ extern ag_string_t *ag_http_request_param(const ag_http_request_t *ctx,
         *v++ = *c++;
 
     *v = '\0';
-    ag_string_t *ret = ag_string_new(val);
-    ag_string_url_decode(&ret);
+    ag_string_smart_t *ret = ag_string_new(val);
+    ag_string_t *ret1 = ag_string_url_decode(ret);
     ag_memblock_free((void **) &val);
 
-    return ret;
+    return ret1;
 }
 

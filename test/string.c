@@ -1,5 +1,5 @@
 #include <string.h>
-#include "../src/api.h"
+#include "../include/argent.h"
 #include "./test.h"
 
 
@@ -185,9 +185,9 @@ static void empty_encode(void)
 {
     printf("ag_string_url_encode() has no effect on an empty string");
 
-    ag_string_smart_t *s = ag_string_new_empty();
-    ag_string_url_encode(&s);
-    ag_require (!*s, AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_url_encode(s1);
+    ag_require (!*s1, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -197,9 +197,9 @@ static void empty_decode(void)
 {
     printf("ag_string_url_decode() has no effect on an empty string");
 
-    ag_string_smart_t *s = ag_string_new_empty();
-    ag_string_url_decode(&s);
-    ag_require (!*s, AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new_empty();
+    ag_string_smart_t *s2 = ag_string_url_decode(s1);
+    ag_require (!*s2, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -524,9 +524,9 @@ static void ascii_encode(void)
 {
     printf("ag_string_url_encode() URL encodes an ASCII string");
 
-    ag_string_smart_t *s = ag_string_new("Hello, world!");
-    ag_string_url_encode(&s);
-    ag_require (!strcmp(s, "Hello%2C%20world%21"), AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new("Hello, world!");
+    ag_string_smart_t *s2 = ag_string_url_encode(s1);
+    ag_require (ag_string_eq(s2, "Hello%2C%20world%21"), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -536,9 +536,9 @@ static void ascii_decode(void)
 {
     printf("ag_string_url_decode() URL encodes an ASCII string");
 
-    ag_string_smart_t *s = ag_string_new("Hello%2C%20world%21");
-    ag_string_url_decode(&s);
-    ag_require (!strcmp(s, "Hello, world!"), AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s1 = ag_string_new("Hello%2C%20world%21");
+    ag_string_smart_t *s2 = ag_string_url_decode(s1);
+    ag_require (ag_string_eq(s2, "Hello, world!"), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -831,9 +831,9 @@ static void unicode_encode(void)
 {
     printf("ag_string_url_encode() URL encodes a Unicode string");
 
-    ag_string_smart_t *s = ag_string_new("Привет, мир!");
-    ag_string_url_encode(&s);
-    ag_require (!strcmp(s, 
+    ag_string_smart_t *s1 = ag_string_new("Привет, мир!");
+    ag_string_smart_t *s2 = ag_string_url_encode(s1);
+    ag_require (ag_string_eq(s2, 
             "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21"),
             AG_ERNO_TEST, NULL);
 
@@ -845,10 +845,10 @@ static void unicode_decode(void)
 {
     printf("ag_string_url_decode() URL decodes a Unicode string");
     
-    ag_string_smart_t *s = ag_string_new(
+    ag_string_smart_t *s1 = ag_string_new(
             "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21");
-    ag_string_url_decode(&s);
-    ag_require (!strcmp(s, "Привет, мир!"), AG_ERNO_TEST, NULL);
+    ag_string_smart_t *s2 = ag_string_url_decode(s1);
+    ag_require (ag_string_eq(s2, "Привет, мир!"), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }

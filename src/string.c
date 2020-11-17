@@ -238,22 +238,24 @@ extern void ag_string_proper(ag_string_t **ctx)
 extern inline ag_hash_t ag_string_hash(const ag_string_t *ctx);
 
 
+
 // https://stackoverflow.com/questions/29414709
-extern void ag_string_url_encode(ag_string_t **ctx)
+extern ag_string_t *ag_string_url_encode(const ag_string_t *ctx)
 {
-    ag_assert (ctx && *ctx);
-    char *hnd = *ctx;
-
+    ag_assert (ctx);
+    
+    const char *hnd = ctx;
     if (!*hnd)
-        return;
+        return ag_string_new_empty();
 
-    char *bfr = ag_memblock_new(string_sz(hnd) * 3);
+    register size_t sz = (string_sz(hnd) * 3) + 1; /* 1 to suppress valgrind */
+    char *bfr = ag_memblock_new(sz);
     
     register size_t n = 0;
     register int c;
     while ((c = *hnd)) {
         if (c < 33 || c > 126 || strchr("!\"*%'();:@&=+$,/?#[]", *hnd)) {
-            snprintf(bfr + n, 4, "%%%02X", c & 0xff);
+            snprintf(bfr + n, sz, "%%%02X", c & 0xff);
             n += 3;
         } else
             bfr[n++] = c;
@@ -262,9 +264,9 @@ extern void ag_string_url_encode(ag_string_t **ctx)
     }
 
     bfr[n] = '\0';
-    ag_string_dispose(ctx);
-    *ctx = ag_string_new(bfr);
+    ag_string_t *ret = ag_string_new(bfr);
     ag_memblock_free((void **) &bfr);
+    return ret;
 }
 
 
@@ -303,17 +305,18 @@ static inline char url_decode(char c)
 }
 
 
-extern void ag_string_url_decode(ag_string_t **ctx)
+extern ag_string_t *ag_string_url_decode(const ag_string_t *ctx)
 {
-    ag_assert (ctx && *ctx);
-    char *hnd = *ctx;
+    ag_assert (ctx);
+    const char *hnd = ctx;
 
     if (!*hnd)
-        return;
+        return ag_string_new_empty();
 
-    char *bfr = ag_memblock_new(string_sz(hnd));
+    size_t sz = string_sz(hnd) + 1; /* 1 to suppress valgrind error */
+    char *bfr = ag_memblock_new(sz);
+
     char *c = bfr;
-
     while (*hnd) {
         if (url_encoded(hnd)) {
             *c++ = (16 * url_decode(hnd[1])) + url_decode(hnd[2]);
@@ -326,9 +329,9 @@ extern void ag_string_url_decode(ag_string_t **ctx)
     }
 
     *c = '\0';
-    ag_string_dispose(ctx);
-    *ctx = ag_string_new(bfr);
+    ag_string_t *ret = ag_string_new(bfr);
     ag_memblock_free((void **) &bfr);
+    return ret;
 }
 
 

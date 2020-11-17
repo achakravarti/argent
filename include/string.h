@@ -88,9 +88,11 @@ inline ag_hash_t ag_string_hash(const ag_string_t *ctx)
     return ag_hash_new_str(ctx);
 }
 
-extern void ag_string_url_encode(ag_string_t **ctx);
+//extern void ag_string_url_encode(ag_string_t **ctx);
+extern ag_string_t *ag_string_url_encode(const ag_string_t *ctx);
 
-extern void ag_string_url_decode(ag_string_t **ctx);
+//extern void ag_string_url_decode(ag_string_t **ctx);
+extern ag_string_t *ag_string_url_decode(const ag_string_t *ctx);
 
 extern bool ag_string_url_encoded(const ag_string_t *ctx);
 

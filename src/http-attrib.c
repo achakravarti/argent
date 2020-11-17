@@ -173,9 +173,9 @@ extern ag_http_attrib_t *ag_http_attrib_new(const char *key, const char *val)
 
     ag_string_smart_t *s;
     if (*val) {
-        ag_string_smart_t *v = ag_string_new(val);
-        ag_string_url_encode(&v);
-        s = ag_string_new_fmt("%s=%s", key, v);
+        ag_string_smart_t *v1 = ag_string_new(val);
+        ag_string_smart_t *v2 = ag_string_url_encode(v1);
+        s = ag_string_new_fmt("%s=%s", key, v2);
     } else
         s = ag_string_new(key);
 
@@ -263,9 +263,8 @@ extern ag_string_t *ag_http_attrib_val(const ag_http_attrib_t *ctx)
     const struct payload *p = ag_object_payload(ctx);
 
     if (ag_string_has(p->attrib, "=")) {
-        ag_string_t *val = ag_string_split_right(p->attrib, "=");
-        ag_string_url_decode(&val);
-        return val;
+        ag_string_smart_t *val = ag_string_split_right(p->attrib, "=");
+        return ag_string_url_decode(val);
     }
 
     return ag_string_new_empty();
