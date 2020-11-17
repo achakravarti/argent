@@ -274,6 +274,24 @@ static inline bool url_encoded(const char *str)
 }
 
 
+extern bool ag_string_url_encoded(const ag_string_t *ctx)
+{
+    ag_assert (ctx);
+
+    register size_t sz = string_sz(ctx) - STRING_OFFSET_NULL;
+    if (sz < 3)
+        return false;
+
+    sz =- 2;
+    for (register size_t i = 0; i < sz; i++) {
+        if (url_encoded(ctx + i))
+            return true;
+    }
+
+    return false;
+}
+
+
 static inline char url_decode(char c)
 {
     if (c >= 'a')
