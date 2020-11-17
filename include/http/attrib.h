@@ -1,4 +1,4 @@
-#if (!defined __ARGENT_HTTP_ATTRIB_H__)
+#ifndef __ARGENT_HTTP_ATTRIB_H__
 #define __ARGENT_HTTP_ATTRIB_H__
 
 #include "../object.h"
@@ -62,7 +62,7 @@ extern ag_http_attrib_t *ag_http_attrib_new_empty(const char *key);
  *
  * @ctx: contextual attribute.
  *
- * Return: copy of HTTP attribute.
+ * Return: copy of @ctx.
  */
 inline ag_http_attrib_t *ag_http_attrib_copy(const ag_http_attrib_t *ctx)
 {
@@ -227,7 +227,7 @@ inline size_t ag_http_attrib_sz(const ag_http_attrib_t *ctx)
 
 
 /*
- * ag_http_attrib_len(): get legnth of HTTP attribute.
+ * ag_http_attrib_len(): get length of HTTP attribute.
  *
  * @ctx: contextual attribute.
  *
@@ -272,5 +272,5 @@ inline ag_string_t *ag_http_attrib_str(const ag_http_attrib_t *ctx)
 }
 
 
-#endif /* !defined __ARGENT_HTTP_ATTRIB_H__ */
+#endif /* !__ARGENT_HTTP_ATTRIB_H__ */
 

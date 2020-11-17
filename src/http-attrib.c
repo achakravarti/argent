@@ -1,5 +1,3 @@
-#include <string.h>
-#include <ctype.h>
 #include "../include/argent.h"
 
 
