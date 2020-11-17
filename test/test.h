@@ -1,5 +1,5 @@
-#if (!defined ARGENT_TESTS)
-#define ARGENT_TESTS
+#ifndef __ARGENT_TESTS_H__
+#define __ARGENT_TESTS_H__
 
 
 extern void ag_test_memblock(void);
@@ -14,5 +14,7 @@ extern void ag_test_value(void);
 
 extern void ag_test_http_attrib(void);
 
-#endif /* !defined ARGENT_TESTS */
+extern void ag_test_http_url(void);
+
+#endif /* !__ARGENT_TESTS_H__ */
 
