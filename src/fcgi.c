@@ -235,7 +235,7 @@ extern ag_string_t *ag_http_request_user_port(void)
 extern ag_http_url_t *ag_http_request_url(void)
 {
     return ag_http_url_new(ag_http_request_url_secure(),
-            ag_http_request_url_host(), ag_http_request_url_port(),
+            ag_http_request_url_host(),/* ag_http_request_url_port(),*/ 80,
             ag_http_request_url_path());
 }
 

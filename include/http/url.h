@@ -48,7 +48,7 @@ extern void ag_http_url_register(void);
  * Return: new HTTP URL.
  */
 extern ag_http_url_t *ag_http_url_new(bool secure, const char *host,
-        const char *port, const char *path);
+        ag_uint port, const char *path);
 
 
 /*
@@ -271,7 +271,7 @@ extern ag_string_t *ag_http_url_host(const ag_http_url_t *ctx);
  *
  * Return: port of @ctx.
  */
-extern ag_string_t *ag_http_url_port(const ag_http_url_t *ctx);
+extern ag_uint ag_http_url_port(const ag_http_url_t *ctx);
 
 
 /*
