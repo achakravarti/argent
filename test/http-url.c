@@ -11,7 +11,7 @@
 
 static void new_01(void)
 {
-    printf("ag_http_url_new(): @secure true, @host && @path && @port ~empty"
+    printf("ag_http_url_new(): @secure true, @host && @path ~empty, @port = 80"
            " => new url");
 
     ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
@@ -28,6 +28,49 @@ static void new_01(void)
 
     printf("...OK\n");
 }
+
+
+static void new_02(void)
+{
+    printf("ag_http_url_new(): @secure false, @host && @path ~empty, @port = 0"
+            " => new url");
+
+    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 0, "foo");
+    ag_require (u, AG_ERNO_TEST, NULL);
+
+    ag_require (!ag_http_url_secure(u), AG_ERNO_TEST, NULL);
+    ag_require (!ag_http_url_port(u), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *h = ag_http_url_host(u);
+    ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *p = ag_http_url_path(u);
+    ag_require (ag_string_eq(p, "/foo"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+static void new_03(void)
+{
+    printf("ag_http_url_new(): @secure true, @host ~empty, @path empty,"
+           " @port = 0 => new url");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "");
+    ag_require (u, AG_ERNO_TEST, NULL);
+
+    ag_require (ag_http_url_secure(u), AG_ERNO_TEST, NULL);
+    ag_require (!ag_http_url_port(u), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *h = ag_http_url_host(u);
+    ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *p = ag_http_url_path(u);
+    ag_require (ag_string_eq(p, "/"), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
 
 static void copy_01(void)
 {
@@ -95,6 +138,8 @@ extern void ag_test_http_url(void)
     printf("Starting HTTP URL interface test suite...\n\n");
 
     new_01();
+    new_02();
+    new_03();
     copy_01();
     dispose_01();
     dispose_02();
