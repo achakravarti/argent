@@ -4,7 +4,7 @@
 
 
 /*******************************************************************************
- *                              PAYLOAD INTERFNALS
+ *                              PAYLOAD INTERNALS
  */
 
 
@@ -111,9 +111,9 @@ static inline ag_string_t *object_str(const ag_object_t *ctx)
  * @ctx: contextual object.
  * @cmp: comparison object.
  *
- * Return: AG_TRISTATE_LO - @ctx < @cmp,
- *         AG_TRISTATE_EQ - @ctx == @cmp,
- *         AG_TRISTATE_HI - @ctx > @cmp.
+ * Return: AG_TRISTATE_LO  - @ctx < @cmp,
+ *         AG_TRISTATE_GND - @ctx == @cmp,
+ *         AG_TRISTATE_HI  - @ctx > @cmp.
  */
 static inline enum ag_tristate object_cmp(const ag_object_t *ctx, 
         const ag_object_t *cmp)

@@ -4,10 +4,13 @@
 
 
 /*******************************************************************************
- *                              PAYLOAD INTERFNALS
+ *                              PAYLOAD INTERNALS
  */
 
 
+/*
+ * struct payload: object payload for HTTP URL.
+ */
 struct payload {
     ag_string_t *agent;
     ag_string_t *ip;
@@ -16,8 +19,18 @@ struct payload {
 };
 
 
+/*
+ * payload_new(): create new HTTP user payload.
+ *
+ * @agent: user agent
+ * @ip   : user IP address
+ * @port : user port number.
+ * @host : user hostname.
+ *
+ * Return: new payload.
+ */
 static struct payload *payload_new(const char *agent, const char *ip,
-        const char *host, const char *port)
+        const char *port, const char *host)
 {
     struct payload *p = ag_memblock_new(sizeof *p);
 
@@ -30,21 +43,26 @@ static struct payload *payload_new(const char *agent, const char *ip,
 }
 
 
-
-
-/*******************************************************************************
- *                              V-TABLE INTERNALS
+/*
+ * payload_copy(): make deep copy of HTTP user payload.
+ *
+ * @ctx: contextual payload.
+ *
+ * Return: copy of @ctx.
  */
-
-
-static inline void *vt_copy(const void *ctx)
+static inline void *payload_copy(const void *ctx)
 {
     const struct payload *p = (const struct payload *) ctx;
-    return payload_new(p->agent, p->ip, p->host, p->port);
+    return payload_new(p->agent, p->ip, p->port, p->host);
 }
 
 
-static inline void vt_dispose(void *ctx)
+/*
+ * payload_dispose(): free up HTTP user payload resources.
+ *
+ * @ctx: contextual payload.
+ */
+static inline void payload_dispose(void *ctx)
 {
     struct payload *p = (struct payload *) ctx;
 
@@ -55,34 +73,72 @@ static inline void vt_dispose(void *ctx)
 }
 
 
-static inline size_t vt_sz(const ag_object_t *obj)
+
+
+/*******************************************************************************
+ *                               OBJECT INTERNALS
+ */
+
+
+/*
+ * object_sz(): get HTTP user object size.
+ *
+ * @ctx: contextual object.
+ *
+ * Return size of @ctx.
+ */
+static inline size_t object_sz(const ag_object_t *ctx)
 {
-    const struct payload *p = ag_object_payload(obj);
+    const struct payload *p = ag_object_payload(ctx);
     return ag_string_sz(p->agent) + ag_string_sz(p->ip) + ag_string_sz(p->host)
         + ag_string_sz(p->port);
 }
 
 
-static inline ag_string_t *vt_str(const ag_object_t *obj)
+/*
+ * object_str(): get HTTP user object string representation.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: string representation of @ctx.
+ */
+static inline ag_string_t *object_str(const ag_object_t *ctx)
 {
-    const struct payload *p = ag_object_payload(obj);
+    const struct payload *p = ag_object_payload(ctx);
     return ag_string_new_fmt("agent=%s; ip=%s; host=%s; port=%s", p->agent,
             p->ip, p->host, p->port);
 }
 
 
-static inline ag_hash_t vt_hash(const ag_object_t *obj)
+/*
+ * object_hash(): get HTTP user object hash.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: hash of @ctx.
+ */
+static inline ag_hash_t object_hash(const ag_object_t *ctx)
 {
-    ag_string_smart_t *s = vt_str(obj);
+    ag_string_smart_t *s = object_str(ctx);
     return ag_string_hash(s);
 }
 
 
-static inline enum ag_tristate vt_cmp(const ag_object_t *lhs, 
-        const ag_object_t *rhs)
+/*
+ * object_cmp(): compare two HTTP user objects.
+ *
+ * @ctx: contextual object.
+ * @cmp: comparison object.
+ *
+ * Return: AG_TRISTATE_LO  - @ctx < @cmp,
+ *         AG_TRISTATE_GND - @ctx == @cmp,
+ *         AG_TRISTATE_HI  - @ctx > @cmp.
+ */
+static inline enum ag_tristate object_cmp(const ag_object_t *ctx,
+        const ag_object_t *cmp)
 {
-    ag_string_smart_t *s1 = ag_object_str(lhs);
-    ag_string_smart_t *s2 = ag_object_str(rhs);
+    ag_string_smart_t *s1 = ag_object_str(ctx);
+    ag_string_smart_t *s2 = ag_object_str(cmp);
     return ag_string_cmp(s1, s2);
 }
 
@@ -97,14 +153,14 @@ static inline enum ag_tristate vt_cmp(const ag_object_t *lhs,
 extern void ag_http_user_register(void)
 {
     struct ag_object_vtable vt = {
-        .copy = &vt_copy,
-        .dispose = &vt_dispose,
+        .copy = &payload_copy,
+        .dispose = &payload_dispose,
         .id = NULL,
-        .sz = &vt_sz,
+        .sz = &object_sz,
         .len = NULL,
-        .hash = vt_hash,
-        .cmp = &vt_cmp,
-        .str = &vt_str
+        .hash = object_hash,
+        .cmp = &object_cmp,
+        .str = &object_str
     };
 
     ag_object_register(AG_OBJECT_TYPE_HTTP_USER, &vt);
@@ -115,8 +171,8 @@ extern ag_http_user_t *ag_http_user_new(const char *agent, const char *ip,
         const char *host, const char *port)
 {
     ag_assert (agent && ip && host && port);
-    return ag_object_new(AG_OBJECT_TYPE_HTTP_USER, payload_new(agent, ip, host,
-                port));
+    return ag_object_new(AG_OBJECT_TYPE_HTTP_USER, payload_new(agent, ip, port,
+                host));
 }
 
 
@@ -156,22 +212,22 @@ extern inline bool ag_http_user_gt(const ag_http_user_t *ctx,
  */
 
 
+extern inline bool ag_http_user_empty(const ag_http_user_t *ctx);
+
+
 extern inline size_t ag_http_user_typeid(const ag_http_user_t *ctx);
 
 
 extern inline size_t ag_http_user_objid(const ag_http_user_t *ctx);
 
 
-extern inline size_t ag_http_user_hash(const ag_http_user_t *ctx);
+extern inline size_t ag_http_user_len(const ag_http_user_t *ctx);
 
 
 extern inline size_t ag_http_user_sz(const ag_http_user_t *ctx);
 
 
-extern inline size_t ag_http_user_len(const ag_http_user_t *ctx);
-
-
-extern inline bool ag_http_user_empty(const ag_http_user_t *ctx);
+extern inline size_t ag_http_user_hash(const ag_http_user_t *ctx);
 
 
 extern inline ag_string_t *ag_http_user_str(const ag_http_user_t *ctx);
@@ -193,6 +249,14 @@ extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx)
 }
 
 
+extern ag_string_t *ag_http_user_port(const ag_http_user_t *ctx)
+{
+    ag_assert (ctx);
+    const struct payload *p = ag_object_payload(ctx);
+    return p->port;
+}
+
+
 extern ag_string_t *ag_http_user_host(const ag_http_user_t *ctx)
 {
     ag_assert (ctx);
@@ -200,11 +264,4 @@ extern ag_string_t *ag_http_user_host(const ag_http_user_t *ctx)
     return p->host;
 }
 
-
-extern ag_string_t *ag_http_user_port(const ag_http_user_t *ctx)
-{
-    ag_assert (ctx);
-    const struct payload *p = ag_object_payload(ctx);
-    return p->port;
-}
 
