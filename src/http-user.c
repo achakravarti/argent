@@ -12,10 +12,11 @@
  * struct payload: object payload for HTTP URL.
  */
 struct payload {
+    ag_uint port;
     ag_string_t *agent;
     ag_string_t *ip;
     ag_string_t *host;
-    ag_string_t *port;
+    ///ag_string_t *port;
 };
 
 
@@ -30,14 +31,15 @@ struct payload {
  * Return: new payload.
  */
 static struct payload *payload_new(const char *agent, const char *ip,
-        const char *port, const char *host)
+        ag_uint port, const char *host)
 {
     struct payload *p = ag_memblock_new(sizeof *p);
 
     p->agent = ag_string_new(agent);
     p->ip = ag_string_new(ip);
     p->host = ag_string_new(host);
-    p->port = ag_string_new(port);
+    //p->port = ag_string_new(port);
+    p->port = port;
 
     return p;
 }
@@ -69,7 +71,7 @@ static inline void payload_dispose(void *ctx)
     ag_string_dispose(&p->agent);
     ag_string_dispose(&p->ip);
     ag_string_dispose(&p->host);
-    ag_string_dispose(&p->port);
+    //ag_string_dispose(&p->port);
 }
 
 
@@ -91,7 +93,7 @@ static inline size_t object_sz(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_sz(p->agent) + ag_string_sz(p->ip) + ag_string_sz(p->host)
-        + ag_string_sz(p->port);
+        + sizeof p->port;
 }
 
 
@@ -105,7 +107,7 @@ static inline size_t object_sz(const ag_object_t *ctx)
 static inline ag_string_t *object_str(const ag_object_t *ctx)
 {
     const struct payload *p = ag_object_payload(ctx);
-    return ag_string_new_fmt("agent=%s; ip=%s; host=%s; port=%s", p->agent,
+    return ag_string_new_fmt("agent=%s; ip=%s; host=%s; port=%d", p->agent,
             p->ip, p->host, p->port);
 }
 
@@ -168,9 +170,9 @@ extern void ag_http_user_register(void)
 
 
 extern ag_http_user_t *ag_http_user_new(const char *agent, const char *ip,
-        const char *host, const char *port)
+        ag_uint port, const char *host)
 {
-    ag_assert (agent && ip && host && port);
+    ag_assert (agent && ip && host && port < 65535);
     return ag_object_new(AG_OBJECT_TYPE_HTTP_USER, payload_new(agent, ip, port,
                 host));
 }
@@ -249,7 +251,7 @@ extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx)
 }
 
 
-extern ag_string_t *ag_http_user_port(const ag_http_user_t *ctx)
+extern ag_uint ag_http_user_port(const ag_http_user_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
