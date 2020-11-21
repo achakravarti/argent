@@ -242,6 +242,16 @@ inline size_t ag_http_url_len(const ag_http_url_t *ctx)
 
 
 /*
+ * ag_http_url_port(): get port of HTTP URL.
+ *
+ * @ctx: contextual URL.
+ *
+ * Return: port of @ctx.
+ */
+extern ag_uint ag_http_url_port(const ag_http_url_t *ctx);
+
+
+/*
  * ag_http_url_str(): get string representation of HTTP URL.
  *
  * @ctx: contextual URL.
@@ -265,16 +275,6 @@ extern ag_string_t *ag_http_url_host(const ag_http_url_t *ctx);
 
 
 /*
- * ag_http_url_port(): get port of HTTP URL.
- *
- * @ctx: contextual URL.
- *
- * Return: port of @ctx.
- */
-extern ag_uint ag_http_url_port(const ag_http_url_t *ctx);
-
-
-/*
  * ag_http_url_path(): get path of HTTP URL.
  *
  * @ctx: contextual URL.
@@ -282,6 +282,8 @@ extern ag_uint ag_http_url_port(const ag_http_url_t *ctx);
  * Return: path of @ctx.
  */
 extern ag_string_t *ag_http_url_path(const ag_http_url_t *ctx);
+
+
 
 
 #endif /* !__ARGENT_HTTP_URL_H__ */

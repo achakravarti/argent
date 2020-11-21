@@ -186,7 +186,7 @@ extern void ag_http_url_register(void)
         .str = &object_str
     };
 
-    ag_object_register(AG_OBJECT_TYPE_URL, &vt);
+    ag_object_register(AG_OBJECT_TYPE_HTTP_URL, &vt);
 }
 
 
@@ -195,8 +195,8 @@ extern ag_http_url_t *ag_http_url_new(bool secure, const char *host,
 {
     ag_assert (host && *host && port < 65535 && path);
 
-    return ag_object_new(AG_OBJECT_TYPE_URL, payload_new(secure, host, port,
-                path));
+    return ag_object_new(AG_OBJECT_TYPE_HTTP_URL, payload_new(secure, host,
+                port, path));
 }
 
 
@@ -262,6 +262,15 @@ extern inline size_t ag_http_url_sz(const ag_http_url_t *ctx);
 extern inline size_t ag_http_url_len(const ag_http_url_t *ctx);
 
 
+extern ag_uint ag_http_url_port(const ag_http_url_t *ctx)
+{
+    ag_assert (ctx);
+
+    const struct payload *p = ag_object_payload(ctx);
+    return p->port;
+}
+
+
 extern inline ag_string_t *ag_http_url_str(const ag_http_url_t *ctx);
 
 
@@ -270,15 +279,6 @@ extern ag_string_t *ag_http_url_host(const ag_http_url_t *ctx)
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_copy(p->host);
-}
-
-
-extern ag_uint ag_http_url_port(const ag_http_url_t *ctx)
-{
-    ag_assert (ctx);
-
-    const struct payload *p = ag_object_payload(ctx);
-    return p->port;
 }
 
 
