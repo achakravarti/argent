@@ -79,6 +79,7 @@ check: $(BIN_TEST)
 	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
 		--track-origins=yes --log-file=$(BIN_TEST).vglog         \
 		$(BIN_TEST)
+	tail $(BIN_TEST).vglog
 
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)
