@@ -51,6 +51,8 @@ inline enum ag_tristate ag_int_cmp(ag_int ctx, ag_int cmp)
     return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
 }
 
+extern ag_int ag_int_parse(const char *str);
+
 inline bool ag_uint_lt(ag_uint ctx, ag_uint cmp)
 {
     return ctx < cmp;
@@ -73,6 +75,8 @@ inline enum ag_tristate ag_uint_cmp(ag_uint ctx, ag_uint cmp)
 
     return ctx < cmp ? AG_TRISTATE_LO: AG_TRISTATE_HI;
 }
+
+extern ag_uint ag_uint_parse(const char *str);
 
 inline bool ag_float_lt(ag_float ctx, ag_float cmp)
 {
