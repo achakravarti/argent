@@ -32,7 +32,7 @@ typedef ag_object_t ag_http_url_t;
 
 
 /*
- * ag_http_url_register(): Register HTTP URLs as objects.
+ * ag_http_url_register(): register HTTP URLs as objects.
  */
 extern void ag_http_url_register(void);
 
@@ -41,9 +41,9 @@ extern void ag_http_url_register(void);
  * ag_http_url_new(): create new HTTP URL.
  *
  * @secure: HTTPS protocol used.
- * @host: URL host.
- * @port: URL port.
- * @path: URL path.
+ * @host  : URL host.
+ * @port  : URL port.
+ * @path  : URL path.
  *
  * Return: new HTTP URL.
  */
