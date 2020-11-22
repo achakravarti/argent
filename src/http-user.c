@@ -16,7 +16,6 @@ struct payload {
     ag_string_t *agent;
     ag_string_t *ip;
     ag_string_t *host;
-    ///ag_string_t *port;
 };
 
 
@@ -38,7 +37,6 @@ static struct payload *payload_new(const char *agent, const char *ip,
     p->agent = ag_string_new(agent);
     p->ip = ag_string_new(ip);
     p->host = ag_string_new(host);
-    //p->port = ag_string_new(port);
     p->port = port;
 
     return p;
@@ -71,7 +69,6 @@ static inline void payload_dispose(void *ctx)
     ag_string_dispose(&p->agent);
     ag_string_dispose(&p->ip);
     ag_string_dispose(&p->host);
-    //ag_string_dispose(&p->port);
 }
 
 
@@ -239,7 +236,7 @@ extern ag_string_t *ag_http_user_agent(const ag_http_user_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
-    return p->agent;
+    return ag_string_copy(p->agent);
 }
 
 
@@ -247,7 +244,7 @@ extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
-    return p->ip;
+    return ag_string_copy(p->ip);
 }
 
 
@@ -263,7 +260,7 @@ extern ag_string_t *ag_http_user_host(const ag_http_user_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
-    return p->host;
+    return ag_string_copy(p->host);
 }
 
 
