@@ -12,7 +12,6 @@
  */
 
 
-
 /*
  * ag_http_user_t: HTTP user.
  */

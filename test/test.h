@@ -16,5 +16,7 @@ extern void ag_test_http_attrib(void);
 
 extern void ag_test_http_url(void);
 
+extern void ag_test_http_user(void);
+
 #endif /* !__ARGENT_TESTS_H__ */
 
