@@ -68,6 +68,21 @@ static void new_03(void)
 {
     printf("ag_http_user_new(): @agent ~empty && @ip ~empty && host empty"
             " && ip > 0 => new user");
+
+    ag_http_user_smart_t *u = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "");
+    ag_require (u, AG_ERNO_TEST, NULL);
+    ag_require (ag_http_user_port(u) == 80, AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *a = ag_http_user_agent(u);
+    ag_require (ag_string_eq(a, "mozilla"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *i = ag_http_user_ip(u);
+    ag_require (ag_string_eq(i, "192.168.1.4"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *h = ag_http_user_host(u);
+    ag_require (ag_string_eq(h, ""), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
