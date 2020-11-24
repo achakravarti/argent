@@ -170,6 +170,13 @@ static void dispose_03(void)
 static void cmp_01(void)
 {
     printf("ag_http_user_cmp():");
+    
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (ag_http_user_cmp(u1, u2) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -180,6 +187,13 @@ static void cmp_01(void)
 static void cmp_02(void)
 {
     printf("ag_http_user_cmp():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_require (ag_http_user_cmp(u1, u2) == AG_TRISTATE_GND, AG_ERNO_TEST,
+            NULL);
+
     printf("...OK\n");
 }
 
@@ -190,6 +204,13 @@ static void cmp_02(void)
 static void cmp_03(void)
 {
     printf("ag_http_user_cmp():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (ag_http_user_cmp(u2, u1) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -200,6 +221,13 @@ static void cmp_03(void)
 static void lt_01(void)
 {
     printf("ag_http_user_lt():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (ag_http_user_lt(u1, u2), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -210,6 +238,13 @@ static void lt_01(void)
 static void lt_02(void)
 {
     printf("ag_http_user_lt():");
+    
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_require (!ag_http_user_lt(u1, u2), AG_ERNO_TEST,
+            NULL);
+
     printf("...OK\n");
 }
 
@@ -220,6 +255,13 @@ static void lt_02(void)
 static void lt_03(void)
 {
     printf("ag_http_user_lt():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (!ag_http_user_lt(u2, u1), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -230,6 +272,13 @@ static void lt_03(void)
 static void eq_01(void)
 {
     printf("ag_http_user_eq():");
+    
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_require (ag_http_user_eq(u1, u2), AG_ERNO_TEST,
+            NULL);
+
     printf("...OK\n");
 }
 
@@ -240,6 +289,13 @@ static void eq_01(void)
 static void eq_02(void)
 {
     printf("ag_http_user_eq():");
+    
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (!ag_http_user_eq(u1, u2), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -250,6 +306,13 @@ static void eq_02(void)
 static void eq_03(void)
 {
     printf("ag_http_user_eq():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (!ag_http_user_eq(u2, u1), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -260,6 +323,13 @@ static void eq_03(void)
 static void gt_01(void)
 {
     printf("ag_http_user_gt():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (ag_http_user_gt(u2, u1), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -270,6 +340,13 @@ static void gt_01(void)
 static void gt_02(void)
 {
     printf("ag_http_user_gt():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_require (!ag_http_user_gt(u1, u2), AG_ERNO_TEST,
+            NULL);
+
     printf("...OK\n");
 }
 
@@ -280,6 +357,13 @@ static void gt_02(void)
 static void gt_03(void)
 {
     printf("ag_http_user_gt():");
+
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", "192.168.1.5", 80,
+            "example.com");
+    ag_require (!ag_http_user_gt(u1, u2), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
