@@ -93,6 +93,22 @@ static void new_03(void)
 static void copy_01(void)
 {
     printf("ag_http_user_copy(): @ctx ~null => @ctx");
+    
+    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_require (u2, AG_ERNO_TEST, NULL);
+    ag_require (ag_http_user_port(u2) == 80, AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *a = ag_http_user_agent(u2);
+    ag_require (ag_string_eq(a, "mozilla"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *i = ag_http_user_ip(u2);
+    ag_require (ag_string_eq(i, "192.168.1.4"), AG_ERNO_TEST, NULL);
+
+    ag_string_smart_t *h = ag_http_user_host(u2);
+    ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -103,6 +119,11 @@ static void copy_01(void)
 static void dispose_01(void)
 {
     printf("ag_http_user_dispose(): @ctx ~null && ptrval ~null => @ctx null");
+    
+    ag_http_user_smart_t *u = ag_http_user_new("mozilla", "192.168.1.4", 80,
+            "example.com");
+    ag_http_user_dispose(&u);
+    ag_require (1u, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
 }
@@ -114,6 +135,9 @@ static void dispose_01(void)
 static void dispose_02(void)
 {
     printf("ag_http_user_dispose(): @ctx null => no-op");
+
+    ag_http_user_dispose(NULL);
+
     printf("...OK\n");
 }
 
@@ -124,6 +148,11 @@ static void dispose_02(void)
 static void dispose_03(void)
 {
     printf("ag_http_user_dispose(): @ctx ~null && ptrval null => @ctx null");
+
+    ag_http_user_t *u = NULL;
+    ag_http_user_dispose(&u);
+    ag_require (!u, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
