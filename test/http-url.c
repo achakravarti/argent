@@ -447,6 +447,10 @@ static void len_01(void)
 static void port_01(void)
 {
     printf("ag_http_url_port(): @ctx 3port => port");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_require (ag_http_url_port(u) == 80, AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -457,6 +461,10 @@ static void port_01(void)
 static void port_02(void)
 {
     printf("ag_http_url_port(): @ctx ~3port => 0");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
+    ag_require (!ag_http_url_port(u), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -528,6 +536,11 @@ static void str_04(void)
 static void host_01(void)
 {
     printf("ag_http_url_host(): @ctx ~null => host");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_string_smart_t *h = ag_http_url_host(u);
+    ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -538,6 +551,11 @@ static void host_01(void)
 static void path_01(void)
 {
     printf("ag_http_url_path(): @ctx 3path => path");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_string_smart_t *p = ag_http_url_path(u);
+    ag_require (ag_string_eq(p, "/foo"), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -548,6 +566,11 @@ static void path_01(void)
 static void path_02(void)
 {
     printf("ag_http_url_path(): @ctx 3path && path ~3(prefix slash) => path");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "foo");
+    ag_string_smart_t *p = ag_http_url_path(u);
+    ag_require (ag_string_eq(p, "/foo"), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
@@ -558,6 +581,11 @@ static void path_02(void)
 static void path_03(void)
 {
     printf("ag_http_url_path(): @ctx ~3path => path");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "");
+    ag_string_smart_t *p = ag_http_url_path(u);
+    ag_require (ag_string_eq(p, "/"), AG_ERNO_TEST, NULL);
+
     printf("...OK\n");
 }
 
