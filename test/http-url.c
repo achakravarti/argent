@@ -347,6 +347,40 @@ static void gt_03(void)
  */
 static void empty_01(void)
 {
+    printf("ag_http_url_new(): @ctx ~null => false");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * empty_02(): ag_http_url_empty() test #2.
+ */
+static void empty_02(void)
+{
+    printf("ag_http_url_new(): @ctx ~3host => false");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "");
+    ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * empty_03(): ag_http_url_empty() test #3.
+ */
+static void empty_03(void)
+{
+    printf("ag_http_url_new(): @ctx ~3port => false");
+
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
+    ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
 }
 
 
@@ -355,6 +389,12 @@ static void empty_01(void)
  */
 static void secure_01(void)
 {
+    printf("ag_http_url_new(): @ctx secure => true");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_require (ag_http_url_secure(u), AG_ERNO_TEST, NULL);
+
+    printf("...OK\n");
 }
 
 
@@ -363,6 +403,12 @@ static void secure_01(void)
  */
 static void secure_02(void)
 {
+    printf("ag_http_url_new(): @ctx ~secure => false");
+    
+    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 80, "/foo");
+    ag_require (!ag_http_url_secure(u), AG_ERNO_TEST, NULL);
+   
+    printf("...OK\n");
 }
 
 
@@ -626,6 +672,8 @@ extern void ag_test_http_url(void)
     gt_03();
 
     empty_01();
+    empty_02();
+    empty_03();
     secure_01();
     secure_02();
     typeid_01();
