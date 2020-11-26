@@ -10,6 +10,7 @@
 #include "./object.h"
 #include "./value.h"
 #include "./list.h"
+#include "./ip.h"
 #include "./http/primitives.h"
 #include "./http/attrib.h"
 #include "./http/fieldset.h"

@@ -33,14 +33,15 @@ typedef struct ag_object_t ag_object_t;
                                            /* reserved object types [AgDM:??] */
 #define AG_OBJECT_TYPE_OBJECT ((size_t) 0x0)
 #define AG_OBJECT_TYPE_LIST ((size_t) 0x1)
-#define AG_OBJECT_TYPE_URL ((size_t) 0x2)
-#define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x3)
-#define AG_OBJECT_TYPE_HTTP_USER ((size_t) 0x4)
-#define AG_OBJECT_TYPE_HTTP_COOKIE ((size_t) 0x5)
-#define AG_OBJECT_TYPE_HTTP_REQUEST ((size_t) 0x6)
-#define AG_OBJECT_TYPE_HTTP_BODY ((size_t) 0x7)
-#define AG_OBJECT_TYPE_HTTP_ATTRIB ((size_t) 0x8)
-#define AG_OBJECT_TYPE_HTTP_URL ((size_t) 0x9)
+#define AG_OBJECT_TYPE_IP ((size_t) 0x2)
+#define AG_OBJECT_TYPE_URL ((size_t) 0x3)
+#define AG_OBJECT_TYPE_RESPONSE ((size_t) 0x4)
+#define AG_OBJECT_TYPE_HTTP_USER ((size_t) 0x5)
+#define AG_OBJECT_TYPE_HTTP_COOKIE ((size_t) 0x6)
+#define AG_OBJECT_TYPE_HTTP_REQUEST ((size_t) 0x7)
+#define AG_OBJECT_TYPE_HTTP_BODY ((size_t) 0x8)
+#define AG_OBJECT_TYPE_HTTP_ATTRIB ((size_t) 0x9)
+#define AG_OBJECT_TYPE_HTTP_URL ((size_t) 0xa)
 
 
                                        /* v-table of object methods [AgDM:??] */
