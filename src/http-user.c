@@ -110,6 +110,20 @@ static inline ag_string_t *object_str(const ag_object_t *ctx)
 
 
 /*
+ * object_len(): get HTTP user object length.
+ *
+ * @ctx: contextual object.
+ *
+ * Return length of @ctx.
+ */
+static inline size_t object_len(const ag_object_t *ctx)
+{
+    ag_string_smart_t *s = object_str(ctx);
+    return ag_string_len(s);
+}
+
+
+/*
  * object_hash(): get HTTP user object hash.
  *
  * @ctx: contextual object.
@@ -156,7 +170,7 @@ extern void ag_http_user_register(void)
         .dispose = &payload_dispose,
         .id = NULL,
         .sz = &object_sz,
-        .len = NULL,
+        .len = &object_len,
         .hash = object_hash,
         .cmp = &object_cmp,
         .str = &object_str
