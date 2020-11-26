@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     ag_test_http_attrib();
     ag_test_http_url();
     ag_test_http_user();
+    ag_test_ip();
 
     ag_object_exit();
     return 0;

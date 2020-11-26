@@ -204,7 +204,6 @@ extern ag_ip_t *ag_ip_parse(const char *ip)
     
     ag_string_smart_t *lhs3 = ag_string_split_left(rhs2, ".");
     ag_string_smart_t *rhs3 = ag_string_split_right(rhs2, ".");
-    ag_require (ag_string_has(rhs3, "."), AG_ERNO_IP, NULL);
 
     ag_uint oct1 = ag_uint_parse(lhs1);
     ag_require (oct1 < 256, AG_ERNO_IP, NULL);
