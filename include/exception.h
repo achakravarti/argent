@@ -108,5 +108,8 @@ extern void ag_exception_handler_set(ag_exception_handler *eh);
 } while (0)
 
 
+#define ag_test(p) ag_require((p), AG_ERNO_TEST, NULL)
+
+
 #endif /* !defined __ARGENT_EXCEPTION_H__ */
 
