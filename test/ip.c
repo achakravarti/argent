@@ -87,7 +87,7 @@ static void dispose_01(void)
 {
     printf("ag_ip_dispose(): @ctx valid => @ctx null");
 
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_ip_dispose(&ip);
     ag_test (!ip);
 

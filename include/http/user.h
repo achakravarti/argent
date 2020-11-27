@@ -2,6 +2,7 @@
 #define __ARGENT_HTTP_USER_H__
 
 
+#include "../ip.h"
 #include "../object.h"
 
 
@@ -47,7 +48,7 @@ extern void ag_http_user_register(void);
  *
  * Return: new HTTP user.
  */
-extern ag_http_user_t *ag_http_user_new(const char *agent, const char *ip,
+extern ag_http_user_t *ag_http_user_new(const char *agent, const ag_ip_t *ip,
         ag_uint port, const char *host);
 
 
@@ -263,7 +264,7 @@ extern ag_string_t *ag_http_user_agent(const ag_http_user_t *ctx);
  *
  * Return: IP address of @ctx.
  */
-extern ag_string_t *ag_http_user_ip(const ag_http_user_t *ctx);
+extern ag_ip_t *ag_http_user_ip(const ag_http_user_t *ctx);
 
 
 /*
