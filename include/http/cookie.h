@@ -6,14 +6,22 @@
 #include "./user.h"
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
+
+
 /*******************************************************************************
  *                                 HTTP COOKIE
  */
 
 
-typedef ag_object_t ag_http_cookie_t;
+#define ag_http_cookie_t ag_object_smart_t
 
-#define ag_http_cookie_smart_t ag_object_smart_t
+typedef ag_object_t ag_http_cookie_static_t;
 
 extern void ag_http_cookie_register(void);
 
@@ -106,6 +114,9 @@ extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
 
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 
 #endif /* !defined __ARGENT_HTTP_COOKIE_H__ */
 

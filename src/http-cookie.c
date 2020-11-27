@@ -3,6 +3,12 @@
 #include <ctype.h>
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
 
 
 /*******************************************************************************
@@ -232,4 +238,11 @@ extern void ag_http_cookie_param_set(ag_http_cookie_t **ctx, const char *key,
     ag_string_smart_t *enc1 = ag_string_url_encode(enc);
     ag_string_add(&p->param, enc1);
 }
+
+
+
+
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 
