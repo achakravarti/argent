@@ -26,7 +26,7 @@
 
 
 /*
- * ag_http_user_static_t: manual heap managed version of ag_http_user_t.
+ * ag_http_user_static_t: non-smart version of ag_http_user_t.
  */
 typedef ag_object_t ag_http_user_static_t;
 

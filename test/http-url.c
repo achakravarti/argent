@@ -17,7 +17,7 @@ static void new_01(void)
     printf("ag_http_url_new(): @secure true, @host && @path ~empty, @port = 80"
            " => new url");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_require (u, AG_ERNO_TEST, NULL);
     
     ag_require (ag_http_url_secure(u), AG_ERNO_TEST, NULL);
@@ -41,7 +41,7 @@ static void new_02(void)
     printf("ag_http_url_new(): @secure false, @host && @path ~empty, @port = 0"
             " => new url");
 
-    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 0, "foo");
+    ag_http_url_t *u = ag_http_url_new(false, "example.com", 0, "foo");
     ag_require (u, AG_ERNO_TEST, NULL);
 
     ag_require (!ag_http_url_secure(u), AG_ERNO_TEST, NULL);
@@ -65,7 +65,7 @@ static void new_03(void)
     printf("ag_http_url_new(): @secure true, @host ~empty, @path empty,"
            " @port = 0 => new url");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "");
     ag_require (u, AG_ERNO_TEST, NULL);
 
     ag_require (ag_http_url_secure(u), AG_ERNO_TEST, NULL);
@@ -88,8 +88,8 @@ static void copy_01(void)
 {
     printf("ag_http_url_copy(): @ctx ~null => @ctx");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 80, "foo");
-    ag_http_url_smart_t *u2 = ag_http_url_copy(u1);
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 80, "foo");
+    ag_http_url_t *u2 = ag_http_url_copy(u1);
     ag_require (u2, AG_ERNO_TEST, NULL);
     
     ag_require (!ag_http_url_secure(u2), AG_ERNO_TEST, NULL);
@@ -112,7 +112,7 @@ static void dispose_01(void)
 {
     printf("ag_http_url_dispose(): @ctx valid => @ctx null");
 
-    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 80, "path");
+    ag_http_url_static_t *u = ag_http_url_new(false, "example.com", 80, "path");
     ag_http_url_dispose(&u);
     ag_require (!u, AG_ERNO_TEST, NULL);
 
@@ -162,8 +162,8 @@ static void cmp_01(void)
 {
     printf("ag_http_url_cmp(): @ctx < @cmp => AG_TRISTATE_LO");
 
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (ag_http_url_cmp(u1, u2) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -177,8 +177,8 @@ static void cmp_02(void)
 {
     printf("ag_http_url_cmp(): @ctx == @cmp => AG_TRISTATE_GND");
 
-    ag_http_url_smart_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
-    ag_http_url_smart_t *u2 = ag_http_url_copy(u1);
+    ag_http_url_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
+    ag_http_url_t *u2 = ag_http_url_copy(u1);
     ag_require (ag_http_url_cmp(u1, u2) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -192,8 +192,8 @@ static void cmp_03(void)
 {
     printf("ag_http_url_cmp(): @ctx > @cmp => AG_TRISTATE_HI");
 
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (ag_http_url_cmp(u2, u1) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -207,8 +207,8 @@ static void lt_01(void)
 {
     printf("ag_http_url_lt(): @ctx < @cmp => true");
 
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (ag_http_url_lt(u1, u2), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -222,8 +222,8 @@ static void lt_02(void)
 {
     printf("ag_http_url_lt(): @ctx == @cmp => false");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
-    ag_http_url_smart_t *u2 = ag_http_url_copy(u1);
+    ag_http_url_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
+    ag_http_url_t *u2 = ag_http_url_copy(u1);
     ag_require (!ag_http_url_lt(u1, u2), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -237,8 +237,8 @@ static void lt_03(void)
 {
     printf("ag_http_url_lt(): @ctx > @cmp => false");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (!ag_http_url_lt(u2, u1), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -252,8 +252,8 @@ static void eq_01(void)
 {
     printf("ag_http_url_eq(): @ctx == @cmp => true");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
-    ag_http_url_smart_t *u2 = ag_http_url_copy(u1);
+    ag_http_url_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
+    ag_http_url_t *u2 = ag_http_url_copy(u1);
     ag_require (ag_http_url_eq(u1, u2), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -267,8 +267,8 @@ static void eq_02(void)
 {
     printf("ag_http_url_eq(): @ctx < @cmp => false");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (!ag_http_url_eq(u1, u2), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -282,8 +282,8 @@ static void eq_03(void)
 {
     printf("ag_http_url_eq(): @ctx > @cmp => false");
 
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (!ag_http_url_eq(u2, u1), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -297,8 +297,8 @@ static void gt_01(void)
 {
     printf("ag_http_url_gt(): @ctx > @cmp => true");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (ag_http_url_gt(u2, u1), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -312,8 +312,8 @@ static void gt_02(void)
 {
     printf("ag_http_url_gt(): @ctx == @cmp => false");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
-    ag_http_url_smart_t *u2 = ag_http_url_copy(u1);
+    ag_http_url_t *u1 = ag_http_url_new(true, "example.com", 8080, "foo");
+    ag_http_url_t *u2 = ag_http_url_copy(u1);
     ag_require (!ag_http_url_gt(u1, u2), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -327,8 +327,8 @@ static void gt_03(void)
 {
     printf("ag_http_url_gt(): @ctx < @cmp => false");
     
-    ag_http_url_smart_t *u1 = ag_http_url_new(false, "example.com", 0, "");
-    ag_http_url_smart_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
+    ag_http_url_t *u1 = ag_http_url_new(false, "example.com", 0, "");
+    ag_http_url_t *u2 = ag_http_url_new(true, "abc.net", 0, "");
     ag_require (!ag_http_url_gt(u1, u2), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -349,7 +349,7 @@ static void empty_01(void)
 {
     printf("ag_http_url_new(): @ctx ~null => false");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -363,7 +363,7 @@ static void empty_02(void)
 {
     printf("ag_http_url_new(): @ctx ~3host => false");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "");
     ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -377,7 +377,7 @@ static void empty_03(void)
 {
     printf("ag_http_url_new(): @ctx ~3port => false");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
     ag_require (!ag_http_url_empty(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -391,7 +391,7 @@ static void secure_01(void)
 {
     printf("ag_http_url_new(): @ctx secure => true");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_require (ag_http_url_secure(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -405,7 +405,7 @@ static void secure_02(void)
 {
     printf("ag_http_url_new(): @ctx ~secure => false");
     
-    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(false, "example.com", 80, "/foo");
     ag_require (!ag_http_url_secure(u), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -419,7 +419,7 @@ static void typeid_01(void)
 {
     printf("ag_http_url_typeid(): @ctx ~null => AG_OBJECT_TYPE_HTTP_URL");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "bar");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "bar");
     ag_require (ag_http_url_typeid(u) == AG_OBJECT_TYPE_HTTP_URL,
             AG_ERNO_TEST, NULL);
 
@@ -434,7 +434,7 @@ static void objid_01(void)
 {
     printf("ag_http_url_objid(): @ctx ~null => 0");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_require (!ag_http_attrib_objid(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -448,7 +448,7 @@ static void hash_01(void)
 {
     printf("ag_http_url_hash(): @ctx ~null => string hash key=val");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "bar");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "bar");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_http_url_hash(u) == ag_string_hash(s), AG_ERNO_TEST, NULL);
 
@@ -463,7 +463,7 @@ static void sz_01(void)
 {
     printf("ag_http_url_sz(): @ctx ~null => string size");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_http_url_sz(u) == ag_string_sz(s), AG_ERNO_TEST, NULL);
     
@@ -478,7 +478,7 @@ static void len_01(void)
 {
     printf("ag_http_url_len(): @ctx ~empty => url length");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "bar");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "bar");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_http_url_len(u) == ag_string_len(s), AG_ERNO_TEST, NULL);
 
@@ -494,7 +494,7 @@ static void port_01(void)
 {
     printf("ag_http_url_port(): @ctx 3port => port");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_require (ag_http_url_port(u) == 80, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -508,7 +508,7 @@ static void port_02(void)
 {
     printf("ag_http_url_port(): @ctx ~3port => 0");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "/foo");
     ag_require (!ag_http_url_port(u), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -522,7 +522,7 @@ static void str_01(void)
 {
     printf("ag_http_url_str(): @ctx 3port && ~3path => url");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_string_eq(s, "https://example.com:80/foo"), AG_ERNO_TEST,
             NULL);
@@ -538,7 +538,7 @@ static void str_02(void)
 {
     printf("ag_http_url_str(): @ctx 3port && ~3path => url");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_string_eq(s, "https://example.com:80/"), AG_ERNO_TEST, NULL);
 
@@ -553,7 +553,7 @@ static void str_03(void)
 {
     printf("ag_http_url_str(): @ctx ~3port && ~3path => url");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 0, "");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 0, "");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_string_eq(s, "https://example.com/"), AG_ERNO_TEST, NULL);
 
@@ -568,7 +568,7 @@ static void str_04(void)
 {
     printf("ag_http_url_str(): @ctx ~3port && 3path => url");
 
-    ag_http_url_smart_t *u = ag_http_url_new(false, "example.com", 0, "foo");
+    ag_http_url_t *u = ag_http_url_new(false, "example.com", 0, "foo");
     ag_string_smart_t *s = ag_http_url_str(u);
     ag_require (ag_string_eq(s, "http://example.com/foo"), AG_ERNO_TEST, NULL);
 
@@ -583,7 +583,7 @@ static void host_01(void)
 {
     printf("ag_http_url_host(): @ctx ~null => host");
     
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_string_smart_t *h = ag_http_url_host(u);
     ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
 
@@ -598,7 +598,7 @@ static void path_01(void)
 {
     printf("ag_http_url_path(): @ctx 3path => path");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "/foo");
     ag_string_smart_t *p = ag_http_url_path(u);
     ag_require (ag_string_eq(p, "/foo"), AG_ERNO_TEST, NULL);
 
@@ -613,7 +613,7 @@ static void path_02(void)
 {
     printf("ag_http_url_path(): @ctx 3path && path ~3(prefix slash) => path");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "foo");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "foo");
     ag_string_smart_t *p = ag_http_url_path(u);
     ag_require (ag_string_eq(p, "/foo"), AG_ERNO_TEST, NULL);
 
@@ -628,7 +628,7 @@ static void path_03(void)
 {
     printf("ag_http_url_path(): @ctx ~3path => path");
 
-    ag_http_url_smart_t *u = ag_http_url_new(true, "example.com", 80, "");
+    ag_http_url_t *u = ag_http_url_new(true, "example.com", 80, "");
     ag_string_smart_t *p = ag_http_url_path(u);
     ag_require (ag_string_eq(p, "/"), AG_ERNO_TEST, NULL);
 

@@ -126,7 +126,7 @@ static void dispose_01(void)
    
 
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_static_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_http_user_dispose(&u);
     ag_require (1u, AG_ERNO_TEST, NULL);

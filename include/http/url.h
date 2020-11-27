@@ -5,6 +5,12 @@
 #include "../object.h"
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
 
 
 /*******************************************************************************
@@ -15,13 +21,13 @@
 /*
  * ag_htp_url_t: HTTP URL.
  */
-typedef ag_object_t ag_http_url_t;
+#define ag_http_url_t ag_object_smart_t
 
 
 /*
- * ag_http_url_smart_t: smart version of ag_http_url_t.
+ * ag_http_url_static_t: non-smart version of ag_http_url_t.
  */
-#define ag_http_url_smart_t ag_object_smart_t
+typedef ag_object_t ag_http_url_static_t;
 
 
 
@@ -284,6 +290,11 @@ extern ag_string_t *ag_http_url_host(const ag_http_url_t *ctx);
 extern ag_string_t *ag_http_url_path(const ag_http_url_t *ctx);
 
 
+
+
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 
 
 #endif /* !__ARGENT_HTTP_URL_H__ */
