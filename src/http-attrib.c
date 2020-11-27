@@ -1,6 +1,12 @@
 #include "../include/argent.h"
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
 
 
 /*******************************************************************************
@@ -270,4 +276,11 @@ extern ag_string_t *ag_http_attrib_val(const ag_http_attrib_t *ctx)
 
 
 extern inline ag_string_t *ag_http_attrib_str(const ag_http_attrib_t *ctx);
+
+
+
+
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 

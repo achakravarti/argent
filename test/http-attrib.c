@@ -16,7 +16,7 @@ static void new_01(void)
 {
     printf("ag_http_attrib_new(): @key && @val ~empty => new attrib");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_require (a, AG_ERNO_TEST, NULL);
 
     ag_string_smart_t *k = ag_http_attrib_key(a);
@@ -36,7 +36,7 @@ static void new_empty_01(void)
 {
     printf("ag_http_attrib_new_empty(): @key ~empty => new empty attrib");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_require (a, AG_ERNO_TEST, NULL);
 
     ag_string_smart_t *k = ag_http_attrib_key(a);
@@ -56,8 +56,8 @@ static void copy_01(void)
 {
     printf("ag_http_attrib_copy(): @ctx ~null => @ctx");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
-    ag_http_attrib_smart_t *cp = ag_http_attrib_copy(a);
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *cp = ag_http_attrib_copy(a);
     ag_require (cp, AG_ERNO_TEST, NULL);
 
     ag_string_smart_t *k = ag_http_attrib_key(cp);
@@ -127,8 +127,8 @@ static void cmp_01(void)
 {
     printf("ag_http_attrib_cmp(): @ctx < @cmp => AG_TRISTATE_LO");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_new("charlie", "delta");
     ag_require (ag_http_attrib_cmp(a, b) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -142,8 +142,8 @@ static void cmp_02(void)
 {
     printf("ag_http_attrib_cmp(): @ctx == @cmp => AG_TRISTATE_GND");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_copy(a);
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_copy(a);
     ag_require (ag_http_attrib_cmp(a, b) == AG_TRISTATE_GND, AG_ERNO_TEST,
             NULL);
 
@@ -158,8 +158,8 @@ static void cmp_03(void)
 {
     printf("ag_http_attrib_cmp(): @ctx > @cmp => AG_TRISTATE_HI");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_new("charlie", "delta");
     ag_require (ag_http_attrib_cmp(b, a) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -173,8 +173,8 @@ static void lt_01(void)
 {
     printf("ag_http_attrib_lt(): @ctx < @cmp => true");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_new("charlie", "delta");
     ag_require (ag_http_attrib_lt(a, b), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -188,8 +188,8 @@ static void lt_02(void)
 {
     printf("ag_http_attrib_lt(): @ctx > @cmp => false");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_new("charlie", "delta");
     ag_require (!ag_http_attrib_lt(b, a), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -203,8 +203,8 @@ static void lt_03(void)
 {
     printf("ag_http_attrib_lt(): @ctx == @cmp => false");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_copy(a);
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_copy(a);
     ag_require (!ag_http_attrib_lt(b, a), AG_ERNO_TEST, NULL);
    
     printf("...OK\n");
@@ -218,8 +218,8 @@ static void eq_01(void)
 {
     printf("ag_http_attrib_eq(): @ctx == @cmp => true");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_copy(a);
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_copy(a);
     ag_require (ag_http_attrib_eq(a, b), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -233,8 +233,8 @@ static void eq_02(void)
 {
     printf("ag_http_attrib_eq(): @ctx != @cmp => false ");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_new("charlie", "delta");
     ag_require (!ag_http_attrib_eq(b, a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -248,8 +248,8 @@ static void gt_01(void)
 {
     printf("ag_http_attrib_gt() @ctx > @cmp => true");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("charlie", "delta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *a = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *b = ag_http_attrib_new("alpha", "beta");
     ag_require (ag_http_attrib_gt(a, b), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -263,8 +263,8 @@ static void gt_02(void)
 {
     printf("ag_http_attrib_gt(): @ctx < @cmp => false");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("charlie", "delta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *a = ag_http_attrib_new("charlie", "delta");
+    ag_http_attrib_t *b = ag_http_attrib_new("alpha", "beta");
     ag_require (!ag_http_attrib_gt(b, a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -278,8 +278,8 @@ static void gt_03(void)
 {
     printf("ag_http_attrib_gt(): @ctx < @cmp => false");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("alpha", "beta");
-    ag_http_attrib_smart_t *b = ag_http_attrib_copy(a);
+    ag_http_attrib_t *a = ag_http_attrib_new("alpha", "beta");
+    ag_http_attrib_t *b = ag_http_attrib_copy(a);
     ag_require (!ag_http_attrib_gt(b, a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -298,7 +298,7 @@ static void empty_01(void)
 {
     printf("ag_http_attrib_empty(): @ctx empty => true");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_require (ag_http_attrib_empty(a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -312,7 +312,7 @@ static void empty_02(void)
 {
     printf("ag_http_attrib_empty(): @ctx ~empty => false");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_require (!ag_http_attrib_empty(a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -326,7 +326,7 @@ static void typeid_01(void)
 {
     printf("ag_http_attrib_typeid(): @ctx ~null => AG_OBJECT_TYPE_HTTP_ATTRIB");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_require (ag_http_attrib_typeid(a) == AG_OBJECT_TYPE_HTTP_ATTRIB,
             AG_ERNO_TEST, NULL);
 
@@ -341,7 +341,7 @@ static void objid_01(void)
 {
     printf("ag_http_attrib_objid(): @ctx ~null => 0");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_require (!ag_http_attrib_objid(a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -355,7 +355,7 @@ static void hash_01(void)
 {
     printf("ag_http_attrib_hash(): @ctx ~empty => string hash key=val");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *s = ag_http_attrib_str(a);
     ag_require (ag_http_attrib_hash(a) == ag_string_hash(s), AG_ERNO_TEST,
             NULL);
@@ -371,7 +371,7 @@ static void hash_02(void)
 {
     printf("ag_http_attrib_hash(): @ctx empty => string hash key");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_string_smart_t *s = ag_http_attrib_str(a);
     ag_require (ag_http_attrib_hash(a) == ag_string_hash(s), AG_ERNO_TEST,
             NULL);
@@ -387,7 +387,7 @@ static void sz_01(void)
 {
     printf("ag_http_attrib_sz(): @ctx ~null => string size");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *s = ag_http_attrib_str(a);
     ag_require (ag_http_attrib_sz(a) == ag_string_sz(s), AG_ERNO_TEST, NULL);
     
@@ -402,7 +402,7 @@ static void len_01(void)
 {
     printf("ag_http_attrib_len(): @ctx ~empty => value length");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *v = ag_http_attrib_val(a);
     ag_require (ag_http_attrib_len(a) == ag_string_len(v), AG_ERNO_TEST, NULL);
 
@@ -417,7 +417,7 @@ static void len_02(void)
 {
     printf("ag_http_attrib_len(): @ctx empty => 0");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_require (!ag_http_attrib_len(a), AG_ERNO_TEST, NULL);
 
     printf("...OK\n");
@@ -431,7 +431,7 @@ static void key_01(void)
 {
     printf("ag_http_attrib_key(): @ctx ~null => key");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *k = ag_http_attrib_key(a);
     ag_require (ag_string_eq(k, "foo"), AG_ERNO_TEST, NULL);
 
@@ -446,7 +446,7 @@ static void val_01(void)
 {
     printf("ag_http_attrib_val(): @ctx ~empty => value");
     
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *v = ag_http_attrib_val(a);
     ag_require (ag_string_eq(v, "bar"), AG_ERNO_TEST, NULL);
 
@@ -461,7 +461,7 @@ static void val_02(void)
 {
     printf("ag_http_attrib_val(): @ctx ~empty => value URL-decoded");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar foo; x=y%");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar foo; x=y%");
     ag_string_smart_t *v = ag_http_attrib_val(a);
     //printf("\n%s\n\n", v);
     ag_require (ag_string_eq(v, "bar foo; x=y%"), AG_ERNO_TEST, NULL);
@@ -477,7 +477,7 @@ static void val_03(void)
 {
     printf("ag_http_attrib_val(): @ctx empty => empty string");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_string_smart_t *v = ag_http_attrib_val(a);
     ag_require (!*v, AG_ERNO_TEST, NULL);
 
@@ -492,7 +492,7 @@ static void str_01(void)
 {
     printf("ag_http_attrib_str(): @ctx ~empty => key=value");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar");
     ag_string_smart_t *s1 = ag_http_attrib_str(a);
 
     ag_string_smart_t *k = ag_http_attrib_key(a);
@@ -512,7 +512,7 @@ static void str_02(void)
 {
     printf("ag_http_attrib_str(): @ctx ~empty => key=value URL-encoded");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new("foo", "bar foo; x=y%");
+    ag_http_attrib_t *a = ag_http_attrib_new("foo", "bar foo; x=y%");
     ag_string_smart_t *s = ag_http_attrib_str(a);
     ag_require (ag_string_eq(s, "foo=bar%20foo%3B%20x%3Dy%25"), AG_ERNO_TEST,
             NULL);
@@ -528,7 +528,7 @@ static void str_03(void)
 {
     printf("ag_http_attrib_str(): @ctx empty => key");
 
-    ag_http_attrib_smart_t *a = ag_http_attrib_new_empty("foo");
+    ag_http_attrib_t *a = ag_http_attrib_new_empty("foo");
     ag_string_smart_t *k = ag_http_attrib_key(a);
     ag_string_smart_t *s = ag_http_attrib_str(a);
     ag_require (ag_string_eq(s, k), AG_ERNO_TEST, NULL);
