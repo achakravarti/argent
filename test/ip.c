@@ -313,6 +313,170 @@ static void gt_03(void)
 
 
 /*******************************************************************************
+ *                                ACCESSOR TESTS
+ */
+
+
+/*
+ * empty_01(): ag_ip_empty() test #1.
+ */
+static void empty_01(void)
+{
+    printf("ag_ip_empty(): @ctx ~null => false");
+
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_test (!ag_ip_empty(ip));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * typeid_01(): ag_ip_typeid() test #1.
+ */
+static void typeid_01(void)
+{
+    printf("ag_ip_typeid(): @ctx ~null => AG_OBJECT_TYPE_IP");
+    
+    ag_ip_smart_t *ip = sample_private();
+    ag_test (ag_ip_typeid(ip) == AG_OBJECT_TYPE_IP);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * objid_01(): ag_ip_objid() test #1.
+ */
+static void objid_01(void)
+{
+    printf("ag_ip_objid(): @ctx ~null => 0");
+    
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_test (!ag_ip_objid(ip));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * len_01(): ag_ip_len() test #1.
+ */
+static void len_01(void)
+{
+    printf("ag_ip_len(): @ctx ~null => str length");
+    
+    ag_ip_smart_t *ip = sample_private();
+    ag_string_smart_t *s = ag_ip_str(ip);
+    ag_test (ag_ip_len(ip) == ag_string_len(s));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * sz_01(): ag_ip_sz() test #1.
+ */
+static void sz_01(void)
+{
+    printf("ag_ip_sz(): @ctx ~null => 4 * uint8_t sz");
+
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_test (ag_ip_sz(ip) == 4 * sizeof(uint8_t));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * hash_01(): ag_ip_hash() test #1.
+ */
+static void hash_01(void)
+{
+    printf("ag_ip_hash(): @ctx ~null => str hash");
+
+    ag_ip_smart_t *ip = sample_private();
+    ag_string_smart_t *s = ag_ip_str(ip);
+    ag_test (ag_ip_hash(ip) == ag_hash_new_str(s));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * octet_01(): ag_ip_octet() test #1.
+ */
+static void octet_01(void)
+{
+    printf("ag_ip_octet(): @ctx ~null => octet 1");
+    
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_test (ag_ip_octet(ip, 1) == 127);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * octet_02(): ag_ip_octet() test #2.
+ */
+static void octet_02(void)
+{
+    printf("ag_ip_octet(): @ctx ~null => octet 2");
+    
+    ag_ip_smart_t *ip = sample_private();
+    ag_test (ag_ip_octet(ip, 2) == 168);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * octet_03(): ag_ip_octet() test #3.
+ */
+static void octet_03(void)
+{
+    printf("ag_ip_octet(): @ctx ~null => octet 3");
+    
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_test (!ag_ip_octet(ip, 3));
+
+    printf("...OK\n");
+}
+
+
+/*
+ * octet_04(): ag_ip_octet() test #4.
+ */
+static void octet_04(void)
+{
+    printf("ag_ip_octet(): @ctx ~null => octet 4");
+
+    ag_ip_smart_t *ip = sample_private();
+    ag_test (ag_ip_octet(ip, 4) == 4);
+
+    printf("...OK\n");
+}
+
+
+/*
+ * str_01(): ag_ip_str() test #1.
+ */
+static void str_01(void)
+{
+    printf("ag_ip_str(): @ctx ~null => str representation");
+
+    ag_ip_smart_t *ip = sample_localhost();
+    ag_string_smart_t *s = ag_ip_str(ip);
+    ag_test (ag_string_eq(s, "127.0.0.1"));
+
+    printf("...OK\n");
+}
+
+
+
+
+/*******************************************************************************
  *                             TEST SUITE INTERFACE
  */
 
@@ -343,5 +507,17 @@ extern void ag_test_ip(void)
     gt_01();
     gt_02();
     gt_03();
+
+    empty_01();
+    typeid_01();
+    objid_01();
+    len_01();
+    sz_01();
+    hash_01();
+    octet_01();
+    octet_02();
+    octet_03();
+    octet_04();
+    str_01();
 }
 

@@ -107,20 +107,6 @@ static inline size_t object_sz(const ag_object_t *ctx)
 
 
 /*
- * object_len(): get IP address object length.
- *
- * @ctx: contextual object.
- *
- * Return: length of @ctx.
- */
-static inline size_t object_len(const ag_object_t *ctx) 
-{
-    const struct payload *p = ag_object_payload(ctx);
-    return sizeof p->bytes / sizeof *p; /* 4 octets */
-}
-
-
-/*
  * object_str(): get IP address object string representation.
  *
  * @ctx: contextual object.
@@ -132,6 +118,20 @@ static inline ag_string_t *object_str(const ag_object_t *ctx)
     const struct payload *p = ag_object_payload(ctx);
     return ag_string_new_fmt("%d.%d.%d.%d", p->bytes[0], p->bytes[1],
             p->bytes[2], p->bytes[3]);
+}
+
+
+/*
+ * object_len(): get IP address object length.
+ *
+ * @ctx: contextual object.
+ *
+ * Return: length of @ctx.
+ */
+static inline size_t object_len(const ag_object_t *ctx) 
+{
+    ag_string_smart_t *s = object_str(ctx);
+    return ag_string_len(s);
 }
 
 
