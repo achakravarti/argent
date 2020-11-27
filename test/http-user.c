@@ -18,7 +18,7 @@ static void new_01(void)
             " && ip > 0 => new user");
 
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
     ag_require (u, AG_ERNO_TEST, NULL);
     ag_require (ag_http_user_port(u) == 80, AG_ERNO_TEST, NULL);
@@ -45,7 +45,7 @@ static void new_02(void)
             " && ~ip => new user");
 
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip1, 0,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip1, 0,
             "example.com");
     ag_require (u, AG_ERNO_TEST, NULL);
     ag_require (!ag_http_user_port(u), AG_ERNO_TEST, NULL);
@@ -72,7 +72,7 @@ static void new_03(void)
             " && ip > 0 => new user");
 
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip1, 80,
             "");
     ag_require (u, AG_ERNO_TEST, NULL);
     ag_require (ag_http_user_port(u) == 80, AG_ERNO_TEST, NULL);
@@ -98,9 +98,9 @@ static void copy_01(void)
     printf("ag_http_user_copy(): @ctx ~null => @ctx");
     
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_http_user_t *u2 = ag_http_user_copy(u1);
     ag_require (u2, AG_ERNO_TEST, NULL);
     ag_require (ag_http_user_port(u2) == 80, AG_ERNO_TEST, NULL);
 
@@ -126,7 +126,7 @@ static void dispose_01(void)
    
 
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_http_user_dispose(&u);
     ag_require (1u, AG_ERNO_TEST, NULL);
@@ -180,9 +180,9 @@ static void cmp_01(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (ag_http_user_cmp(u1, u2) == AG_TRISTATE_LO, AG_ERNO_TEST, NULL);
 
@@ -198,9 +198,9 @@ static void cmp_02(void)
     printf("ag_http_user_cmp(): @ctx == @cmp => AG_TRISTATE_GND");
 
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_http_user_t *u2 = ag_http_user_copy(u1);
     ag_require (ag_http_user_cmp(u1, u2) == AG_TRISTATE_GND, AG_ERNO_TEST,
             NULL);
 
@@ -218,9 +218,9 @@ static void cmp_03(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (ag_http_user_cmp(u2, u1) == AG_TRISTATE_HI, AG_ERNO_TEST, NULL);
 
@@ -238,9 +238,9 @@ static void lt_01(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (ag_http_user_lt(u1, u2), AG_ERNO_TEST, NULL);
 
@@ -256,9 +256,9 @@ static void lt_02(void)
     printf("ag_http_user_lt(): @ctx == @cmp => false");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_http_user_t *u2 = ag_http_user_copy(u1);
     ag_require (!ag_http_user_lt(u1, u2), AG_ERNO_TEST,
             NULL);
 
@@ -276,9 +276,9 @@ static void lt_03(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (!ag_http_user_lt(u2, u1), AG_ERNO_TEST, NULL);
 
@@ -294,9 +294,9 @@ static void eq_01(void)
     printf("ag_http_user_eq(): @ctx == @cmp => true");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_http_user_t *u2 = ag_http_user_copy(u1);
     ag_require (ag_http_user_eq(u1, u2), AG_ERNO_TEST,
             NULL);
 
@@ -314,9 +314,9 @@ static void eq_02(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (!ag_http_user_eq(u1, u2), AG_ERNO_TEST, NULL);
 
@@ -334,9 +334,9 @@ static void eq_03(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (!ag_http_user_eq(u2, u1), AG_ERNO_TEST, NULL);
 
@@ -354,9 +354,9 @@ static void gt_01(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (ag_http_user_gt(u2, u1), AG_ERNO_TEST, NULL);
 
@@ -372,9 +372,9 @@ static void gt_02(void)
     printf("ag_http_user_gt(): @ctx == @cmp => false");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_copy(u1);
+    ag_http_user_t *u2 = ag_http_user_copy(u1);
     ag_require (!ag_http_user_gt(u1, u2), AG_ERNO_TEST,
             NULL);
 
@@ -392,9 +392,9 @@ static void gt_03(void)
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
     ag_ip_smart_t *ip2 = ag_ip_new(192, 168, 1, 5);
 
-    ag_http_user_smart_t *u1 = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u1 = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
-    ag_http_user_smart_t *u2 = ag_http_user_new("mozilla", ip2, 80,
+    ag_http_user_t *u2 = ag_http_user_new("mozilla", ip2, 80,
             "example.com");
     ag_require (!ag_http_user_gt(u1, u2), AG_ERNO_TEST, NULL);
 
@@ -417,7 +417,7 @@ static void empty_01(void)
     printf("ag_http_user_empty(): @ctx ~null => false");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_require (!ag_http_user_empty(u), AG_ERNO_TEST, NULL);
 
@@ -433,7 +433,7 @@ static void empty_02(void)
     printf("ag_http_user_empty(): @ctx ~3port => false");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 0,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 0,
             "example.com");
     ag_require (!ag_http_user_empty(u), AG_ERNO_TEST, NULL);
 
@@ -449,7 +449,7 @@ static void empty_03(void)
     printf("ag_http_user_empty(): @ctx ~host => false");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "");
     ag_require (!ag_http_user_empty(u), AG_ERNO_TEST, NULL);
 
@@ -465,7 +465,7 @@ static void typeid_01(void)
     printf("ag_http_user_typeid(): @ctx ~null => AG_OBJECT_TYPE_HTTP_USER");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_require (ag_http_user_typeid(u) == AG_OBJECT_TYPE_HTTP_USER,
             AG_ERNO_TEST, NULL);
@@ -482,7 +482,7 @@ static void objid_01(void)
     printf("ag_http_user_objid(): @ctx ~null => 0");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_require (!ag_http_user_objid(u), AG_ERNO_TEST, NULL);
 
@@ -498,7 +498,7 @@ static void len_01(void)
     printf("ag_http_user_len(): @ctx ~null => string length");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_string_smart_t *s = ag_http_user_str(u);
     ag_require (ag_http_user_len(u) == ag_string_len(s), AG_ERNO_TEST, NULL);
@@ -515,7 +515,7 @@ static void sz_01(void)
     printf("ag_http_user_sz(): @ctx ~null => sigma component size");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
 
     ag_string_smart_t *a = ag_http_user_agent(u);
@@ -538,7 +538,7 @@ static void hash_01(void)
     printf("ag_http_user_hash(): @ctx ~null => string hash");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_string_smart_t *s = ag_http_user_str(u);
     ag_require (ag_http_user_hash(u) == ag_string_hash(s), AG_ERNO_TEST, NULL);
@@ -556,7 +556,7 @@ static void str_01(void)
     printf("ag_http_user_str(): @ctx ~null => str representation");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_string_smart_t *s = ag_http_user_str(u);
     ag_require (ag_string_eq(s, 
@@ -575,7 +575,7 @@ static void str_02(void)
     printf("ag_http_user_str(): @ctx ~host => str representation");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "");
     ag_string_smart_t *s = ag_http_user_str(u);
     ag_require (ag_string_eq(s, 
@@ -594,7 +594,7 @@ static void str_03(void)
     printf("ag_http_user_str(): @ctx ~port => str representation");
 
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 0,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 0,
             "example.com");
     ag_string_smart_t *s = ag_http_user_str(u);
     ag_require (ag_string_eq(s, 
@@ -613,7 +613,7 @@ static void agent_01(void)
     printf("ag_http_user_agent(): @ctx ~null => agent");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_string_smart_t *a = ag_http_user_agent(u);
     ag_require (ag_string_eq(a, "mozilla"), AG_ERNO_TEST, NULL);
@@ -630,7 +630,7 @@ static void ip_01(void)
     printf("ag_http_user_ip(): @ctx ~null => ip");
     
     ag_ip_smart_t *ip1 = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip1, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip1, 80,
             "example.com");
     
     ag_ip_smart_t *ip2 = ag_http_user_ip(u);
@@ -648,7 +648,7 @@ static void port_01(void)
     printf("ag_http_user_port(): @ctx 3port => port");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_require (ag_http_user_port(u) == 80, AG_ERNO_TEST, NULL);
 
@@ -664,7 +664,7 @@ static void port_02(void)
     printf("ag_http_user_port(): @ctx ~3port => 0");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 0,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 0,
             "example.com");
     ag_require (!ag_http_user_port(u), AG_ERNO_TEST, NULL);
 
@@ -680,7 +680,7 @@ static void host_01(void)
     printf("ag_http_user_host(): @ctx 3host => host");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "example.com");
     ag_string_smart_t *h = ag_http_user_host(u);
     ag_require (ag_string_eq(h, "example.com"), AG_ERNO_TEST, NULL);
@@ -697,7 +697,7 @@ static void host_02(void)
     printf("ag_http_user_host(): @ctx ~3host => empty string");
     
     ag_ip_smart_t *ip = ag_ip_new(192, 168, 1, 4);
-    ag_http_user_smart_t *u = ag_http_user_new("mozilla", ip, 80,
+    ag_http_user_t *u = ag_http_user_new("mozilla", ip, 80,
             "");
     ag_string_smart_t *h = ag_http_user_host(u);
     ag_require (ag_string_eq(h, ""), AG_ERNO_TEST, NULL);

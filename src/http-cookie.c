@@ -92,7 +92,7 @@ extern ag_http_cookie_t *ag_http_cookie_new(bool secure, const char *domain,
 }
 
 
-extern inline ag_http_cookie_t *ag_http_cookie_copy(const ag_http_user_t *ctx);
+extern inline ag_http_cookie_t *ag_http_cookie_copy(const ag_http_cookie_t *ctx);
 
 
 extern inline void ag_http_cookie_dispose(ag_http_cookie_t **ctx);
@@ -149,7 +149,7 @@ extern inline bool ag_http_cookie_empty(const ag_http_cookie_t *ctx);
 extern inline ag_string_t *ag_http_cookie_str(const ag_http_cookie_t *ctx);
 
 
-extern ag_string_t *ag_http_cookie_domain(const ag_http_user_t *ctx)
+extern ag_string_t *ag_http_cookie_domain(const ag_http_cookie_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -157,7 +157,7 @@ extern ag_string_t *ag_http_cookie_domain(const ag_http_user_t *ctx)
 }
 
 
-extern ag_string_t *ag_http_cookie_path(const ag_http_user_t *ctx)
+extern ag_string_t *ag_http_cookie_path(const ag_http_cookie_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -165,7 +165,7 @@ extern ag_string_t *ag_http_cookie_path(const ag_http_user_t *ctx)
 }
 
 
-extern ag_string_t *ag_http_cookie_expires(const ag_http_user_t *ctx)
+extern ag_string_t *ag_http_cookie_expires(const ag_http_cookie_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);
@@ -173,7 +173,7 @@ extern ag_string_t *ag_http_cookie_expires(const ag_http_user_t *ctx)
 }
 
 
-extern bool ag_http_cookie_secure(const ag_http_user_t *ctx)
+extern bool ag_http_cookie_secure(const ag_http_cookie_t *ctx)
 {
     ag_assert (ctx);
     const struct payload *p = ag_object_payload(ctx);

@@ -20,7 +20,7 @@ extern void ag_http_cookie_register(void);
 extern ag_http_cookie_t *ag_http_cookie_new(bool secure, const char *domain,
         const char *path, const char *expires);
 
-inline ag_http_cookie_t *ag_http_cookie_copy(const ag_http_user_t *ctx)
+inline ag_http_cookie_t *ag_http_cookie_copy(const ag_http_cookie_t *ctx)
 {
     return ag_object_copy(ctx);
 }
@@ -89,13 +89,13 @@ inline ag_string_t *ag_http_cookie_str(const ag_http_cookie_t *ctx)
     return ag_object_str(ctx);
 }
 
-extern ag_string_t *ag_http_cookie_domain(const ag_http_user_t *ctx);
+extern ag_string_t *ag_http_cookie_domain(const ag_http_cookie_t *ctx);
 
-extern ag_string_t *ag_http_cookie_path(const ag_http_user_t *ctx);
+extern ag_string_t *ag_http_cookie_path(const ag_http_cookie_t *ctx);
 
-extern ag_string_t *ag_http_cookie_expires(const ag_http_user_t *ctx);
+extern ag_string_t *ag_http_cookie_expires(const ag_http_cookie_t *ctx);
 
-extern bool ag_http_cookie_secure(const ag_http_user_t *ctx);
+extern bool ag_http_cookie_secure(const ag_http_cookie_t *ctx);
 
 extern ag_string_t *ag_http_cookie_param(const ag_http_cookie_t *ctx,
         const char *key);
