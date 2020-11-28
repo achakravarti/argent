@@ -1,6 +1,12 @@
 #include "../include/argent.h"
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
 
 
 /*******************************************************************************
@@ -245,16 +251,13 @@ extern inline enum ag_tristate ag_ip_cmp(const ag_ip_t *ctx,
         const ag_ip_t *cmp);
 
 
-extern inline bool ag_ip_lt(const ag_ip_t *ctx,
-        const ag_ip_t *cmp);
+extern inline bool ag_ip_lt(const ag_ip_t *ctx, const ag_ip_t *cmp);
 
 
-extern inline bool ag_ip_eq(const ag_ip_t *ctx,
-        const ag_ip_t *cmp);
+extern inline bool ag_ip_eq(const ag_ip_t *ctx, const ag_ip_t *cmp);
 
 
-extern inline bool ag_ip_gt(const ag_ip_t *ctx,
-        const ag_ip_t *cmp);
+extern inline bool ag_ip_gt(const ag_ip_t *ctx, const ag_ip_t *cmp);
 
 
 
@@ -293,4 +296,11 @@ extern ag_uint ag_ip_octet(const ag_ip_t *ctx, ag_uint oct)
 
 
 extern inline ag_string_t *ag_ip_str(const ag_ip_t *ctx);
+
+
+
+
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 

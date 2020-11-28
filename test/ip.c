@@ -30,7 +30,7 @@ static void new_01(void)
 {
     printf("ag_ip_new():");
 
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (ip);
 
     ag_test (ag_ip_octet(ip, 1) == 127);
@@ -49,7 +49,7 @@ static void parse_01(void)
 {
     printf("ag_ip_parse():");
 
-    ag_ip_smart_t *ip = ag_ip_parse("127.0.0.1");
+    ag_ip_t *ip = ag_ip_parse("127.0.0.1");
     ag_test (ip);
     
     ag_test (ag_ip_octet(ip, 1) == 127);
@@ -68,8 +68,8 @@ static void copy_01(void)
 {
     printf("ag_ip_copy():");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = ag_ip_copy(ip1);
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = ag_ip_copy(ip1);
 
     ag_test (ag_ip_octet(ip1, 1) == ag_ip_octet (ip2, 1));
     ag_test (ag_ip_octet(ip1, 2) == ag_ip_octet (ip2, 2));
@@ -115,7 +115,7 @@ static void dispose_03(void)
 {
     printf("ag_ip_dispose(): @ctx ~null && ptrval null => @ctx null");
     
-    ag_ip_smart_t *ip = NULL;
+    ag_ip_t *ip = NULL;
     ag_ip_dispose(&ip);
     ag_test (!ip);
 
@@ -137,8 +137,8 @@ static void cmp_01(void)
 {
     printf("ag_ip_cmp(): @ctx < @cmp => AG_TRISTATE_LO");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (ag_ip_cmp(ip1, ip2) == AG_TRISTATE_LO);
 
     printf("...OK\n");
@@ -152,8 +152,8 @@ static void cmp_02(void)
 {
     printf("ag_ip_cmp(): @ctx == @cmp => AG_TRISTATE_GND");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = ag_ip_copy(ip1);
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = ag_ip_copy(ip1);
     ag_test (ag_ip_cmp(ip1, ip2) == AG_TRISTATE_GND);
 
     printf("...OK\n");
@@ -167,8 +167,8 @@ static void cmp_03(void)
 {
     printf("ag_ip_cmp(): @ctx > @cmp => AG_TRISTATE_HI");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (ag_ip_cmp(ip2, ip1) == AG_TRISTATE_HI);
 
     printf("...OK\n");
@@ -182,8 +182,8 @@ static void lt_01(void)
 {
     printf("ag_ip_lt(): @ctx < @cmp => true");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (ag_ip_lt(ip1, ip2));
 
     printf("...OK\n");
@@ -197,8 +197,8 @@ static void lt_02(void)
 {
     printf("ag_ip_lt(): @ctx == @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = ag_ip_copy(ip1);
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = ag_ip_copy(ip1);
     ag_test (!ag_ip_lt(ip1, ip2));
 
     printf("...OK\n");
@@ -212,8 +212,8 @@ static void lt_03(void)
 {
     printf("ag_ip_lt(): @ctx > @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (!ag_ip_lt(ip2, ip1));
 
     printf("...OK\n");
@@ -227,8 +227,8 @@ static void eq_01(void)
 {
     printf("ag_ip_eq(): @ctx == @cmp => true");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = ag_ip_copy(ip1);
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = ag_ip_copy(ip1);
     ag_test (ag_ip_eq(ip1, ip2));
 
     printf("...OK\n");
@@ -242,8 +242,8 @@ static void eq_02(void)
 {
     printf("ag_ip_eq(): @ctx < @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (!ag_ip_eq(ip1, ip2));
 
     printf("...OK\n");
@@ -257,8 +257,8 @@ static void eq_03(void)
 {
     printf("ag_ip_eq(): @ctx > @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (!ag_ip_eq(ip2, ip1));
 
     printf("...OK\n");
@@ -272,8 +272,8 @@ static void gt_01(void)
 {
     printf("ag_ip_gt(): @ctx > @cmp => true");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (ag_ip_gt(ip2, ip1));
 
     printf("...OK\n");
@@ -287,8 +287,8 @@ static void gt_02(void)
 {
     printf("ag_ip_gt(): @ctx == @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = ag_ip_copy(ip1);
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = ag_ip_copy(ip1);
     ag_test (!ag_ip_gt(ip1, ip2));
 
     printf("...OK\n");
@@ -302,8 +302,8 @@ static void gt_03(void)
 {
     printf("ag_ip_gt(): @ctx < @cmp => false");
 
-    ag_ip_smart_t *ip1 = sample_localhost();
-    ag_ip_smart_t *ip2 = sample_private();
+    ag_ip_t *ip1 = sample_localhost();
+    ag_ip_t *ip2 = sample_private();
     ag_test (!ag_ip_gt(ip1, ip2));
 
     printf("...OK\n");
@@ -324,7 +324,7 @@ static void empty_01(void)
 {
     printf("ag_ip_empty(): @ctx ~null => false");
 
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (!ag_ip_empty(ip));
 
     printf("...OK\n");
@@ -338,7 +338,7 @@ static void typeid_01(void)
 {
     printf("ag_ip_typeid(): @ctx ~null => AG_OBJECT_TYPE_IP");
     
-    ag_ip_smart_t *ip = sample_private();
+    ag_ip_t *ip = sample_private();
     ag_test (ag_ip_typeid(ip) == AG_OBJECT_TYPE_IP);
 
     printf("...OK\n");
@@ -352,7 +352,7 @@ static void objid_01(void)
 {
     printf("ag_ip_objid(): @ctx ~null => 0");
     
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (!ag_ip_objid(ip));
 
     printf("...OK\n");
@@ -366,7 +366,7 @@ static void len_01(void)
 {
     printf("ag_ip_len(): @ctx ~null => str length");
     
-    ag_ip_smart_t *ip = sample_private();
+    ag_ip_t *ip = sample_private();
     ag_string_smart_t *s = ag_ip_str(ip);
     ag_test (ag_ip_len(ip) == ag_string_len(s));
 
@@ -381,7 +381,7 @@ static void sz_01(void)
 {
     printf("ag_ip_sz(): @ctx ~null => 4 * uint8_t sz");
 
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (ag_ip_sz(ip) == 4 * sizeof(uint8_t));
 
     printf("...OK\n");
@@ -395,7 +395,7 @@ static void hash_01(void)
 {
     printf("ag_ip_hash(): @ctx ~null => str hash");
 
-    ag_ip_smart_t *ip = sample_private();
+    ag_ip_t *ip = sample_private();
     ag_string_smart_t *s = ag_ip_str(ip);
     ag_test (ag_ip_hash(ip) == ag_hash_new_str(s));
 
@@ -410,7 +410,7 @@ static void octet_01(void)
 {
     printf("ag_ip_octet(): @ctx ~null => octet 1");
     
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (ag_ip_octet(ip, 1) == 127);
 
     printf("...OK\n");
@@ -424,7 +424,7 @@ static void octet_02(void)
 {
     printf("ag_ip_octet(): @ctx ~null => octet 2");
     
-    ag_ip_smart_t *ip = sample_private();
+    ag_ip_t *ip = sample_private();
     ag_test (ag_ip_octet(ip, 2) == 168);
 
     printf("...OK\n");
@@ -438,7 +438,7 @@ static void octet_03(void)
 {
     printf("ag_ip_octet(): @ctx ~null => octet 3");
     
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_test (!ag_ip_octet(ip, 3));
 
     printf("...OK\n");
@@ -452,7 +452,7 @@ static void octet_04(void)
 {
     printf("ag_ip_octet(): @ctx ~null => octet 4");
 
-    ag_ip_smart_t *ip = sample_private();
+    ag_ip_t *ip = sample_private();
     ag_test (ag_ip_octet(ip, 4) == 4);
 
     printf("...OK\n");
@@ -466,7 +466,7 @@ static void str_01(void)
 {
     printf("ag_ip_str(): @ctx ~null => str representation");
 
-    ag_ip_smart_t *ip = sample_localhost();
+    ag_ip_t *ip = sample_localhost();
     ag_string_smart_t *s = ag_ip_str(ip);
     ag_test (ag_string_eq(s, "127.0.0.1"));
 

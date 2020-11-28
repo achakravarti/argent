@@ -5,6 +5,12 @@
 #include "./object.h"
 
 
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+
 
 
 /*******************************************************************************
@@ -15,13 +21,13 @@
 /*
  * ag_ip_t: IP address.
  */
-typedef ag_object_t ag_ip_t;
+#define ag_ip_t ag_object_smart_t
 
 
 /*
- * ag_ip_smart_t: smart version of ag_ip_t.
+ * ag_ip_static_t: non-smart version of ag_ip_t.
  */
-#define ag_ip_smart_t ag_object_smart_t
+typedef ag_object_t ag_ip_static_t;
 
 
 
@@ -263,6 +269,11 @@ inline ag_string_t *ag_ip_str(const ag_ip_t *ctx)
 }
 
 
+
+
+#if (defined __GNUC__ || defined __clang__)
+#   pragma GCC diagnostic pop
+#endif
 
 
 #endif /* !__ARGENT_IP_H__ */

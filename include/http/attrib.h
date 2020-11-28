@@ -1,6 +1,7 @@
 #ifndef __ARGENT_HTTP_ATTRIB_H__
 #define __ARGENT_HTTP_ATTRIB_H__
 
+
 #include "../object.h"
 
 
@@ -20,16 +21,12 @@
 /*
  * ag_http_attrib_t: HTTP attribute.
  */
-//typedef ag_object_t ag_http_attrib_t;
 #define ag_http_attrib_t ag_object_smart_t
 
 
 /*
  * ag_http_attrib_static_t: non-smart version of ag_http_attrib_t.
  */
-#if 0
-#define ag_http_attrib_smart_t ag_object_smart_t
-#endif
 typedef ag_object_t ag_http_attrib_static_t;
 
 
