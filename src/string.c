@@ -284,7 +284,7 @@ extern bool ag_string_url_encoded(const ag_string_t *ctx)
     if (sz < 3)
         return false;
 
-    sz =- 2;
+    sz -= 2;
     for (register size_t i = 0; i < sz; i++) {
         if (url_encoded(ctx + i))
             return true;
