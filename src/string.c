@@ -112,7 +112,8 @@ extern ag_string_t *ag_string_new_fmt(const char *fmt, ...)
     (void) vsprintf(bfr, fmt, args);
     va_end(args);
 
-    ag_string_t *s = ag_string_new(bfr);
+    //ag_string_t *s = ag_string_new(bfr);
+    char *s = ag_string_new(bfr);
     ag_memblock_free((ag_memblock_t **) &bfr);
     return s;
 }
@@ -122,7 +123,8 @@ extern ag_string_t *ag_string_new_fmt(const char *fmt, ...)
 extern ag_string_t *ag_string_copy(const ag_string_t *ctx)
 {
     ag_assert (ctx);
-    ag_string_t *cp = (ag_string_t *) ctx;
+    //ag_string_t *cp = (ag_string_t *) ctx;
+    char *cp = (ag_string_t *) ctx;
 
     string_refc_inc(cp);
     return cp;
@@ -131,7 +133,8 @@ extern ag_string_t *ag_string_copy(const ag_string_t *ctx)
                            /* implementation of ag_string_dispose() [AgDM:??] */
 extern void ag_string_dispose(ag_string_t **ctx)
 {
-    ag_string_t *hnd;
+    //ag_string_t *hnd;
+    char *hnd;
 
     if (ag_likely (ctx && (hnd = *ctx))) {
         string_refc_dec(hnd);
@@ -184,7 +187,8 @@ extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat)
         return;
 
     ag_assert (ctx && *ctx);
-    ag_string_t *oldstr = *ctx;
+    //ag_string_t *oldstr = *ctx;
+    char *oldstr = *ctx;
     size_t oldsz = string_sz(oldstr);
 
     size_t addsz = string_sz(cat);
@@ -264,7 +268,8 @@ extern ag_string_t *ag_string_url_encode(const ag_string_t *ctx)
     }
 
     bfr[n] = '\0';
-    ag_string_t *ret = ag_string_new(bfr);
+    //ag_string_t *ret = ag_string_new(bfr);
+    char *ret = ag_string_new(bfr);
     ag_memblock_free((void **) &bfr);
     return ret;
 }
@@ -329,7 +334,8 @@ extern ag_string_t *ag_string_url_decode(const ag_string_t *ctx)
     }
 
     *c = '\0';
-    ag_string_t *ret = ag_string_new(bfr);
+    //ag_string_t *ret = ag_string_new(bfr);
+    char *ret = ag_string_new(bfr);
     ag_memblock_free((void **) &bfr);
     return ret;
 }
