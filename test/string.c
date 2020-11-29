@@ -251,7 +251,7 @@ static void ascii_new(void)
 {
     printf("ag_string_new() can create an ASCII string...");
 
-    const ag_string_t *expect = "Hello, world!";
+    const char *expect = "Hello, world!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_require (test && !strcmp(test, expect), AG_ERNO_TEST, NULL);
 
@@ -263,7 +263,7 @@ static void ascii_copy(void)
 {
     printf("ag_string_copy() can copy an ASCII string...");
 
-    const ag_string_t *expect = "Hello, world!";
+    const char *expect = "Hello, world!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_string_smart_t *copy = ag_string_copy(test);
     ag_require (test && !strcmp(copy, expect), AG_ERNO_TEST, NULL);
@@ -304,7 +304,7 @@ static void ascii_sz(void)
 {
     printf("ag_string_sz() reports the size of an ASCII string");
 
-    const ag_string_t *sample = "Hello, world!";
+    const char *sample = "Hello, world!";
     ag_string_smart_t *test = ag_string_new(sample);
     ag_require (ag_string_sz(test) == strlen(sample), AG_ERNO_TEST, NULL);
 
@@ -595,7 +595,7 @@ static void unicode_new(void)
 {
     printf("ag_string_new() can create a Unicode string");
 
-    const ag_string_t *expect = "Привет, мир!";
+    const char *expect = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_require (test && !strcmp(test, expect), AG_ERNO_TEST, NULL);
 
@@ -607,7 +607,7 @@ static void unicode_copy(void)
 {
     printf("ag_string_copy() can copy a Unicode string");
 
-    const ag_string_t *expect = "Привет, мир!";
+    const char *expect = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(expect);
     ag_string_smart_t *copy = ag_string_copy(test);
     ag_require (test && !strcmp(copy, expect), AG_ERNO_TEST, NULL);
@@ -648,7 +648,7 @@ static void unicode_sz(void)
 {
     printf("ag_string_sz() reports the size of a Unicode string");
 
-    const ag_string_t *sample = "Привет, мир!";
+    const char *sample = "Привет, мир!";
     ag_string_smart_t *test = ag_string_new(sample);
     ag_require (ag_string_sz(test) == strlen(sample), AG_ERNO_TEST, NULL);
 
