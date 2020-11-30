@@ -19,12 +19,6 @@
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
-
-
-#ifndef __ARGENT_TEST_H__
-#define __ARGENT_TEST_H__
-
-
 /*-
  * Module: Testing
  *
@@ -37,7 +31,7 @@
  *      - skipping of debug tests
  *      - reporting of tests passed, failed and skipped
  *      - logging of test results
- *      - catching signal suchs as SIGABRT and SIGSEGV
+ *      - catching signals such as SIGABRT and SIGSEGV
  *
  * The Testing Module is organised around a hierarchy of entities, the most
  * fundamental being unit tests. Each unit test is wrapped within a test case,
@@ -45,6 +39,12 @@
  * test suites are in turn collected within a test harness. Each of these
  * entities is reified as a type, and supported by a public interface.
  */
+
+
+#ifndef __ARGENT_TEST_H__
+#define __ARGENT_TEST_H__
+
+
 
 
 #include <stddef.h>
