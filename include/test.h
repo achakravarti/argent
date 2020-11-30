@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - Infrastructure for building web services
+ * Argent - infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -51,14 +51,18 @@
 
 
 
-typedef void (ag_test)(void);
 
 enum ag_test_status {
         AG_TEST_STATUS_OK = 0,
+        AG_TEST_STATUS_WAIT,
         AG_TEST_STATUS_SKIP,
         AG_TEST_STATUS_FAIL,
+        AG_TEST_STATUS_SIGABRT,
+        AG_TEST_STATUS_SIGSEGV,
         __AG_TEST_STATUS_LEN__
 };
+
+typedef enum ag_test_status (ag_test)(void);
 
 typedef struct ag_test_case ag_test_case;
 
@@ -66,49 +70,50 @@ typedef struct ag_test_suite ag_test_suite;
 
 typedef struct ag_test_harness ag_test_harness;
 
-ag_test_case *ag_test_case_new(const char *ctx, const char *in, const char *out,
-                ag_test *test);
+extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test);
 
-void ag_test_case_dispose(ag_test_case **ctx);
+extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx);
 
-enum ag_test_status ag_test_case_status(const ag_test_case *ctx);
+extern void ag_test_case_dispose(ag_test_case **ctx);
 
-const char *ag_test_case_msg(const ag_test_case *ctx);
+extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx);
 
-void ag_test_case_exec(ag_test_case *ctx);
+extern char *ag_test_case_msg(const ag_test_case *ctx);
 
-ag_test_suite *ag_test_suite_new(const char *desc);
+extern void ag_test_case_exec(ag_test_case *ctx);
 
-void ag_test_suite_dispose(ag_test_suite **ctx);
+extern ag_test_suite *ag_test_suite_new(const char *desc);
 
-size_t ag_test_suite_len(const  ag_test_suite *ctx);
+extern void ag_test_suite_dispose(ag_test_suite **ctx);
 
-int ag_test_suite_pass(const ag_test_suite *ctx);
+extern size_t ag_test_suite_len(const  ag_test_suite *ctx);
 
-int ag_test_suite_skip(const ag_test_suite *ctx);
+extern int ag_test_suite_pass(const ag_test_suite *ctx);
 
-int ag_test_suite_fail(const ag_test_suite *ctx);
+extern int ag_test_suite_skip(const ag_test_suite *ctx);
 
-void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc);
+extern int ag_test_suite_fail(const ag_test_suite *ctx);
 
-void ag_test_suite_exec(ag_test_suite *ctx);
+extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc);
+
+extern void ag_test_suite_exec(ag_test_suite *ctx);
 
 
-ag_test_harness *ag_test_harness_new(const char *file);
+extern ag_test_harness *ag_test_harness_new(const char *file);
 
-void ag_test_harness_dispose(ag_test_harness **ctx);
+extern void ag_test_harness_dispose(ag_test_harness **ctx);
 
-void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
+extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
 
-void ag_test_harness_exec(ag_test_harness *ctx);
+extern void ag_test_harness_exec(ag_test_harness *ctx);
 
-int ag_test_harness_len(const ag_test_harness *ctx);
+extern int ag_test_harness_len(const ag_test_harness *ctx);
 
-int ag_test_harness_pass(const ag_test_harness *ctx);
+extern int ag_test_harness_pass(const ag_test_harness *ctx);
 
-int ag_test_harness_skip(const ag_test_harness *ctx);
+extern int ag_test_harness_skip(const ag_test_harness *ctx);
 
-int ag_test_harness_fail(const ag_test_harness *ctx);
+extern int ag_test_harness_fail(const ag_test_harness *ctx);
 
 
 #endif /* !__ARGENT_TEST_H__ */
