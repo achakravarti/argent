@@ -3,8 +3,9 @@
 #include <stdio.h>
 
 
-static enum ag_test_status sample(void)
+static enum ag_test_status sample(ag_test_case *tc)
 {
+        ag_test_case_desc_set(tc, "sample test case");
         return ag_test_assert_debug (1);
 }
 
@@ -20,12 +21,14 @@ int main(int argc, char **argv)
     ag_test_log();
     ag_test_value();*/
 
-        ag_test_case *tc = ag_test_case_new("sample", &sample);
+        ag_test_case *tc = ag_test_case_new(&sample);
         printf("status = %d\n", ag_test_case_status(tc));
         printf("msg = %s\n", ag_test_case_msg(tc));
+
         ag_test_case_exec(tc);
         printf("status = %d\n", ag_test_case_status(tc));
         printf("msg = %s\n", ag_test_case_msg(tc));
+
         ag_test_case_dispose(&tc);
 
     return 0;

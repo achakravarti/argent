@@ -115,14 +115,14 @@ static inline void str_dispose(char *ctx)
  *
  * Return:
  */
-extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test)
+extern ag_test_case *ag_test_case_new(ag_test *test)
 {
         ag_test_case *ret = malloc(sizeof *ret);
         if (!ret)
                 exit(1);
 
         ret->test = test;
-        ret->desc = str_new(desc);
+        ret->desc = str_new("waiting to execute test case");
         ret->stat = AG_TEST_STATUS_WAIT;
 
         return ret;
@@ -185,6 +185,12 @@ extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx)
 }
 
 
+extern char *ag_test_case_desc(const ag_test_case *ctx)
+{
+        return str_new(ctx->desc);
+}
+
+
 /*
  * ag_test_case_msg(): get execution result message of test case.
  *
@@ -216,6 +222,13 @@ extern char *ag_test_case_msg(const ag_test_case *ctx)
 }
 
 
+extern void ag_test_case_desc_set(ag_test_case *ctx, const char *desc)
+{
+        str_dispose(ctx->desc);
+        ctx->desc = str_new(desc);
+}
+
+
 /*
  * ag_test_case_exec(): execute test case.
  *
@@ -223,6 +236,6 @@ extern char *ag_test_case_msg(const ag_test_case *ctx)
  */
 extern void ag_test_case_exec(ag_test_case *ctx)
 {
-        ctx->stat = ctx->test();
+        ctx->stat = ctx->test(ctx);
 }
 

@@ -67,9 +67,9 @@ enum ag_test_status {
         __AG_TEST_STATUS_LEN__
 };
 
-typedef enum ag_test_status (ag_test)(void);
-
 typedef struct ag_test_case ag_test_case;
+
+typedef enum ag_test_status (ag_test)(ag_test_case *);
 
 typedef struct ag_test_suite ag_test_suite;
 
@@ -83,7 +83,7 @@ typedef struct ag_test_harness ag_test_harness;
 #       define ag_test_assert_debug(p) ag_test_assert(p)
 #endif
 
-extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test);
+extern ag_test_case *ag_test_case_new(ag_test *test);
 
 extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx);
 
@@ -91,7 +91,11 @@ extern void ag_test_case_dispose(ag_test_case **ctx);
 
 extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx);
 
+extern char *ag_test_case_desc(const ag_test_case *ctx);
+
 extern char *ag_test_case_msg(const ag_test_case *ctx);
+
+extern void ag_test_case_desc_set(ag_test_case *ctx, const char *desc);
 
 extern void ag_test_case_exec(ag_test_case *ctx);
 
