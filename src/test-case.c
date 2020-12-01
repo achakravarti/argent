@@ -185,6 +185,13 @@ extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx)
 }
 
 
+/*
+ * ag_test_case_desc(): get description of test case.
+ *
+ * @ctx: contextual test case.
+ *
+ * Return: description of @ctx.
+ */
 extern char *ag_test_case_desc(const ag_test_case *ctx)
 {
         return str_new(ctx->desc);
@@ -222,6 +229,12 @@ extern char *ag_test_case_msg(const ag_test_case *ctx)
 }
 
 
+/*
+ * ag_test_case_desc_set(): set description of test case.
+ *
+ * @ctx : contextual test case.
+ * @desc: test case description.
+ */
 extern void ag_test_case_desc_set(ag_test_case *ctx, const char *desc)
 {
         str_dispose(ctx->desc);
