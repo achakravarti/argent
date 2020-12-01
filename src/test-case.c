@@ -20,12 +20,31 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
 
+
+/*
+ * File: argent/src/test-case.c
+ *
+ * This file contains the implementation of the test case interface of the
+ * Testing Module of the Argent Library. See argent/include/test.h for an
+ * overview description of the interface.
+ */
+
+
 #include "../include/argent.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+
+/*
+ * struct ag_test_case: internal structure of `ag_test_case` instance.
+ *
+ * @test: unit test callback.
+ * @desc: unit test description.
+ * @stat: unit test execution status.
+ */
 struct ag_test_case {
         ag_test *test;
         char *desc;
@@ -33,6 +52,13 @@ struct ag_test_case {
 };
 
 
+/*
+ * str_new(): create new dynamic string.
+ *
+ * @src: static source string.
+ *
+ * Return: new dynamic string.
+ */
 static inline char *str_new(const char *src)
 {
         size_t sz = strlen(src);
@@ -45,6 +71,35 @@ static inline char *str_new(const char *src)
 }
 
 
+/*
+ * str_new_fmt(): create new dynamic formatted string.
+ *
+ * @fmt: formatted static source string.
+ * @...: format arguments.
+ *
+ * Return: new dynamic formatted string.
+ */
+static char *str_new_fmt(const char *fmt, ...)
+{
+        va_list args;
+
+        va_start(args, fmt);
+        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        va_end(args);
+
+        va_start(args, fmt);
+        (void) vsprintf(bfr, fmt, args);
+        va_end(args);
+
+        return bfr;
+}
+
+
+/*
+ * str_dispose(): dispose dynamic string.
+ *
+ * @ctx: contextual string.
+ */
 static inline void str_dispose(char *ctx)
 {
         if (ctx)
@@ -52,6 +107,14 @@ static inline void str_dispose(char *ctx)
 }
 
 
+/*
+ * ag_test_case_new(): create new test case.
+ *
+ * @desc:
+ * @test:
+ *
+ * Return:
+ */
 extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test)
 {
         ag_test_case *ret = malloc(sizeof *ret);
@@ -65,6 +128,14 @@ extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test)
         return ret;
 }
 
+
+/*
+ * ag_test_case_copy(): create deep copy of test case.
+ *
+ * @ctx: contextual test case.
+ *
+ * Return:
+ */
 extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx)
 {
         ag_test_case *ret = malloc(sizeof *ret);
@@ -78,6 +149,12 @@ extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx)
         return ret;
 }
 
+
+/*
+ * ag_test_case_dispose(): dispose test case.
+ *
+ * @ctx: contextual test case.
+ */
 extern void ag_test_case_dispose(ag_test_case **ctx)
 {
         ag_test_case *hnd;
@@ -89,16 +166,61 @@ extern void ag_test_case_dispose(ag_test_case **ctx)
         }
 }
 
+
+/*
+ * ag_test_case_status(): get execution status of test case.
+ *
+ * @ctx: contextual test case.
+ *
+ * Return: AG_TEST_STATUS_OK      - @ctx executed successfully,
+ *         AG_TEST_STATUS_WAIT    - @ctx not yet executed,
+ *         AG_TEST_STATUS_SKIP    - @ctx execution skipped,
+ *         AG_TEST_STATUS_FAIL    - @ctx execution failed,
+ *         AG_TEST_STATUS_SIGABRT - @ctx execution failed with SIGABRT,
+ *         AG_TEST_STATUS_SIGSEGV - @ctx execution failed with SIGSEGV.
+ */
 extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx)
 {
         return ctx->stat;
 }
 
+
+/*
+ * ag_test_case_msg(): get execution result message of test case.
+ *
+ * @ctx: contextual test case.
+ *
+ * Return: execution result message of @ctx.
+ */
 extern char *ag_test_case_msg(const ag_test_case *ctx)
 {
-        return str_new("WAIT");
+        switch (ctx->stat) {
+                case AG_TEST_STATUS_OK:
+                        return str_new_fmt("[OK]   %s", ctx->desc);
+
+                case AG_TEST_STATUS_WAIT:
+                        return str_new_fmt("[WAIT] %s", ctx->desc);
+
+                case AG_TEST_STATUS_SKIP:
+                        return str_new_fmt("[SKIP] %s", ctx->desc);
+
+                case AG_TEST_STATUS_SIGABRT:
+                        return str_new_fmt("[FAIL] %s (SIGABRT)", ctx->desc);
+
+                case AG_TEST_STATUS_SIGSEGV:
+                        return str_new_fmt("[FAIL] %s (SIGSEGV)", ctx->desc);
+
+                default:
+                        return str_new_fmt("[FAIL] %s", ctx->desc);
+        }
 }
 
+
+/*
+ * ag_test_case_exec(): execute test case.
+ *
+ * @ctx: contextual test case.
+ */
 extern void ag_test_case_exec(ag_test_case *ctx)
 {
         ctx->stat = ctx->test();

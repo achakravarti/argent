@@ -19,6 +19,8 @@
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
+
+
 /*-
  * Module: Testing
  *
@@ -38,14 +40,17 @@
  * and related test cases are collected together in a test suite. The individual
  * test suites are in turn collected within a test harness. Each of these
  * entities is reified as a type, and supported by a public interface.
+ *
+ * The implementation of the interfaces of this Module is divided logically
+ * across the argent/src/test-*.c files.
  */
-
-
 #ifndef __ARGENT_TEST_H__
 #define __ARGENT_TEST_H__
 
 
-
+#ifdef __cplusplus
+        extern "C" {
+#endif
 
 #include <stddef.h>
 
@@ -115,6 +120,10 @@ extern int ag_test_harness_skip(const ag_test_harness *ctx);
 
 extern int ag_test_harness_fail(const ag_test_harness *ctx);
 
+
+#ifdef __cplusplus
+        }
+#endif
 
 #endif /* !__ARGENT_TEST_H__ */
 
