@@ -75,6 +75,14 @@ typedef struct ag_test_suite ag_test_suite;
 
 typedef struct ag_test_harness ag_test_harness;
 
+#define ag_test_assert(p) return (p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL
+
+#ifdef NDEBUG
+#       define ag_test_assert_debug(p) return AG_TEST_STATUS_SKIP
+#else
+#       define ag_test_assert_debug(p) return ag_test_assert(p)
+#endif
+
 extern ag_test_case *ag_test_case_new(const char *desc, ag_test *test);
 
 extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx);
