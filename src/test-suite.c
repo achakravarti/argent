@@ -206,6 +206,8 @@ extern int ag_test_suite_pass(const ag_test_suite *ctx)
         while (n) {
                 if (ag_test_case_status(n->tc) == AG_TEST_STATUS_OK)
                         pass++;
+                
+                n = n->nxt;
         }
 
         return pass;
@@ -227,6 +229,8 @@ extern int ag_test_suite_skip(const ag_test_suite *ctx)
         while (n) {
                 if (ag_test_case_status(n->tc) == AG_TEST_STATUS_SKIP)
                         skip++;
+
+                n = n->nxt;
         }
 
         return skip;
@@ -248,6 +252,8 @@ extern int ag_test_suite_fail(const ag_test_suite *ctx)
         while (n) {
                 if (ag_test_case_status(n->tc) == AG_TEST_STATUS_FAIL)
                         fail++;
+
+                n = n->nxt;
         }
 
         return fail;
