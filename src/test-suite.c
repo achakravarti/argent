@@ -32,6 +32,7 @@
 
 #include "../include/argent.h"
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -91,6 +92,42 @@ static inline void node_dispose(struct node *ctx)
 {
         ag_test_case_dispose(&ctx->tc);
         free(ctx);
+}
+
+
+/*
+ * str_new_fmt(): create new dynamic formatted string.
+ *
+ * @fmt: formatted static source string.
+ * @...: format arguments.
+ *
+ * Return: new dynamic formatted string.
+ */
+static char *str_new_fmt(const char *fmt, ...)
+{
+        va_list args;
+
+        va_start(args, fmt);
+        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        va_end(args);
+
+        va_start(args, fmt);
+        (void) vsprintf(bfr, fmt, args);
+        va_end(args);
+
+        return bfr;
+}
+
+
+/*
+ * str_dispose(): dispose dynamic string.
+ *
+ * @ctx: contextual string.
+ */
+static inline void str_dispose(char *ctx)
+{
+        if (ctx)
+                free(ctx);
 }
 
 
@@ -289,9 +326,49 @@ extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
 extern void ag_test_suite_exec(ag_test_suite *ctx)
 {
         struct node *n = ctx->head;
+
         while (n) {
                 ag_test_case_exec(n->tc); 
                 n = n->nxt;
         }
 }
+
+
+/*
+ * ag_test_suite_exec_log(): execute test cases in test suite and log results.
+ *
+ * @ctx: contextual test suite.
+ * @log: log file.
+ */
+extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log)
+{
+        char *str;
+        register size_t i = 0;
+        struct node *n = ctx->head;
+
+        while (n) {
+                ag_test_case_exec(n->tc); 
+                str = ag_test_case_str(n->tc);
+                n = n->nxt;
+
+                fprintf(log, "%.2lu. %s\n", ++i, str);
+                str_dispose(str);
+        }
+}
+
+
+/*
+ * ag_test_suite_str(): get string representation of test suite.
+ *
+ * @ctx: contextual test suite.
+ *
+ * Return: string representation of @ctx.
+ */
+extern char *ag_test_suite_str(const ag_test_suite *ctx)
+{
+        return str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
+                        ag_test_suite_len(ctx), ag_test_suite_pass(ctx),
+                        ag_test_suite_skip(ctx), ag_test_suite_fail(ctx));
+}
+
 

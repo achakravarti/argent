@@ -199,13 +199,13 @@ extern char *ag_test_case_desc(const ag_test_case *ctx)
 
 
 /*
- * ag_test_case_msg(): get execution result message of test case.
+ * ag_test_case_str(): get string representation of test case.
  *
  * @ctx: contextual test case.
  *
- * Return: execution result message of @ctx.
+ * Return: string representation of @ctx.
  */
-extern char *ag_test_case_msg(const ag_test_case *ctx)
+extern char *ag_test_case_str(const ag_test_case *ctx)
 {
         switch (ctx->stat) {
                 case AG_TEST_STATUS_OK:

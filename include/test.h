@@ -53,6 +53,7 @@
 #endif
 
 #include <stddef.h>
+#include <stdio.h>
 
 
 
@@ -93,7 +94,7 @@ extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx);
 
 extern char *ag_test_case_desc(const ag_test_case *ctx);
 
-extern char *ag_test_case_msg(const ag_test_case *ctx);
+extern char *ag_test_case_str(const ag_test_case *ctx);
 
 extern void ag_test_case_desc_set(ag_test_case *ctx, const char *desc);
 
@@ -116,6 +117,10 @@ extern int ag_test_suite_fail(const ag_test_suite *ctx);
 extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc);
 
 extern void ag_test_suite_exec(ag_test_suite *ctx);
+
+extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log);
+
+extern char *ag_test_suite_str(const ag_test_suite *ctx);
 
 
 extern ag_test_harness *ag_test_harness_new(const char *file);
