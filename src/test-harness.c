@@ -20,11 +20,10 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
 
-
 /*-
- * File: argent/src/test-suite.c
+ * File: argent/src/test-harness.c
  *
- * This file contains the implementation of the test suite interface of the
+ * This file contains the implementation of the test harness interface of the
  * Testing Module of the Argent Library. See argent/include/test.h for an
  * overview description of this interface.
  */
@@ -38,28 +37,28 @@
 
 
 /*
- * struct node: node in list of test cases.
+ * struct node: node in list of test suites.
  *
- * @tc : test case.
+ * @ts : test suite.
  * @nxt: next node in list.
  */
 struct node {
-        ag_test_case *tc;
+        ag_test_suite *ts;
         struct node *nxt;
 };
 
 
 /*
- * node_new(): create new test case list node.
+ * node_new(): create new test suite list node.
  *
- * @tc: test case.
+ * @ts: test suite.
  *
- * Return: new test case list node.
+ * Return: new test suite list node.
  */
-static inline struct node *node_new(const ag_test_case *tc)
+static inline struct node *node_new(const ag_test_suite *ts)
 {
         struct node *n = malloc(sizeof *n);
-        n->tc = ag_test_case_copy(tc);
+        n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
         return n;
@@ -67,16 +66,16 @@ static inline struct node *node_new(const ag_test_case *tc)
 
 
 /*
- * node_copy(): create deep copy of test case list node.
+ * node_copy(): create deep copy of test suite list node.
  *
- * @ctx: contextual test case list node.
+ * @ctx: contextual test suite list node.
  *
  * Return: copy of @ctx.
  */
 static inline struct node *node_copy(const struct node *ctx)
 {
         struct node *n = malloc(sizeof *n);
-        n->tc = ag_test_case_copy(ctx->tc);
+        n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
         return n;
@@ -84,13 +83,13 @@ static inline struct node *node_copy(const struct node *ctx)
 
 
 /*
- * node_dispose(): dispose test case list node.
+ * node_dispose(): dispose test suite list node.
  *
- * @ctx: contextual test case list node.
+ * @ctx: contextual test suite list node.
  */
 static inline void node_dispose(struct node *ctx)
 {
-        ag_test_case_dispose(&ctx->tc);
+        ag_test_suite_dispose(&ctx->ts);
         free(ctx);
 }
 
@@ -132,51 +131,43 @@ static inline void str_dispose(char *ctx)
 
 
 /*
- * struct ag_test_suite: internal structure of `ag_test_suite`.
+ * struct ag_test_harness: internal structure of `ag_test_harness`.
  *
- * @head: head of test case list.
- * @desc: test suite description.
+ * @head: head of test suite list.
  */
-struct ag_test_suite {
+struct ag_test_harness {
         struct node *head;
-        char *desc;
 };
 
 
 /*
- * ag_test_suite_new(): create new test suite.
+ * ag_test_harness_new(): create new test harness.
  *
- * @desc: description of test suite.
- *
- * Return: new test suite.
+ * Return: new test harness.
  */
-extern ag_test_suite *ag_test_suite_new(const char *desc)
+extern ag_test_harness *ag_test_harness_new(void)
 {
-        ag_test_suite *ctx = malloc(sizeof *ctx);
+        ag_test_harness *ctx = malloc(sizeof *ctx);
         ctx->head = NULL;
-
-        size_t len = strlen(desc);
-        ctx->desc = malloc(len + 1);
-        strncpy(ctx->desc, desc, len);
 
         return ctx;
 }
 
 
 /*
- * ag_test_suite_copy(): create deep copy of test suite.
+ * ag_test_harness_copy(): create deep copy of test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  *
  * Return: copy of @ctx.
  */
-extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
+extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
-        ag_test_suite *cp = ag_test_suite_new(ctx->desc);
+        ag_test_harness *cp = ag_test_harness_new();
 
         struct node *n = ctx->head;
         while (n) {
-                ag_test_suite_push(cp, n->tc);
+                ag_test_harness_push(cp, n->ts);
                 n = n->nxt;
         }
 
@@ -189,9 +180,9 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_suite_dispose(ag_test_suite **ctx)
+extern void ag_test_harness_dispose(ag_test_harness **ctx)
 {
-        ag_test_suite *hnd;
+        ag_test_harness *hnd;
 
         if (ctx && (hnd = *ctx)) {
                 struct node *n1 = hnd->head, *n2;
@@ -208,13 +199,13 @@ extern void ag_test_suite_dispose(ag_test_suite **ctx)
 
 
 /*
- * ag_test_suite_len(): get number of test cases in test suite.
+ * ag_test_harness_len(): get number of test suites in test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  *
- * Return: number of test cases in @ctx.
+ * Return: number of test suites in @ctx.
  */
-extern size_t ag_test_suite_len(const  ag_test_suite *ctx)
+extern int ag_test_harness_len(const ag_test_harness *ctx)
 {
         register size_t len = 0;
 
@@ -229,21 +220,19 @@ extern size_t ag_test_suite_len(const  ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_pass(): get number of passed test cases in test suite.
+ * ag_test_harness_pass(): get number of passed test suites in test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  *
- * Return: number of passed test cases in @ctx.
+ * Return: number of passed test suites in @ctx.
  */
-extern int ag_test_suite_pass(const ag_test_suite *ctx)
+extern int ag_test_harness_pass(const ag_test_harness *ctx)
 {
         register int pass = 0;
 
         struct node *n = ctx->head;
         while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_OK)
-                        pass++;
-                
+                pass += ag_test_suite_pass(n->ts);
                 n = n->nxt;
         }
 
@@ -252,21 +241,19 @@ extern int ag_test_suite_pass(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_skip(): get number of skipped test cases in test suite.
+ * ag_test_harness_skip(): get number of skipped test suites in test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  *
- * Return: number of skipped test cases in test suite.
+ * Return: number of skipped test suites in @ctx.
  */
-extern int ag_test_suite_skip(const ag_test_suite *ctx)
+extern int ag_test_harness_skip(const ag_test_harness *ctx)
 {
         register int skip = 0;
 
         struct node *n = ctx->head;
         while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_SKIP)
-                        skip++;
-
+                skip += ag_test_suite_skip(n->ts);
                 n = n->nxt;
         }
 
@@ -275,21 +262,19 @@ extern int ag_test_suite_skip(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_fail(): get number of failed test cases in test suite.
+ * ag_test_harness_fail(): get number of failed test suites in test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  *
- * Return: number of failed test cases in test suite.
+ * Return: number of failed test suites in @ctx.
  */
-extern int ag_test_suite_fail(const ag_test_suite *ctx)
+extern int ag_test_harness_fail(const ag_test_harness *ctx)
 {
         register int fail = 0;
 
         struct node *n = ctx->head;
         while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_FAIL)
-                        fail++;
-
+                fail += ag_test_suite_fail(n->ts);
                 n = n->nxt;
         }
 
@@ -298,14 +283,14 @@ extern int ag_test_suite_fail(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_push(): push new test case into test suite.
+ * ag_test_suite_push(): push new test suite into test harness.
  *
- * @ctx: contextual test suite.
- * @tc : test case to push into @ctx.
+ * @ctx: contextual test harness.
+ * @tc : test suite to push into @ctx.
  */
-extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
+extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
 {
-        struct node *push = node_new(tc);
+        struct node *push = node_new(ts);
 
         if (ctx->head) {
                 struct node *n = ctx->head;
@@ -319,55 +304,39 @@ extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
 
 
 /*
- * ag_test_suite_exec(): execute test cases in test suite.
+ * ag_test_harness_exec(): execute test suites in test harness.
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  */
-extern void ag_test_suite_exec(ag_test_suite *ctx)
+extern void ag_test_harness_exec(ag_test_harness *ctx)
 {
         struct node *n = ctx->head;
 
         while (n) {
-                ag_test_case_exec(n->tc); 
+                ag_test_suite_exec(n->ts); 
                 n = n->nxt;
         }
 }
 
 
 /*
- * ag_test_suite_exec_log(): execute test cases in test suite and log results.
+ * ag_test_harness_exec_log(): execute and log test suites in test harness
  *
- * @ctx: contextual test suite.
+ * @ctx: contextual test harness.
  * @log: log file.
  */
-extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log)
+extern void ag_test_harness_exec_log(ag_test_harness *ctx, FILE *log)
 {
         char *str;
-        register size_t i = 0;
         struct node *n = ctx->head;
 
         while (n) {
-                ag_test_case_exec(n->tc); 
-                str = ag_test_case_str(n->tc);
+                ag_test_suite_exec_log(n->ts, log); 
+                str = ag_test_suite_str(n->ts);
                 n = n->nxt;
 
-                fprintf(log, "%.2lu. %s\n", ++i, str);
+                fprintf(log, "%s\n", str);
                 str_dispose(str);
         }
-}
-
-
-/*
- * ag_test_suite_str(): get string representation of test suite.
- *
- * @ctx: contextual test suite.
- *
- * Return: string representation of @ctx.
- */
-extern char *ag_test_suite_str(const ag_test_suite *ctx)
-{
-        return str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
-                        ag_test_suite_len(ctx), ag_test_suite_pass(ctx),
-                        ag_test_suite_skip(ctx), ag_test_suite_fail(ctx));
 }
 

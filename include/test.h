@@ -123,13 +123,11 @@ extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log);
 extern char *ag_test_suite_str(const ag_test_suite *ctx);
 
 
-extern ag_test_harness *ag_test_harness_new(const char *file);
+extern ag_test_harness *ag_test_harness_new(void);
+
+extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx);
 
 extern void ag_test_harness_dispose(ag_test_harness **ctx);
-
-extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
-
-extern void ag_test_harness_exec(ag_test_harness *ctx);
 
 extern int ag_test_harness_len(const ag_test_harness *ctx);
 
@@ -138,6 +136,13 @@ extern int ag_test_harness_pass(const ag_test_harness *ctx);
 extern int ag_test_harness_skip(const ag_test_harness *ctx);
 
 extern int ag_test_harness_fail(const ag_test_harness *ctx);
+
+extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
+
+extern void ag_test_harness_exec(ag_test_harness *ctx);
+
+extern void ag_test_harness_exec_log(ag_test_harness *ctx, FILE *file);
+
 
 
 #ifdef __cplusplus
