@@ -101,6 +101,8 @@ extern void ag_test_case_exec(ag_test_case *ctx);
 
 extern ag_test_suite *ag_test_suite_new(const char *desc);
 
+extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx);
+
 extern void ag_test_suite_dispose(ag_test_suite **ctx);
 
 extern size_t ag_test_suite_len(const  ag_test_suite *ctx);
