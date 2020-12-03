@@ -26,7 +26,7 @@
  *
  * This file contains the implementation of the test case interface of the
  * Testing Module of the Argent Library. See argent/include/test.h for an
- * overview description of the interface.
+ * overview description of this interface.
  */
 
 

@@ -21,18 +21,40 @@
  */
 
 
+/*
+ * File: argent/src/test-suite.c
+ *
+ * This file contains the implementation of the test suite interface of the
+ * Testing Module of the Argent Library. See argent/include/test.h for an
+ * overview description of this interface.
+ */
+
+
 #include "../include/argent.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 
+/*
+ * struct node: node in list of test cases.
+ *
+ * @tc : test case.
+ * @nxt: next node in list.
+ */
 struct node {
         ag_test_case *tc;
         struct node *nxt;
 };
 
 
+/*
+ * node_new(): create new test case list node.
+ *
+ * @tc: test case.
+ *
+ * Return: new test case list node.
+ */
 static inline struct node *node_new(const ag_test_case *tc)
 {
         struct node *n = malloc(sizeof *n);
@@ -43,6 +65,13 @@ static inline struct node *node_new(const ag_test_case *tc)
 }
 
 
+/*
+ * node_copy(): create deep copy of test case list node.
+ *
+ * @ctx: contextual test case list node.
+ *
+ * Return: copy of @ctx.
+ */
 static inline struct node *node_copy(const struct node *ctx)
 {
         struct node *n = malloc(sizeof *n);
@@ -53,6 +82,11 @@ static inline struct node *node_copy(const struct node *ctx)
 }
 
 
+/*
+ * node_dispose(): dispose test case list node.
+ *
+ * @ctx: contextual test case list node.
+ */
 static inline void node_dispose(struct node *ctx)
 {
         ag_test_case_dispose(&ctx->tc);
@@ -60,6 +94,12 @@ static inline void node_dispose(struct node *ctx)
 }
 
 
+/*
+ * struct ag_test_suite: internal structure of `ag_test_suite` instance.
+ *
+ * @head: head of test case list.
+ * @desc: test suite description.
+ */
 struct ag_test_suite {
         struct node *head;
         char *desc;
@@ -67,9 +107,11 @@ struct ag_test_suite {
 
 
 /*
- * ag_test_suite_new():
+ * ag_test_suite_new(): create new test suite.
  *
- * @desc:
+ * @desc: description of test suite.
+ *
+ * Return: new tesut suite.
  */
 extern ag_test_suite *ag_test_suite_new(const char *desc)
 {
@@ -85,9 +127,11 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
 
 
 /*
- * ag_test_suite_copy():
+ * ag_test_suite_copy(): create deep copy of test suite.
  *
  * @ctx: contextual test suite.
+ *
+ * Return: copy of @ctx.
  */
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
@@ -104,7 +148,7 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_dispose():
+ * ag_test_suite_dispose(): dispose test suite.
  *
  * @ctx: contextual test suite.
  */
@@ -127,9 +171,11 @@ extern void ag_test_suite_dispose(ag_test_suite **ctx)
 
 
 /*
- * ag_test_suite_len():
+ * ag_test_suite_len(): get number of test cases in test suite.
  *
  * @ctx: contextual test suite.
+ *
+ * Return: number of test cases in @ctx.
  */
 extern size_t ag_test_suite_len(const  ag_test_suite *ctx)
 {
@@ -146,9 +192,11 @@ extern size_t ag_test_suite_len(const  ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_pass():
+ * ag_test_suite_pass(): get number of passed test cases in test suite.
  *
  * @ctx: contextual test suite.
+ *
+ * Return: number of passed test cases in @ctx.
  */
 extern int ag_test_suite_pass(const ag_test_suite *ctx)
 {
@@ -165,9 +213,11 @@ extern int ag_test_suite_pass(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_skip():
+ * ag_test_suite_skip(): get number of skipped test cases in test suite.
  *
  * @ctx: contextual test suite.
+ *
+ * Return: number of skipped test cases in test suite.
  */
 extern int ag_test_suite_skip(const ag_test_suite *ctx)
 {
@@ -184,9 +234,11 @@ extern int ag_test_suite_skip(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_fail():
+ * ag_test_suite_fail(): get number of failed test cases in test suite.
  *
  * @ctx: contextual test suite.
+ *
+ * Return: number of failed test cases in test suite.
  */
 extern int ag_test_suite_fail(const ag_test_suite *ctx)
 {
@@ -203,10 +255,10 @@ extern int ag_test_suite_fail(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_push():
+ * ag_test_suite_push(): push new test case into test suite.
  *
  * @ctx: contextual test suite.
- * @tc :
+ * @tc : test case to push into @ctx.
  */
 extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
 {
@@ -224,7 +276,7 @@ extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
 
 
 /*
- * ag_test_suite_exec():
+ * ag_test_suite_exec(): execute test cases in test suite.
  *
  * @ctx: contextual test suite.
  */
