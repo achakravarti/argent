@@ -220,6 +220,20 @@ extern int ag_test_harness_len(const ag_test_harness *ctx)
 
 
 /*
+ * ag_test_harness_total(): get total number of test cases in test harness.
+ *
+ * @ctx: contextual test harness.
+ *
+ * Return: number of test cases in @ctx.
+ */
+extern int ag_test_harness_total(const ag_test_harness *ctx)
+{
+        return ag_test_harness_pass(ctx) + ag_test_harness_skip(ctx)
+                + ag_test_harness_fail(ctx);
+}
+
+
+/*
  * ag_test_harness_pass(): get number of passed test suites in test harness.
  *
  * @ctx: contextual test harness.
@@ -283,6 +297,22 @@ extern int ag_test_harness_fail(const ag_test_harness *ctx)
 
 
 /*
+ * ag_test_harness_str(): get string representation of test harness.
+ *
+ * @ctx: contextual test harness.
+ *
+ * Return: string representation of @ctx.
+ */
+extern char *ag_test_harnsess_str(const ag_test_harness *ctx)
+{
+        return str_new_fmt("%d test suites, %d tests, %d passed, %d skipped,"
+                       " %d failed.", ag_test_harness_len(ctx),
+                       ag_test_harness_total(ctx), ag_test_harness_pass(ctx),
+                       ag_test_harness_skip(ctx), ag_test_harness_fail(ctx));
+}
+
+
+/*
  * ag_test_suite_push(): push new test suite into test harness.
  *
  * @ctx: contextual test harness.
@@ -320,11 +350,28 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 
 
 /*
+ * ag_test_harness_exec_console(): execute test suites in test harness and log
+ *                                 to console.
+ *
+ * @ctx: contextual test harness.
+ */
+extern void ag_test_harness_exec_console(ag_test_harness *ctx)
+{
+        struct node *n = ctx->head;
+
+        while (n) {
+                ag_test_suite_exec_console(n->ts); 
+                n = n->nxt;
+        }
+}
+
+
+/*
  * ag_test_harness_exec_file(): execute test suites in test harness and log to
  *                              file.
  *
- * @ctx: contextual test harness.
- * @log: log file.
+ * @ctx : contextual test harness.
+ * @file: log file.
  */
 extern void ag_test_harness_exec_file(ag_test_harness *ctx, const char *file)
 {

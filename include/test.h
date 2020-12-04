@@ -47,7 +47,6 @@
 #ifndef __ARGENT_TEST_H__
 #define __ARGENT_TEST_H__
 
-
 #ifdef __cplusplus
         extern "C" {
 #endif
@@ -56,8 +55,9 @@
 #include <stdio.h>
 
 
-
-
+/*-
+ * Enumeration: ag_test_status
+ */
 enum ag_test_status {
         AG_TEST_STATUS_OK = 0,
         AG_TEST_STATUS_WAIT,
@@ -68,16 +68,37 @@ enum ag_test_status {
         __AG_TEST_STATUS_LEN__
 };
 
+
+/*-
+ * Type: ag_test_case
+ */
 typedef struct ag_test_case ag_test_case;
 
-typedef enum ag_test_status (ag_test)(ag_test_case *);
 
+/*-
+ * Type: ag_test_suite
+ */
 typedef struct ag_test_suite ag_test_suite;
 
+
+/*-
+ * Type: ag_test_harness
+ */
 typedef struct ag_test_harness ag_test_harness;
+
+
+/*-
+ * Callback: ag_test
+ */
+typedef enum ag_test_status (ag_test)(ag_test_case *);
+
 
 #define ag_test_assert(p) ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
 
+
+/*-
+ * Macro: ag_test_assert_debug()
+ */
 #ifdef NDEBUG
 #       define ag_test_assert_debug(p) AG_TEST_STATUS_SKIP
 #else
@@ -136,11 +157,15 @@ extern void ag_test_harness_dispose(ag_test_harness **ctx);
 
 extern int ag_test_harness_len(const ag_test_harness *ctx);
 
+extern int ag_test_harness_total(const ag_test_harness *ctx);
+
 extern int ag_test_harness_pass(const ag_test_harness *ctx);
 
 extern int ag_test_harness_skip(const ag_test_harness *ctx);
 
 extern int ag_test_harness_fail(const ag_test_harness *ctx);
+
+extern char *ag_test_harness_str(const ag_test_harness *ctx);
 
 extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
 
