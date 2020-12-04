@@ -114,11 +114,16 @@ extern int ag_test_suite_skip(const ag_test_suite *ctx);
 
 extern int ag_test_suite_fail(const ag_test_suite *ctx);
 
+extern char *ag_test_suite_str(const ag_test_suite *ctx);
+
 extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc);
 
 extern void ag_test_suite_exec(ag_test_suite *ctx);
 
-extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log);
+extern void ag_test_suite_exec_console(ag_test_suite *ctx);
+
+extern void ag_test_suite_exec_file(ag_test_suite *ctx, const char *file);
+
 
 extern char *ag_test_suite_str(const ag_test_suite *ctx);
 

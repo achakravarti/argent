@@ -45,13 +45,13 @@ int main(int argc, char **argv)
 
         ag_test_suite_push(ts1, tc1);
         ag_test_suite_push(ts1, tc2);
-        ag_test_suite_exec_log(ts1, stdout);
+        ag_test_suite_exec_console(ts1);
 
-        printf("len = %lu\n", ag_test_suite_len(ts1));
+        /*printf("len = %lu\n", ag_test_suite_len(ts1));
         printf("pass = %d\n", ag_test_suite_pass(ts1));
         printf("skip = %d\n", ag_test_suite_skip(ts1));
         printf("fail = %d\n", ag_test_suite_fail(ts1));
-        printf("%s\n", ag_test_suite_str(ts1));
+        printf("%s\n", ag_test_suite_str(ts1));*/
 
         ag_test_case_dispose(&tc1);
         ag_test_case_dispose(&tc2);

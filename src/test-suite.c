@@ -144,6 +144,31 @@ struct ag_test_suite {
 
 
 /*
+ * exec_log(): execute test cases in test suite and log results.
+ *
+ * @ctx: contextual test suite.
+ * @log: log file.
+ */
+static void exec_log(ag_test_suite *ctx, FILE *log)
+{
+        char *str;
+        register size_t i = 0;
+        struct node *n = ctx->head;
+
+        while (n) {
+                ag_test_case_exec(n->tc); 
+                str = ag_test_case_str(n->tc);
+                n = n->nxt;
+
+                fprintf(log, "\n%.2lu. %s", ++i, str);
+                str_dispose(str);
+        }
+}
+
+
+
+
+/*
  * ag_test_suite_new(): create new test suite.
  *
  * @desc: description of test suite.
@@ -298,6 +323,22 @@ extern int ag_test_suite_fail(const ag_test_suite *ctx)
 
 
 /*
+ * ag_test_suite_str(): get string representation of test suite.
+ *
+ * @ctx: contextual test suite.
+ *
+ * Return: string representation of @ctx.
+ */
+extern char *ag_test_suite_str(const ag_test_suite *ctx)
+{
+        return str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
+                        ag_test_suite_len(ctx), ag_test_suite_pass(ctx),
+                        ag_test_suite_skip(ctx), ag_test_suite_fail(ctx));
+}
+
+
+
+/*
  * ag_test_suite_push(): push new test case into test suite.
  *
  * @ctx: contextual test suite.
@@ -335,39 +376,45 @@ extern void ag_test_suite_exec(ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_exec_log(): execute test cases in test suite and log results.
+ * ag_test_suite_exec_console(): execute test cases in test suite and log to 
+ *                               console.
  *
  * @ctx: contextual test suite.
- * @log: log file.
  */
-extern void ag_test_suite_exec_log(ag_test_suite *ctx, FILE *log)
+extern void ag_test_suite_exec_console(ag_test_suite *ctx)
 {
-        char *str;
-        register size_t i = 0;
-        struct node *n = ctx->head;
+        printf("\nTest Suite: %s\n", ctx->desc);
+        for (register size_t i = 0; i < strlen(ctx->desc) + 11; i++)
+                fputs("=", stdout);
 
-        while (n) {
-                ag_test_case_exec(n->tc); 
-                str = ag_test_case_str(n->tc);
-                n = n->nxt;
-
-                fprintf(log, "%.2lu. %s\n", ++i, str);
-                str_dispose(str);
-        }
+        exec_log(ctx, stdout);
+                
+        char *str = ag_test_suite_str(ctx);
+        printf("\n\n%s\n", str);
+        str_dispose(str);
 }
 
 
 /*
- * ag_test_suite_str(): get string representation of test suite.
+ * ag_test_suite_exec_file(): execute test cases in test suite and log to file.
  *
  * @ctx: contextual test suite.
- *
- * Return: string representation of @ctx.
  */
-extern char *ag_test_suite_str(const ag_test_suite *ctx)
+extern void ag_test_suite_exec_file(ag_test_suite *ctx, const char *file)
 {
-        return str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
-                        ag_test_suite_len(ctx), ag_test_suite_pass(ctx),
-                        ag_test_suite_skip(ctx), ag_test_suite_fail(ctx));
+        FILE *log = fopen("w", file);
+
+        if (log) {
+                printf("\nTest Suite: %s\n", ctx->desc);
+                for (register size_t i = 0; i < strlen(ctx->desc) + 11; i++)
+                        fputs("=", stdout);
+                
+                exec_log(ctx, log);
+
+                char *str = ag_test_suite_str(ctx);
+                fprintf(log, "\n\n%s\n", str);
+                str_dispose(str);
+        }
 }
+
 

@@ -320,23 +320,19 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 
 
 /*
- * ag_test_harness_exec_log(): execute and log test suites in test harness
+ * ag_test_harness_exec_file(): execute test suites in test harness and log to
+ *                              file.
  *
  * @ctx: contextual test harness.
  * @log: log file.
  */
-extern void ag_test_harness_exec_log(ag_test_harness *ctx, FILE *log)
+extern void ag_test_harness_exec_file(ag_test_harness *ctx, const char *file)
 {
-        char *str;
         struct node *n = ctx->head;
 
         while (n) {
-                ag_test_suite_exec_log(n->ts, log); 
-                str = ag_test_suite_str(n->ts);
+                ag_test_suite_exec_file(n->ts, file); 
                 n = n->nxt;
-
-                fprintf(log, "%s\n", str);
-                str_dispose(str);
         }
 }
 
