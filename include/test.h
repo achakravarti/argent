@@ -44,6 +44,8 @@
  * The implementation of the interfaces of this Module is divided logically
  * across the argent/src/test-*.c files.
  */
+
+
 #ifndef __ARGENT_TEST_H__
 #define __ARGENT_TEST_H__
 
@@ -56,8 +58,10 @@
 
 
 /*-
- * Enumeration: ag_test_status
+ * Interface: Test Primitives
  */
+
+
 enum ag_test_status {
         AG_TEST_STATUS_OK = 0,
         AG_TEST_STATUS_WAIT,
@@ -70,108 +74,79 @@ enum ag_test_status {
 
 
 /*-
- * Type: ag_test_case
+ * Interface: Test Case
  */
+
+
 typedef struct ag_test_case ag_test_case;
 
-
-/*-
- * Type: ag_test_suite
- */
-typedef struct ag_test_suite ag_test_suite;
-
-
-/*-
- * Type: ag_test_harness
- */
-typedef struct ag_test_harness ag_test_harness;
-
-
-/*-
- * Callback: ag_test
- */
 typedef enum ag_test_status (ag_test)(ag_test_case *);
-
 
 #define ag_test_assert(p) ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
 
-
-/*-
- * Macro: ag_test_assert_debug()
- */
 #ifdef NDEBUG
 #       define ag_test_assert_debug(p) AG_TEST_STATUS_SKIP
 #else
 #       define ag_test_assert_debug(p) ag_test_assert(p)
 #endif
 
-extern ag_test_case *ag_test_case_new(ag_test *test);
+extern ag_test_case *ag_test_case_new(ag_test *);
+extern ag_test_case *ag_test_case_copy(const ag_test_case *);
+extern void ag_test_case_dispose(ag_test_case **);
 
-extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx);
+extern enum ag_test_status ag_test_case_status(const ag_test_case *);
+extern char *ag_test_case_desc(const ag_test_case *);
+extern char *ag_test_case_str(const ag_test_case *);
 
-extern void ag_test_case_dispose(ag_test_case **ctx);
-
-extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx);
-
-extern char *ag_test_case_desc(const ag_test_case *ctx);
-
-extern char *ag_test_case_str(const ag_test_case *ctx);
-
-extern void ag_test_case_desc_set(ag_test_case *ctx, const char *desc);
-
-extern void ag_test_case_exec(ag_test_case *ctx);
-
-extern ag_test_suite *ag_test_suite_new(const char *desc);
-
-extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx);
-
-extern void ag_test_suite_dispose(ag_test_suite **ctx);
-
-extern size_t ag_test_suite_len(const  ag_test_suite *ctx);
-
-extern int ag_test_suite_pass(const ag_test_suite *ctx);
-
-extern int ag_test_suite_skip(const ag_test_suite *ctx);
-
-extern int ag_test_suite_fail(const ag_test_suite *ctx);
-
-extern char *ag_test_suite_str(const ag_test_suite *ctx);
-
-extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc);
-
-extern void ag_test_suite_exec(ag_test_suite *ctx);
-
-extern void ag_test_suite_exec_console(ag_test_suite *ctx);
-
-extern void ag_test_suite_exec_file(ag_test_suite *ctx, const char *file);
+extern void ag_test_case_desc_set(ag_test_case *, const char *);
+extern void ag_test_case_exec(ag_test_case *);
 
 
-extern char *ag_test_suite_str(const ag_test_suite *ctx);
+/*-
+ * Interface: Test Suite
+ */
 
+
+typedef struct ag_test_suite ag_test_suite;
+
+extern ag_test_suite *ag_test_suite_new(const char *);
+extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
+extern void ag_test_suite_dispose(ag_test_suite **);
+
+extern size_t ag_test_suite_len(const  ag_test_suite *);
+extern int ag_test_suite_pass(const ag_test_suite *);
+extern int ag_test_suite_skip(const ag_test_suite *);
+extern int ag_test_suite_fail(const ag_test_suite *);
+extern char *ag_test_suite_str(const ag_test_suite *);
+
+extern void ag_test_suite_push(ag_test_suite *, const ag_test_case *);
+extern void ag_test_suite_exec(ag_test_suite *);
+extern void ag_test_suite_exec_console(ag_test_suite *);
+extern void ag_test_suite_exec_file(ag_test_suite *ctx, const char *);
+
+
+/*-
+ * Interface: Test Harness
+ */
+
+
+typedef struct ag_test_harness ag_test_harness;
 
 extern ag_test_harness *ag_test_harness_new(void);
+extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
+extern void ag_test_harness_dispose(ag_test_harness **);
 
-extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx);
+extern int ag_test_harness_len(const ag_test_harness *);
+extern int ag_test_harness_total(const ag_test_harness *);
+extern int ag_test_harness_pass(const ag_test_harness *);
+extern int ag_test_harness_skip(const ag_test_harness *);
+extern int ag_test_harness_fail(const ag_test_harness *);
+extern char *ag_test_harness_str(const ag_test_harness *);
 
-extern void ag_test_harness_dispose(ag_test_harness **ctx);
-
-extern int ag_test_harness_len(const ag_test_harness *ctx);
-
-extern int ag_test_harness_total(const ag_test_harness *ctx);
-
-extern int ag_test_harness_pass(const ag_test_harness *ctx);
-
-extern int ag_test_harness_skip(const ag_test_harness *ctx);
-
-extern int ag_test_harness_fail(const ag_test_harness *ctx);
-
-extern char *ag_test_harness_str(const ag_test_harness *ctx);
-
-extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts);
-
-extern void ag_test_harness_exec(ag_test_harness *ctx);
-
-extern void ag_test_harness_exec_log(ag_test_harness *ctx, FILE *file);
+extern void ag_test_harness_push(ag_test_harness *, const ag_test_suite *);
+extern void ag_test_harness_exec(ag_test_harness *);
+extern void ag_test_harness_exec_console(ag_test_harness *);
+extern void ag_test_harness_exec_file(ag_test_harness *, const char *);
 
 
 
