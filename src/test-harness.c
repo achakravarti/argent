@@ -303,10 +303,10 @@ extern int ag_test_harness_fail(const ag_test_harness *ctx)
  *
  * Return: string representation of @ctx.
  */
-extern char *ag_test_harnsess_str(const ag_test_harness *ctx)
+extern char *ag_test_harness_str(const ag_test_harness *ctx)
 {
-        return str_new_fmt("%d test suites, %d tests, %d passed, %d skipped,"
-                       " %d failed.", ag_test_harness_len(ctx),
+        return str_new_fmt("%d test suite(s), %d test(s), %d passed,"
+                       " %d skipped, %d failed.", ag_test_harness_len(ctx),
                        ag_test_harness_total(ctx), ag_test_harness_pass(ctx),
                        ag_test_harness_skip(ctx), ag_test_harness_fail(ctx));
 }
@@ -349,37 +349,16 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 }
 
 
-/*
- * ag_test_harness_exec_console(): execute test suites in test harness and log
- *                                 to console.
- *
- * @ctx: contextual test harness.
- */
-extern void ag_test_harness_exec_console(ag_test_harness *ctx)
+extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
 {
         struct node *n = ctx->head;
-
         while (n) {
-                ag_test_suite_exec_console(n->ts); 
+                ag_test_suite_log(n->ts, log);
                 n = n->nxt;
         }
-}
 
-
-/*
- * ag_test_harness_exec_file(): execute test suites in test harness and log to
- *                              file.
- *
- * @ctx : contextual test harness.
- * @file: log file.
- */
-extern void ag_test_harness_exec_file(ag_test_harness *ctx, const char *file)
-{
-        struct node *n = ctx->head;
-
-        while (n) {
-                ag_test_suite_exec_file(n->ts, file); 
-                n = n->nxt;
-        }
+        char *str = ag_test_harness_str(ctx);
+        fprintf(log, "\n%s\n", str);
+        str_dispose(str);
 }
 

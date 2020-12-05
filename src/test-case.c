@@ -252,3 +252,20 @@ extern void ag_test_case_exec(ag_test_case *ctx)
         ctx->stat = ctx->test(ctx);
 }
 
+
+/*
+ * ag_test_case_log(): log test case.
+ *
+ * @ctx: contextual test case.
+ * @log: log file.
+ */
+extern void ag_test_case_log(const ag_test_case *ctx, FILE *log)
+{
+        if (log) { 
+                char *str = ag_test_case_str(ctx);
+                fprintf(log, "%s", str);
+                str_dispose(str);
+        }
+}
+
+

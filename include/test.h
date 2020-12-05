@@ -100,6 +100,7 @@ extern char *ag_test_case_str(const ag_test_case *);
 
 extern void ag_test_case_desc_set(ag_test_case *, const char *);
 extern void ag_test_case_exec(ag_test_case *);
+extern void ag_test_case_log(const ag_test_case *, FILE *);
 
 
 /*-
@@ -121,8 +122,7 @@ extern char *ag_test_suite_str(const ag_test_suite *);
 
 extern void ag_test_suite_push(ag_test_suite *, const ag_test_case *);
 extern void ag_test_suite_exec(ag_test_suite *);
-extern void ag_test_suite_exec_console(ag_test_suite *);
-extern void ag_test_suite_exec_file(ag_test_suite *ctx, const char *);
+extern void ag_test_suite_log(const ag_test_suite *, FILE *);
 
 
 /*-
@@ -145,9 +145,7 @@ extern char *ag_test_harness_str(const ag_test_harness *);
 
 extern void ag_test_harness_push(ag_test_harness *, const ag_test_suite *);
 extern void ag_test_harness_exec(ag_test_harness *);
-extern void ag_test_harness_exec_console(ag_test_harness *);
-extern void ag_test_harness_exec_file(ag_test_harness *, const char *);
-
+extern void ag_test_harness_log(const ag_test_harness *, FILE *);
 
 
 #ifdef __cplusplus

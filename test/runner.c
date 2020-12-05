@@ -42,20 +42,19 @@ int main(int argc, char **argv)
         ag_test_case *tc2 = ag_test_case_new(&sample_2);
 
         ag_test_suite *ts1 = ag_test_suite_new("sample 1 test suite");
+        ag_test_harness *th = ag_test_harness_new();
 
         ag_test_suite_push(ts1, tc1);
         ag_test_suite_push(ts1, tc2);
-        ag_test_suite_exec_console(ts1);
+        ag_test_harness_push(th, ts1);
+        
+        ag_test_harness_exec(th);
+        ag_test_harness_log(th, stdout);
+        //ag_test_harness_exec_console(th);
 
-        /*printf("len = %lu\n", ag_test_suite_len(ts1));
-        printf("pass = %d\n", ag_test_suite_pass(ts1));
-        printf("skip = %d\n", ag_test_suite_skip(ts1));
-        printf("fail = %d\n", ag_test_suite_fail(ts1));
-        printf("%s\n", ag_test_suite_str(ts1));*/
 
         ag_test_case_dispose(&tc1);
         ag_test_case_dispose(&tc2);
-
         ag_test_suite_dispose(&ts1);
 
 
