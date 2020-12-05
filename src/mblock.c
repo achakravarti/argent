@@ -37,6 +37,24 @@ static inline size_t *meta_head(const ag_mblock *ctx)
 }
 
 
+static inline size_t meta_refc(const ag_mblock *ctx)
+{
+        return ((size_t *)ctx)[-1];
+}
+
+
+static inline void meta_refc_retain(ag_mblock *ctx)
+{
+        ((size_t *)ctx)[-1]++;
+}
+
+
+static inline void meta_refc_release(ag_mblock *ctx)
+{
+        ((size_t *)ctx)[-1]--;
+}
+
+
 extern ag_mblock *ag_mblock_new(size_t sz)
 {
         size_t *ctx = malloc(sizeof(size_t) + sz);
@@ -54,7 +72,7 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
         (void) posix_memalign((void **)&ctx, align, sz);
 
         memset(ctx, 0, sz);
-        *ctx = 1;
+        ctx[0] = 1;
 
         return (ag_mblock *) &(ctx[1]);
 }
@@ -62,8 +80,9 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 
 extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
 {
-        ((size_t *)ctx)[-1]++;
-        return (ag_mblock *)ctx;
+        size_t *hnd = (ag_mblock *)ctx;
+        meta_refc_retain(hnd);
+        return hnd;
 }
 
 
@@ -79,11 +98,13 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 
 extern void ag_mblock_free(ag_mblock **ctx)
 {
-        if (ctx && *ctx) {
-                size_t *hnd = meta_head(*ctx);
+        ag_mblock *hnd;
 
-                if (!(--(*hnd))) {
-                        free(hnd);
+        if (ctx && (hnd = *ctx)) {
+                meta_refc_release(hnd);
+
+                if (!meta_refc(hnd)) {
+                        free(meta_head(hnd));
                         *ctx = NULL;
                 }
         }
@@ -115,7 +136,7 @@ extern size_t ag_mblock_sz_data(const ag_mblock *ctx)
 
 extern size_t ag_mblock_refc(const ag_mblock *ctx)
 {
-        return ((size_t *)ctx)[-1];
+        return meta_refc(ctx);
 }
 
 
