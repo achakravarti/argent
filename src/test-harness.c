@@ -57,7 +57,7 @@ struct node {
  */
 static inline struct node *node_new(const ag_test_suite *ts)
 {
-        struct node *n = malloc(sizeof *n);
+        struct node *n = ag_mblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
@@ -74,7 +74,7 @@ static inline struct node *node_new(const ag_test_suite *ts)
  */
 static inline struct node *node_copy(const struct node *ctx)
 {
-        struct node *n = malloc(sizeof *n);
+        struct node *n = ag_mblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
@@ -83,14 +83,20 @@ static inline struct node *node_copy(const struct node *ctx)
 
 
 /*
- * node_dispose(): dispose test suite list node.
+ * node_free(): free test suite list node.
  *
  * @ctx: contextual test suite list node.
+ *
+ * Return: node next to @ctx.
  */
-static inline void node_dispose(struct node *ctx)
+static inline struct node *node_free(struct node *ctx)
 {
-        ag_test_suite_dispose(&ctx->ts);
-        free(ctx);
+        struct node *nxt = ctx->nxt;
+
+        ag_test_suite_free(&ctx->ts);
+        ag_mblock_free((ag_mblock **)&ctx);
+
+        return nxt;
 }
 
 
@@ -107,7 +113,7 @@ static char *str_new_fmt(const char *fmt, ...)
         va_list args;
 
         va_start(args, fmt);
-        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);
@@ -119,14 +125,15 @@ static char *str_new_fmt(const char *fmt, ...)
 
 
 /*
- * str_dispose(): dispose dynamic string.
+ * str_free(): release dynamic string.
  *
  * @ctx: contextual string.
  */
-static inline void str_dispose(char *ctx)
+static inline void str_free(char *ctx)
 {
-        if (ctx)
-                free(ctx);
+        /*if (ctx)
+                free(ctx);*/
+        ag_mblock_free((ag_mblock **)&ctx);
 }
 
 
@@ -147,7 +154,7 @@ struct ag_test_harness {
  */
 extern ag_test_harness *ag_test_harness_new(void)
 {
-        ag_test_harness *ctx = malloc(sizeof *ctx);
+        ag_test_harness *ctx = ag_mblock_new(sizeof *ctx);
         ctx->head = NULL;
 
         return ctx;
@@ -176,24 +183,21 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 
 
 /*
- * ag_test_suite_dispose(): dispose test suite.
+ * ag_test_harness_free(): release test harness.
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_harness_dispose(ag_test_harness **ctx)
+extern void ag_test_harness_free(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
         if (ctx && (hnd = *ctx)) {
-                struct node *n1 = hnd->head, *n2;
-                while (n1) {
-                        n2 = n1->nxt;
-                        node_dispose(n1);
-                        n1 = n2;
+                struct node *n = hnd->head;
+                while (n) {
+                        n = node_free(n);
                 }
 
-                free(hnd);
-                *ctx = NULL;
+                ag_mblock_free((ag_mblock **)ctx);
         }
 }
 
@@ -243,10 +247,10 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
 
 
 /*
- * ag_test_suite_push(): push new test suite into test harness.
+ * ag_test_harness_push(): push new test suite into test harness.
  *
  * @ctx: contextual test harness.
- * @tc : test suite to push into @ctx.
+ * @ts : test suite to push into @ctx.
  */
 extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
 {
@@ -295,6 +299,6 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
                        " %d skipped, %d failed.", ag_test_harness_len(ctx),
                        pass + skip + fail, pass, skip, fail);
         fprintf(log, "\n%s\n", s);
-        str_dispose(s);
+        str_free(s);
 }
 

@@ -1,9 +1,11 @@
 #include "./test.h"
 #include "../include/argent.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
 
 
-static enum ag_test_status sample_1(ag_test_case *tc)
+/*static enum ag_test_status sample_1(ag_test_case *tc)
 {
         ag_test_case_desc_set(tc, "sample 1 test case");
         return ag_test_assert_debug (1);
@@ -14,7 +16,7 @@ static enum ag_test_status sample_2(ag_test_case *tc)
 {
         ag_test_case_desc_set(tc, "sample 2 test case");
         return ag_test_assert (0);
-}
+}*/
 
 
 int main(int argc, char **argv)
@@ -28,17 +30,7 @@ int main(int argc, char **argv)
     ag_test_log();
     ag_test_value();*/
 
-        /*ag_test_case *tc = ag_test_case_new(&sample);
-        printf("status = %d\n", ag_test_case_status(tc));
-        printf("msg = %s\n", ag_test_case_msg(tc));
-
-        ag_test_case_exec(tc);
-        printf("status = %d\n", ag_test_case_status(tc));
-        printf("msg = %s\n", ag_test_case_msg(tc));
-
-        ag_test_case_dispose(&tc);*/
-
-        ag_test_case *tc1 = ag_test_case_new(&sample_1);
+        /*ag_test_case *tc1 = ag_test_case_new(&sample_1);
         ag_test_case *tc2 = ag_test_case_new(&sample_2);
 
         ag_test_suite *ts1 = ag_test_suite_new("sample 1 test suite");
@@ -50,14 +42,25 @@ int main(int argc, char **argv)
         
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);
-        //ag_test_harness_exec_console(th);
 
 
         ag_test_case_dispose(&tc1);
         ag_test_case_dispose(&tc2);
         ag_test_suite_dispose(&ts1);
+        ag_test_harness_dispose(&th);*/
 
 
-    return 0;
+        ag_test_harness *th = ag_test_harness_new();
+
+        ag_test_suite *mblock = ag_test_suite_mblock();
+        ag_test_harness_push(th, mblock);
+        ag_test_suite_free(&mblock);
+
+        ag_test_harness_exec(th);
+        ag_test_harness_log(th, stdout);
+
+        ag_test_harness_free(&th);
+
+        return 0;
 }
 

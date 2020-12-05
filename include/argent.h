@@ -24,6 +24,7 @@
 #ifndef __ARGENT_H__
 #define __ARGENT_H__
 
+#include "./mblock.h"
 #include "./test.h"
 
 #endif /* !__ARGENT_H__ */

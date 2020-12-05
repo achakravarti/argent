@@ -74,31 +74,27 @@ enum ag_test_status {
 
 
 /*-
- * Interface: Test Case
+ * Interface: Test
  */
 
+typedef enum ag_test_status (ag_test)(void);
 
-typedef struct ag_test_case ag_test_case;
+#define ag_test_init(n, d)                                              \
+        static const char *n##_desc = d;                                \
+        static enum ag_test_status n(void) {                            \
+        enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
-typedef enum ag_test_status (ag_test)(ag_test_case *);
+#define ag_test_exit() return __ck__; }
 
-#define ag_test_assert(p) ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
+#define ag_test_assert(p)                                               \
+        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
 
 #ifdef NDEBUG
-#       define ag_test_assert_debug(p) AG_TEST_STATUS_SKIP
+#       define ag_test_assert_debug(p)                                  \
+                __ck__ = AG_TEST_STATUS_SKIP
 #else
 #       define ag_test_assert_debug(p) ag_test_assert(p)
 #endif
-
-extern ag_test_case *ag_test_case_new(ag_test *);
-extern ag_test_case *ag_test_case_copy(const ag_test_case *);
-extern void ag_test_case_dispose(ag_test_case **);
-
-extern enum ag_test_status ag_test_case_status(const ag_test_case *);
-
-extern void ag_test_case_desc_set(ag_test_case *, const char *);
-extern void ag_test_case_exec(ag_test_case *);
-extern void ag_test_case_log(const ag_test_case *, FILE *);
 
 
 /*-
@@ -106,19 +102,21 @@ extern void ag_test_case_log(const ag_test_case *, FILE *);
  */
 
 
+
 typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
-extern void ag_test_suite_dispose(ag_test_suite **);
+extern void ag_test_suite_free(ag_test_suite **);
 
-extern size_t ag_test_suite_len(const  ag_test_suite *);
+extern size_t ag_test_suite_len(const ag_test_suite *);
 extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
 
-extern void ag_test_suite_push(ag_test_suite *, const ag_test_case *);
+extern void ag_test_suite_push(ag_test_suite *, ag_test *, const char *);
+extern void ag_test_suite_push_array(ag_test_suite *, ag_test *[],
+                const char *[], size_t);
 extern void ag_test_suite_exec(ag_test_suite *);
-extern void ag_test_suite_log(const ag_test_suite *, FILE *);
-
+extern void ag_test_suite_log(ag_test_suite *, FILE *);
 
 /*-
  * Interface: Test Harness
@@ -129,7 +127,7 @@ typedef struct ag_test_harness ag_test_harness;
 
 extern ag_test_harness *ag_test_harness_new(void);
 extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
-extern void ag_test_harness_dispose(ag_test_harness **);
+extern void ag_test_harness_free(ag_test_harness **);
 
 extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,
