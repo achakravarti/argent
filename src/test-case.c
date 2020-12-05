@@ -108,6 +108,37 @@ static inline void str_dispose(char *ctx)
 
 
 /*
+ * status_msg(): get status message of test case.
+ *
+ * @ctx: contextual test case.
+ *
+ * Return: status message of @ctx.
+ */
+static char *status_msg(const ag_test_case *ctx)
+{
+        switch (ctx->stat) {
+                case AG_TEST_STATUS_OK:
+                        return str_new_fmt("[OK]   %s", ctx->desc);
+
+                case AG_TEST_STATUS_WAIT:
+                        return str_new_fmt("[WAIT] %s", ctx->desc);
+
+                case AG_TEST_STATUS_SKIP:
+                        return str_new_fmt("[SKIP] %s", ctx->desc);
+
+                case AG_TEST_STATUS_SIGABRT:
+                        return str_new_fmt("[FAIL] %s (SIGABRT)", ctx->desc);
+
+                case AG_TEST_STATUS_SIGSEGV:
+                        return str_new_fmt("[FAIL] %s (SIGSEGV)", ctx->desc);
+
+                default:
+                        return str_new_fmt("[FAIL] %s", ctx->desc);
+        }
+}
+
+
+/*
  * ag_test_case_new(): create new test case.
  *
  * @desc:
@@ -186,50 +217,6 @@ extern enum ag_test_status ag_test_case_status(const ag_test_case *ctx)
 
 
 /*
- * ag_test_case_desc(): get description of test case.
- *
- * @ctx: contextual test case.
- *
- * Return: description of @ctx.
- */
-extern char *ag_test_case_desc(const ag_test_case *ctx)
-{
-        return str_new(ctx->desc);
-}
-
-
-/*
- * ag_test_case_str(): get string representation of test case.
- *
- * @ctx: contextual test case.
- *
- * Return: string representation of @ctx.
- */
-extern char *ag_test_case_str(const ag_test_case *ctx)
-{
-        switch (ctx->stat) {
-                case AG_TEST_STATUS_OK:
-                        return str_new_fmt("[OK]   %s", ctx->desc);
-
-                case AG_TEST_STATUS_WAIT:
-                        return str_new_fmt("[WAIT] %s", ctx->desc);
-
-                case AG_TEST_STATUS_SKIP:
-                        return str_new_fmt("[SKIP] %s", ctx->desc);
-
-                case AG_TEST_STATUS_SIGABRT:
-                        return str_new_fmt("[FAIL] %s (SIGABRT)", ctx->desc);
-
-                case AG_TEST_STATUS_SIGSEGV:
-                        return str_new_fmt("[FAIL] %s (SIGSEGV)", ctx->desc);
-
-                default:
-                        return str_new_fmt("[FAIL] %s", ctx->desc);
-        }
-}
-
-
-/*
  * ag_test_case_desc_set(): set description of test case.
  *
  * @ctx : contextual test case.
@@ -262,7 +249,7 @@ extern void ag_test_case_exec(ag_test_case *ctx)
 extern void ag_test_case_log(const ag_test_case *ctx, FILE *log)
 {
         if (log) { 
-                char *str = ag_test_case_str(ctx);
+                char *str = status_msg(ctx);
                 fprintf(log, "%s", str);
                 str_dispose(str);
         }

@@ -95,8 +95,6 @@ extern ag_test_case *ag_test_case_copy(const ag_test_case *);
 extern void ag_test_case_dispose(ag_test_case **);
 
 extern enum ag_test_status ag_test_case_status(const ag_test_case *);
-extern char *ag_test_case_desc(const ag_test_case *);
-extern char *ag_test_case_str(const ag_test_case *);
 
 extern void ag_test_case_desc_set(ag_test_case *, const char *);
 extern void ag_test_case_exec(ag_test_case *);
@@ -115,10 +113,7 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
 extern void ag_test_suite_dispose(ag_test_suite **);
 
 extern size_t ag_test_suite_len(const  ag_test_suite *);
-extern int ag_test_suite_pass(const ag_test_suite *);
-extern int ag_test_suite_skip(const ag_test_suite *);
-extern int ag_test_suite_fail(const ag_test_suite *);
-extern char *ag_test_suite_str(const ag_test_suite *);
+extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
 
 extern void ag_test_suite_push(ag_test_suite *, const ag_test_case *);
 extern void ag_test_suite_exec(ag_test_suite *);
@@ -137,11 +132,8 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
 extern void ag_test_harness_dispose(ag_test_harness **);
 
 extern int ag_test_harness_len(const ag_test_harness *);
-extern int ag_test_harness_total(const ag_test_harness *);
-extern int ag_test_harness_pass(const ag_test_harness *);
-extern int ag_test_harness_skip(const ag_test_harness *);
-extern int ag_test_harness_fail(const ag_test_harness *);
-extern char *ag_test_harness_str(const ag_test_harness *);
+extern size_t ag_test_harness_poll(const ag_test_harness *,
+                enum ag_test_status);
 
 extern void ag_test_harness_push(ag_test_harness *, const ag_test_suite *);
 extern void ag_test_harness_exec(ag_test_harness *);

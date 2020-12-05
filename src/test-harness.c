@@ -220,95 +220,25 @@ extern int ag_test_harness_len(const ag_test_harness *ctx)
 
 
 /*
- * ag_test_harness_total(): get total number of test cases in test harness.
+ * ag_test_harness_poll(): poll execution statistics of test harness.
  *
- * @ctx: contextual test harness.
+ * @ctx   : contextual test harness.
+ * @status: execution status to poll.
  *
- * Return: number of test cases in @ctx.
+ * Return: number of test cases in @ctx with @status.
  */
-extern int ag_test_harness_total(const ag_test_harness *ctx)
+extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
+                enum ag_test_status status)
 {
-        return ag_test_harness_pass(ctx) + ag_test_harness_skip(ctx)
-                + ag_test_harness_fail(ctx);
-}
-
-
-/*
- * ag_test_harness_pass(): get number of passed test suites in test harness.
- *
- * @ctx: contextual test harness.
- *
- * Return: number of passed test suites in @ctx.
- */
-extern int ag_test_harness_pass(const ag_test_harness *ctx)
-{
-        register int pass = 0;
+        register size_t tot = 0;
 
         struct node *n = ctx->head;
         while (n) {
-                pass += ag_test_suite_pass(n->ts);
+                tot = ag_test_suite_poll(n->ts, status);
                 n = n->nxt;
         }
 
-        return pass;
-}
-
-
-/*
- * ag_test_harness_skip(): get number of skipped test suites in test harness.
- *
- * @ctx: contextual test harness.
- *
- * Return: number of skipped test suites in @ctx.
- */
-extern int ag_test_harness_skip(const ag_test_harness *ctx)
-{
-        register int skip = 0;
-
-        struct node *n = ctx->head;
-        while (n) {
-                skip += ag_test_suite_skip(n->ts);
-                n = n->nxt;
-        }
-
-        return skip;
-}
-
-
-/*
- * ag_test_harness_fail(): get number of failed test suites in test harness.
- *
- * @ctx: contextual test harness.
- *
- * Return: number of failed test suites in @ctx.
- */
-extern int ag_test_harness_fail(const ag_test_harness *ctx)
-{
-        register int fail = 0;
-
-        struct node *n = ctx->head;
-        while (n) {
-                fail += ag_test_suite_fail(n->ts);
-                n = n->nxt;
-        }
-
-        return fail;
-}
-
-
-/*
- * ag_test_harness_str(): get string representation of test harness.
- *
- * @ctx: contextual test harness.
- *
- * Return: string representation of @ctx.
- */
-extern char *ag_test_harness_str(const ag_test_harness *ctx)
-{
-        return str_new_fmt("%d test suite(s), %d test(s), %d passed,"
-                       " %d skipped, %d failed.", ag_test_harness_len(ctx),
-                       ag_test_harness_total(ctx), ag_test_harness_pass(ctx),
-                       ag_test_harness_skip(ctx), ag_test_harness_fail(ctx));
+        return tot;
 }
 
 
@@ -357,8 +287,14 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
                 n = n->nxt;
         }
 
-        char *str = ag_test_harness_str(ctx);
-        fprintf(log, "\n%s\n", str);
-        str_dispose(str);
+        size_t pass = ag_test_harness_poll(ctx, AG_TEST_STATUS_OK);
+        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP);
+        size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
+
+        char *s = str_new_fmt("%d test suite(s), %d test(s), %d passed,"
+                       " %d skipped, %d failed.", ag_test_harness_len(ctx),
+                       pass + skip + fail, pass, skip, fail);
+        fprintf(log, "\n%s\n", s);
+        str_dispose(s);
 }
 

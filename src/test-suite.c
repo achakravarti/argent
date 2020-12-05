@@ -134,12 +134,12 @@ static inline void str_dispose(char *ctx)
 /*
  * struct ag_test_suite: internal structure of `ag_test_suite`.
  *
- * @head: head of test case list.
  * @desc: test suite description.
+ * @head: head of test case list.
  */
 struct ag_test_suite {
-        struct node *head;
         char *desc;
+        struct node *head;
 };
 
 
@@ -166,9 +166,13 @@ static inline void log_header(const ag_test_suite *ctx, FILE *log)
  */
 static inline void log_footer(const ag_test_suite *ctx, FILE *log)
 {
-        char *str = ag_test_suite_str(ctx);
-        fprintf(log, "\n\n%s\n", str);
-        str_dispose(str);
+        char *s = str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
+                        ag_test_suite_len(ctx),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
+        fprintf(log, "\n\n%s\n", s);
+        str_dispose(s);
 }
 
 
@@ -277,88 +281,27 @@ extern size_t ag_test_suite_len(const  ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_pass(): get number of passed test cases in test suite.
+ * ag_test_suite_poll(): poll execution statistics of test suite.
  *
- * @ctx: contextual test suite.
+ * @ctx   : contextual test suite.
+ * @status: execution status to poll.
  *
- * Return: number of passed test cases in @ctx.
+ * Return: number of test cases in @ctx with @status.
  */
-extern int ag_test_suite_pass(const ag_test_suite *ctx)
+extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
+                enum ag_test_status status)
 {
-        register int pass = 0;
-
+        register size_t tot = 0;
+        
         struct node *n = ctx->head;
         while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_OK)
-                        pass++;
-                
+                if (ag_test_case_status(n->tc) == status)
+                        tot++;
                 n = n->nxt;
         }
 
-        return pass;
+        return tot;
 }
-
-
-/*
- * ag_test_suite_skip(): get number of skipped test cases in test suite.
- *
- * @ctx: contextual test suite.
- *
- * Return: number of skipped test cases in test suite.
- */
-extern int ag_test_suite_skip(const ag_test_suite *ctx)
-{
-        register int skip = 0;
-
-        struct node *n = ctx->head;
-        while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_SKIP)
-                        skip++;
-
-                n = n->nxt;
-        }
-
-        return skip;
-}
-
-
-/*
- * ag_test_suite_fail(): get number of failed test cases in test suite.
- *
- * @ctx: contextual test suite.
- *
- * Return: number of failed test cases in test suite.
- */
-extern int ag_test_suite_fail(const ag_test_suite *ctx)
-{
-        register int fail = 0;
-
-        struct node *n = ctx->head;
-        while (n) {
-                if (ag_test_case_status(n->tc) == AG_TEST_STATUS_FAIL)
-                        fail++;
-
-                n = n->nxt;
-        }
-
-        return fail;
-}
-
-
-/*
- * ag_test_suite_str(): get string representation of test suite.
- *
- * @ctx: contextual test suite.
- *
- * Return: string representation of @ctx.
- */
-extern char *ag_test_suite_str(const ag_test_suite *ctx)
-{
-        return str_new_fmt("%d test(s), %d passed, %d skipped, %d failed.",
-                        ag_test_suite_len(ctx), ag_test_suite_pass(ctx),
-                        ag_test_suite_skip(ctx), ag_test_suite_fail(ctx));
-}
-
 
 
 /*
@@ -379,6 +322,7 @@ extern void ag_test_suite_push(ag_test_suite *ctx, const ag_test_case *tc)
                 n->nxt = push;
         } else
                 ctx->head = push;
+
 }
 
 
