@@ -148,15 +148,15 @@ static char *status_msg(const ag_test_case *ctx)
  */
 extern ag_test_case *ag_test_case_new(ag_test *test)
 {
-        ag_test_case *ret = malloc(sizeof *ret);
-        if (!ret)
+        ag_test_case *ctx = malloc(sizeof *ctx);
+        if (!ctx)
                 exit(1);
 
-        ret->test = test;
-        ret->desc = str_new("waiting to execute test case");
-        ret->stat = AG_TEST_STATUS_WAIT;
+        ctx->test = test;
+        ctx->desc = str_new("waiting to execute test case");
+        ctx->stat = AG_TEST_STATUS_WAIT;
 
-        return ret;
+        return ctx;
 }
 
 
@@ -192,8 +192,7 @@ extern void ag_test_case_dispose(ag_test_case **ctx)
 
         if (ctx && (hnd = *ctx)) {
                 str_dispose(hnd->desc);
-                free(hnd);
-                *ctx = NULL;
+                ag_mblock_free((ag_mblock **)ctx);
         }
 }
 
