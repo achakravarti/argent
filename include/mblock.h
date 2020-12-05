@@ -44,7 +44,7 @@ inline bool ag_mblock_gt(const ag_mblock *ctx, const ag_mblock *cmp)
 }
 
 extern size_t ag_mblock_sz(const ag_mblock *);
-extern size_t ag_mblock_sz_data(const ag_mblock *);
+extern size_t ag_mblock_sz_total(const ag_mblock *);
 extern size_t ag_mblock_refc(const ag_mblock *);
 extern bool ag_mblock_aligned(const ag_mblock *, size_t);
 

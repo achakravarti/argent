@@ -55,8 +55,8 @@ int main(int argc, char **argv)
         int *j = ag_mblock_copy(i);
         int *k = ag_mblock_copy(j);
 
-        printf("sizeof(*i) = %lu\n", ag_mblock_sz_data(i));
-        printf("sizeof(*j) = %lu\n", ag_mblock_sz_data(j));
+        printf("sizeof(*i) = %lu\n", ag_mblock_sz(i));
+        printf("sizeof(*j) = %lu\n", ag_mblock_sz(j));
 
         printf("i = %d\n", *i);
         printf("j = %d\n", *j);
