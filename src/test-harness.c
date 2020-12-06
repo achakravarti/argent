@@ -83,14 +83,20 @@ static inline struct node *node_copy(const struct node *ctx)
 
 
 /*
- * node_dispose(): dispose test suite list node.
+ * node_free(): free test suite list node.
  *
  * @ctx: contextual test suite list node.
+ *
+ * Return: node next to @ctx.
  */
-static inline void node_dispose(struct node *ctx)
+static inline struct node *node_free(struct node *ctx)
 {
+        struct node *nxt = ctx->nxt;
+
         ag_test_suite_free(&ctx->ts);
         free(ctx);
+
+        return nxt;
 }
 
 
@@ -119,11 +125,11 @@ static char *str_new_fmt(const char *fmt, ...)
 
 
 /*
- * str_dispose(): dispose dynamic string.
+ * str_free(): release dynamic string.
  *
  * @ctx: contextual string.
  */
-static inline void str_dispose(char *ctx)
+static inline void str_free(char *ctx)
 {
         if (ctx)
                 free(ctx);
@@ -185,11 +191,9 @@ extern void ag_test_harness_free(ag_test_harness **ctx)
         ag_test_harness *hnd;
 
         if (ctx && (hnd = *ctx)) {
-                struct node *n1 = hnd->head, *n2;
-                while (n1) {
-                        n2 = n1->nxt;
-                        node_dispose(n1);
-                        n1 = n2;
+                struct node *n = hnd->head;
+                while (n) {
+                        n = node_free(n);
                 }
 
                 free(hnd);
@@ -295,6 +299,6 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
                        " %d skipped, %d failed.", ag_test_harness_len(ctx),
                        pass + skip + fail, pass, skip, fail);
         fprintf(log, "\n%s\n", s);
-        str_dispose(s);
+        str_free(s);
 }
 
