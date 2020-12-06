@@ -9,9 +9,8 @@ struct test {
 
 ag_test_init(new_01, "ag_mblock_new() allocates memory on the heap for an int")
 {
-        int *i = ag_mblock_new(sizeof *i);
-        ag_test_assert (i);
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        ag_test_assert (m);
 }
 ag_test_exit()
 
@@ -36,9 +35,8 @@ ag_test_exit()
 ag_test_init(new_03, "ag_mblock_new() returns a block with a reference count"
                 " of 1")
 {
-        int *i = ag_mblock_new(sizeof *i);
-        ag_test_assert (ag_mblock_refc(i) == 1);
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        ag_test_assert (ag_mblock_refc(m) == 1);
 }
 ag_test_exit()
 
@@ -46,9 +44,8 @@ ag_test_exit()
 ag_test_init(new_04, "ag_mblock_new() returns a block with the requested data"
                 " size")
 {
-        int *i = ag_mblock_new(sizeof *i);
-        ag_test_assert (ag_mblock_sz(i) == sizeof(int));
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        ag_test_assert (ag_mblock_sz(m) == sizeof(int));
 }
 ag_test_exit()
 
@@ -56,9 +53,8 @@ ag_test_exit()
 ag_test_init(new_05, "ag_mblock_new() returns a block with a total size >="
                 " requested data size")
 {
-        int *i = ag_mblock_new(sizeof *i);
-        ag_test_assert (ag_mblock_sz_total(i) >= sizeof(int));
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        ag_test_assert (ag_mblock_sz_total(m) >= sizeof(int));
 }
 ag_test_exit()
 
@@ -66,9 +62,8 @@ ag_test_exit()
 ag_test_init(new_align_01, "ag_mblock_new_align() allocates memory on the heap"
                 " for an int")
 {
-        int *i = ag_mblock_new_align(sizeof *i, 8);
-        ag_test_assert (i);
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        ag_test_assert (m);
 }
 ag_test_exit()
 
@@ -92,9 +87,8 @@ ag_test_exit()
 ag_test_init(new_align_03, "ag_mblock_new_align() returns a block with a"
                 "  reference count of 1")
 {
-        int *i = ag_mblock_new_align(sizeof *i, 8);
-        ag_test_assert (ag_mblock_refc(i) == 1);
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        ag_test_assert (ag_mblock_refc(m) == 1);
 }
 ag_test_exit()
 
@@ -102,9 +96,8 @@ ag_test_exit()
 ag_test_init(new_align_04, "ag_mblock_new_align() returns a block with the"
                 " requested data size")
 {
-        int *i = ag_mblock_new_align(sizeof *i, 8);
-        ag_test_assert (ag_mblock_sz(i) == sizeof(int));
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        ag_test_assert (ag_mblock_sz(m) == sizeof(int));
 }
 ag_test_exit()
 
@@ -112,9 +105,8 @@ ag_test_exit()
 ag_test_init(new_align_05, "ag_mblock_new_align() returns a block with a total"
                 " size >= requested data size")
 {
-        int *i = ag_mblock_new_align(sizeof *i, 8);
-        ag_test_assert (ag_mblock_sz_total(i) >= sizeof(int));
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        ag_test_assert (ag_mblock_sz_total(m) >= sizeof(int));
 }
 ag_test_exit()
 
@@ -122,9 +114,8 @@ ag_test_exit()
 ag_test_init(new_align_06, "ag_mblock_new_align() returns a block with the"
                 " required alignment")
 {
-        int *i = ag_mblock_new_align(sizeof *i, 32);
-        ag_test_assert (ag_mblock_aligned(i, 32));
-        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 32);
+        ag_test_assert (ag_mblock_aligned(m, 32));
 }
 ag_test_exit()
 
