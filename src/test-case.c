@@ -59,14 +59,17 @@ struct ag_test_case {
  *
  * Return: new dynamic string.
  */
-static inline char *str_new(const char *src)
+static char *str_new(const char *src)
 {
         size_t sz = strlen(src);
         char *ret = malloc(sz + 1);
+
         if (!ret)
                 exit(1);
 
         strncpy(ret, src, sz);
+        ret[sz] = '\0';
+
         return ret;
 }
 

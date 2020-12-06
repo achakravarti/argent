@@ -210,6 +210,7 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
         size_t len = strlen(desc);
         ctx->desc = malloc(len + 1);
         strncpy(ctx->desc, desc, len);
+        ctx->desc[len] = '\0';
 
         return ctx;
 }

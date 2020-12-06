@@ -34,20 +34,20 @@ int main(int argc, char **argv)
         ag_test_case *tc2 = ag_test_case_new(&sample_2);
 
         ag_test_suite *ts1 = ag_test_suite_new("sample 1 test suite");
-        //ag_test_harness *th = ag_test_harness_new();
+        ag_test_harness *th = ag_test_harness_new();
 
-        //ag_test_suite_push(ts1, tc1);
-        /*ag_test_suite_push(ts1, tc2);
+        ag_test_suite_push(ts1, tc1);
+        ag_test_suite_push(ts1, tc2);
         ag_test_harness_push(th, ts1);
         
         ag_test_harness_exec(th);
-        ag_test_harness_log(th, stdout);*/
+        ag_test_harness_log(th, stdout);
 
 
         ag_test_case_dispose(&tc1);
         ag_test_case_dispose(&tc2);
         ag_test_suite_dispose(&ts1);
-        //ag_test_harness_dispose(&th);
+        ag_test_harness_dispose(&th);
 
 
         return 0;
