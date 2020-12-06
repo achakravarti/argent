@@ -16,7 +16,7 @@ extern void ag_test_log(void);
 extern void ag_test_value(void);
 
 
-extern ag_test_suite *ag_test_suite_mblock(void);
+extern _ag_test_suite *ag_test_suite_mblock(void);
 
 
 #endif /* !defined ARGENT_TESTS */

@@ -154,7 +154,7 @@ extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,
                 enum ag_test_status);
 
-extern void ag_test_harness_push(ag_test_harness *, const ag_test_suite *);
+extern void ag_test_harness_push(ag_test_harness *, const _ag_test_suite *);
 extern void ag_test_harness_exec(ag_test_harness *);
 extern void ag_test_harness_log(const ag_test_harness *, FILE *);
 
