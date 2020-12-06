@@ -116,6 +116,7 @@ extern void ag_mblock_free(ag_mblock **ctx)
                         *ctx = NULL;
                 }
         }
+
 }
 
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *ctx, const ag_mblock *cmp)

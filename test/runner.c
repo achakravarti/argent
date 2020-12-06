@@ -5,7 +5,7 @@
 #include <malloc.h>
 
 
-/*static enum ag_test_status sample_1(ag_test_case *tc)
+static enum ag_test_status sample_1(ag_test_case *tc)
 {
         ag_test_case_desc_set(tc, "sample 1 test case");
         return ag_test_assert_debug (1);
@@ -16,7 +16,7 @@ static enum ag_test_status sample_2(ag_test_case *tc)
 {
         ag_test_case_desc_set(tc, "sample 2 test case");
         return ag_test_assert (0);
-}*/
+}
 
 
 int main(int argc, char **argv)
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     ag_test_log();
     ag_test_value();*/
 
-        /*ag_test_case *tc1 = ag_test_case_new(&sample_1);
+        ag_test_case *tc1 = ag_test_case_new(&sample_1);
         ag_test_case *tc2 = ag_test_case_new(&sample_2);
 
         ag_test_suite *ts1 = ag_test_suite_new("sample 1 test suite");
@@ -46,26 +46,9 @@ int main(int argc, char **argv)
 
         ag_test_case_dispose(&tc1);
         ag_test_case_dispose(&tc2);
-        ag_test_suite_dispose(&ts1);*/
+        ag_test_suite_dispose(&ts1);
 
 
-        int *i = ag_mblock_new(sizeof *i);
-        *i = 555;
-
-        int *j = ag_mblock_copy(i);
-        int *k = ag_mblock_copy(j);
-
-        printf("sizeof(*i) = %lu\n", ag_mblock_sz(i));
-        printf("sizeof(*i) total = %lu\n", ag_mblock_sz_total(i));
-        printf("sizeof(*j) = %lu\n", ag_mblock_sz(j));
-
-        printf("i = %d\n", *i);
-        printf("j = %d\n", *j);
-
-        ag_mblock_free((ag_mblock **) &i);
-        ag_mblock_free((ag_mblock **) &j);
-        ag_mblock_free((ag_mblock **) &k);
-
-    return 0;
+        return 0;
 }
 
