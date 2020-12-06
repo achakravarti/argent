@@ -14,7 +14,7 @@ extern ag_test_suite *ag_test_suite_mblock(void)
 
         ag_test_case *new1 = ag_test_case_new(&new_01);
         ag_test_suite_push(ctx, new1);
-        ag_test_case_dispose(&new1);
+        ag_test_case_free(&new1);
 
         return ctx;
 }

@@ -90,7 +90,7 @@ static inline struct node *node_copy(const struct node *ctx)
  */
 static inline void node_dispose(struct node *ctx)
 {
-        ag_test_case_dispose(&ctx->tc);
+        ag_test_case_free(&ctx->tc);
         free(ctx);
 }
 
@@ -238,11 +238,11 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 
 
 /*
- * ag_test_suite_dispose(): dispose test suite.
+ * ag_test_suite_free(): release test suite.
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_suite_dispose(ag_test_suite **ctx)
+extern void ag_test_suite_free(ag_test_suite **ctx)
 {
         ag_test_suite *hnd;
 

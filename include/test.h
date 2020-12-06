@@ -92,7 +92,7 @@ typedef enum ag_test_status (ag_test)(ag_test_case *);
 
 extern ag_test_case *ag_test_case_new(ag_test *);
 extern ag_test_case *ag_test_case_copy(const ag_test_case *);
-extern void ag_test_case_dispose(ag_test_case **);
+extern void ag_test_case_free(ag_test_case **);
 
 extern enum ag_test_status ag_test_case_status(const ag_test_case *);
 
@@ -110,7 +110,7 @@ typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
-extern void ag_test_suite_dispose(ag_test_suite **);
+extern void ag_test_suite_free(ag_test_suite **);
 
 extern size_t ag_test_suite_len(const  ag_test_suite *);
 extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
@@ -129,7 +129,7 @@ typedef struct ag_test_harness ag_test_harness;
 
 extern ag_test_harness *ag_test_harness_new(void);
 extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
-extern void ag_test_harness_dispose(ag_test_harness **);
+extern void ag_test_harness_free(ag_test_harness **);
 
 extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,

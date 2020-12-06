@@ -185,11 +185,11 @@ extern ag_test_case *ag_test_case_copy(const ag_test_case *ctx)
 
 
 /*
- * ag_test_case_dispose(): dispose test case.
+ * ag_test_case_free(): release test case.
  *
  * @ctx: contextual test case.
  */
-extern void ag_test_case_dispose(ag_test_case **ctx)
+extern void ag_test_case_free(ag_test_case **ctx)
 {
         ag_test_case *hnd;
 

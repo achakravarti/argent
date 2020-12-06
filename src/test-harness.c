@@ -89,7 +89,7 @@ static inline struct node *node_copy(const struct node *ctx)
  */
 static inline void node_dispose(struct node *ctx)
 {
-        ag_test_suite_dispose(&ctx->ts);
+        ag_test_suite_free(&ctx->ts);
         free(ctx);
 }
 
@@ -176,11 +176,11 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 
 
 /*
- * ag_test_suite_dispose(): dispose test suite.
+ * ag_test_suite_free(): release test suite.
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_harness_dispose(ag_test_harness **ctx)
+extern void ag_test_harness_free(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
