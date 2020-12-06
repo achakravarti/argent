@@ -56,6 +56,7 @@ int main(int argc, char **argv)
         int *k = ag_mblock_copy(j);
 
         printf("sizeof(*i) = %lu\n", ag_mblock_sz(i));
+        printf("sizeof(*i) total = %lu\n", ag_mblock_sz_total(i));
         printf("sizeof(*j) = %lu\n", ag_mblock_sz(j));
 
         printf("i = %d\n", *i);

@@ -137,8 +137,7 @@ extern size_t ag_mblock_sz(const ag_mblock *ctx)
 
 extern size_t ag_mblock_sz_total(const ag_mblock *ctx)
 {
-        size_t *hnd = meta_head(ctx);
-        return malloc_usable_size(hnd);
+        return malloc_usable_size(meta_head(ctx));
 }
 
 
@@ -152,23 +151,28 @@ extern size_t ag_mblock_refc(const ag_mblock *ctx)
 
 extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 {
-        size_t *hnd = meta_head(ctx);
-        return !((uintptr_t)hnd & (align - 1));
+        return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
 
 
 extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 {
-        *ctx = realloc(*ctx, sz);
+        ag_mblock *hnd = *ctx;
+        size_t oldsz = meta_sz(hnd);
+
+        ag_mblock *cp = ag_mblock_new(sz);
+        memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
+        
+        ag_mblock_free(ctx);
+        *ctx = cp;
 }
 
 
 extern char *ag_mblock_str(const ag_mblock *ctx)
 {
-        size_t *hnd = meta_head(ctx);
         return str_new_fmt("address = %p, data sz = %lu, total data = %lu,"
-                        " refc = %lu", (void *)hnd, meta_sz(ctx),
-                        ag_mblock_sz_total(ctx), ag_mblock_refc(ctx));
+                        " refc = %lu", (void *)meta_head(ctx), meta_sz(ctx),
+                        ag_mblock_sz_total(ctx), meta_refc(ctx));
 
 }
 
