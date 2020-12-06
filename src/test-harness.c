@@ -43,7 +43,7 @@
  * @nxt: next node in list.
  */
 struct node {
-        _ag_test_suite *ts;
+        ag_test_suite *ts;
         struct node *nxt;
 };
 
@@ -55,10 +55,10 @@ struct node {
  *
  * Return: new test suite list node.
  */
-static inline struct node *node_new(const _ag_test_suite *ts)
+static inline struct node *node_new(const ag_test_suite *ts)
 {
         struct node *n = malloc(sizeof *n);
-        n->ts = _ag_test_suite_copy(ts);
+        n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
         return n;
@@ -75,7 +75,7 @@ static inline struct node *node_new(const _ag_test_suite *ts)
 static inline struct node *node_copy(const struct node *ctx)
 {
         struct node *n = malloc(sizeof *n);
-        n->ts = _ag_test_suite_copy(ctx->ts);
+        n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
         return n;
@@ -89,7 +89,7 @@ static inline struct node *node_copy(const struct node *ctx)
  */
 static inline void node_dispose(struct node *ctx)
 {
-        _ag_test_suite_free(&ctx->ts);
+        ag_test_suite_free(&ctx->ts);
         free(ctx);
 }
 
@@ -234,7 +234,7 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
 
         struct node *n = ctx->head;
         while (n) {
-                tot = _ag_test_suite_poll(n->ts, status);
+                tot = ag_test_suite_poll(n->ts, status);
                 n = n->nxt;
         }
 
@@ -248,7 +248,7 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
  * @ctx: contextual test harness.
  * @ts : test suite to push into @ctx.
  */
-extern void ag_test_harness_push(ag_test_harness *ctx, const _ag_test_suite *ts)
+extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
 {
         struct node *push = node_new(ts);
 
@@ -273,7 +273,7 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
         struct node *n = ctx->head;
 
         while (n) {
-                _ag_test_suite_exec(n->ts); 
+                ag_test_suite_exec(n->ts); 
                 n = n->nxt;
         }
 }
@@ -283,7 +283,7 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
 {
         struct node *n = ctx->head;
         while (n) {
-                _ag_test_suite_log(n->ts, log);
+                ag_test_suite_log(n->ts, log);
                 n = n->nxt;
         }
 

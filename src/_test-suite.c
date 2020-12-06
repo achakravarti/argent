@@ -42,14 +42,14 @@ static inline void str_free(char *ctx)
 
 
 struct node {
-        _ag_test *test;
+        ag_test *test;
         char *desc;
         enum ag_test_status status;
         struct node *next;
 };
 
 
-static struct node *node_new(_ag_test *test, const char *desc)
+static struct node *node_new(ag_test *test, const char *desc)
 {
         struct node *n = malloc(sizeof *n);
         n->test = test;
@@ -101,7 +101,7 @@ static void node_log(const struct node *ctx, FILE *log)
 }
 
 
-struct _ag_test_suite {
+struct ag_test_suite {
         char *desc;
         struct node *head;
 };
@@ -109,7 +109,7 @@ struct _ag_test_suite {
 
 
 
-static void log_header(const _ag_test_suite *ctx, FILE *log)
+static void log_header(const ag_test_suite *ctx, FILE *log)
 {
         fprintf(log, "\nTest Suite: %s\n", ctx->desc);
 
@@ -118,17 +118,17 @@ static void log_header(const _ag_test_suite *ctx, FILE *log)
 }
 
 
-static inline void log_footer(const _ag_test_suite *ctx, FILE *log)
+static inline void log_footer(const ag_test_suite *ctx, FILE *log)
 {
         fprintf(log, "\n\n%lu test(s), %lu passed, %lu skipped, %lu failed.\n",
-                        _ag_test_suite_len(ctx),
-                        _ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
-                        _ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP),
-                        _ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
+                        ag_test_suite_len(ctx),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
 }
 
 
-static void log_body(const _ag_test_suite *ctx, FILE *log)
+static void log_body(const ag_test_suite *ctx, FILE *log)
 {
         register size_t i = 0;
 
@@ -141,9 +141,9 @@ static void log_body(const _ag_test_suite *ctx, FILE *log)
 }
 
 
-extern _ag_test_suite *_ag_test_suite_new(const char *desc)
+extern ag_test_suite *ag_test_suite_new(const char *desc)
 {
-        _ag_test_suite *ctx = malloc(sizeof *ctx);
+        ag_test_suite *ctx = malloc(sizeof *ctx);
         ctx->desc = str_new_fmt("%s", desc);
         ctx->head = NULL;
 
@@ -152,13 +152,13 @@ extern _ag_test_suite *_ag_test_suite_new(const char *desc)
 }
 
 
-extern _ag_test_suite *_ag_test_suite_copy(const _ag_test_suite *ctx)
+extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
-        _ag_test_suite *cp = _ag_test_suite_new(ctx->desc);
+        ag_test_suite *cp = ag_test_suite_new(ctx->desc);
 
         struct node *n = ctx->head;
         while (n) {
-                _ag_test_suite_push(cp, n->test, n->desc);
+                ag_test_suite_push(cp, n->test, n->desc);
                 n = n->next;
         }
 
@@ -166,9 +166,9 @@ extern _ag_test_suite *_ag_test_suite_copy(const _ag_test_suite *ctx)
 }
 
 
-extern void _ag_test_suite_free(_ag_test_suite **ctx)
+extern void ag_test_suite_free(ag_test_suite **ctx)
 {
-        _ag_test_suite *hnd;
+        ag_test_suite *hnd;
 
         if (ctx && (hnd = *ctx)) {
                 str_free(hnd->desc);
@@ -183,7 +183,7 @@ extern void _ag_test_suite_free(_ag_test_suite **ctx)
 }
 
 
-extern size_t _ag_test_suite_len(const _ag_test_suite *ctx)
+extern size_t ag_test_suite_len(const ag_test_suite *ctx)
 {
         register size_t len = 0;
 
@@ -197,7 +197,7 @@ extern size_t _ag_test_suite_len(const _ag_test_suite *ctx)
 }
 
 
-extern size_t _ag_test_suite_poll(const _ag_test_suite *ctx,
+extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
                 enum ag_test_status status)
 {
         register size_t tot = 0;
@@ -213,7 +213,7 @@ extern size_t _ag_test_suite_poll(const _ag_test_suite *ctx,
 }
 
 
-extern void _ag_test_suite_push(_ag_test_suite *ctx, _ag_test *test,
+extern void ag_test_suite_push(ag_test_suite *ctx, ag_test *test,
                 const char *desc)
 {
         struct node *push = node_new(test, desc);
@@ -229,15 +229,15 @@ extern void _ag_test_suite_push(_ag_test_suite *ctx, _ag_test *test,
 }
 
 
-extern void _ag_test_suite_push_array(_ag_test_suite *ctx, _ag_test *test[],
+extern void ag_test_suite_push_array(ag_test_suite *ctx, ag_test *test[],
                 const char *desc[], size_t len)
 {
         for (register size_t i = 0; i < len; i++)
-                _ag_test_suite_push(ctx, test[i], desc[i]);
+                ag_test_suite_push(ctx, test[i], desc[i]);
 }
 
 
-extern void _ag_test_suite_exec(_ag_test_suite *ctx)
+extern void ag_test_suite_exec(ag_test_suite *ctx)
 {
         struct node *n = ctx->head;
         while (n) {
@@ -249,7 +249,7 @@ extern void _ag_test_suite_exec(_ag_test_suite *ctx)
 }
 
 
-extern void _ag_test_suite_log(_ag_test_suite *ctx, FILE *log)
+extern void ag_test_suite_log(ag_test_suite *ctx, FILE *log)
 {
         if (log) {
                 log_header(ctx, log);

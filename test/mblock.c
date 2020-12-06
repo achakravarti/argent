@@ -13,9 +13,9 @@ static enum ag_test_status new_02(void)
 }
 
 
-extern _ag_test_suite *ag_test_suite_mblock(void)
+extern ag_test_suite *ag_test_suite_mblock(void)
 {
-        _ag_test *test[] = {
+        ag_test *test[] = {
                 &new_01,
                 &new_02,
         };
@@ -25,8 +25,8 @@ extern _ag_test_suite *ag_test_suite_mblock(void)
                 "another test",
         };
 
-        _ag_test_suite *ctx = _ag_test_suite_new("ag_mblock interface");
-        _ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
+        ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");
+        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
         return ctx;
 }

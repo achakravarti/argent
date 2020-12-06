@@ -74,13 +74,10 @@ enum ag_test_status {
 
 
 /*-
- * Interface: Test Case
+ * Interface: Test
  */
 
-
-typedef struct ag_test_case ag_test_case;
-
-typedef enum ag_test_status (ag_test)(ag_test_case *);
+typedef enum ag_test_status (ag_test)(void);
 
 #define ag_test_assert(p) ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
 
@@ -90,20 +87,11 @@ typedef enum ag_test_status (ag_test)(ag_test_case *);
 #       define ag_test_assert_debug(p) ag_test_assert(p)
 #endif
 
-extern ag_test_case *ag_test_case_new(ag_test *);
-extern ag_test_case *ag_test_case_copy(const ag_test_case *);
-extern void ag_test_case_free(ag_test_case **);
-
-extern enum ag_test_status ag_test_case_status(const ag_test_case *);
-
-extern void ag_test_case_desc_set(ag_test_case *, const char *);
-extern void ag_test_case_exec(ag_test_case *);
-extern void ag_test_case_log(const ag_test_case *, FILE *);
-
 
 /*-
  * Interface: Test Suite
  */
+
 
 
 typedef struct ag_test_suite ag_test_suite;
@@ -112,32 +100,14 @@ extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
 extern void ag_test_suite_free(ag_test_suite **);
 
-extern size_t ag_test_suite_len(const  ag_test_suite *);
+extern size_t ag_test_suite_len(const ag_test_suite *);
 extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
 
-extern void ag_test_suite_push(ag_test_suite *, const ag_test_case *);
-extern void ag_test_suite_exec(ag_test_suite *);
-extern void ag_test_suite_log(const ag_test_suite *, FILE *);
-
-
-//////////
-
-
-typedef enum ag_test_status (_ag_test)(void);
-typedef struct _ag_test_suite _ag_test_suite;
-
-extern _ag_test_suite *_ag_test_suite_new(const char *);
-extern _ag_test_suite *_ag_test_suite_copy(const _ag_test_suite *);
-extern void _ag_test_suite_free(_ag_test_suite **);
-
-extern size_t _ag_test_suite_len(const _ag_test_suite *);
-extern size_t _ag_test_suite_poll(const _ag_test_suite *, enum ag_test_status);
-
-extern void _ag_test_suite_push(_ag_test_suite *, _ag_test *, const char *);
-extern void _ag_test_suite_push_array(_ag_test_suite *, _ag_test *[],
+extern void ag_test_suite_push(ag_test_suite *, ag_test *, const char *);
+extern void ag_test_suite_push_array(ag_test_suite *, ag_test *[],
                 const char *[], size_t);
-extern void _ag_test_suite_exec(_ag_test_suite *);
-extern void _ag_test_suite_log(_ag_test_suite *, FILE *);
+extern void ag_test_suite_exec(ag_test_suite *);
+extern void ag_test_suite_log(ag_test_suite *, FILE *);
 
 /*-
  * Interface: Test Harness
@@ -154,7 +124,7 @@ extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,
                 enum ag_test_status);
 
-extern void ag_test_harness_push(ag_test_harness *, const _ag_test_suite *);
+extern void ag_test_harness_push(ag_test_harness *, const ag_test_suite *);
 extern void ag_test_harness_exec(ag_test_harness *);
 extern void ag_test_harness_log(const ag_test_harness *, FILE *);
 
