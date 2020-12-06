@@ -192,7 +192,9 @@ extern void ag_test_case_dispose(ag_test_case **ctx)
 
         if (ctx && (hnd = *ctx)) {
                 str_dispose(hnd->desc);
-                ag_mblock_free((ag_mblock **)ctx);
+                free(hnd);
+
+                *ctx = NULL;
         }
 }
 

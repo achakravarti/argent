@@ -246,6 +246,8 @@ extern void ag_test_suite_dispose(ag_test_suite **ctx)
         ag_test_suite *hnd;
 
         if (ctx && (hnd = *ctx)) {
+                str_dispose(hnd->desc);
+
                 struct node *n1 = hnd->head, *n2;
                 while (n1) {
                         n2 = n1->nxt;
