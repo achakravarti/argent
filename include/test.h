@@ -120,6 +120,24 @@ extern void ag_test_suite_exec(ag_test_suite *);
 extern void ag_test_suite_log(const ag_test_suite *, FILE *);
 
 
+//////////
+
+
+typedef enum ag_test_status (_ag_test)(void);
+typedef struct _ag_test_suite _ag_test_suite;
+
+extern _ag_test_suite *_ag_test_suite_new(const char *, FILE *);
+extern _ag_test_suite *_ag_test_suite_copy(const _ag_test_suite *);
+extern void ag_test_suties_free(_ag_test_suite **);
+
+extern size_t _ag_test_suite_len(const _ag_test_suite *);
+extern size_t _ag_test_suite_poll(const _ag_test_suite *, enum ag_test_status);
+
+extern void _ag_test_suite_push(_ag_test_suite *, _ag_test *, const char *);
+extern void _ag_test_suite_push_array(_ag_test_suite *, _ag_test *[],
+                const char *[], size_t);
+extern void _ag_test_suite_exec(_ag_test_suite *);
+
 /*-
  * Interface: Test Harness
  */
