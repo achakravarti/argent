@@ -57,7 +57,7 @@ struct node {
  */
 static inline struct node *node_new(const ag_test_suite *ts)
 {
-        struct node *n = malloc(sizeof *n);
+        struct node *n = ag_mblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
@@ -74,7 +74,7 @@ static inline struct node *node_new(const ag_test_suite *ts)
  */
 static inline struct node *node_copy(const struct node *ctx)
 {
-        struct node *n = malloc(sizeof *n);
+        struct node *n = ag_mblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
@@ -94,7 +94,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *nxt = ctx->nxt;
 
         ag_test_suite_free(&ctx->ts);
-        free(ctx);
+        ag_mblock_free((ag_mblock **)&ctx);
 
         return nxt;
 }
@@ -113,7 +113,7 @@ static char *str_new_fmt(const char *fmt, ...)
         va_list args;
 
         va_start(args, fmt);
-        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);
@@ -131,8 +131,9 @@ static char *str_new_fmt(const char *fmt, ...)
  */
 static inline void str_free(char *ctx)
 {
-        if (ctx)
-                free(ctx);
+        /*if (ctx)
+                free(ctx);*/
+        ag_mblock_free((ag_mblock **)&ctx);
 }
 
 
@@ -153,7 +154,7 @@ struct ag_test_harness {
  */
 extern ag_test_harness *ag_test_harness_new(void)
 {
-        ag_test_harness *ctx = malloc(sizeof *ctx);
+        ag_test_harness *ctx = ag_mblock_new(sizeof *ctx);
         ctx->head = NULL;
 
         return ctx;
@@ -196,8 +197,7 @@ extern void ag_test_harness_free(ag_test_harness **ctx)
                         n = node_free(n);
                 }
 
-                free(hnd);
-                *ctx = NULL;
+                ag_mblock_free((ag_mblock **)ctx);
         }
 }
 
