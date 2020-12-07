@@ -18,7 +18,7 @@ static char *str_new_fmt(const char *fmt, ...)
         va_list args;
 
         va_start(args, fmt);
-        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);
@@ -36,8 +36,7 @@ static char *str_new_fmt(const char *fmt, ...)
  */
 static inline void str_free(char *ctx)
 {
-        if (ctx)
-                free(ctx);
+        ag_mblock_free((ag_mblock **)&ctx);
 }
 
 
@@ -51,7 +50,7 @@ struct node {
 
 static struct node *node_new(ag_test *test, const char *desc)
 {
-        struct node *n = malloc(sizeof *n);
+        struct node *n = ag_mblock_new(sizeof *n);
         n->test = test;
         n->desc = str_new_fmt("%s", desc);
         n->status = AG_TEST_STATUS_WAIT;
@@ -66,7 +65,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *next = ctx->next;
 
         str_free(ctx->desc);
-        free(ctx);
+        ag_mblock_free((ag_mblock **)&ctx);
 
         return next;
 }
@@ -143,10 +142,9 @@ static void log_body(const ag_test_suite *ctx, FILE *log)
 
 extern ag_test_suite *ag_test_suite_new(const char *desc)
 {
-        ag_test_suite *ctx = malloc(sizeof *ctx);
+        ag_test_suite *ctx = ag_mblock_new(sizeof *ctx);
         ctx->desc = str_new_fmt("%s", desc);
         ctx->head = NULL;
-
 
         return ctx;
 }
@@ -177,8 +175,7 @@ extern void ag_test_suite_free(ag_test_suite **ctx)
                 while (n) 
                         n = node_free(n);
 
-                free(hnd);
-                *ctx = NULL;
+                ag_mblock_free((ag_mblock **)ctx);
         }
 }
 
