@@ -186,6 +186,72 @@ ag_test_init(copy_05, "ag_mblock_copy() syncs reference count of both source"
 }
 ag_test_exit();
 
+ag_test_init(copy_deep_01, "ag_mblock_copy_deep() makes a copy of an int in the"
+                " heap")
+{
+        int *i = ag_mblock_new(sizeof *i);
+        *i = 555;
+
+        int *j = ag_mblock_copy_deep(i);
+        ag_test_assert (*j == 555);
+
+        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_free((ag_mblock **)&j);
+}
+ag_test_exit();
+
+ag_test_init(copy_deep_02, "ag_mblock_copy_deep() makes a copy of a test"
+                " structure")
+{
+        struct test *t = ag_mblock_new(sizeof *t);
+        t->i = ag_mblock_new(sizeof *t->i);
+        t->j = ag_mblock_new(sizeof *t->j);
+
+        *t->i = 555;
+        *t->j = -666;
+
+        struct test *cp = ag_mblock_copy_deep(t);
+        ag_test_assert (*cp->i == *t->i && *cp->j == *t->j);
+
+        ag_mblock_free((ag_mblock **)&t->i);
+        ag_mblock_free((ag_mblock **)&t->j);
+        ag_mblock_free((ag_mblock **)&t);
+        ag_mblock_free((ag_mblock **)&cp);
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_03, "ag_mblock_copy_deep() returns a copy with another"
+                " address")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
+        ag_test_assert (src != cp);
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_04, "ag_mblock_copy_deep() sets reference to 1 of the"
+                " copy")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_deep(cp);
+        
+        ag_test_assert (ag_mblock_refc(cp2) == 1);
+}
+ag_test_exit();
+
+ag_test_init(copy_deep_05, "ag_mblock_copy_deep() does not change the reference"
+                " count of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_deep(cp);
+        
+        ag_test_assert (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
+}
+ag_test_exit();
 
 
 extern ag_test_suite *ag_test_suite_mblock(void)
@@ -207,6 +273,11 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &copy_03,
                 &copy_04,
                 &copy_05,
+                &copy_deep_01,
+                &copy_deep_02,
+                &copy_deep_03,
+                &copy_deep_04,
+                &copy_deep_05,
         };
 
         const char *desc[] = {
@@ -226,6 +297,11 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 copy_03_desc,
                 copy_04_desc,
                 copy_05_desc,
+                copy_deep_01_desc,
+                copy_deep_02_desc,
+                copy_deep_03_desc,
+                copy_deep_04_desc,
+                copy_deep_05_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");
