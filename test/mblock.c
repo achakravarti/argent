@@ -85,7 +85,7 @@ ag_test_exit();
 
 
 ag_test_init(new_align_03, "ag_mblock_new_align() returns a block with a"
-                "  reference count of 1")
+                " reference count of 1")
 {
         ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
         ag_test_assert (ag_mblock_refc(m) == 1);
@@ -186,6 +186,25 @@ ag_test_init(copy_05, "ag_mblock_copy() syncs reference count of both source"
 }
 ag_test_exit();
 
+ag_test_init(copy_06, "ag_mblock_copy() preserves the data size of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+
+        ag_test_assert (ag_mblock_sz(src) == ag_mblock_sz(cp));
+}
+ag_test_exit();
+
+
+ag_test_init(copy_07, "ag_mblock_copy() preserves the total size of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+
+        ag_test_assert (ag_mblock_sz(src) == ag_mblock_sz(cp));
+}
+ag_test_exit();
+
 ag_test_init(copy_deep_01, "ag_mblock_copy_deep() makes a copy of an int in the"
                 " heap")
 {
@@ -253,6 +272,27 @@ ag_test_init(copy_deep_05, "ag_mblock_copy_deep() does not change the reference"
 }
 ag_test_exit();
 
+ag_test_init(copy_deep_06, "ag_mblock_copy_deep() preserves the data size of"
+                " the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
+
+        ag_test_assert (ag_mblock_sz(src) == ag_mblock_sz(cp));
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_07, "ag_mblock_copy_deep() maintains the total size of"
+                " the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
+
+        ag_test_assert (ag_mblock_sz(src) >= ag_mblock_sz(cp));
+}
+ag_test_exit();
+
 
 extern ag_test_suite *ag_test_suite_mblock(void)
 {
@@ -273,11 +313,15 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &copy_03,
                 &copy_04,
                 &copy_05,
+                &copy_06,
+                &copy_07,
                 &copy_deep_01,
                 &copy_deep_02,
                 &copy_deep_03,
                 &copy_deep_04,
                 &copy_deep_05,
+                &copy_deep_06,
+                &copy_deep_07,
         };
 
         const char *desc[] = {
@@ -297,11 +341,15 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 copy_03_desc,
                 copy_04_desc,
                 copy_05_desc,
+                copy_06_desc,
+                copy_07_desc,
                 copy_deep_01_desc,
                 copy_deep_02_desc,
                 copy_deep_03_desc,
                 copy_deep_04_desc,
                 copy_deep_05_desc,
+                copy_deep_06_desc,
+                copy_deep_07_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");
