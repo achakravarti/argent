@@ -104,6 +104,16 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 }
 
 
+extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
+{
+        size_t sz = meta_sz(ctx);
+        ag_mblock *cp = ag_mblock_new_align(sz, align);
+        memcpy(cp, ctx, sz);
+
+        return cp;
+}
+
+
 extern void ag_mblock_free(ag_mblock **ctx)
 {
         ag_mblock *hnd;

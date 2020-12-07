@@ -24,6 +24,7 @@ extern ag_mblock *ag_mblock_new(size_t);
 extern ag_mblock *ag_mblock_new_align(size_t, size_t);
 extern ag_mblock *ag_mblock_copy(const ag_mblock *);
 extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *);
+extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *, size_t);
 extern void ag_mblock_free(ag_mblock **);
 
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *, const ag_mblock *cmp);

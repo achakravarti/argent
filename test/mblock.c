@@ -15,8 +15,8 @@ ag_test_init(new_01, "ag_mblock_new() allocates memory on the heap for an int")
 ag_test_exit();
 
 
-ag_test_init(new_02, "ag_mblock_new() allocates memory on the heap for a"
-                " tests truct")
+ag_test_init(new_02, "ag_mblock_new() allocates memory on the heap for a test"
+                " struct")
 {
         struct test *t = ag_mblock_new(sizeof *t);
         t->i = ag_mblock_new(sizeof *t->i);
