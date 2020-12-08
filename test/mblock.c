@@ -783,6 +783,7 @@ ag_test_init(resize_01, "ag_mblock_resize() resizes an existing memory block")
 }
 ag_test_exit();
 
+
 ag_test_init(resize_02, "ag_mblock_resize() preserved data when resizing to a"
                 " larger size")
 {
@@ -794,6 +795,20 @@ ag_test_init(resize_02, "ag_mblock_resize() preserved data when resizing to a"
         ag_test_assert (!strcmp(bfr, "Hello"));
 
         ag_mblock_free((ag_mblock **)&bfr);
+}
+ag_test_exit();
+
+
+ag_test_init(str_01, "ag_mblock_str() generates the string representation of a"
+                " memory block")
+{
+        int *i = ag_mblock_new(sizeof *i);
+        char *s = ag_mblock_str(i);
+
+        ag_test_assert (s && *s);
+
+        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_free((ag_mblock **)&s);
 }
 ag_test_exit();
 
@@ -814,7 +829,7 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &free_03, &free_04, &free_05, &free_06, &cmp_01, &cmp_02,
                 &cmp_03, &cmp_04, &cmp_05, &cmp_06, &cmp_07, &cmp_08, &cmp_09,
                 &cmp_10, &lt_01, &lt_02, &lt_03, &gt_01, &gt_02, &gt_03, &eq_01,
-                &eq_02, &eq_03, &resize_01, &resize_02,
+                &eq_02, &eq_03, &resize_01, &resize_02, &str_01,
         };
 
         const char *desc[] = {
@@ -834,7 +849,7 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 cmp_04_desc, cmp_05_desc, cmp_06_desc, cmp_07_desc, cmp_08_desc,
                 cmp_09_desc, cmp_10_desc, lt_01_desc, lt_02_desc, lt_03_desc,
                 gt_01_desc, gt_02_desc, gt_03_desc, eq_01_desc, eq_02_desc,
-                eq_03_desc, resize_01_desc, resize_02_desc, 
+                eq_03_desc, resize_01_desc, resize_02_desc, str_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");

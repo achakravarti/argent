@@ -20,7 +20,7 @@ static char *str_new_fmt(const char *fmt, ...)
         va_list args;
 
         va_start(args, fmt);
-        char *bfr = malloc(vsnprintf(NULL, 0, fmt, args) + 1);
+        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);
