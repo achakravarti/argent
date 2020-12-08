@@ -27,6 +27,8 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *);
 extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *, size_t);
 extern void ag_mblock_free(ag_mblock **);
 
+// warning: don't use with structs containing non-scalar members
+// if not equal, comparison based on first differing byte
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *, const ag_mblock *cmp);
 
 inline bool ag_mblock_lt(const ag_mblock *ctx, const ag_mblock *cmp)

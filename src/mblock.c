@@ -131,7 +131,7 @@ extern void ag_mblock_free(ag_mblock **ctx)
 
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *ctx, const ag_mblock *cmp)
 {
-        return memcmp(ctx, cmp, meta_sz(ctx));
+        return ctx == cmp ? AG_CMP_EQ : memcmp(ctx, cmp, meta_sz(ctx));
 }
 
 extern inline bool ag_mblock_lt(const ag_mblock *, const ag_mblock *);
