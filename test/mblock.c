@@ -1,13 +1,13 @@
 #include "./test.h"
 
-
 struct test {
         int *i;
         int *j;
 };
 
 
-ag_test_init(new_01, "ag_mblock_new() allocates memory on the heap for an int")
+ag_test_init(new_01, "ag_mblock_new() allocates memory on the heap for"
+                " an int")
 {
         ag_mblock_auto *m = ag_mblock_new(sizeof(int));
         ag_test_assert (m);
@@ -15,8 +15,8 @@ ag_test_init(new_01, "ag_mblock_new() allocates memory on the heap for an int")
 ag_test_exit();
 
 
-ag_test_init(new_02, "ag_mblock_new() allocates memory on the heap for a test"
-                " struct")
+ag_test_init(new_02, "ag_mblock_new() allocates memory on the heap for"
+                " a test struct")
 {
         struct test *t = ag_mblock_new(sizeof *t);
         t->i = ag_mblock_new(sizeof *t->i);
@@ -272,6 +272,7 @@ ag_test_init(copy_deep_05, "ag_mblock_copy_deep() does not change the reference"
 }
 ag_test_exit();
 
+
 ag_test_init(copy_deep_06, "ag_mblock_copy_deep() preserves the data size of"
                 " the source")
 {
@@ -292,6 +293,107 @@ ag_test_init(copy_deep_07, "ag_mblock_copy_deep() maintains the total size of"
         ag_test_assert (ag_mblock_sz(src) >= ag_mblock_sz(cp));
 }
 ag_test_exit();
+
+ag_test_init(copy_deep_align_01, "ag_mblock_copy_deep_align() makes a copy of"
+                " an int in the heap")
+{
+        int *i = ag_mblock_new(sizeof *i);
+        *i = 555;
+
+        int *j = ag_mblock_copy_deep_align(i, 8);
+        ag_test_assert (*j == 555);
+
+        ag_mblock_free((ag_mblock **)&i);
+        ag_mblock_free((ag_mblock **)&j);
+}
+ag_test_exit();
+
+ag_test_init(copy_deep_align_02, "ag_mblock_copy_deep_align() makes a copy of"
+                " a test structure")
+{
+        struct test *t = ag_mblock_new(sizeof *t);
+        t->i = ag_mblock_new(sizeof *t->i);
+        t->j = ag_mblock_new(sizeof *t->j);
+
+        *t->i = 555;
+        *t->j = -666;
+
+        struct test *cp = ag_mblock_copy_deep_align(t, 8);
+        ag_test_assert (*cp->i == *t->i && *cp->j == *t->j);
+
+        ag_mblock_free((ag_mblock **)&t->i);
+        ag_mblock_free((ag_mblock **)&t->j);
+        ag_mblock_free((ag_mblock **)&t);
+        ag_mblock_free((ag_mblock **)&cp);
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_align_03, "ag_mblock_copy_deep_align() returns a copy"
+                " with another address")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
+        ag_test_assert (src != cp);
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_align_04, "ag_mblock_copy_deep_align() sets reference to"
+                " 1 of the copy")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_deep_align(cp, 8);
+        
+        ag_test_assert (ag_mblock_refc(cp2) == 1);
+}
+ag_test_exit();
+
+ag_test_init(copy_deep_align_05, "ag_mblock_copy_deep_align() does not change"
+                " the reference count of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_deep_align(cp, 8);
+        
+        ag_test_assert (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_align_06, "ag_mblock_copy_deep_align() preserves the"
+                " data size of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
+
+        ag_test_assert (ag_mblock_sz(src) == ag_mblock_sz(cp));
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_align_07, "ag_mblock_copy_deep_align() maintains the"
+                " total size of the source")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
+
+        ag_test_assert (ag_mblock_sz(src) >= ag_mblock_sz(cp));
+}
+ag_test_exit();
+
+
+ag_test_init(copy_deep_align_08, "ag_mblock_copy_deep_align() honours alignment"
+                " request")
+{
+        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 32);
+
+        ag_test_assert (ag_mblock_aligned(cp, 32));
+}
+ag_test_exit();
+
 
 
 extern ag_test_suite *ag_test_suite_mblock(void)
@@ -322,6 +424,14 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &copy_deep_05,
                 &copy_deep_06,
                 &copy_deep_07,
+                &copy_deep_align_01,
+                &copy_deep_align_02,
+                &copy_deep_align_03,
+                &copy_deep_align_04,
+                &copy_deep_align_05,
+                &copy_deep_align_06,
+                &copy_deep_align_07,
+                &copy_deep_align_08,
         };
 
         const char *desc[] = {
@@ -350,6 +460,14 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 copy_deep_05_desc,
                 copy_deep_06_desc,
                 copy_deep_07_desc,
+                copy_deep_align_01_desc,
+                copy_deep_align_02_desc,
+                copy_deep_align_03_desc,
+                copy_deep_align_04_desc,
+                copy_deep_align_05_desc,
+                copy_deep_align_06_desc,
+                copy_deep_align_07_desc,
+                copy_deep_align_08_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");
