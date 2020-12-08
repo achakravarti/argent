@@ -395,6 +395,66 @@ ag_test_init(copy_deep_align_08, "ag_mblock_copy_deep_align() honours alignment"
 ag_test_exit();
 
 
+ag_test_init(free_01, "ag_mblock_free() performs a no-op if passed NULL")
+{
+        ag_mblock_free(NULL);
+        ag_test_assert (true);
+}
+ag_test_exit();
+
+
+ag_test_init(free_02, "ag_mblock_free() performs a no-op if passed a handle to"
+                " a null pointer")
+{
+        ag_mblock *m = NULL;
+        ag_mblock_free((ag_mblock **) &m);
+        ag_test_assert (true);
+}
+ag_test_exit();
+
+
+ag_test_init(free_03, "ag_mblock_free() release an int on the heap")
+{
+        int *i = ag_mblock_new(sizeof *i);
+        ag_mblock_free((ag_mblock **)&i);
+        ag_test_assert (!i);
+}
+ag_test_exit();
+
+
+ag_test_init(free_04, "ag_mblock_free() releases a test struct on the heap")
+{
+        struct test *t = ag_mblock_new(sizeof *t);
+        ag_mblock_free((ag_mblock **)&t);
+        ag_test_assert (!t);
+}
+ag_test_exit();
+
+
+ag_test_init(free_05, "ag_mblock_free() reduces the reference count by 1 for"
+                "lazy copies")
+{
+        int *i = ag_mblock_new(sizeof *i);
+        ag_mblock_auto *j = ag_mblock_copy(i);
+        ag_mblock_free((ag_mblock **)&i);
+
+        ag_test_assert (ag_mblock_refc(j) == 1);
+}
+ag_test_exit();
+
+
+ag_test_init(free_06, "ag_mblock_free() on a deep copy does not alter the"
+                " reference count of the source")
+{
+        ag_mblock_auto *i = ag_mblock_new(sizeof(int));
+        ag_mblock_auto *j = ag_mblock_copy(i);
+        ag_mblock *k = ag_mblock_copy_deep(j);
+        ag_mblock_free(&k);
+        
+        ag_test_assert (ag_mblock_refc(i) == 2);
+}
+ag_test_exit();
+
 
 extern ag_test_suite *ag_test_suite_mblock(void)
 {
@@ -432,6 +492,12 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &copy_deep_align_06,
                 &copy_deep_align_07,
                 &copy_deep_align_08,
+                &free_01,
+                &free_02,
+                &free_03,
+                &free_04,
+                &free_05,
+                &free_06,
         };
 
         const char *desc[] = {
@@ -468,6 +534,12 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 copy_deep_align_06_desc,
                 copy_deep_align_07_desc,
                 copy_deep_align_08_desc,
+                free_01_desc,
+                free_02_desc,
+                free_03_desc,
+                free_04_desc,
+                free_05_desc,
+                free_06_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");
