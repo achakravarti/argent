@@ -29,7 +29,7 @@
 
 typedef int ag_erno;
 
-typedef void (ag_exception_handler)(ag_erno, const char *, const char *, size_t,
+typedef void (ag_exception_handler)(ag_erno, const char *, const char *, int,
                 void *);
 
 extern void ag_exception_init(void);
@@ -53,6 +53,13 @@ extern ag_exception_handler *ag_exception_hnd(ag_erno);
 #else
 #       define AG_ASSERT(p)
 #endif
+
+
+#define AG_REQUIRE(p, e) do {                                         \
+        if (AG_UNLIKELY (!(p)))                                       \
+                ag_exception_hnd(e)(e, __func__, __FILE__, __LINE__); \
+} while (0)
+
 
 #ifdef __cplusplus
         extern "C" {
