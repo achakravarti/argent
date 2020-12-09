@@ -30,12 +30,13 @@ typedef int ag_erno;
 typedef void (ag_exception_handler)(ag_erno, const char *, const char *, size_t,
                 void *);
 
-void ag_exception_init(void);
-void ag_exception_exit(void);
-void ag_exception_register(ag_erno, const char *, ag_exception_handler *);
+extern void ag_exception_init(void);
+extern void ag_exception_exit(void);
+extern void ag_exception_register(ag_erno, const char *,
+                ag_exception_handler *);
 
-const char *ag_exception_msg(ag_erno);
-ag_exception_handler *ag_exception_hnd(ag_erno);
+extern const char *ag_exception_msg(ag_erno);
+extern ag_exception_handler *ag_exception_hnd(ag_erno);
 
 #ifdef __cplusplus
         extern "C" {
