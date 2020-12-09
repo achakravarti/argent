@@ -8,42 +8,42 @@
 
 
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_pure __attribute__((pure))
+#   define AG_PURE __attribute__((pure))
 #else
-#   define ag_pure
-#   warning "[!] ag_pure not supported by current compiler"
+#   define AG_PURE
+#   warning "[!] AG_PURE not supported by current compiler"
 #endif
 
 
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_hot __attribute__((hot))
+#   define AG_HOT __attribute__((hot))
 #else
-#   define ag_hot
-#   warning "[!] ag_hot not supported by current compiler"
+#   define AG_HOT
+#   warning "[!] AG_HOT not supported by current compiler"
 #endif
 
 
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_cold __attribute__((cold))
+#   define AG_COLD __attribute__((cold))
 #else
-#   define ag_cold
-#   warning "[!] ag_cold not supported by current compiler"
+#   define AG_COLD
+#   warning "[!] AG_COLD not supported by current compiler"
 #endif
 
 
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_likely(p) (__builtin_expect(!!(p), 1))
+#   define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
 #else
-#   define ag_likely(p) (p)
-#   warning "[!] ag_likely() not supported by current compiler"
+#   define AG_LIKELY(p) (p)
+#   warning "[!] AG_LIKELY() not supported by current compiler"
 #endif
 
 
 #if (defined __GNUC__ || defined __clang__)
-#   define ag_unlikely(p) (__builtin_expect(!!(p), 0))
+#   define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
 #else
-#   define ag_unlikely(p) (p)
-#   warning "[!] ag_unlikely not supported by current compiler"
+#   define AG_UNLIKELY(p) (p)
+#   warning "[!] AG_UNLIKELY() not supported by current compiler"
 #endif
 
 
@@ -51,10 +51,10 @@
 #   include <threads.h>
 #   define ag_threadlocal thread_local
 #elif (defined __GNUC__ || defined __clang__)
-#   define ag_threadlocal __thread
+#   define AG_THREADLOCAL __thread
 #else
-#    define ag_threadlocal
-#    warning "[!] ag_threadlocal not supported by current compiler"
+#    define AG_THREADLOCAL
+#    warning "[!] AG_THREADLOCAL not supported by current compiler"
 #endif
 
 

@@ -118,7 +118,7 @@ extern void ag_mblock_free(ag_mblock **ctx)
 {
         ag_mblock *hnd;
 
-        if (ctx && (hnd = *ctx)) {
+        if (AG_LIKELY (ctx && (hnd = *ctx))) {
                 meta_refc_release(hnd);
 
                 if (!meta_refc(hnd)) {
