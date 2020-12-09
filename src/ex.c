@@ -31,7 +31,7 @@ static char *str_new(const char *src)
 {
         size_t sz = strlen(src);
         char *ctx = malloc(sz + 1);
-        if (!ctx) {
+        if (AG_UNLIKELY (!ctx)) {
                 printf("failed to malloc exception message, aborting...\n");
                 abort();
         }
@@ -65,7 +65,7 @@ static struct node *node_new(ag_erno err, const char *msg,
                 ag_exception_handler *eh)
 {
         struct node *ctx = malloc(sizeof *ctx);
-        if (!ctx) {
+        if (AG_UNLIKELY (!ctx)) {
                 printf("failed to malloc exception list node, aborting...\n");
                 abort();
         }
@@ -81,7 +81,7 @@ static struct node *node_new(ag_erno err, const char *msg,
 
 static struct node *node_free(struct node *ctx)
 {
-        if (ctx) {
+        if (AG_LIKELY (ctx)) {
                 struct node *nxt = ctx->nxt;
 
                 str_free(ctx->msg);
@@ -98,7 +98,7 @@ static struct node *node_free(struct node *ctx)
 
 extern void ag_exception_init(void)
 {
-        if (g_ex) {
+        if (AG_UNLIKELY (g_ex)) {
                 printf("exception list already initialised, aborting...\n");
                 abort();
         }
@@ -108,7 +108,7 @@ extern void ag_exception_init(void)
 extern void ag_exception_exit(void)
 {
         struct node *n = g_ex;
-        while (n)
+        while (AG_LIKELY (n))
                 n = node_free(n);
 }
 
@@ -118,9 +118,9 @@ extern void ag_exception_register(ag_erno err, const char *msg,
 {
         struct node *ctx = node_new(err, msg, eh);
 
-        if (g_ex) {
+        if (AG_LIKELY (g_ex)) {
                 struct node *n = g_ex;
-                while (n && n->nxt)
+                while (AG_LIKELY (n && n->nxt))
                         n = n->nxt;
 
                 n->nxt = ctx;
@@ -132,7 +132,7 @@ extern void ag_exception_register(ag_erno err, const char *msg,
 extern const char *ag_exception_msg(ag_erno err)
 {
         struct node *n = g_ex;
-        while (n) {
+        while (AG_LIKELY (n)) {
                 if (n->err == err)
                         return n->msg;
 
@@ -146,7 +146,7 @@ extern const char *ag_exception_msg(ag_erno err)
 extern ag_exception_handler *ag_exception_hnd(ag_erno err)
 {
         struct node *n = g_ex;
-        while (n) {
+        while (AG_LIKELY (n)) {
                 if (n->err == err)
                         return n->eh;
 
