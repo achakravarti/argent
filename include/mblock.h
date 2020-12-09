@@ -52,6 +52,7 @@ extern size_t ag_mblock_refc(const ag_mblock *);
 extern bool ag_mblock_aligned(const ag_mblock *, size_t);
 
 extern void ag_mblock_resize(ag_mblock **, size_t);
+extern void ag_mblock_resize_align(ag_mblock **, size_t, size_t);
 extern char *ag_mblock_str(const ag_mblock *);
 
 

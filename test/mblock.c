@@ -784,7 +784,7 @@ ag_test_init(resize_01, "ag_mblock_resize() resizes an existing memory block")
 ag_test_exit();
 
 
-ag_test_init(resize_02, "ag_mblock_resize() preserved data when resizing to a"
+ag_test_init(resize_02, "ag_mblock_resize() preserves data when resizing to a"
                 " larger size")
 {
         char *bfr = ag_mblock_new(6);
@@ -793,6 +793,49 @@ ag_test_init(resize_02, "ag_mblock_resize() preserved data when resizing to a"
         ag_mblock_resize((ag_mblock **)&bfr, 10);
 
         ag_test_assert (!strcmp(bfr, "Hello"));
+
+        ag_mblock_free((ag_mblock **)&bfr);
+}
+ag_test_exit();
+
+
+ag_test_init(resize_align_01, "ag_mblock_resize_align() resizes an existing"
+                " memory block")
+{
+        char *bfr = ag_mblock_new(10);
+        ag_mblock_resize_align((ag_mblock **)&bfr, 15, 8);
+
+        ag_test_assert (ag_mblock_sz(bfr) == 15);
+
+        ag_mblock_free((ag_mblock **)&bfr);
+}
+ag_test_exit();
+
+
+ag_test_init(resize_align_02, "ag_mblock_resize_align() preserves data when"
+                " resizing to a larger size")
+{
+        char *bfr = ag_mblock_new(6);
+        strncpy(bfr, "Hello", 6);
+        bfr[5] = '\0';
+        ag_mblock_resize_align((ag_mblock **)&bfr, 10, 8);
+
+        ag_test_assert (!strcmp(bfr, "Hello"));
+
+        ag_mblock_free((ag_mblock **)&bfr);
+}
+ag_test_exit();
+
+
+ag_test_init(resize_align_03, "ag_mblock_resize_align() aligns to the requested"
+                " boundary")
+{
+        char *bfr = ag_mblock_new(6);
+        strncpy(bfr, "Hello", 6);
+        bfr[5] = '\0';
+        ag_mblock_resize_align((ag_mblock **)&bfr, 10, 32);
+
+        ag_test_assert (ag_mblock_aligned(bfr, 32));
 
         ag_mblock_free((ag_mblock **)&bfr);
 }
@@ -829,7 +872,8 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 &free_03, &free_04, &free_05, &free_06, &cmp_01, &cmp_02,
                 &cmp_03, &cmp_04, &cmp_05, &cmp_06, &cmp_07, &cmp_08, &cmp_09,
                 &cmp_10, &lt_01, &lt_02, &lt_03, &gt_01, &gt_02, &gt_03, &eq_01,
-                &eq_02, &eq_03, &resize_01, &resize_02, &str_01,
+                &eq_02, &eq_03, &resize_01, &resize_02, &resize_align_01,
+                &resize_align_02, &resize_align_03, &str_01,
         };
 
         const char *desc[] = {
@@ -849,7 +893,9 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 cmp_04_desc, cmp_05_desc, cmp_06_desc, cmp_07_desc, cmp_08_desc,
                 cmp_09_desc, cmp_10_desc, lt_01_desc, lt_02_desc, lt_03_desc,
                 gt_01_desc, gt_02_desc, gt_03_desc, eq_01_desc, eq_02_desc,
-                eq_03_desc, resize_01_desc, resize_02_desc, str_01_desc,
+                eq_03_desc, resize_01_desc, resize_02_desc,
+                resize_align_01_desc, resize_align_02_desc,
+                resize_align_03_desc, str_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_mblock interface");

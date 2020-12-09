@@ -179,6 +179,19 @@ extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 }
 
 
+extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
+{
+        ag_mblock *hnd = *ctx;
+        size_t oldsz = meta_sz(hnd);
+
+        ag_mblock *cp = ag_mblock_new_align(sz, align);
+        memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
+        
+        ag_mblock_free(ctx);
+        *ctx = cp;
+}
+
+
 extern char *ag_mblock_str(const ag_mblock *ctx)
 {
         return str_new_fmt("address = %p, data sz = %lu, total data = %lu,"
