@@ -38,6 +38,20 @@ extern void ag_exception_register(ag_erno, const char *,
 extern const char *ag_exception_msg(ag_erno);
 extern ag_exception_handler *ag_exception_hnd(ag_erno);
 
+#ifndef NDEBUG
+#       define AG_ASSERT(p) do { \
+                if (AG_UNLIKELY (!(p))) { \
+                        printf("[!] assertion failed: %s [%s(), %s:%d]\n, "  \
+                                        #p, __func__, __FILE__, __LINE__);   \
+                        ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \
+                                        #p, __func__, __FILE__, __LINE__);   \
+                        abort();                                             \
+                }                                                            \
+        } while (0)
+#else
+#       define AG_ASSERT(p)
+#endif
+
 #ifdef __cplusplus
         extern "C" {
 #endif
