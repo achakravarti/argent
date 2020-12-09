@@ -63,9 +63,11 @@ static inline void meta_refc_release(ag_mblock *ctx)
 
 extern ag_mblock *ag_mblock_new(size_t sz)
 {
+        AG_ASSERT (sz);
+
         size_t *ctx = malloc(sizeof(size_t) * 2 + sz);
-        
         memset(ctx, 0, sz);
+
         ctx[0] = 1;
         ctx[1] = sz;
 
@@ -75,10 +77,13 @@ extern ag_mblock *ag_mblock_new(size_t sz)
 
 extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 {
+        AG_ASSERT (sz);
+        AG_ASSERT (align && !(align % 2));
+
         size_t *ctx;
         (void) posix_memalign((void **)&ctx, align, sizeof(size_t) * 2 + sz);
-
         memset(ctx, 0, sz);
+
         ctx[0] = 1;
         ctx[1] = sz;
 
@@ -88,14 +93,19 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 
 extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         size_t *hnd = (ag_mblock *)ctx;
         meta_refc_retain(hnd);
+
         return hnd;
 }
 
 
 extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         size_t sz = meta_sz(ctx);
         ag_mblock *cp = ag_mblock_new(sz);
         memcpy(cp, ctx, sz);
@@ -106,6 +116,9 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 
 extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
 {
+        AG_ASSERT (ctx);
+        AG_ASSERT (align && !(align % 2));
+
         size_t sz = meta_sz(ctx);
         ag_mblock *cp = ag_mblock_new_align(sz, align);
         memcpy(cp, ctx, sz);
@@ -143,11 +156,15 @@ extern inline bool ag_mblock_gt(const ag_mblock *, const ag_mblock *);
 
 extern size_t ag_mblock_sz(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         return meta_sz(ctx);
 }
 
 extern size_t ag_mblock_sz_total(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         return malloc_usable_size(meta_head(ctx));
 }
 
@@ -156,18 +173,26 @@ extern size_t ag_mblock_sz_total(const ag_mblock *ctx)
 
 extern size_t ag_mblock_refc(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         return meta_refc(ctx);
 }
 
 
 extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 {
+        AG_ASSERT (ctx);
+        AG_ASSERT (align && !(align % 2));
+
         return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
 
 
 extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 {
+        AG_ASSERT (ctx && *ctx);
+        AG_ASSERT (sz);
+
         ag_mblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
 
@@ -181,6 +206,10 @@ extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 
 extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
 {
+        AG_ASSERT (ctx && *ctx);
+        AG_ASSERT (sz);
+        AG_ASSERT (align && !(align % 2));
+
         ag_mblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
 
@@ -194,6 +223,8 @@ extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
 
 extern char *ag_mblock_str(const ag_mblock *ctx)
 {
+        AG_ASSERT (ctx);
+
         return str_new_fmt("address = %p, data sz = %lu, total data = %lu,"
                         " refc = %lu", (void *)meta_head(ctx), meta_sz(ctx),
                         ag_mblock_sz_total(ctx), meta_refc(ctx));

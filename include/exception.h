@@ -24,6 +24,8 @@
 #define __ARGENT_EXCEPTION_H__
 
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef int ag_erno;
 
@@ -41,7 +43,7 @@ extern ag_exception_handler *ag_exception_hnd(ag_erno);
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do { \
                 if (AG_UNLIKELY (!(p))) { \
-                        printf("[!] assertion failed: %s [%s(), %s:%d]\n, "  \
+                        printf("[!] assertion failed: %s [%s(), %s:%d]\n",   \
                                         #p, __func__, __FILE__, __LINE__);   \
                         ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \
                                         #p, __func__, __FILE__, __LINE__);   \
