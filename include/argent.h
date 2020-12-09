@@ -24,8 +24,13 @@
 #ifndef __ARGENT_H__
 #define __ARGENT_H__
 
+#include "./primitives.h"
+#include "./log.h"
+#include "./erno.h"
+#include "./exception.h"
 #include "./mblock.h"
 #include "./test.h"
+#include "./manager.h"
 
 #endif /* !__ARGENT_H__ */
 

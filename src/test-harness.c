@@ -131,8 +131,6 @@ static char *str_new_fmt(const char *fmt, ...)
  */
 static inline void str_free(char *ctx)
 {
-        /*if (ctx)
-                free(ctx);*/
         ag_mblock_free((ag_mblock **)&ctx);
 }
 
@@ -170,10 +168,12 @@ extern ag_test_harness *ag_test_harness_new(void)
  */
 extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
+        AG_ASSERT (ctx);
+
         ag_test_harness *cp = ag_test_harness_new();
 
         struct node *n = ctx->head;
-        while (n) {
+        while (AG_LIKELY (n)) {
                 ag_test_harness_push(cp, n->ts);
                 n = n->nxt;
         }
@@ -191,9 +191,9 @@ extern void ag_test_harness_free(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
-        if (ctx && (hnd = *ctx)) {
+        if (AG_LIKELY (ctx && (hnd = *ctx))) {
                 struct node *n = hnd->head;
-                while (n) {
+                while (AG_LIKELY (n)) {
                         n = node_free(n);
                 }
 
@@ -211,10 +211,12 @@ extern void ag_test_harness_free(ag_test_harness **ctx)
  */
 extern int ag_test_harness_len(const ag_test_harness *ctx)
 {
+        AG_ASSERT (ctx);
+
         register size_t len = 0;
 
         struct node *n = ctx->head;
-        while (n) {
+        while (AG_LIKELY (n)) {
                 len++;
                 n = n->nxt;
         }
@@ -234,11 +236,13 @@ extern int ag_test_harness_len(const ag_test_harness *ctx)
 extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
                 enum ag_test_status status)
 {
+        AG_ASSERT (ctx);
+
         register size_t tot = 0;
 
         struct node *n = ctx->head;
-        while (n) {
-                tot = ag_test_suite_poll(n->ts, status);
+        while (AG_LIKELY (n)) {
+                tot += ag_test_suite_poll(n->ts, status);
                 n = n->nxt;
         }
 
@@ -254,11 +258,14 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
  */
 extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
 {
+        AG_ASSERT (ctx);
+        AG_ASSERT (ts);
+
         struct node *push = node_new(ts);
 
-        if (ctx->head) {
+        if (AG_LIKELY (ctx->head)) {
                 struct node *n = ctx->head;
-                while (n->nxt)
+                while (AG_LIKELY (n->nxt))
                         n = n->nxt;
 
                 n->nxt = push;
@@ -276,7 +283,7 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 {
         struct node *n = ctx->head;
 
-        while (n) {
+        while (AG_LIKELY (n)) {
                 ag_test_suite_exec(n->ts); 
                 n = n->nxt;
         }
@@ -285,8 +292,11 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 
 extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
 {
+        AG_ASSERT (ctx);
+        AG_ASSERT (log);
+
         struct node *n = ctx->head;
-        while (n) {
+        while (AG_LIKELY (n)) {
                 ag_test_suite_log(n->ts, log);
                 n = n->nxt;
         }

@@ -1,3 +1,5 @@
+#if 0
+
 #include <string.h>
 #include "../src/api.h"
 #include "./test.h"
@@ -706,4 +708,4 @@ extern void ag_test_string(void)
     
     printf("\n");
 }
-
+#endif

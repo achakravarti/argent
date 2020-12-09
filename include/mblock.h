@@ -1,21 +1,26 @@
 #ifndef __ARGENT_MBLOCK_H__
 #define __ARGENT_MBLOCK_H__
 
-#ifdef __cplusplus
-        extern "C" {
-#endif
-
 #include "./argent.h"
 
 #include <stdbool.h>
 #include <stddef.h>
 
-enum ag_cmp {
-        AG_CMP_LT = -1,
-        AG_CMP_EQ,
-        AG_CMP_GT
+
+#ifdef __cplusplus
+        extern "C" {
+#endif
+
+
+
+
+struct ag_mblock_exception {
+        size_t sz;
+        size_t align;
 };
 
+
+extern void ag_mblock_exception_handler(const struct ag_exception *, void *);
 
 typedef void ag_mblock;
 #define ag_mblock_auto __attribute__((cleanup(ag_mblock_free))) ag_mblock
