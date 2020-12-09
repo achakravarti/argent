@@ -20,13 +20,30 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
 
+#ifndef __ARGENT_EXCEPTION_H__
+#define __ARGENT_EXCEPTION_H__
 
-#ifndef __ARGENT_H__
-#define __ARGENT_H__
+#include <stddef.h>
 
-#include "./exception.h"
-#include "./mblock.h"
-#include "./test.h"
+typedef int ag_erno;
 
-#endif /* !__ARGENT_H__ */
+typedef void (ag_exception_handler)(ag_erno, const char *, const char *, size_t,
+                void *);
+
+void ag_exception_init(void);
+void ag_exception_exit(void);
+void ag_exception_register(ag_erno, const char *, ag_exception_handler *);
+
+const char *ag_exception_msg(ag_erno);
+ag_exception_handler *ag_exception_hnd(ag_erno);
+
+#ifdef __cplusplus
+        extern "C" {
+#endif
+
+#ifdef __cplusplus
+        }
+#endif
+
+#endif /* !__ARGENT_EXCEPTION_H__ */
 
