@@ -24,6 +24,7 @@
 #ifndef __ARGENT_H__
 #define __ARGENT_H__
 
+#include "./primitives.h"
 #include "./exception.h"
 #include "./mblock.h"
 #include "./test.h"

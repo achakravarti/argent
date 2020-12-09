@@ -10,11 +10,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-enum ag_cmp {
-        AG_CMP_LT = -1,
-        AG_CMP_EQ,
-        AG_CMP_GT
-};
 
 
 typedef void ag_mblock;
