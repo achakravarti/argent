@@ -1,3 +1,5 @@
+#if 0
+
 #include "../src/api.h"
 #include "./test.h"
 #include <string.h>
@@ -768,3 +770,5 @@ extern void ag_test_object(void)
     printf("\n");
     ag_object_exit();
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if 0
 #include "../src/api.h"
 #include "./test.h"
 
@@ -91,3 +92,4 @@ extern void ag_test_memblock(void)
 
     printf("\n");
 }
+#endif

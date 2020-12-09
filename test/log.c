@@ -1,3 +1,4 @@
+#if 0
 #include "../src/api.h"
 #include "./test.h"
 
@@ -133,4 +134,4 @@ extern void ag_test_log(void)
     
     printf("\n");
 }
-
+#endif
