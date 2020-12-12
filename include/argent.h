@@ -29,6 +29,7 @@
 #include "./exception.h"
 #include "./mblock.h"
 #include "./test.h"
+#include "./manager.h"
 
 #endif /* !__ARGENT_H__ */
 
