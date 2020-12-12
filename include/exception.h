@@ -23,18 +23,16 @@
 #ifndef __ARGENT_EXCEPTION_H__
 #define __ARGENT_EXCEPTION_H__
 
-#if 0
 #include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
+
+#ifdef __cplusplus
+        extern "C" {
 #endif
 
-#include <stddef.h>
 
 typedef int ag_erno;
 #define AG_ERNO_NULL ((ag_erno) 0)
 
-typedef struct ag_exception ag_exception;
 struct ag_exception {
         ag_erno erno;
         char *func;
@@ -43,35 +41,6 @@ struct ag_exception {
 };
 
 typedef void (ag_exception_handler)(const struct ag_exception *, void *);
-
-#if 0
-typedef void (ag_exception_handler)(ag_erno, const char *, const char *, int,
-                void *);
-
-extern void ag_exception_init(void);
-extern void ag_exception_exit(void);
-
-extern const char *ag_exception_msg(ag_erno);
-extern ag_exception_handler *ag_exception_hnd(ag_erno);
-
-extern void ag_exception_register(ag_erno, const char *,
-                ag_exception_handler *);
-#endif
-
-
-#if 0
-extern ag_exception *ag_exception_new(ag_erno, const char *, const char *, int);
-extern ag_exception *ag_exception_copy(const ag_exception *);
-extern void ag_exception_dispose(ag_exception **);
-
-extern ag_erno ag_exception_erno(const ag_exception *);
-extern const char *ag_exception_msg(const ag_exception *);
-extern const char *ag_exception_func(const ag_exception *);
-extern const char *ag_exception_file(const ag_exception *);
-extern int ag_exception_line(const ag_exception *);
-extern ag_exception_handler *ag_exception_hnd(const ag_exception *);
-#endif
-
 
 
 extern void ag_exception_registry_init(size_t);
@@ -82,12 +51,6 @@ extern ag_exception_handler *ag_exception_registry_hnd(ag_erno);
 
 extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception_handler *);
-
-
-
-
-
-
 
 
 #ifndef NDEBUG
@@ -131,10 +94,6 @@ extern void ag_exception_registry_set(ag_erno, const char *,
         }                                                       \
 } while (0)
 
-
-#ifdef __cplusplus
-        extern "C" {
-#endif
 
 #ifdef __cplusplus
         }
