@@ -5,7 +5,6 @@
         extern "C" {
 #endif
 
-
 extern void ag_init(void);
 extern void ag_exit(int);
 

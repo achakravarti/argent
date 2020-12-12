@@ -35,8 +35,8 @@ typedef int ag_erno;
 
 struct ag_exception {
         ag_erno erno;
-        char *func;
-        char *file;
+        const char *func;
+        const char *file;
         size_t line;
 };
 

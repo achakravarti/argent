@@ -11,8 +11,15 @@
 #include <stddef.h>
 
 
-#define AG_ERNO_MBLOCK_NEW ((ag_erno) -1)
-#define AG_ERNO_MBLOCK_NEW_ALIGN ((ag_erno) -2)
+#define AG_ERNO_MBLOCK ((ag_erno) -1)
+
+struct ag_mblock_exception {
+        size_t sz;
+        size_t align;
+};
+
+
+extern void ag_mblock_exception_handler(const struct ag_exception *, void *);
 
 typedef void ag_mblock;
 #define ag_mblock_auto __attribute__((cleanup(ag_mblock_free))) ag_mblock
