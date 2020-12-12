@@ -127,7 +127,7 @@ extern ag_exception_handler *ag_exception_hnd(const ag_exception *ctx)
 }
 
 
-inline void *mem_new(size_t sz)
+static inline void *mem_new(size_t sz)
 {
         void *ctx = malloc(sz);
 
@@ -139,7 +139,7 @@ inline void *mem_new(size_t sz)
         return ctx;
 }
 
-inline char *str_new(const char *src)
+static inline char *str_new(const char *src)
 {
         size_t sz = strlen(src);
 

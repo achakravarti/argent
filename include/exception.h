@@ -29,7 +29,10 @@
 #include <stdlib.h>
 #endif
 
+#include <stddef.h>
+
 typedef int ag_erno;
+#define AG_ERNO_NULL ((ag_erno) 0)
 
 typedef struct ag_exception ag_exception;
 
@@ -64,7 +67,7 @@ extern ag_exception_handler *ag_exception_hnd(const ag_exception *);
 
 
 
-extern void ag_exception_registry_init(void);
+extern void ag_exception_registry_init(size_t);
 extern void ag_exception_registry_exit(void);
 
 extern const char *ag_exception_registry_msg(ag_erno);
@@ -101,6 +104,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception *_x_ = ag_exception_new((e), __func__, __FILE__, \
                                 __LINE__);                                    \
                 ag_exception_hnd(_x_)(_x_, NULL);                             \
+                ag_exception_dispose(&_x_);                                   \
 } while (0)
 
 
@@ -109,6 +113,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception *_x_ = ag_exception_new((e), __func__, __FILE__, \
                                 __LINE__);                                    \
                 ag_exception_hnd(_x_)(_x_, o);                                \
+                ag_exception_dispose(&_x_);                                   \
 } while (0)
 
 
