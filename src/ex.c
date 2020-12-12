@@ -24,27 +24,48 @@
 #include "../include/argent.h"
 
 #include <stdlib.h>
-#if 0
 #include <string.h>
-#endif
 
 
 struct ag_exception {
         ag_erno erno;
-        const char *func;
-        const char *file;
+        char *func;
+        char *file;
         int line;
 };
+
+
+static inline char *str_new(const char *);
+static inline void str_dispose(char *);
 
 
 extern ag_exception *ag_exception_new(ag_erno erno, const char *func,
                 const char *file, int line)
 {
+        AG_ASSERT (func && *func);
+        AG_ASSERT (file && *file);
+        AG_ASSERT (line);
+
+        ag_exception *ctx = malloc(sizeof *ctx);
+
+        if (AG_UNLIKELY (!ctx)) {
+                printf("[!] failed to malloc exception instance\n");
+                abort();
+        }
+
+        ctx->func = str_new(func);
+        ctx->file = str_new(file);
+        ctx->line = line;
+
+        return ctx;
 }
 
 
 extern ag_exception *ag_exception_copy(const ag_exception *ctx)
 {
+        AG_ASSERT (ctx);
+
+        return ag_exception_new(ctx->erno, ctx->func, ctx->file, ctx->line);
 }
 
 
@@ -53,6 +74,9 @@ extern void ag_exception_dispose(ag_exception **ctx)
         ag_exception *hnd;
         
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
+                str_dispose(hnd->func);
+                str_dispose(hnd->file);
+
                 free(hnd);
                 *ctx = NULL;
         }
@@ -104,6 +128,25 @@ extern ag_exception_handler *ag_exception_hnd(const ag_exception *ctx)
         AG_ASSERT (ctx);
 
         return ag_exception_registry_hnd(ctx->erno);
+}
+
+
+static inline char *str_new(const char *src)
+{
+        size_t sz = strlen(src);
+
+        char *ctx = malloc(sz + 1);
+        strncpy(ctx, src, sz);
+        ctx[sz] = '\0';
+        
+        return ctx;
+}
+
+
+static inline void str_dispose(char *ctx)
+{
+        if (AG_LIKELY (ctx))
+                free(ctx);
 }
 
 
