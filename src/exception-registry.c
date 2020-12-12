@@ -38,6 +38,8 @@ static void vector_set(struct vector *, size_t, const char *,
                 ag_exception_handler *);
 static inline void vector_resize(struct vector *, size_t);
 
+static void hnd_default(const struct ag_exception *, void *);
+
 
 
 extern void ag_exception_registry_init(size_t cap)
@@ -211,7 +213,7 @@ static void vector_set(struct vector *ctx, size_t idx, const char *msg,
 
         str_dispose(ctx->msg[idx]);
         ctx->msg[idx] = str_new(msg);
-        ctx->hnd[idx] = hnd;
+        ctx->hnd[idx] = hnd ? hnd : &hnd_default;
 }
 
 
@@ -226,5 +228,17 @@ static inline void vector_resize(struct vector *ctx, size_t cap)
                                 " aborting...\n");
                 abort();
         }
+}
+
+
+static void hnd_default(const struct ag_exception *ex, void *opt)
+{
+        (void)opt;
+    
+        printf("[!] unhandled exception: %d [%s(), %s:%lu]\n%s\n", ex->erno, 
+            ex->func, ex->file, ex->line, ag_exception_registry_msg(ex->erno));
+
+        ag_log_err("unhandled exception: %d [%s(), %s:%lu]\n%s\n", ex->erno, 
+            ex->func, ex->file, ex->line, ag_exception_registry_msg(ex->erno));
 }
 

@@ -37,7 +37,7 @@ struct ag_exception {
         ag_erno erno;
         char *func;
         char *file;
-        int line;
+        size_t line;
 };
 
 typedef void (ag_exception_handler)(const struct ag_exception *, void *);
