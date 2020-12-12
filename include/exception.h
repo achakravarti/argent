@@ -33,6 +33,8 @@ typedef int ag_erno;
 
 typedef struct ag_exception ag_exception;
 
+typedef void (ag_exception_handler)(const ag_exception *, void *);
+
 #if 0
 typedef void (ag_exception_handler)(ag_erno, const char *, const char *, int,
                 void *);
@@ -58,6 +60,18 @@ extern const char *ag_exception_msg(const ag_exception *);
 extern const char *ag_exception_func(const ag_exception *);
 extern const char *ag_exception_file(const ag_exception *);
 extern int ag_exception_line(const ag_exception *);
+extern ag_exception_handler *ag_exception_hnd(const ag_exception *);
+
+
+
+extern void ag_exception_registry_init(void);
+extern void ag_exception_registry_exit(void);
+
+extern const char *ag_exception_registry_msg(ag_erno);
+extern ag_exception_handler *ag_exception_registry_hnd(ag_erno);
+
+extern void ag_exception_registry_set(ag_erno, const char *,
+                ag_exception_handler *);
 
 
 
