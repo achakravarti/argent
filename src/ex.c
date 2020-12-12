@@ -35,6 +35,7 @@ struct ag_exception {
 };
 
 
+static inline void *mem_new(size_t);
 static inline char *str_new(const char *);
 static inline void str_dispose(char *);
 
@@ -46,12 +47,7 @@ extern ag_exception *ag_exception_new(ag_erno erno, const char *func,
         AG_ASSERT (file && *file);
         AG_ASSERT (line);
 
-        ag_exception *ctx = malloc(sizeof *ctx);
-
-        if (AG_UNLIKELY (!ctx)) {
-                printf("[!] failed to malloc exception instance\n");
-                abort();
-        }
+        ag_exception *ctx = mem_new(sizeof *ctx);
 
         ctx->func = str_new(func);
         ctx->file = str_new(file);
@@ -131,11 +127,23 @@ extern ag_exception_handler *ag_exception_hnd(const ag_exception *ctx)
 }
 
 
-static inline char *str_new(const char *src)
+inline void *mem_new(size_t sz)
+{
+        void *ctx = malloc(sz);
+
+        if (AG_UNLIKELY (!ctx)) {
+                printf("[!] failed to malloc for exception, aborting...\n");
+                abort();
+        }
+
+        return ctx;
+}
+
+inline char *str_new(const char *src)
 {
         size_t sz = strlen(src);
 
-        char *ctx = malloc(sz + 1);
+        char *ctx = mem_new(sz + 1);
         strncpy(ctx, src, sz);
         ctx[sz] = '\0';
         
@@ -143,7 +151,7 @@ static inline char *str_new(const char *src)
 }
 
 
-static inline void str_dispose(char *ctx)
+inline void str_dispose(char *ctx)
 {
         if (AG_LIKELY (ctx))
                 free(ctx);
