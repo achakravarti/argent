@@ -94,12 +94,14 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 #       define AG_ASSERT(p)
 #endif
 
-#if 0
-#define AG_REQUIRE(p, e) do {                                               \
-        if (AG_UNLIKELY (!(p)))                                             \
-                ag_exception_hnd(e)(e, __func__, __FILE__, __LINE__, NULL); \
+
+
+#define AG_REQUIRE(p, e) do {                                                \
+        if (AG_UNLIKELY (!(p)))                                              \
+                ag_exception *_ex_ = ag_exception_new(e, __func__, __FILE__, \
+                                __LINE__);                                   \
+                ag_exception_hnd(_ex_)(_ex_, NULL);                          \
 } while (0)
-#endif
 
 
 #ifdef __cplusplus
