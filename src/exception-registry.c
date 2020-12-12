@@ -172,6 +172,7 @@ static inline struct vector *vector_new(size_t cap)
 
         ctx->msg = mem_new(sizeof *ctx->msg * cap);
         ctx->hnd = mem_new(sizeof *ctx->hnd * cap);
+        ctx->cap = cap;
 
         return ctx;
 }
@@ -235,10 +236,14 @@ static void hnd_default(const struct ag_exception *ex, void *opt)
 {
         (void)opt;
     
-        printf("[!] unhandled exception: %d [%s(), %s:%lu]\n%s\n", ex->erno, 
-            ex->func, ex->file, ex->line, ag_exception_registry_msg(ex->erno));
+        printf("[!] (unhandled) %d [%s(), %s:%lu]: %s\n", ex->erno, ex->func,
+                        ex->file, ex->line,
+                        ag_exception_registry_msg(ex->erno));
 
-        ag_log_err("unhandled exception: %d [%s(), %s:%lu]\n%s\n", ex->erno, 
-            ex->func, ex->file, ex->line, ag_exception_registry_msg(ex->erno));
+        ag_log_err("(unhandled) %d [%s(), %s:%lu]: %s", ex->erno, ex->func,
+                        ex->file, ex->line,
+                        ag_exception_registry_msg(ex->erno));
+
+        ag_exit(EXIT_FAILURE);
 }
 

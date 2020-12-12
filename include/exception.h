@@ -54,8 +54,8 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 
 
 #ifndef NDEBUG
-#       define AG_ASSERT(p) do { \
-                if (AG_UNLIKELY (!(p))) { \
+#       define AG_ASSERT(p) do {                                             \
+                if (AG_UNLIKELY (!(p))) {                                    \
                         printf("[!] assertion failed: %s [%s(), %s:%d]\n",   \
                                         #p, __func__, __FILE__, __LINE__);   \
                         ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \

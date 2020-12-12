@@ -49,6 +49,7 @@ int main(int argc, char **argv)
         ag_test_suite_dispose(&ts1);
         ag_test_harness_dispose(&th);*/
 
+        ag_init();
 
         ag_test_harness *th = ag_test_harness_new();
 
@@ -60,6 +61,8 @@ int main(int argc, char **argv)
         ag_test_harness_log(th, stdout);
 
         ag_test_harness_free(&th);
+
+        ag_exit(EXIT_SUCCESS);
 
         return 0;
 }
