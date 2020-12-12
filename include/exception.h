@@ -35,8 +35,14 @@ typedef int ag_erno;
 #define AG_ERNO_NULL ((ag_erno) 0)
 
 typedef struct ag_exception ag_exception;
+struct ag_exception {
+        ag_erno erno;
+        char *func;
+        char *file;
+        int line;
+};
 
-typedef void (ag_exception_handler)(const ag_exception *, void *);
+typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 
 #if 0
 typedef void (ag_exception_handler)(ag_erno, const char *, const char *, int,
@@ -53,7 +59,7 @@ extern void ag_exception_register(ag_erno, const char *,
 #endif
 
 
-
+#if 0
 extern ag_exception *ag_exception_new(ag_erno, const char *, const char *, int);
 extern ag_exception *ag_exception_copy(const ag_exception *);
 extern void ag_exception_dispose(ag_exception **);
@@ -64,6 +70,7 @@ extern const char *ag_exception_func(const ag_exception *);
 extern const char *ag_exception_file(const ag_exception *);
 extern int ag_exception_line(const ag_exception *);
 extern ag_exception_handler *ag_exception_hnd(const ag_exception *);
+#endif
 
 
 
@@ -99,21 +106,29 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 
 
 
-#define AG_REQUIRE(p, e) do {                                                 \
-        if (AG_UNLIKELY (!(p)))                                               \
-                ag_exception *_x_ = ag_exception_new((e), __func__, __FILE__, \
-                                __LINE__);                                    \
-                ag_exception_hnd(_x_)(_x_, NULL);                             \
-                ag_exception_dispose(&_x_);                                   \
+#define AG_REQUIRE(p, e) do {                                   \
+        if (AG_UNLIKELY (!(p))) {                               \
+                struct ag_exception _x_ = {                     \
+                        .erno = (e),                            \
+                        .func = __func__,                       \
+                        .file = __FILE__,                       \
+                        .line = __LINE__                        \
+                };                                              \
+                ag_exception_registry_hnd((e))(&_x_, NULL);     \
+        }                                                       \
 } while (0)
 
 
-#define AG_REQUIRE_OPT(p, e, o) do {                                          \
-        if (AG_UNLIKELY (!(p)))                                               \
-                ag_exception *_x_ = ag_exception_new((e), __func__, __FILE__, \
-                                __LINE__);                                    \
-                ag_exception_hnd(_x_)(_x_, o);                                \
-                ag_exception_dispose(&_x_);                                   \
+#define AG_REQUIRE_OPT(p, e, o) do {                            \
+        if (AG_UNLIKELY (!(p))) {                               \
+                struct ag_exception _x_ = {                     \
+                        .erno = (e),                            \
+                        .func = __func__,                       \
+                        .file = __FILE__,                       \
+                        .line = __LINE__                        \
+                };                                              \
+                ag_exception_registry_hnd((e))(&_x_, (o));      \
+        }                                                       \
 } while (0)
 
 

@@ -19,20 +19,19 @@
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
-
-
+#if 0
 #include "../include/argent.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 
-struct ag_exception {
+/*struct ag_exception {
         ag_erno erno;
         char *func;
         char *file;
         int line;
-};
+};*/
 
 
 static inline void *mem_new(size_t);
@@ -156,6 +155,7 @@ inline void str_dispose(char *ctx)
         if (AG_LIKELY (ctx))
                 free(ctx);
 }
+#endif
 
 
 #if 0
@@ -174,13 +174,14 @@ static char *str_new(const char *);
 
 static struct node *node_new(ag_erno, const char *, ag_exception_handler *);
 static struct node *node_free(struct node *);
+#endif
 
 #if 0
 static inline void eh_default(ag_erno, const char *, const char *, int, void *);
 #endif
 
 
-
+#if 0
 extern void ag_exception_init(void)
 {
         if (AG_UNLIKELY (g_ex)) {
