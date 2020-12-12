@@ -27,29 +27,14 @@
 #include <string.h>
 
 
-static char *str_new(const char *src)
-{
-        size_t sz = strlen(src);
-        char *ctx = malloc(sz + 1);
-        if (AG_UNLIKELY (!ctx)) {
-                printf("failed to malloc exception message, aborting...\n");
-                abort();
-        }
+struct ag_exception {
+        ag_erno erno;
+        const char *func;
+        const char *file;
+        int line;
+};
 
-        memset(ctx, '\0', sz);
-        strncpy(ctx, src, sz);
-
-        return ctx;
-}
-
-
-static inline void str_free(char *ctx)
-{
-        if (ctx)
-                free(ctx);
-}
-
-
+#if 0
 struct node {
         ag_erno err;
         char *msg;
@@ -60,39 +45,15 @@ struct node {
 
 static struct node *g_ex = NULL;
 
-
-static struct node *node_new(ag_erno err, const char *msg,
-                ag_exception_handler *eh)
-{
-        struct node *ctx = malloc(sizeof *ctx);
-        if (AG_UNLIKELY (!ctx)) {
-                printf("failed to malloc exception list node, aborting...\n");
-                abort();
-        }
-
-        ctx->err = err;
-        ctx->msg = str_new(msg);
-        ctx->eh = eh;
-        ctx->nxt = NULL;
-
-        return ctx;
-}
+static char *str_new(const char *);
 
 
-static struct node *node_free(struct node *ctx)
-{
-        if (AG_LIKELY (ctx)) {
-                struct node *nxt = ctx->nxt;
+static struct node *node_new(ag_erno, const char *, ag_exception_handler *);
+static struct node *node_free(struct node *);
 
-                str_free(ctx->msg);
-                free(ctx);
-
-                return nxt;
-        }
-
-        return NULL;
-}
-
+#if 0
+static inline void eh_default(ag_erno, const char *, const char *, int, void *);
+#endif
 
 
 
@@ -156,4 +117,64 @@ extern ag_exception_handler *ag_exception_hnd(ag_erno err)
         return NULL;
 }
 
+
+static char *str_new(const char *src)
+{
+        size_t sz = strlen(src);
+        char *ctx = malloc(sz + 1);
+        if (AG_UNLIKELY (!ctx)) {
+                printf("failed to malloc exception message, aborting...\n");
+                abort();
+        }
+
+        memset(ctx, '\0', sz);
+        strncpy(ctx, src, sz);
+
+        return ctx;
+}
+
+static inline void str_free(char *ctx)
+{
+        if (ctx)
+                free(ctx);
+}
+
+static struct node *node_new(ag_erno err, const char *msg,
+                ag_exception_handler *eh)
+{
+        struct node *ctx = malloc(sizeof *ctx);
+        if (AG_UNLIKELY (!ctx)) {
+                printf("failed to malloc exception list node, aborting...\n");
+                abort();
+        }
+
+        ctx->err = err;
+        ctx->msg = str_new(msg);
+        ctx->eh = eh;
+        ctx->nxt = NULL;
+
+        return ctx;
+}
+
+
+static struct node *node_free(struct node *ctx)
+{
+        if (AG_LIKELY (ctx)) {
+                struct node *nxt = ctx->nxt;
+
+                str_free(ctx->msg);
+                free(ctx);
+
+                return nxt;
+        }
+
+        return NULL;
+}
+#endif
+
+#if 0
+static inline void eh_default(ag_erno, const char *, const char *, int, void *)
+{
+}
+#endif
 

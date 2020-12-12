@@ -60,6 +60,11 @@ static inline void meta_refc_release(ag_mblock *ctx)
         ((size_t *)ctx)[-2]--;
 }
 
+extern void ag_mblock_init(void)
+{
+        ag_exception_register(AG_ERNO_MBLOCK_NEW, "AG_ERNO_MBLOCK_NEW: failed"
+                        " to allocate new memory block", NULL);
+}
 
 extern ag_mblock *ag_mblock_new(size_t sz)
 {

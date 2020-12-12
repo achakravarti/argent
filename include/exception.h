@@ -23,22 +23,48 @@
 #ifndef __ARGENT_EXCEPTION_H__
 #define __ARGENT_EXCEPTION_H__
 
+#if 0
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#endif
 
 typedef int ag_erno;
 
+typedef struct ag_exception ag_exception;
+
+#if 0
 typedef void (ag_exception_handler)(ag_erno, const char *, const char *, int,
                 void *);
 
 extern void ag_exception_init(void);
 extern void ag_exception_exit(void);
-extern void ag_exception_register(ag_erno, const char *,
-                ag_exception_handler *);
 
 extern const char *ag_exception_msg(ag_erno);
 extern ag_exception_handler *ag_exception_hnd(ag_erno);
+
+extern void ag_exception_register(ag_erno, const char *,
+                ag_exception_handler *);
+#endif
+
+
+
+extern ag_exception *ag_exception_new(ag_erno, const char *, const char *, int);
+extern ag_exception *ag_exception_copy(const ag_exception *);
+extern void ag_exception_dispose(ag_exception **);
+
+extern ag_erno ag_exception_erno(const ag_exception *);
+extern const char *ag_exception_msg(const ag_exception *);
+extern const char *ag_exception_func(const ag_exception *);
+extern const char *ag_exception_file(const ag_exception *);
+extern int ag_exception_line(const ag_exception *);
+
+
+
+
+
+
+
 
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do { \
@@ -54,11 +80,12 @@ extern ag_exception_handler *ag_exception_hnd(ag_erno);
 #       define AG_ASSERT(p)
 #endif
 
-
-#define AG_REQUIRE(p, e) do {                                         \
-        if (AG_UNLIKELY (!(p)))                                       \
-                ag_exception_hnd(e)(e, __func__, __FILE__, __LINE__); \
+#if 0
+#define AG_REQUIRE(p, e) do {                                               \
+        if (AG_UNLIKELY (!(p)))                                             \
+                ag_exception_hnd(e)(e, __func__, __FILE__, __LINE__, NULL); \
 } while (0)
+#endif
 
 
 #ifdef __cplusplus
