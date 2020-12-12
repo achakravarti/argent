@@ -24,7 +24,9 @@
 #include "../include/argent.h"
 
 #include <stdlib.h>
+#if 0
 #include <string.h>
+#endif
 
 
 struct ag_exception {
@@ -33,6 +35,77 @@ struct ag_exception {
         const char *file;
         int line;
 };
+
+
+extern ag_exception *ag_exception_new(ag_erno erno, const char *func,
+                const char *file, int line)
+{
+}
+
+
+extern ag_exception *ag_exception_copy(const ag_exception *ctx)
+{
+}
+
+
+extern void ag_exception_dispose(ag_exception **ctx)
+{
+        ag_exception *hnd;
+        
+        if (AG_LIKELY (ctx && (hnd = *ctx))) {
+                free(hnd);
+                *ctx = NULL;
+        }
+}
+
+
+extern ag_erno ag_exception_erno(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ctx->erno;
+}
+
+
+extern const char *ag_exception_msg(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ag_exception_registry_msg(ctx->erno);
+}
+
+
+extern const char *ag_exception_func(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ctx->func;
+}
+
+
+extern const char *ag_exception_file(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ctx->file;
+}
+
+
+extern int ag_exception_line(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ctx->line;
+}
+
+
+extern ag_exception_handler *ag_exception_hnd(const ag_exception *ctx)
+{
+        AG_ASSERT (ctx);
+
+        return ag_exception_registry_hnd(ctx->erno);
+}
+
 
 #if 0
 struct node {
