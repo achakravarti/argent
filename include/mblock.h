@@ -17,9 +17,6 @@
 typedef void ag_mblock;
 #define ag_mblock_auto __attribute__((cleanup(ag_mblock_free))) ag_mblock
 
-extern void ag_mblock_init(void);
-#define ag_mblock_exit()
-
 extern ag_mblock *ag_mblock_new(size_t);
 extern ag_mblock *ag_mblock_new_align(size_t, size_t);
 extern ag_mblock *ag_mblock_copy(const ag_mblock *);
