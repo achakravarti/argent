@@ -12,6 +12,7 @@
 
 
 #define AG_ERNO_MBLOCK ((ag_erno) -1)
+#define AG_ERNO_MBLOCK_MSG "AG_ERNO_MBLOCK: failed to allocate memory block"
 
 struct ag_mblock_exception {
         size_t sz;
