@@ -30,10 +30,15 @@
 #endif
 
 typedef int ag_erno;
-#define AG_ERNO_NULL ((ag_erno) 0)
 
+#define AG_ERNO_MSG(p) #p ": " p##_MSG
+
+#define AG_ERNO_NULL ((ag_erno) 0)
 #define AG_ERNO_MBLOCK ((ag_erno) -1)
-#define AG_ERNO_MBLOCK_MSG "AG_ERNO_MBLOCK: failed to allocate memory block"
+
+#define AG_ERNO_MBLOCK_MSG "failed to allocate memory block"
+
+
 
 #ifdef __cplusplus
         }
