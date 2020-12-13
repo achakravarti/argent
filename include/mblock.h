@@ -1,18 +1,18 @@
 #ifndef __ARGENT_MBLOCK_H__
 #define __ARGENT_MBLOCK_H__
 
-#ifdef __cplusplus
-        extern "C" {
-#endif
-
 #include "./argent.h"
 
 #include <stdbool.h>
 #include <stddef.h>
 
 
-#define AG_ERNO_MBLOCK ((ag_erno) -1)
-#define AG_ERNO_MBLOCK_MSG "AG_ERNO_MBLOCK: failed to allocate memory block"
+#ifdef __cplusplus
+        extern "C" {
+#endif
+
+
+
 
 struct ag_mblock_exception {
         size_t sz;

@@ -21,16 +21,22 @@
  */
 
 
-#ifndef __ARGENT_H__
-#define __ARGENT_H__
+#ifndef __ARGENT_ERNO_H__
+#define __ARGENT_ERNO_H__
 
-#include "./primitives.h"
-#include "./log.h"
-#include "./erno.h"
-#include "./exception.h"
-#include "./mblock.h"
-#include "./test.h"
-#include "./manager.h"
 
-#endif /* !__ARGENT_H__ */
+#ifdef __cplusplus
+        extern "C" {
+#endif
 
+typedef int ag_erno;
+#define AG_ERNO_NULL ((ag_erno) 0)
+
+#define AG_ERNO_MBLOCK ((ag_erno) -1)
+#define AG_ERNO_MBLOCK_MSG "AG_ERNO_MBLOCK: failed to allocate memory block"
+
+#ifdef __cplusplus
+        }
+#endif
+
+#endif /* !__ARGENT_ERNO_H__ */

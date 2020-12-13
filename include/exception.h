@@ -23,15 +23,14 @@
 #ifndef __ARGENT_EXCEPTION_H__
 #define __ARGENT_EXCEPTION_H__
 
+#include "./argent.h"
+
 #include <stddef.h>
 
 #ifdef __cplusplus
         extern "C" {
 #endif
 
-
-typedef int ag_erno;
-#define AG_ERNO_NULL ((ag_erno) 0)
 
 struct ag_exception {
         ag_erno erno;
