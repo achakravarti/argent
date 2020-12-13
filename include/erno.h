@@ -29,19 +29,50 @@
         extern "C" {
 #endif
 
+
+/* 
+ * Since we don't have exceptions per se in C, we need to rely on error codes to
+ * signal exceptions. The Argent Library doesn't rely on the global `errno` in
+ * order to prevent potential conflicts with error codes defined by the relevant
+ * standards. We adopt the convention that negative error codes are reserved for
+ * use by the Argent Library, and positive ones by client code.
+ */
 typedef int ag_erno;
 
-#define AG_ERNO_MSG(p) #p ": " p##_MSG
 
-#define AG_ERNO_NULL ((ag_erno) 0)
-#define AG_ERNO_MBLOCK ((ag_erno) -1)
+/* 
+ * The following symbolic constants are the error codes used in the Argent
+ * Library. Apart from AG_ERNO_NULL, all of these error codes are negative to
+ * distinguish them from error codes used by client code.
+ */
+#define AG_ERNO_NULL    ((ag_erno) 0)
+#define AG_ERNO_MBLOCK  ((ag_erno) -1)
 
+
+/* 
+ * The following symbolic constants are the short messages associated with the
+ * above error codes. These symbolic constants are used in conjunction with the
+ * AG_ERNO_MSG() macro defined below to generate a captioned error string.
+ */
+#define AG_ERNO_NULL_MSG   "no error has occurred"
 #define AG_ERNO_MBLOCK_MSG "failed to allocate memory block"
 
+
+/*
+ * For debugging purposes, it is helpful to have error messages captioned with
+ * the symbolic constant aliasing the error code, instead of just the error
+ * code. We're using the AG_ERNO_MSG() macro to help generate these captioned
+ * error messages from the above error codes and their associated messages. For
+ * example, calling AG_ERNO_MSG(AG_ERNO_MBLOCK) will lead to the generation of
+ * the captioned error string "AG_ERNO_MBLOCK: failed to allocate memory block".
+ */
+#define AG_ERNO_MSG(p) #p ": " p##_MSG
 
 
 #ifdef __cplusplus
         }
 #endif
 
+
 #endif /* !__ARGENT_ERNO_H__ */
+
