@@ -1,137 +1,81 @@
-#if 0
-#include "../src/api.h"
+#include "../include/argent.h"
 #include "./test.h"
 
+#include <stdlib.h>
 
-/*******************************************************************************
- *                                  TEST CASES
- */
 
-                                    /* test case for ag_log_emerg() [AgDM:??] */
-static void emerg_test(void)
+#define cmd_journalctl(log) "journalctl -t ag-tests -p \"" log  \
+        "\" -S \"5 sec ago\" | grep \"No entries\""
+
+#define log_check(level) system(cmd_journalctl(level))
+
+
+ag_test_init(emerg_01, "ag_log_emerg() logs an emergency record") {
+        ag_log_emerg("Testing ag_log_emerg()...");
+        ag_test_assert (log_check("emerg"));
+} ag_test_exit();
+
+
+ag_test_init(alert_01, "ag_log_alert() logs an alert record") {
+        ag_log_alert("Testing ag_log_alert()...");
+        ag_test_assert (log_check("alert"));
+} ag_test_exit();
+
+
+ag_test_init(crit_01, "ag_log_crit() logs a critical record") {
+        ag_log_crit("Testing ag_log_crit()...");
+        ag_test_assert (log_check("crit"));
+} ag_test_exit();
+
+
+ag_test_init(err_01, "ag_log_err() logs an error record") {
+        ag_log_err("Testing ag_log_err()...");
+        ag_test_assert (log_check("err"));
+} ag_test_exit();
+
+
+ag_test_init(warning_01, "ag_log_warning() logs a warning record") {
+        ag_log_warning("Testing ag_log_warning()...");
+        ag_test_assert (log_check("warning"));
+} ag_test_exit();
+
+
+ag_test_init(notice_01, "ag_log_notice() logs a notice record") {
+        ag_log_notice("Testing ag_log_notice()...");
+        ag_test_assert (log_check("notice"));
+} ag_test_exit();
+
+
+ag_test_init(info_01, "ag_log_info() logs an information record") {
+        ag_log_info("Testing ag_log_info()...");
+        ag_test_assert (log_check("info"));
+} ag_test_exit();
+
+
+ag_test_init(debug_01, "ag_log_debug() logs a debug record") {
+        ag_log_debug("Testing ag_log_debug()...");
+        ag_test_assert (log_check("debug"));
+} ag_test_exit();
+
+
+
+extern ag_test_suite *test_log(void)
 {
-    printf("ag_log_emerg() logs an emergency message");
-    ag_log_emerg("Testing ag_log_emerg()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"emerg\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
+        ag_test *test[] = {
+                emerg_01, alert_01, crit_01, err_01, warning_01, notice_01,
+                info_01, debug_01,
+        };
 
-    printf("...OK\n");
-}
+        const char *desc[] = {
+                emerg_01_desc, alert_01_desc, crit_01_desc, err_01_desc,
+                warning_01_desc, notice_01_desc, info_01_desc, debug_01_desc,
+        };
 
-                                    /* test case for ag_log_alert() [AgDM:??] */
-static void alert_test(void)
-{
-    printf("ag_log_alert() logs an alert message");
-    ag_log_alert("Testing ag_log_alert()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"alert\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
+        ag_test_suite *ctx = ag_test_suite_new("ag_log interface");
+        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
-    printf("...OK\n");
-}
-
-                                     /* test case for ag_log_crit() [AgDM:??] */
-static void crit_test(void)
-{
-    printf("ag_log_crit() logs a critical message");
-    ag_log_crit("Testing ag_log_crit()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"crit\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-                                      /* test case for ag_log_err() [AgDM:??] */
-static void err_test(void)
-{
-    printf("ag_log_err() logs an error message");
-    ag_log_err("Testing ag_log_err()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"err\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-                                  /* test case for ag_log_warning() [AgDM:??] */
-static void warning_test(void)
-{
-    printf("ag_log_warning() logs a warning message");
-    ag_log_warning("Testing ag_log_warning()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"warning\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-                                   /* test case for ag_log_notice() [AgDM:??] */
-static void notice_test(void)
-{
-    printf("ag_log_notice() logs a notice message");
-    ag_log_notice("Testing ag_log_notice()...");
-
-    char *cmd = "journalctl -t ag-tests -p \"notice\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-                                     /* test case for ag_log_info() [AgDM:??] */
-static void info_test(void)
-{
-    printf("ag_log_info() logs an information message");
-    ag_log_info("Testing ag_log_info()...");
-    
-    char *cmd = "journalctl -t ag-tests -p \"info\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-                                    /* test case for ag_log_debug() [AgDM:??] */
-static void debug_test(void)
-{
-    printf("ag_log_debug() logs a debug message");
-    ag_log_debug("Testing ag_log_debug()...");
-
-    char *cmd = "journalctl -t ag-tests -p \"debug\" -S \"5 sec ago\""
-            " | grep \"No entries\"";
-    ag_require (system(cmd), AG_ERNO_TEST, NULL);
-
-
-    printf("...OK\n");
+        return ctx;
 }
 
 
-/*******************************************************************************
- *                                  TEST SUITE
- */
 
-                            /* implementation of logging test suite [AgDM:??] */
-extern void ag_test_log(void)
-{
-    printf("===============================================================\n");
-    printf("Starting logging interface test suite...\n\n");
-
-    emerg_test();
-    alert_test();
-    crit_test();
-    err_test();
-    warning_test();
-    notice_test();
-    info_test();
-    debug_test();
-    
-    printf("\n");
-}
-#endif

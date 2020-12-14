@@ -54,8 +54,13 @@ int main(int argc, char **argv)
         ag_test_harness *th = ag_test_harness_new();
 
         ag_test_suite *mblock = ag_test_suite_mblock();
+        ag_test_suite *log = test_log();
+
         ag_test_harness_push(th, mblock);
+        ag_test_harness_push(th, log);
+
         ag_test_suite_free(&mblock);
+        ag_test_suite_free(&log);
 
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);
