@@ -10,52 +10,52 @@
 #define log_check(level) system(cmd_journalctl(level))
 
 
-ag_test_init(emerg_01, "ag_log_emerg() logs an emergency record") {
+AG_TEST_INIT(emerg_01, "ag_log_emerg() logs an emergency record") {
         ag_log_emerg("Testing ag_log_emerg()...");
-        ag_test_assert (log_check("emerg"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("emerg"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(alert_01, "ag_log_alert() logs an alert record") {
+AG_TEST_INIT(alert_01, "ag_log_alert() logs an alert record") {
         ag_log_alert("Testing ag_log_alert()...");
-        ag_test_assert (log_check("alert"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("alert"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(crit_01, "ag_log_crit() logs a critical record") {
+AG_TEST_INIT(crit_01, "ag_log_crit() logs a critical record") {
         ag_log_crit("Testing ag_log_crit()...");
-        ag_test_assert (log_check("crit"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("crit"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(err_01, "ag_log_err() logs an error record") {
+AG_TEST_INIT(err_01, "ag_log_err() logs an error record") {
         ag_log_err("Testing ag_log_err()...");
-        ag_test_assert (log_check("err"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("err"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(warning_01, "ag_log_warning() logs a warning record") {
+AG_TEST_INIT(warning_01, "ag_log_warning() logs a warning record") {
         ag_log_warning("Testing ag_log_warning()...");
-        ag_test_assert (log_check("warning"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("warning"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(notice_01, "ag_log_notice() logs a notice record") {
+AG_TEST_INIT(notice_01, "ag_log_notice() logs a notice record") {
         ag_log_notice("Testing ag_log_notice()...");
-        ag_test_assert (log_check("notice"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("notice"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(info_01, "ag_log_info() logs an information record") {
+AG_TEST_INIT(info_01, "ag_log_info() logs an information record") {
         ag_log_info("Testing ag_log_info()...");
-        ag_test_assert (log_check("info"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("info"));
+} AG_TEST_EXIT();
 
 
-ag_test_init(debug_01, "ag_log_debug() logs a debug record") {
+AG_TEST_INIT(debug_01, "ag_log_debug() logs a debug record") {
         ag_log_debug("Testing ag_log_debug()...");
-        ag_test_assert (log_check("debug"));
-} ag_test_exit();
+        AG_TEST_ASSERT (log_check("debug"));
+} AG_TEST_EXIT();
 
 
 
