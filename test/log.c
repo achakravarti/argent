@@ -1,13 +1,55 @@
+/*-
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Argent - infrastructure for building web services
+ * Copyright (C) 2020 Abhishek Chakravarti
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+ */
+
+
 #include "../include/argent.h"
 #include "./test.h"
 
 #include <stdlib.h>
 
 
-#define cmd_journalctl(log) "journalctl -t ag-tests -p \"" log  \
+/*
+ * The following macros work in conjunction to help determine whether a log
+ * entry of a given level has been written to the systemd log. We use the
+ * journalctl and grep commands to do so, which are available in both GNU/Linux
+ * and FreeBSD. If journalctl can't find a specified log entry, it returns "No
+ * entries". Therefore, if a log entry has been written, grep'ing for "No
+ * entries" on journalctl will be invalid, and a wrapping system() call will
+ * return a non-zero value.
+ */
+
+#define cmd_journalctl(level) "journalctl -t ag-tests -p \"" level      \
         "\" -S \"5 sec ago\" | grep \"No entries\""
 
 #define log_check(level) system(cmd_journalctl(level))
+
+
+/* 
+ * The following unit tests test out the logging interface of the Argent Library
+ * by writing a one liner to the systemd log for each of the standard log
+ * levels. We check that the log entry of the given log level has been written
+ * through the log_check() macro. We know that lob_check() will evaluate to
+ * non-zero if it is able to find the log entry of the given level.
+ */
 
 
 AG_TEST_INIT(emerg_01, "ag_log_emerg() logs an emergency record") {
@@ -58,7 +100,10 @@ AG_TEST_INIT(debug_01, "ag_log_debug() logs a debug record") {
 } AG_TEST_EXIT();
 
 
-
+/*
+ * Generate a test suite containing the above unit tests and return it so that
+ * it can be excecuted by a test harness.
+ */
 extern ag_test_suite *test_log(void)
 {
         ag_test *test[] = {
@@ -76,6 +121,4 @@ extern ag_test_suite *test_log(void)
 
         return ctx;
 }
-
-
 
