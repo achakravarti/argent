@@ -242,7 +242,7 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
 
         struct node *n = ctx->head;
         while (AG_LIKELY (n)) {
-                tot = ag_test_suite_poll(n->ts, status);
+                tot += ag_test_suite_poll(n->ts, status);
                 n = n->nxt;
         }
 
