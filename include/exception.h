@@ -23,35 +23,71 @@
 #ifndef __ARGENT_EXCEPTION_H__
 #define __ARGENT_EXCEPTION_H__
 
-#include "./argent.h"
-
-#include <stddef.h>
-
 #ifdef __cplusplus
         extern "C" {
 #endif
 
 
+#include "./argent.h"
+
+#include <stddef.h>
+
+
+/*
+ * When an exception occurs, we need a way to pass around metada regarding the
+ * error. We encapsulate this metadata in the `ag_exception` struct. We are
+ * deliberately choosing a struct instead of an abstract data type in order to
+ * avoid relying on the heap.
+ */
 struct ag_exception {
-        ag_erno erno;
-        const char *func;
-        const char *file;
-        size_t line;
+        ag_erno     erno; /* Error code.                       */
+        const char *func; /* Function where error occurred.    */
+        const char *file; /* File where error occured.         */
+        size_t      line; /* Line number where error occurred. */
 };
 
+
+/*
+ * The `ag_exception_handler` callback allows us to handle specific error
+ * conditions. Metadata about the the exception is passed through the first
+ * parameter, and optional exception data through the second parameter.
+ */
 typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 
 
+/*
+ * The exception registry maintains a list of exception messages and handlers
+ * associated with each error code of both the Argent Library and client code.
+ * The following functions manage the instantiation and destruction of the
+ * exception registry, and *must* be called at program startup and termination.
+ */
 extern void ag_exception_registry_init(size_t);
 extern void ag_exception_registry_exit(void);
 
+/*
+ * The following functions are the accessors for the exception registry,
+ * returning the exception message and handler associated with a given error
+ * code.
+ */
 extern const char *ag_exception_registry_msg(ag_erno);
 extern ag_exception_handler *ag_exception_registry_hnd(ag_erno);
 
+/*
+ * The `ag_exception_registry_set()` function is the only mutator for the
+ * exception registry, and sets the exception message and handler associated
+ * with a given error code. Subsequent calls to this function override the
+ * previous values, and passing a NULL pointer for the handler causes the
+ * default unhandled exception handler to be set.
+ */
 extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception_handler *);
 
 
+/*
+ * The `AG_ASSERT()` macro asserts whether a given predicate is true. This macro
+ * is avaiable only in debug builds, and provides a way for both the Argent
+ * Library and client code to assert conditions that should *never* be false.
+ */
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do {                                             \
                 if (AG_UNLIKELY (!(p))) {                                    \
@@ -66,7 +102,14 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 #       define AG_ASSERT(p)
 #endif
 
-
+/*
+ * The `AG_REQUIRE()` and `AG_REQUIRE_OPT()` macros are used to check whether a
+ * given predicate is true, and if not, signal an appropriate error code. The
+ * exception handler associated with the error code is automatically invoked and
+ * passed the exception metadata. `AG_REQUIRE_OPT()` allows optional exception
+ * data to be passed along to the exception handler along with the exception
+ * metadata.
+ */
 
 #define AG_REQUIRE(p, e) do {                                   \
         if (AG_UNLIKELY (!(p))) {                               \
@@ -80,7 +123,6 @@ extern void ag_exception_registry_set(ag_erno, const char *,
         }                                                       \
 } while (0)
 
-
 #define AG_REQUIRE_OPT(p, e, o) do {                            \
         if (AG_UNLIKELY (!(p))) {                               \
                 struct ag_exception _x_ = {                     \
@@ -92,6 +134,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception_registry_hnd((e))(&_x_, (o));      \
         }                                                       \
 } while (0)
+
 
 
 #ifdef __cplusplus
