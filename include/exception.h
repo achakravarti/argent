@@ -34,7 +34,7 @@
 
 
 /*
- * When an exception occurs, we need a way to pass around metada regarding the
+ * When an exception occurs, we need a way to pass around metadata regarding the
  * error. We encapsulate this metadata in the `ag_exception` struct. We are
  * deliberately choosing a struct instead of an abstract data type in order to
  * avoid relying on the heap.
