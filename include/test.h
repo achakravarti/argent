@@ -107,7 +107,7 @@ typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
-extern void ag_test_suite_free(ag_test_suite **);
+extern void ag_test_suite_release(ag_test_suite **);
 
 extern size_t ag_test_suite_len(const ag_test_suite *);
 extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
@@ -116,7 +116,7 @@ extern void ag_test_suite_push(ag_test_suite *, ag_test *, const char *);
 extern void ag_test_suite_push_array(ag_test_suite *, ag_test *[],
                 const char *[], size_t);
 extern void ag_test_suite_exec(ag_test_suite *);
-extern void ag_test_suite_log(ag_test_suite *, FILE *);
+extern void ag_test_suite_log(const ag_test_suite *, FILE *);
 
 /*-
  * Interface: Test Harness
@@ -127,7 +127,7 @@ typedef struct ag_test_harness ag_test_harness;
 
 extern ag_test_harness *ag_test_harness_new(void);
 extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
-extern void ag_test_harness_free(ag_test_harness **);
+extern void ag_test_harness_release(ag_test_harness **);
 
 extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,

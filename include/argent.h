@@ -29,6 +29,7 @@
 #include "./erno.h"
 #include "./exception.h"
 #include "./mblock.h"
+#include "./str.h"
 #include "./test.h"
 #include "./manager.h"
 

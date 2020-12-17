@@ -7,6 +7,14 @@
 #include <string.h>
 
 
+#ifndef NDEBUG
+        static inline bool is_pointer_valid(const ag_mblock *);
+        static inline bool is_handle_valid(ag_mblock **);
+        static inline bool is_size_valid(size_t );
+        static inline bool is_alignment_valid(size_t);
+#endif
+
+
 /*
  * str_new_fmt(): create new dynamic formatted string.
  *
@@ -49,18 +57,6 @@ static inline size_t meta_refc(const ag_mblock *ctx)
 }
 
 
-static inline void meta_refc_retain(ag_mblock *ctx)
-{
-        ((size_t *)ctx)[-2]++;
-}
-
-
-static inline void meta_refc_release(ag_mblock *ctx)
-{
-        ((size_t *)ctx)[-2]--;
-}
-
-
 extern void ag_mblock_exception_handler(const struct ag_exception *ex,
                 void *opt)
 {
@@ -88,7 +84,7 @@ extern void ag_mblock_exception_handler(const struct ag_exception *ex,
 
 extern ag_mblock *ag_mblock_new(size_t sz)
 {
-        AG_ASSERT (sz);
+        AG_ASSERT (is_size_valid(sz));
 
         struct ag_mblock_exception x = {
                 .sz = sz,
@@ -108,8 +104,8 @@ extern ag_mblock *ag_mblock_new(size_t sz)
 
 extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 {
-        AG_ASSERT (sz);
-        AG_ASSERT (align && !(align % 2));
+        AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT (is_alignment_valid(align));
         
         struct ag_mblock_exception x = {
                 .sz = sz,
@@ -124,24 +120,13 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
         ctx[0] = 1;
         ctx[1] = sz;
 
-        return (ag_mblock *) &(ctx[2]);
+        return (ag_mblock *)&(ctx[2]);
 }
 
 
 extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
 {
-        AG_ASSERT (ctx);
-
-        size_t *hnd = (ag_mblock *)ctx;
-        meta_refc_retain(hnd);
-
-        return hnd;
-}
-
-
-extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
-{
-        AG_ASSERT (ctx);
+        AG_ASSERT (is_pointer_valid(ctx));
 
         size_t sz = meta_sz(ctx);
         ag_mblock *cp = ag_mblock_new(sz);
@@ -151,10 +136,10 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 }
 
 
-extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
+extern ag_mblock *ag_mblock_copy_align(const ag_mblock *ctx, size_t align)
 {
-        AG_ASSERT (ctx);
-        AG_ASSERT (align && !(align % 2));
+        AG_ASSERT (is_pointer_valid(ctx));
+        AG_ASSERT (is_alignment_valid(align));
 
         size_t sz = meta_sz(ctx);
         ag_mblock *cp = ag_mblock_new_align(sz, align);
@@ -164,19 +149,27 @@ extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
 }
 
 
-extern void ag_mblock_free(ag_mblock **ctx)
+extern void ag_mblock_dispose(ag_mblock **ctx)
 {
         ag_mblock *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                meta_refc_release(hnd);
-
-                if (!meta_refc(hnd)) {
-                        free(meta_head(hnd));
-                        *ctx = NULL;
-                }
+                free(meta_head(hnd));
+                *ctx = NULL;
         }
 
+}
+
+extern void ag_mblock_release(ag_mblock **ctx)
+{
+        size_t *hnd;
+
+        if (AG_LIKELY (ctx && (hnd = (size_t *)*ctx))) {
+                if (!(--hnd[-2]))
+                        free(&hnd[-2]);
+                        
+                *ctx = NULL;
+        }
 }
 
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *ctx, const ag_mblock *cmp)
@@ -193,14 +186,14 @@ extern inline bool ag_mblock_gt(const ag_mblock *, const ag_mblock *);
 
 extern size_t ag_mblock_sz(const ag_mblock *ctx)
 {
-        AG_ASSERT (ctx);
+        AG_ASSERT (is_pointer_valid(ctx));
 
         return meta_sz(ctx);
 }
 
 extern size_t ag_mblock_sz_total(const ag_mblock *ctx)
 {
-        AG_ASSERT (ctx);
+        AG_ASSERT (is_pointer_valid(ctx));
 
         return malloc_usable_size(meta_head(ctx));
 }
@@ -210,7 +203,7 @@ extern size_t ag_mblock_sz_total(const ag_mblock *ctx)
 
 extern size_t ag_mblock_refc(const ag_mblock *ctx)
 {
-        AG_ASSERT (ctx);
+        AG_ASSERT (is_pointer_valid(ctx));
 
         return meta_refc(ctx);
 }
@@ -218,17 +211,27 @@ extern size_t ag_mblock_refc(const ag_mblock *ctx)
 
 extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 {
-        AG_ASSERT (ctx);
-        AG_ASSERT (align && !(align % 2));
+        AG_ASSERT (is_pointer_valid(ctx));
+        AG_ASSERT (is_alignment_valid(align));
 
         return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
 
 
+extern void ag_mblock_retain(ag_mblock *ctx)
+{
+        AG_ASSERT (is_pointer_valid(ctx));
+        
+        ((size_t *) ctx)[-2]++;
+}
+
+
+
+
 extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 {
-        AG_ASSERT (ctx && *ctx);
-        AG_ASSERT (sz);
+        AG_ASSERT (is_handle_valid(ctx));
+        AG_ASSERT (is_size_valid(sz));
 
         ag_mblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
@@ -236,16 +239,16 @@ extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
         ag_mblock *cp = ag_mblock_new(sz);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_free(ctx);
+        ag_mblock_dispose(ctx);
         *ctx = cp;
 }
 
 
 extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
 {
-        AG_ASSERT (ctx && *ctx);
-        AG_ASSERT (sz);
-        AG_ASSERT (align && !(align % 2));
+        AG_ASSERT (is_handle_valid(ctx));
+        AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT (is_alignment_valid(align));
 
         ag_mblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
@@ -253,18 +256,50 @@ extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
         ag_mblock *cp = ag_mblock_new_align(sz, align);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_free(ctx);
+        ag_mblock_dispose(ctx);
         *ctx = cp;
 }
 
 
 extern char *ag_mblock_str(const ag_mblock *ctx)
 {
-        AG_ASSERT (ctx);
+        AG_ASSERT (is_pointer_valid(ctx));
 
         return str_new_fmt("address = %p, data sz = %lu, total data = %lu,"
                         " refc = %lu", (void *)meta_head(ctx), meta_sz(ctx),
                         ag_mblock_sz_total(ctx), meta_refc(ctx));
 
 }
+
+#ifndef NDEBUG
+static inline bool is_pointer_valid(const ag_mblock *ctx)
+{
+        return ctx;
+}
+#endif
+
+
+#ifndef NDEBUG
+static inline bool is_handle_valid(ag_mblock **ctx)
+{
+        return ctx && *ctx;
+}
+#endif
+
+
+#ifndef NDEBUG
+static inline bool is_size_valid(size_t sz)
+{
+        return sz;
+}
+#endif
+
+
+#ifndef NDEBUG
+static inline bool is_alignment_valid(size_t align)
+{
+        return align && !(align % 2);
+
+}
+#endif
 

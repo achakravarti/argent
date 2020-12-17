@@ -93,45 +93,10 @@ static inline struct node *node_free(struct node *ctx)
 {
         struct node *nxt = ctx->nxt;
 
-        ag_test_suite_free(&ctx->ts);
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_test_suite_release(&ctx->ts);
+        ag_mblock_release((ag_mblock **)&ctx);
 
         return nxt;
-}
-
-
-/*
- * str_new_fmt(): create new dynamic formatted string.
- *
- * @fmt: formatted static source string.
- * @...: format arguments.
- *
- * Return: new dynamic formatted string.
- */
-static char *str_new_fmt(const char *fmt, ...)
-{
-        va_list args;
-
-        va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-        va_end(args);
-
-        va_start(args, fmt);
-        (void) vsprintf(bfr, fmt, args);
-        va_end(args);
-
-        return bfr;
-}
-
-
-/*
- * str_free(): release dynamic string.
- *
- * @ctx: contextual string.
- */
-static inline void str_free(char *ctx)
-{
-        ag_mblock_free((ag_mblock **)&ctx);
 }
 
 
@@ -170,15 +135,10 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_harness *cp = ag_test_harness_new();
+        ag_test_harness *hnd = (ag_test_harness *)ctx;
+        ag_mblock_retain(hnd);
 
-        struct node *n = ctx->head;
-        while (AG_LIKELY (n)) {
-                ag_test_harness_push(cp, n->ts);
-                n = n->nxt;
-        }
-
-        return cp;
+        return hnd;
 }
 
 
@@ -187,17 +147,18 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_harness_free(ag_test_harness **ctx)
+extern void ag_test_harness_release(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                struct node *n = hnd->head;
-                while (AG_LIKELY (n)) {
-                        n = node_free(n);
+                if (ag_mblock_refc(hnd) == 1) {
+                        struct node *n = hnd->head;
+                        while (n)
+                                n = node_free(n);
                 }
 
-                ag_mblock_free((ag_mblock **)ctx);
+                ag_mblock_release((ag_mblock **)ctx);
         }
 }
 
@@ -295,20 +256,22 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
         AG_ASSERT (ctx);
         AG_ASSERT (log);
 
-        struct node *n = ctx->head;
+        register struct node *n = ctx->head;
+
         while (AG_LIKELY (n)) {
                 ag_test_suite_log(n->ts, log);
                 n = n->nxt;
         }
 
         size_t pass = ag_test_harness_poll(ctx, AG_TEST_STATUS_OK);
-        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP);
+        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP)
+                        + ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
         size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
 
-        char *s = str_new_fmt("%d test suite(s), %d test(s), %d passed,"
-                       " %d skipped, %d failed.", ag_test_harness_len(ctx),
-                       pass + skip + fail, pass, skip, fail);
+        AG_AUTO(ag_str) *s = ag_str_new_fmt("%d test suite(s), %d test(s),"
+                        " %d passed, %d skipped, %d failed.",
+                        ag_test_harness_len(ctx), pass + skip + fail, 
+                        pass, skip, fail);
         fprintf(log, "\n%s\n", s);
-        str_free(s);
 }
 

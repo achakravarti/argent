@@ -23,14 +23,14 @@ struct ag_mblock_exception {
 extern void ag_mblock_exception_handler(const struct ag_exception *, void *);
 
 typedef void ag_mblock;
-#define ag_mblock_auto __attribute__((cleanup(ag_mblock_free))) ag_mblock
 
 extern ag_mblock *ag_mblock_new(size_t);
 extern ag_mblock *ag_mblock_new_align(size_t, size_t);
 extern ag_mblock *ag_mblock_copy(const ag_mblock *);
-extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *);
-extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *, size_t);
-extern void ag_mblock_free(ag_mblock **);
+extern ag_mblock *ag_mblock_copy_align(const ag_mblock *, size_t);
+extern void ag_mblock_dispose(ag_mblock **);
+extern void ag_mblock_retain(ag_mblock *);
+extern void ag_mblock_release(ag_mblock **);
 
 // warning: don't use with structs containing non-scalar members
 // if not equal, comparison based on first differing byte

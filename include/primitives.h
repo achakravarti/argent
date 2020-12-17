@@ -58,6 +58,14 @@
 #endif
 
 
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_AUTO(t) __attribute__((cleanup(t##_release))) t
+#else
+#       define AG_AUTO(t) t
+#       warning "[!] AG_AUTO() not supported on current compiler"
+#endif
+
+
 enum ag_cmp {
         AG_CMP_LT = -1,
         AG_CMP_EQ,

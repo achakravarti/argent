@@ -5,44 +5,9 @@
 #include <string.h>
 
 
-/*
- * str_new_fmt(): create new dynamic formatted string.
- *
- * @fmt: formatted static source string.
- * @...: format arguments.
- *
- * Return: new dynamic formatted string.
- */
-static char *str_new_fmt(const char *fmt, ...)
-{
-        va_list args;
-
-        va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-        va_end(args);
-
-        va_start(args, fmt);
-        (void) vsprintf(bfr, fmt, args);
-        va_end(args);
-
-        return bfr;
-}
-
-
-/*
- * str_free(): release dynamic string.
- *
- * @ctx: contextual string.
- */
-static inline void str_free(char *ctx)
-{
-        ag_mblock_free((ag_mblock **)&ctx);
-}
-
-
 struct node {
         ag_test *test;
-        char *desc;
+        ag_str *desc;
         enum ag_test_status status;
         struct node *next;
 };
@@ -52,7 +17,7 @@ static struct node *node_new(ag_test *test, const char *desc)
 {
         struct node *n = ag_mblock_new(sizeof *n);
         n->test = test;
-        n->desc = str_new_fmt("%s", desc);
+        n->desc = ag_str_new_fmt("%s", desc);
         n->status = AG_TEST_STATUS_WAIT;
         n->next = NULL;
 
@@ -64,8 +29,8 @@ static inline struct node *node_free(struct node *ctx)
 {
         struct node *next = ctx->next;
 
-        str_free(ctx->desc);
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_str_release(&ctx->desc);
+        ag_mblock_release((ag_mblock **)&ctx);
 
         return next;
 }
@@ -75,33 +40,33 @@ static void node_log(const struct node *ctx, FILE *log)
 {
         switch (ctx->status) {
                 case AG_TEST_STATUS_OK:
-                        fprintf(log, "[OK]   %s", ctx->desc);
+                        fprintf(log, "[OK]   %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_WAIT:
-                        fprintf(log, "[WAIT] %s", ctx->desc);
+                        fprintf(log, "[WAIT] %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SKIP:
-                        fprintf(log, "[SKIP] %s", ctx->desc);
+                        fprintf(log, "[SKIP] %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SIGABRT:
-                        fprintf(log, "[FAIL] %s (SIGABRT)", ctx->desc);
+                        fprintf(log, "[FAIL] %s (SIGABRT)\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SIGSEGV:
-                        fprintf(log, "[FAIL] %s (SIGSEGV)", ctx->desc);
+                        fprintf(log, "[FAIL] %s (SIGSEGV)\n", ctx->desc);
                         break;
 
                 default:
-                        fprintf(log, "[FAIL] %s", ctx->desc);
+                        fprintf(log, "[FAIL] %s\n", ctx->desc);
         }
 }
 
 
 struct ag_test_suite {
-        char *desc;
+        ag_str *desc;
         struct node *head;
 };
 
@@ -114,6 +79,8 @@ static void log_header(const ag_test_suite *ctx, FILE *log)
 
         for (register size_t i = 0; i < strlen(ctx->desc) + 12; i++)
                 fputs("=", log);
+
+        fputs("\n", log);
 }
 
 
@@ -122,7 +89,8 @@ static inline void log_footer(const ag_test_suite *ctx, FILE *log)
         fprintf(log, "\n\n%lu test(s), %lu passed, %lu skipped, %lu failed.\n",
                         ag_test_suite_len(ctx),
                         ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
-                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP)
+                        + ag_test_suite_poll(ctx, AG_TEST_STATUS_WAIT),
                         ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
 }
 
@@ -133,7 +101,7 @@ static void log_body(const ag_test_suite *ctx, FILE *log)
 
         struct node *n = ctx->head;
         while (AG_LIKELY (n)) {
-                fprintf(log, "\n%.2lu. ", ++i);
+                fprintf(log, "%.2lu. ", ++i);
                 node_log(n, log);
                 n = n->next;
         }
@@ -145,7 +113,7 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
         AG_ASSERT (desc && *desc);
 
         ag_test_suite *ctx = ag_mblock_new(sizeof *ctx);
-        ctx->desc = str_new_fmt("%s", desc);
+        ctx->desc = ag_str_new_fmt("%s", desc);
         ctx->head = NULL;
 
         return ctx;
@@ -156,30 +124,27 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_suite *cp = ag_test_suite_new(ctx->desc);
+        ag_test_suite *hnd = (ag_test_suite *)ctx;
+        ag_mblock_retain(hnd);
 
-        struct node *n = ctx->head;
-        while (AG_LIKELY (n)) {
-                ag_test_suite_push(cp, n->test, n->desc);
-                n = n->next;
-        }
-
-        return cp;
+        return hnd;
 }
 
 
-extern void ag_test_suite_free(ag_test_suite **ctx)
+extern void ag_test_suite_release(ag_test_suite **ctx)
 {
         ag_test_suite *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                str_free(hnd->desc);
+                if (ag_mblock_refc(hnd) == 1) {
+                        ag_str_release(&hnd->desc);
 
-                struct node *n = hnd->head;
-                while (AG_LIKELY (n)) 
-                        n = node_free(n);
+                        struct node *n = hnd->head;
+                        while (n)
+                                n = node_free(n);
+                }
 
-                ag_mblock_free((ag_mblock **)ctx);
+                ag_mblock_release((ag_mblock **)ctx);
         }
 }
 
@@ -206,8 +171,8 @@ extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
         AG_ASSERT (ctx);
 
         register size_t tot = 0;
-        
-        struct node *n = ctx->head;
+        register struct node *n = ctx->head;
+
         while (AG_LIKELY (n)) {
                 if ((n->status) == status)
                         tot++;
@@ -258,14 +223,16 @@ extern void ag_test_suite_exec(ag_test_suite *ctx)
         struct node *n = ctx->head;
         while (AG_LIKELY (n)) {
                 n->status = n->test();
+
                 if (AG_UNLIKELY (n->status != AG_TEST_STATUS_OK))
                         node_log(n, stdout);
+
                 n = n->next;
         }
 }
 
 
-extern void ag_test_suite_log(ag_test_suite *ctx, FILE *log)
+extern void ag_test_suite_log(const ag_test_suite *ctx, FILE *log)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (log);
