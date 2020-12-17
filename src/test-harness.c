@@ -170,15 +170,10 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_harness *cp = ag_test_harness_new();
+        ag_test_harness *hnd = (ag_test_harness *)ctx;
+        ag_mblock_retain(hnd);
 
-        struct node *n = ctx->head;
-        while (AG_LIKELY (n)) {
-                ag_test_harness_push(cp, n->ts);
-                n = n->nxt;
-        }
-
-        return cp;
+        return hnd;
 }
 
 
