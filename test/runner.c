@@ -26,7 +26,7 @@ int main(int argc, char **argv)
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);
 
-        ag_test_harness_free(&th);
+        ag_test_harness_release(&th);
 
         ag_exit(EXIT_SUCCESS);
 

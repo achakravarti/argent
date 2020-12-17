@@ -187,14 +187,15 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_harness_free(ag_test_harness **ctx)
+extern void ag_test_harness_release(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                struct node *n = hnd->head;
-                while (AG_LIKELY (n)) {
-                        n = node_free(n);
+                if (ag_mblock_refc(hnd) == 1) {
+                        struct node *n = hnd->head;
+                        while (n)
+                                n = node_free(n);
                 }
 
                 ag_mblock_release((ag_mblock **)ctx);

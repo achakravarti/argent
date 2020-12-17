@@ -127,7 +127,7 @@ typedef struct ag_test_harness ag_test_harness;
 
 extern ag_test_harness *ag_test_harness_new(void);
 extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *);
-extern void ag_test_harness_free(ag_test_harness **);
+extern void ag_test_harness_release(ag_test_harness **);
 
 extern int ag_test_harness_len(const ag_test_harness *);
 extern size_t ag_test_harness_poll(const ag_test_harness *,
