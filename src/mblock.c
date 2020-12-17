@@ -225,6 +225,22 @@ extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 }
 
 
+extern void ag_mblock_retain(ag_mblock *ctx)
+{
+        AG_ASSERT (ctx);
+        
+        ((size_t *) ctx)[-2]++;
+}
+
+
+extern void ag_mblock_release(ag_mblock *ctx)
+{
+        AG_ASSERT (ctx);
+        
+        ((size_t *) ctx)[-2]--;
+}
+
+
 extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
 {
         AG_ASSERT (ctx && *ctx);
