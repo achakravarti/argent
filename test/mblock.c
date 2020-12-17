@@ -127,7 +127,8 @@ AG_TEST_INIT(new_align_06, "ag_mblock_new_align() returns a block with the"
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_01, "ag_mblock_copy() makes a copy of an int in the heap")
+AG_TEST_INIT(copy_01, "ag_mblock_copy() makes a deep copy of an int in the"
+                " heap")
 {
         int *i = ag_mblock_new(sizeof *i);
         *i = 555;
@@ -140,8 +141,8 @@ AG_TEST_INIT(copy_01, "ag_mblock_copy() makes a copy of an int in the heap")
 }
 AG_TEST_EXIT();
 
-
-AG_TEST_INIT(copy_02, "ag_mblock_copy() makes a copy of a test structure")
+AG_TEST_INIT(copy_02, "ag_mblock_copy() makes a deep copy of a test structure"
+                " in the heap")
 {
         struct test *t = ag_mblock_new(sizeof *t);
         t->i = ag_mblock_new(sizeof *t->i);
@@ -161,37 +162,35 @@ AG_TEST_INIT(copy_02, "ag_mblock_copy() makes a copy of a test structure")
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_03, "ag_mblock_copy() returns a copy with the same address")
+AG_TEST_INIT(copy_03, "ag_mblock_copy() returns a copy with another address")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
         ag_mblock_auto *cp = ag_mblock_copy(src);
-        AG_TEST_ASSERT (src == cp);
+        AG_TEST_ASSERT (src != cp);
 }
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_04, "ag_mblock_copy() increases the reference count by 1")
+AG_TEST_INIT(copy_04, "ag_mblock_copy() sets the reference count of the copy"
+                " to 1")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
         ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy(cp);
         
-        AG_TEST_ASSERT (ag_mblock_refc(src) == 3);
+        AG_TEST_ASSERT (ag_mblock_refc(cp) == 1);
 }
 AG_TEST_EXIT();
 
-
-AG_TEST_INIT(copy_05, "ag_mblock_copy() syncs reference count of both source"
-                " and copy")
+AG_TEST_INIT(copy_05, "ag_mblock_copy() does not change the reference count of"
+                " the source")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
         ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy(cp);
-
-        AG_TEST_ASSERT (ag_mblock_refc(src) == ag_mblock_refc(cp)
-                        && ag_mblock_refc(src) == ag_mblock_refc(cp2));
+        
+        AG_TEST_ASSERT (ag_mblock_refc(src) == 1);
 }
 AG_TEST_EXIT();
+
 
 AG_TEST_INIT(copy_06, "ag_mblock_copy() preserves the data size of the source")
 {
@@ -203,22 +202,22 @@ AG_TEST_INIT(copy_06, "ag_mblock_copy() preserves the data size of the source")
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_07, "ag_mblock_copy() preserves the total size of the source")
+AG_TEST_INIT(copy_07, "ag_mblock_copy() maintains the total size of the source")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
         ag_mblock_auto *cp = ag_mblock_copy(src);
 
-        AG_TEST_ASSERT (ag_mblock_sz(src) == ag_mblock_sz(cp));
+        AG_TEST_ASSERT (ag_mblock_sz(src) >= ag_mblock_sz(cp));
 }
 AG_TEST_EXIT();
 
-AG_TEST_INIT(copy_deep_01, "ag_mblock_copy_deep() makes a copy of an int in the"
-                " heap")
+AG_TEST_INIT(copy_align_01, "ag_mblock_copy_align() makes a deep copy of an int"
+                " in the heap")
 {
         int *i = ag_mblock_new(sizeof *i);
         *i = 555;
 
-        int *j = ag_mblock_copy_deep(i);
+        int *j = ag_mblock_copy_align(i, 8);
         AG_TEST_ASSERT (*j == 555);
 
         ag_mblock_dispose((ag_mblock **)&i);
@@ -226,8 +225,9 @@ AG_TEST_INIT(copy_deep_01, "ag_mblock_copy_deep() makes a copy of an int in the"
 }
 AG_TEST_EXIT();
 
-AG_TEST_INIT(copy_deep_02, "ag_mblock_copy_deep() makes a copy of a test"
-                " structure")
+
+AG_TEST_INIT(copy_align_02, "ag_mblock_copy_align() makes a deep copy of a test"
+                " structure in the heap")
 {
         struct test *t = ag_mblock_new(sizeof *t);
         t->i = ag_mblock_new(sizeof *t->i);
@@ -236,7 +236,7 @@ AG_TEST_INIT(copy_deep_02, "ag_mblock_copy_deep() makes a copy of a test"
         *t->i = 555;
         *t->j = -666;
 
-        struct test *cp = ag_mblock_copy_deep(t);
+        struct test *cp = ag_mblock_copy_align(t, 8);
         AG_TEST_ASSERT (*cp->i == *t->i && *cp->j == *t->j);
 
         ag_mblock_dispose((ag_mblock **)&t->i);
@@ -247,155 +247,66 @@ AG_TEST_INIT(copy_deep_02, "ag_mblock_copy_deep() makes a copy of a test"
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_deep_03, "ag_mblock_copy_deep() returns a copy with another"
+AG_TEST_INIT(copy_align_03, "ag_mblock_copy_align() returns a copy with another"
                 " address")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
+        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
         AG_TEST_ASSERT (src != cp);
 }
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_deep_04, "ag_mblock_copy_deep() sets reference to 1 of the"
-                " copy")
+AG_TEST_INIT(copy_align_04, "ag_mblock_copy_align() sets the reference count of"
+                " the copy to 1")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy_deep(cp);
+        ag_mblock_auto *cp = ag_mblock_retain(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(cp2) == 1);
 }
 AG_TEST_EXIT();
 
-AG_TEST_INIT(copy_deep_05, "ag_mblock_copy_deep() does not change the reference"
-                " count of the source")
+AG_TEST_INIT(copy_align_05, "ag_mblock_copy_align() does not change the"
+                " reference count of the source")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy_deep(cp);
+        ag_mblock_auto *cp = ag_mblock_retain(src);
+        ag_mblock_auto *cp2 = ag_mblock_copy_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
 }
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_deep_06, "ag_mblock_copy_deep() preserves the data size of"
+AG_TEST_INIT(copy_align_06, "ag_mblock_copy_align() preserves the data size of"
                 " the source")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
+        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) == ag_mblock_sz(cp));
 }
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_deep_07, "ag_mblock_copy_deep() maintains the total size of"
+AG_TEST_INIT(copy_align_07, "ag_mblock_copy_align() maintains the total size of"
                 " the source")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep(src);
-
-        AG_TEST_ASSERT (ag_mblock_sz(src) >= ag_mblock_sz(cp));
-}
-AG_TEST_EXIT();
-
-AG_TEST_INIT(copy_deep_align_01, "ag_mblock_copy_deep_align() makes a copy of"
-                " an int in the heap")
-{
-        int *i = ag_mblock_new(sizeof *i);
-        *i = 555;
-
-        int *j = ag_mblock_copy_deep_align(i, 8);
-        AG_TEST_ASSERT (*j == 555);
-
-        ag_mblock_dispose((ag_mblock **)&i);
-        ag_mblock_dispose((ag_mblock **)&j);
-}
-AG_TEST_EXIT();
-
-AG_TEST_INIT(copy_deep_align_02, "ag_mblock_copy_deep_align() makes a copy of"
-                " a test structure")
-{
-        struct test *t = ag_mblock_new(sizeof *t);
-        t->i = ag_mblock_new(sizeof *t->i);
-        t->j = ag_mblock_new(sizeof *t->j);
-
-        *t->i = 555;
-        *t->j = -666;
-
-        struct test *cp = ag_mblock_copy_deep_align(t, 8);
-        AG_TEST_ASSERT (*cp->i == *t->i && *cp->j == *t->j);
-
-        ag_mblock_dispose((ag_mblock **)&t->i);
-        ag_mblock_dispose((ag_mblock **)&t->j);
-        ag_mblock_dispose((ag_mblock **)&t);
-        ag_mblock_dispose((ag_mblock **)&cp);
-}
-AG_TEST_EXIT();
-
-
-AG_TEST_INIT(copy_deep_align_03, "ag_mblock_copy_deep_align() returns a copy"
-                " with another address")
-{
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
-        AG_TEST_ASSERT (src != cp);
-}
-AG_TEST_EXIT();
-
-
-AG_TEST_INIT(copy_deep_align_04, "ag_mblock_copy_deep_align() sets reference to"
-                " 1 of the copy")
-{
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy_deep_align(cp, 8);
-        
-        AG_TEST_ASSERT (ag_mblock_refc(cp2) == 1);
-}
-AG_TEST_EXIT();
-
-AG_TEST_INIT(copy_deep_align_05, "ag_mblock_copy_deep_align() does not change"
-                " the reference count of the source")
-{
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
-        ag_mblock_auto *cp2 = ag_mblock_copy_deep_align(cp, 8);
-        
-        AG_TEST_ASSERT (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
-}
-AG_TEST_EXIT();
-
-
-AG_TEST_INIT(copy_deep_align_06, "ag_mblock_copy_deep_align() preserves the"
-                " data size of the source")
-{
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
-
-        AG_TEST_ASSERT (ag_mblock_sz(src) == ag_mblock_sz(cp));
-}
-AG_TEST_EXIT();
-
-
-AG_TEST_INIT(copy_deep_align_07, "ag_mblock_copy_deep_align() maintains the"
-                " total size of the source")
-{
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 8);
+        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) >= ag_mblock_sz(cp));
 }
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(copy_deep_align_08, "ag_mblock_copy_deep_align() honours alignment"
+AG_TEST_INIT(copy_align_08, "ag_mblock_copy_align() honours its alignment"
                 " request")
 {
         ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_deep_align(src, 32);
+        ag_mblock_auto *cp = ag_mblock_copy_align(src, 32);
 
         AG_TEST_ASSERT (ag_mblock_aligned(cp, 32));
 }
@@ -443,7 +354,7 @@ AG_TEST_INIT(dispose_05, "ag_mblock_dispose() reduces the reference count by 1"
                 "for lazy copies")
 {
         int *i = ag_mblock_new(sizeof *i);
-        ag_mblock_auto *j = ag_mblock_copy(i);
+        ag_mblock_auto *j = ag_mblock_retain(i);
         ag_mblock_dispose((ag_mblock **)&i);
 
         AG_TEST_ASSERT (ag_mblock_refc(j) == 1);
@@ -455,13 +366,14 @@ AG_TEST_INIT(dispose_06, "ag_mblock_dispose() on a deep copy does not alter the"
                 " reference count of the source")
 {
         ag_mblock_auto *i = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *j = ag_mblock_copy(i);
-        ag_mblock *k = ag_mblock_copy_deep(j);
+        ag_mblock_auto *j = ag_mblock_retain(i);
+        ag_mblock *k = ag_mblock_copy(j);
         ag_mblock_dispose(&k);
         
         AG_TEST_ASSERT (ag_mblock_refc(i) == 2);
 }
 AG_TEST_EXIT();
+
 
 
 AG_TEST_INIT(cmp_01, "ag_mblock_cmp() returns AG_CMP_EQ for two int memory"
@@ -485,7 +397,7 @@ AG_TEST_INIT(cmp_02, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a"
 {
         int *i = ag_mblock_new(sizeof *i);
         *i = 555;
-        int *j = ag_mblock_copy(i);
+        int *j = ag_mblock_retain(i);
 
         AG_TEST_ASSERT(ag_mblock_cmp(i, j) == AG_CMP_EQ);
 
@@ -500,7 +412,7 @@ AG_TEST_INIT(cmp_03, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a deep"
 {
         int *i = ag_mblock_new(sizeof *i);
         *i = 555;
-        int *j = ag_mblock_copy_deep(i);
+        int *j = ag_mblock_copy(i);
 
         AG_TEST_ASSERT(ag_mblock_cmp(i, j) == AG_CMP_EQ);
 
@@ -534,7 +446,7 @@ AG_TEST_INIT(cmp_05, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a"
         struct test2 *a = ag_mblock_new(sizeof *a);
         a->i = 555;
         a->j = -666;
-        struct test2 *b = ag_mblock_copy(a);
+        struct test2 *b = ag_mblock_retain(a);
 
         AG_TEST_ASSERT(ag_mblock_cmp(a, b) == AG_CMP_EQ);
 
@@ -550,7 +462,7 @@ AG_TEST_INIT(cmp_06, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a deep"
         struct test2 *a = ag_mblock_new(sizeof *a);
         a->i = 555;
         a->j = -666;
-        struct test2 *b = ag_mblock_copy_deep(a);
+        struct test2 *b = ag_mblock_copy(a);
 
         AG_TEST_ASSERT(ag_mblock_cmp(a, b) == AG_CMP_EQ);
 
@@ -600,7 +512,8 @@ AG_TEST_INIT(cmp_09, "ag_mblock_cmp() returns AG_CMP_LT when comparing a memory"
         struct test2 *a = ag_mblock_new(sizeof *a);
         a->i = 1;
         a->j = 2;
-        struct test2 *b = ag_mblock_copy_deep(a);
+        //struct test2 *b = ag_mblock_copy_deep(a);
+        struct test2 *b = ag_mblock_copy(a);
         b->i = 2;
         b->j = 2;
 
@@ -619,7 +532,8 @@ AG_TEST_INIT(cmp_10, "ag_mblock_cmp() returns AG_CMP_GT when comparing a memory"
         struct test2 *a = ag_mblock_new(sizeof *a);
         a->i = 2;
         a->j = 1;
-        struct test2 *b = ag_mblock_copy_deep(a);
+        //struct test2 *b = ag_mblock_copy_deep(a);
+        struct test2 *b = ag_mblock_copy(a);
         b->i = 1;
         b->j = 1;
 
@@ -865,14 +779,14 @@ extern ag_test_suite *ag_test_suite_mblock(void)
         ag_test *test[] = {
                 &new_01, &new_02, &new_03, &new_04, &new_05, &new_align_01,
                 &new_align_02, &new_align_03, &new_align_04, &new_align_05,
-                &new_align_06, &copy_01, &copy_02, &copy_03, &copy_04, &copy_05,
-                &copy_06, &copy_07, &copy_deep_01, &copy_deep_02, &copy_deep_03,
-                &copy_deep_04, &copy_deep_05, &copy_deep_06, &copy_deep_07,
-                &copy_deep_align_01, &copy_deep_align_02, &copy_deep_align_03,
-                &copy_deep_align_04, &copy_deep_align_05, &copy_deep_align_06,
-                &copy_deep_align_07, &copy_deep_align_08, &dispose_01, 
-                &dispose_02, &dispose_03, &dispose_04, &dispose_05, &dispose_06,
-                &cmp_01, &cmp_02, &cmp_03, &cmp_04, &cmp_05, &cmp_06, &cmp_07,
+                &new_align_06, 
+                &copy_01, &copy_02, &copy_03,
+                &copy_04, &copy_05, &copy_06, &copy_07,
+                &copy_align_01, &copy_align_02, &copy_align_03,
+                &copy_align_04, &copy_align_05, &copy_align_06,
+                &copy_align_07, &copy_align_08, &dispose_01, 
+                &dispose_02, &dispose_03, &dispose_04, dispose_05, &dispose_06,
+                &cmp_01, &cmp_02, &cmp_03, &cmp_04, cmp_05, &cmp_06, &cmp_07,
                 &cmp_08, &cmp_09, &cmp_10, &lt_01, &lt_02, &lt_03, &gt_01,
                 &gt_02, &gt_03, &eq_01, &eq_02, &eq_03, &resize_01, &resize_02,
                 &resize_align_01, &resize_align_02, &resize_align_03, &str_01,
@@ -882,14 +796,13 @@ extern ag_test_suite *ag_test_suite_mblock(void)
                 new_01_desc, new_02_desc, new_03_desc, new_04_desc, new_05_desc,
                 new_align_01_desc, new_align_02_desc, new_align_03_desc,
                 new_align_04_desc, new_align_05_desc, new_align_06_desc,
-                copy_01_desc, copy_02_desc, copy_03_desc, copy_04_desc,
-                copy_05_desc, copy_06_desc, copy_07_desc, copy_deep_01_desc,
-                copy_deep_02_desc, copy_deep_03_desc, copy_deep_04_desc,
-                copy_deep_05_desc, copy_deep_06_desc, copy_deep_07_desc,
-                copy_deep_align_01_desc, copy_deep_align_02_desc,
-                copy_deep_align_03_desc, copy_deep_align_04_desc,
-                copy_deep_align_05_desc, copy_deep_align_06_desc,
-                copy_deep_align_07_desc, copy_deep_align_08_desc,
+                copy_01_desc,
+                copy_02_desc, copy_03_desc, copy_04_desc,
+                copy_05_desc, copy_06_desc, copy_07_desc,
+                copy_align_01_desc, copy_align_02_desc,
+                copy_align_03_desc, copy_align_04_desc,
+                copy_align_05_desc, copy_align_06_desc,
+                copy_align_07_desc, copy_align_08_desc,
                 dispose_01_desc, dispose_02_desc, dispose_03_desc,
                 dispose_04_desc, dispose_05_desc, dispose_06_desc, cmp_01_desc,
                 cmp_02_desc, cmp_03_desc, cmp_04_desc, cmp_05_desc, cmp_06_desc,

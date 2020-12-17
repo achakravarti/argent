@@ -128,17 +128,6 @@ extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
 {
         AG_ASSERT (is_pointer_valid(ctx));
 
-        size_t *hnd = (ag_mblock *)ctx;
-        ag_mblock_retain(hnd);
-
-        return hnd;
-}
-
-
-extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
-{
-        AG_ASSERT (ctx);
-
         size_t sz = meta_sz(ctx);
         ag_mblock *cp = ag_mblock_new(sz);
         memcpy(cp, ctx, sz);
@@ -147,7 +136,7 @@ extern ag_mblock *ag_mblock_copy_deep(const ag_mblock *ctx)
 }
 
 
-extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
+extern ag_mblock *ag_mblock_copy_align(const ag_mblock *ctx, size_t align)
 {
         AG_ASSERT (is_pointer_valid(ctx));
         AG_ASSERT (is_alignment_valid(align));
@@ -221,11 +210,12 @@ extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 }
 
 
-extern void ag_mblock_retain(ag_mblock *ctx)
+extern ag_mblock *ag_mblock_retain(ag_mblock *ctx)
 {
         AG_ASSERT (is_pointer_valid(ctx));
         
         ((size_t *) ctx)[-2]++;
+        return ctx;
 }
 
 
