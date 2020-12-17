@@ -160,7 +160,7 @@ extern ag_mblock *ag_mblock_copy_deep_align(const ag_mblock *ctx, size_t align)
 }
 
 
-extern void ag_mblock_free(ag_mblock **ctx)
+extern void ag_mblock_dispose(ag_mblock **ctx)
 {
         ag_mblock *hnd;
 
@@ -248,7 +248,7 @@ extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
         ag_mblock *cp = ag_mblock_new(sz);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_free(ctx);
+        ag_mblock_dispose(ctx);
         *ctx = cp;
 }
 
@@ -265,7 +265,7 @@ extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
         ag_mblock *cp = ag_mblock_new_align(sz, align);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_free(ctx);
+        ag_mblock_dispose(ctx);
         *ctx = cp;
 }
 

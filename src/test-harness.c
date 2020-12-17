@@ -94,7 +94,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *nxt = ctx->nxt;
 
         ag_test_suite_free(&ctx->ts);
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_mblock_dispose((ag_mblock **)&ctx);
 
         return nxt;
 }
@@ -131,7 +131,7 @@ static char *str_new_fmt(const char *fmt, ...)
  */
 static inline void str_free(char *ctx)
 {
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_mblock_dispose((ag_mblock **)&ctx);
 }
 
 
@@ -197,7 +197,7 @@ extern void ag_test_harness_free(ag_test_harness **ctx)
                         n = node_free(n);
                 }
 
-                ag_mblock_free((ag_mblock **)ctx);
+                ag_mblock_dispose((ag_mblock **)ctx);
         }
 }
 

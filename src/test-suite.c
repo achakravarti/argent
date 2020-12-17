@@ -36,7 +36,7 @@ static char *str_new_fmt(const char *fmt, ...)
  */
 static inline void str_free(char *ctx)
 {
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_mblock_dispose((ag_mblock **)&ctx);
 }
 
 
@@ -65,7 +65,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *next = ctx->next;
 
         str_free(ctx->desc);
-        ag_mblock_free((ag_mblock **)&ctx);
+        ag_mblock_dispose((ag_mblock **)&ctx);
 
         return next;
 }
@@ -179,7 +179,7 @@ extern void ag_test_suite_free(ag_test_suite **ctx)
                 while (AG_LIKELY (n)) 
                         n = node_free(n);
 
-                ag_mblock_free((ag_mblock **)ctx);
+                ag_mblock_dispose((ag_mblock **)ctx);
         }
 }
 
