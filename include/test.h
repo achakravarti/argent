@@ -116,7 +116,7 @@ extern void ag_test_suite_push(ag_test_suite *, ag_test *, const char *);
 extern void ag_test_suite_push_array(ag_test_suite *, ag_test *[],
                 const char *[], size_t);
 extern void ag_test_suite_exec(ag_test_suite *);
-extern void ag_test_suite_log(ag_test_suite *, FILE *);
+extern void ag_test_suite_log(const ag_test_suite *, FILE *);
 
 /*-
  * Interface: Test Harness

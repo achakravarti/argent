@@ -262,7 +262,7 @@ extern void ag_test_suite_exec(ag_test_suite *ctx)
 }
 
 
-extern void ag_test_suite_log(ag_test_suite *ctx, FILE *log)
+extern void ag_test_suite_log(const ag_test_suite *ctx, FILE *log)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (log);
