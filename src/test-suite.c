@@ -156,15 +156,10 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_suite *cp = ag_test_suite_new(ctx->desc);
+        ag_test_suite *hnd = (ag_test_suite *)ctx;
+        ag_mblock_retain(hnd);
 
-        struct node *n = ctx->head;
-        while (AG_LIKELY (n)) {
-                ag_test_suite_push(cp, n->test, n->desc);
-                n = n->next;
-        }
-
-        return cp;
+        return hnd;
 }
 
 
