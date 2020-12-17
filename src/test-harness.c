@@ -93,7 +93,7 @@ static inline struct node *node_free(struct node *ctx)
 {
         struct node *nxt = ctx->nxt;
 
-        ag_test_suite_free(&ctx->ts);
+        ag_test_suite_release(&ctx->ts);
         ag_mblock_release((ag_mblock **)&ctx);
 
         return nxt;

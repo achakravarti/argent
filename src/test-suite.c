@@ -168,16 +168,18 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 }
 
 
-extern void ag_test_suite_free(ag_test_suite **ctx)
+extern void ag_test_suite_release(ag_test_suite **ctx)
 {
         ag_test_suite *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                str_free(hnd->desc);
+                if (ag_mblock_refc(hnd) == 1) {
+                        str_free(hnd->desc);
 
-                struct node *n = hnd->head;
-                while (AG_LIKELY (n)) 
-                        n = node_free(n);
+                        struct node *n = hnd->head;
+                        while (n)
+                                n = node_free(n);
+                }
 
                 ag_mblock_release((ag_mblock **)ctx);
         }

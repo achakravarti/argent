@@ -107,7 +107,7 @@ typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
-extern void ag_test_suite_free(ag_test_suite **);
+extern void ag_test_suite_release(ag_test_suite **);
 
 extern size_t ag_test_suite_len(const ag_test_suite *);
 extern size_t ag_test_suite_poll(const ag_test_suite *, enum ag_test_status);
