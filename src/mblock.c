@@ -154,14 +154,22 @@ extern void ag_mblock_dispose(ag_mblock **ctx)
         ag_mblock *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                ag_mblock_release(hnd);
+                free(meta_head(hnd));
+                *ctx = NULL;
+        }
 
-                if (!meta_refc(hnd)) {
-                        free(meta_head(hnd));
+}
+
+extern void ag_mblock_release(ag_mblock **ctx)
+{
+        size_t *hnd;
+
+        if (AG_LIKELY (ctx && (hnd = (size_t *)*ctx))) {
+                if (!(--hnd[-2])) {
+                        free(&hnd[-2]);
                         *ctx = NULL;
                 }
         }
-
 }
 
 extern enum ag_cmp ag_mblock_cmp(const ag_mblock *ctx, const ag_mblock *cmp)
@@ -210,21 +218,14 @@ extern bool ag_mblock_aligned(const ag_mblock *ctx, size_t align)
 }
 
 
-extern ag_mblock *ag_mblock_retain(ag_mblock *ctx)
+extern void ag_mblock_retain(ag_mblock *ctx)
 {
         AG_ASSERT (is_pointer_valid(ctx));
         
         ((size_t *) ctx)[-2]++;
-        return ctx;
 }
 
 
-extern void ag_mblock_release(ag_mblock *ctx)
-{
-        AG_ASSERT (is_pointer_valid(ctx));
-        
-        ((size_t *) ctx)[-2]--;
-}
 
 
 extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
