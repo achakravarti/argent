@@ -67,7 +67,9 @@ extern ag_str *ag_str_new(const char *src)
 
 /*
  * ag_str_new_fmt() creates a new instance of a dynamic string from a statically
- * allocated format string with variable arguments a la printf().
+ * allocated format string with variable arguments a la printf(). By passing
+ * NULL and 0 as the first two arguments to vsnprintf() we determine the size of
+ * the formatted string (excluding the terminating null character).
  */
 extern ag_str *ag_str_new_fmt(const char *fmt, ...)
 {
@@ -75,7 +77,7 @@ extern ag_str *ag_str_new_fmt(const char *fmt, ...)
 
         va_list args;
         va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args));
+        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);

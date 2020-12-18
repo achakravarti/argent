@@ -5,44 +5,9 @@
 #include <string.h>
 
 
-/*
- * str_new_fmt(): create new dynamic formatted string.
- *
- * @fmt: formatted static source string.
- * @...: format arguments.
- *
- * Return: new dynamic formatted string.
- */
-static char *str_new_fmt(const char *fmt, ...)
-{
-        va_list args;
-
-        va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-        va_end(args);
-
-        va_start(args, fmt);
-        (void) vsprintf(bfr, fmt, args);
-        va_end(args);
-
-        return bfr;
-}
-
-
-/*
- * str_free(): release dynamic string.
- *
- * @ctx: contextual string.
- */
-static inline void str_free(char *ctx)
-{
-        ag_mblock_release((ag_mblock **)&ctx);
-}
-
-
 struct node {
         ag_test *test;
-        char *desc;
+        ag_str *desc;
         enum ag_test_status status;
         struct node *next;
 };
@@ -52,7 +17,7 @@ static struct node *node_new(ag_test *test, const char *desc)
 {
         struct node *n = ag_mblock_new(sizeof *n);
         n->test = test;
-        n->desc = str_new_fmt("%s", desc);
+        n->desc = ag_str_new_fmt("%s", desc);
         n->status = AG_TEST_STATUS_WAIT;
         n->next = NULL;
 
@@ -64,7 +29,7 @@ static inline struct node *node_free(struct node *ctx)
 {
         struct node *next = ctx->next;
 
-        str_free(ctx->desc);
+        ag_str_release(&ctx->desc);
         ag_mblock_release((ag_mblock **)&ctx);
 
         return next;
@@ -101,7 +66,7 @@ static void node_log(const struct node *ctx, FILE *log)
 
 
 struct ag_test_suite {
-        char *desc;
+        ag_str *desc;
         struct node *head;
 };
 
@@ -145,7 +110,7 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
         AG_ASSERT (desc && *desc);
 
         ag_test_suite *ctx = ag_mblock_new(sizeof *ctx);
-        ctx->desc = str_new_fmt("%s", desc);
+        ctx->desc = ag_str_new_fmt("%s", desc);
         ctx->head = NULL;
 
         return ctx;
@@ -169,7 +134,7 @@ extern void ag_test_suite_release(ag_test_suite **ctx)
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
                 if (ag_mblock_refc(hnd) == 1) {
-                        str_free(hnd->desc);
+                        ag_str_release(&hnd->desc);
 
                         struct node *n = hnd->head;
                         while (n)
