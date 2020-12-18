@@ -54,19 +54,19 @@ extern ag_str *ag_str_copy(const ag_str *);
 extern void ag_str_release(ag_str **);
 
 
-extern enum ag_cmp ag_str_cmp(const char *,  const char *);
+extern enum ag_cmp ag_str_cmp(const ag_str *,  const char *);
 
-inline bool ag_str_lt(const char *ctx, const char *cmp)
+inline bool ag_str_lt(const ag_str *ctx, const char *cmp)
 {
     return ag_str_cmp(ctx, cmp) == AG_CMP_LT;
 }
 
-inline bool ag_str_eq(const char *ctx, const char *cmp)
+inline bool ag_str_eq(const ag_str *ctx, const char *cmp)
 {
     return ag_str_cmp(ctx, cmp) == AG_CMP_EQ;
 }
 
-inline bool ag_str_gt(const char *ctx, const char *cmp)
+inline bool ag_str_gt(const ag_str *ctx, const char *cmp)
 {
     return ag_str_cmp(ctx, cmp) == AG_CMP_GT;
 }
@@ -84,11 +84,11 @@ inline bool ag_str_empty(const ag_str *ctx)
 
 
 
-extern ag_str *ag_str_lower(const char *);
-extern ag_str *ag_str_upper(const char *);
-extern ag_str *ag_str_proper(const char *);
-extern ag_str *ag_str_split(const char *, const char *);
-extern ag_str *ag_str_split_right(const char *, const char *);
+extern ag_str *ag_str_lower(const ag_str *);
+extern ag_str *ag_str_upper(const ag_str *);
+extern ag_str *ag_str_proper(const ag_str *);
+extern ag_str *ag_str_split(const ag_str *, const char *);
+extern ag_str *ag_str_split_right(const ag_str *, const char *);
 
 
 #ifdef __cplusplus

@@ -42,9 +42,9 @@
 
 /* Declare the public inline functions of the string interface. */
 extern inline ag_str *ag_str_new_empty(void);
-extern inline bool ag_str_lt(const char *, const char *);
-extern inline bool ag_str_eq(const char *, const char *);
-extern inline bool ag_str_gt(const char *, const char *);
+extern inline bool ag_str_lt(const ag_str *, const char *);
+extern inline bool ag_str_eq(const ag_str *, const char *);
+extern inline bool ag_str_gt(const ag_str *, const char *);
 extern inline bool ag_str_empty(const ag_str *);
 
 
@@ -107,7 +107,7 @@ extern void ag_str_release(ag_str **ctx)
 
 
 /* ag_str_cmp() compares two strings lexicographically. */
-extern enum ag_cmp ag_str_cmp(const char *ctx,  const char *cmp)
+extern enum ag_cmp ag_str_cmp(const ag_str *ctx,  const char *cmp)
 {
         AG_ASSERT (is_string_valid(ctx));
         AG_ASSERT (is_string_valid(cmp));
@@ -174,19 +174,17 @@ extern size_t ag_str_refc(const ag_str *ctx)
 
 /*
  * ag_str_lower() transforms a string to lowercase. Since we have chosen to keep
- * strings as immutable, we return a new string instance after processing.
+ * strings as immutable, we return a new string instance after processing. 
  */
-extern ag_str *ag_str_lower(const char *ctx)
+extern ag_str *ag_str_lower(const ag_str *ctx)
 {
         AG_ASSERT (is_string_valid(ctx));
 
-        ag_str *s = ag_str_new(ctx);
-        register char *c = s;
+        ag_str *s = ag_mblock_copy(ctx);
+        register size_t sz = ag_mblock_sz(ctx);
 
-        while (*c) {
-                *c = tolower(*c);
-                c++;
-        }
+        for (register size_t i = 0; i < sz; i++)
+                s[i] = tolower(s[i]);
 
         return s;
 }
@@ -197,17 +195,15 @@ extern ag_str *ag_str_lower(const char *ctx)
  * ag_str_lower(), we choose to return a new instance instead of modifying the
  * original string.
  */
-extern ag_str *ag_str_upper(const char *ctx)
+extern ag_str *ag_str_upper(const ag_str *ctx)
 {
         AG_ASSERT (is_string_valid(ctx));
         
-        ag_str *s = ag_str_new(ctx);
-        register char *c = s;
+        ag_str *s = ag_mblock_copy(ctx);
+        register size_t sz = ag_mblock_sz(ctx);
 
-        while (*c) {
-                *c = toupper(*c);
-                c++;
-        }
+        for (register size_t i = 0; i < sz; i++)
+                s[i] = toupper(s[i]);
 
         return s;
 }
@@ -223,11 +219,11 @@ extern ag_str *ag_str_upper(const char *ctx)
  * As in the case of ag_str_lower() and ag_str_upper(), we choose to return a
  * new string instance after processing.
  */
-extern ag_str *ag_str_proper(const char *ctx)
+extern ag_str *ag_str_proper(const ag_str *ctx)
 {
         AG_ASSERT (is_string_valid(ctx));
         
-        ag_str *s = ag_str_new(ctx);
+        ag_str *s = ag_mblock_copy(ctx);
         register size_t sz = ag_mblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {
@@ -244,7 +240,7 @@ extern ag_str *ag_str_proper(const char *ctx)
  * pivot. In case the pivot isn't found, then an empty string is returned. We
  * use the reentrant version of strtok() in order to be thread-safe.
  */
-extern ag_str *ag_str_split(const char *ctx, const char *pvt)
+extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 {
         AG_ASSERT (is_string_valid(ctx));
         AG_ASSERT (is_string_not_empty(pvt));
@@ -263,7 +259,7 @@ extern ag_str *ag_str_split(const char *ctx, const char *pvt)
  * on the right side of the pivot. As in the case of ag_str_split(), in case the
  * pivot doesn't exist then an empty string is returned.
  */
-extern ag_str *ag_str_split_right(const char *ctx, const char *pvt)
+extern ag_str *ag_str_split_right(const ag_str *ctx, const char *pvt)
 {
         AG_ASSERT (is_string_valid(ctx));
         AG_ASSERT (is_string_not_empty(pvt));
