@@ -20,6 +20,7 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
 
+
 #ifndef __ARGENT_EXCEPTION_H__
 #define __ARGENT_EXCEPTION_H__
 
