@@ -79,6 +79,8 @@ static void log_header(const ag_test_suite *ctx, FILE *log)
 
         for (register size_t i = 0; i < strlen(ctx->desc) + 12; i++)
                 fputs("=", log);
+
+        fputs("\n", log);
 }
 
 
