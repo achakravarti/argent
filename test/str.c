@@ -487,10 +487,33 @@ AG_TEST_INIT(len_02, "ag_str_len() returns the length of an ASCII string") {
 } AG_TEST_EXIT();
 
 
-/* WARNING: This test indicates a possible bug with Devanagari characters */
 AG_TEST_INIT(len_03, "ag_str_len() returns the length of a Unicode string") {
         ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
         AG_TEST_ASSERT (ag_str_len(s) == 14);
+} AG_TEST_EXIT();
+
+
+/*
+ * The following tests check whether ag_str_sz() works as expected with empty,
+ * ASCII and Unicode strings.
+ */
+
+
+AG_TEST_INIT(sz_01, "ag_str_sz() returns 1 for an empty string") {
+        ag_str_auto *s = ag_str_new_empty();
+        AG_TEST_ASSERT (ag_str_sz(s) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_02, "ag_str_sz() determines the size of an ASCII string") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (ag_str_sz(s) == 14);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_03, "ag_str_sz() determines the size of Unicode string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_TEST_ASSERT (ag_str_sz(s) == 39);
 } AG_TEST_EXIT();
 
 
@@ -504,7 +527,7 @@ extern ag_test_suite *test_suite_str(void)
                 lt_03, lt_04, lt_05, lt_06, lt_07, lt_08, lt_09, eq_01, eq_02,
                 eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09, gt_01, gt_02,
                 gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09, empty_01,
-                empty_02, empty_03, len_01, len_02, len_03,
+                empty_02, empty_03, len_01, len_02, len_03, sz_01, sz_02, sz_03,
         };
 
         const char *desc[] = {
@@ -520,7 +543,7 @@ extern ag_test_suite *test_suite_str(void)
                 eq_09_desc, gt_01_desc, gt_02_desc, gt_03_desc, gt_04_desc,
                 gt_05_desc, gt_06_desc, gt_07_desc, gt_08_desc, gt_09_desc,
                 empty_01_desc, empty_02_desc, empty_03_desc, len_01_desc,
-                len_02_desc, len_03_desc,
+                len_02_desc, len_03_desc, sz_01_desc, sz_02_desc, sz_03_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
