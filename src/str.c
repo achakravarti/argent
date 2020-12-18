@@ -6,8 +6,8 @@
 
 
 #ifndef NDEBUG
-static inline bool is_string_valid(const char *);
-static inline bool is_string_not_empty(const char *);
+#       define is_string_valid(s) (s)
+#       define is_string_not_empty(s) (s && *s)
 #endif
 
 
@@ -195,21 +195,4 @@ extern ag_str *ag_str_split_right(const char *ctx, const char *pvt)
         (void)strtok_r(s, pvt, &save);
         return ag_str_new(save);
 }
-
-        
-
-#ifndef NDEBUG
-static inline bool is_string_valid(const char *ctx)
-{
-        return ctx;
-}
-#endif
-        
-
-#ifndef NDEBUG
-static inline bool is_string_not_empty(const char *ctx)
-{
-        return ctx && *ctx;
-}
-#endif
 
