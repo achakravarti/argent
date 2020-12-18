@@ -118,13 +118,38 @@ extern void ag_str_release(ag_str **ctx)
 }
 
 
-/* ag_str_cmp() compares two strings lexicographically. */
+/* 
+ * ag_str_cmp() compares two strings lexicographically. We have adapted the code
+ * from the uf8cmp() function in Sheredom's UTF-8 header only library (see
+ * https://github.com/sheredom/utf8.h/blob/master/utf8.h). We could have simply
+ * used strcmp(), but there may be edge cases in Unicode strings which strcmp()
+ * doesn't handle.
+ */
 extern enum ag_cmp ag_str_cmp(const ag_str *ctx,  const char *cmp)
 {
         AG_ASSERT (is_string_valid(ctx));
         AG_ASSERT (is_string_valid(cmp));
 
-        return strcmp(ctx, cmp);
+        if (!*ctx && *cmp)
+                return AG_CMP_LT;
+
+        if (*ctx && !*cmp)
+                return AG_CMP_GT;
+
+        register const unsigned char *s1 = (const unsigned char *)ctx;
+        register const unsigned char *s2 = (const unsigned char *)cmp;
+
+        while (*s1 || *s2) {
+                if (*s1 < *s2)
+                        return AG_CMP_LT;
+                else if (*s1 > *s2)
+                        return AG_CMP_GT;
+
+                s1++;
+                s2++;
+        }
+
+        return AG_CMP_EQ;
 }
 
 
