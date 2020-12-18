@@ -101,10 +101,20 @@ extern ag_str *ag_str_copy(const ag_str *ctx)
 }
 
 
-/* ag_str_release() releases a dynamic string. */
+/* 
+ * ag_str_release() releases a dynamic string. We don't cast ctx to (void **)
+ * when calling ag_mblock_release() in order to avoid potential portability
+ * issues in case the size of pointers differ. See the C-FAQ List question 4.9
+ * at http://c-faq.com/ptrs/genericpp.html.
+ */
 extern void ag_str_release(ag_str **ctx)
 {
-        ag_mblock_release((ag_mblock **)ctx);
+        if (AG_LIKELY (ctx && *ctx)) {
+                ag_str *hnd = *ctx;
+                void *ptr = hnd;
+                ag_mblock_release(&ptr);
+                *ctx = ptr;
+        }
 }
 
 
