@@ -40,27 +40,27 @@ static void node_log(const struct node *ctx, FILE *log)
 {
         switch (ctx->status) {
                 case AG_TEST_STATUS_OK:
-                        fprintf(log, "[OK]   %s", ctx->desc);
+                        fprintf(log, "[OK]   %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_WAIT:
-                        fprintf(log, "[WAIT] %s", ctx->desc);
+                        fprintf(log, "[WAIT] %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SKIP:
-                        fprintf(log, "[SKIP] %s", ctx->desc);
+                        fprintf(log, "[SKIP] %s\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SIGABRT:
-                        fprintf(log, "[FAIL] %s (SIGABRT)", ctx->desc);
+                        fprintf(log, "[FAIL] %s (SIGABRT)\n", ctx->desc);
                         break;
 
                 case AG_TEST_STATUS_SIGSEGV:
-                        fprintf(log, "[FAIL] %s (SIGSEGV)", ctx->desc);
+                        fprintf(log, "[FAIL] %s (SIGSEGV)\n", ctx->desc);
                         break;
 
                 default:
-                        fprintf(log, "[FAIL] %s", ctx->desc);
+                        fprintf(log, "[FAIL] %s\n", ctx->desc);
         }
 }
 
@@ -98,7 +98,7 @@ static void log_body(const ag_test_suite *ctx, FILE *log)
 
         struct node *n = ctx->head;
         while (AG_LIKELY (n)) {
-                fprintf(log, "\n%.2lu. ", ++i);
+                fprintf(log, "%.2lu. ", ++i);
                 node_log(n, log);
                 n = n->next;
         }
@@ -220,8 +220,10 @@ extern void ag_test_suite_exec(ag_test_suite *ctx)
         struct node *n = ctx->head;
         while (AG_LIKELY (n)) {
                 n->status = n->test();
+
                 if (AG_UNLIKELY (n->status != AG_TEST_STATUS_OK))
                         node_log(n, stdout);
+
                 n = n->next;
         }
 }
