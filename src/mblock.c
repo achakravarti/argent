@@ -165,10 +165,10 @@ extern void ag_mblock_release(ag_mblock **ctx)
         size_t *hnd;
 
         if (AG_LIKELY (ctx && (hnd = (size_t *)*ctx))) {
-                if (!(--hnd[-2])) {
+                if (!(--hnd[-2]))
                         free(&hnd[-2]);
-                        *ctx = NULL;
-                }
+                        
+                *ctx = NULL;
         }
 }
 

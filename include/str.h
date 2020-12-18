@@ -42,16 +42,16 @@ typedef char ag_str;
 #endif
 
 
+
 extern ag_str *ag_str_new(const char *);
+extern ag_str *ag_str_new_fmt(const char *, ...);
+extern ag_str *ag_str_copy(const ag_str *);
+extern void ag_str_release(ag_str **);
 
 inline ag_str *ag_str_new_empty(void)
 {
     return ag_str_new("");
 }
-
-extern ag_str *ag_str_new_fmt(const char *fmt, ...);
-extern ag_str *ag_str_copy(const ag_str *);
-extern void ag_str_release(ag_str **);
 
 
 extern enum ag_cmp ag_str_cmp(const ag_str *,  const char *);
