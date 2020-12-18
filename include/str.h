@@ -42,7 +42,7 @@ typedef char ag_str;
 #endif
 
 
-extern ag_str *ag_str_new(const char *cstr);
+extern ag_str *ag_str_new(const char *);
 
 inline ag_str *ag_str_new_empty(void)
 {
@@ -50,8 +50,8 @@ inline ag_str *ag_str_new_empty(void)
 }
 
 extern ag_str *ag_str_new_fmt(const char *fmt, ...);
-extern ag_str *ag_str_copy(const ag_str *ctx);
-extern void ag_str_dispose(ag_str **ctx);
+extern ag_str *ag_str_copy(const ag_str *);
+extern void ag_str_release(ag_str **);
 
 
 extern enum ag_cmp ag_str_cmp(const char *,  const char *);
@@ -72,11 +72,16 @@ inline bool ag_str_gt(const char *ctx, const char *cmp)
 }
 
 
-extern bool ag_str_empty(const ag_str *);
-extern bool ag_str_has(const ag_str *, const char *);
 extern size_t ag_str_len(const ag_str *);
 extern size_t ag_str_sz(const ag_str *);
 extern size_t ag_str_refc(const ag_str *);
+extern bool ag_str_has(const ag_str *, const char *);
+
+inline bool ag_str_empty(const ag_str *ctx)
+{
+        return ag_str_sz(ctx) == 1;
+}
+
 
 
 extern ag_str *ag_str_lower(const char *);
