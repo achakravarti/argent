@@ -517,6 +517,35 @@ AG_TEST_INIT(sz_03, "ag_str_sz() determines the size of Unicode string") {
 } AG_TEST_EXIT();
 
 
+/*
+ * The following unit tests check whether ag_str_refc() returns the correct
+ * reference count depending on the current number of soft copies.
+ */
+
+
+AG_TEST_INIT(refc_01, "ag_str_refc() returns 1 for a single instance") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (ag_str_refc(s) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_02, "ag_str_refc() detects incremented reference counts") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        ag_str_auto *s2 = ag_str_copy(s);
+        ag_str_auto *s3 = ag_str_copy(s2);
+        AG_TEST_ASSERT (ag_str_refc(s) == 3);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_03, "ag_str_refc() detects decremented reference counts") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        ag_str *s2 = ag_str_copy(s);
+        ag_str_release(&s2);
+        ag_str_auto *s3 = ag_str_copy(s);
+        AG_TEST_ASSERT (ag_str_refc(s) == 2);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_str(void)
 {
         ag_test *test[] = {
@@ -528,6 +557,7 @@ extern ag_test_suite *test_suite_str(void)
                 eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09, gt_01, gt_02,
                 gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09, empty_01,
                 empty_02, empty_03, len_01, len_02, len_03, sz_01, sz_02, sz_03,
+                refc_01, refc_02, refc_03,
         };
 
         const char *desc[] = {
@@ -544,6 +574,7 @@ extern ag_test_suite *test_suite_str(void)
                 gt_05_desc, gt_06_desc, gt_07_desc, gt_08_desc, gt_09_desc,
                 empty_01_desc, empty_02_desc, empty_03_desc, len_01_desc,
                 len_02_desc, len_03_desc, sz_01_desc, sz_02_desc, sz_03_desc,
+                refc_01_desc, refc_02_desc, refc_03_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
