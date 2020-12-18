@@ -443,6 +443,55 @@ AG_TEST_INIT(gt_09, "ag_str_gt() returns true when comparing a Unicode string"
 } AG_TEST_EXIT();
 
 
+/*
+ * The followint tests check whether ag_str_empty() behaves as expected with
+ * empty, ASCII and Unicode strings.
+ */
+
+
+AG_TEST_INIT(empty_01, "ag_str_empty() returns true for an empty string") {
+        ag_str_auto *s = ag_str_new_empty();
+        AG_TEST_ASSERT (ag_str_empty(s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_02, "ag_str_empty() returns false for an ASCII string") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (!ag_str_empty(s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_03, "ag_str_empty() returns false for a Unicode string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_TEST_ASSERT (!ag_str_empty(s));
+} AG_TEST_EXIT();
+
+
+/*
+ * The following unit tests check whether ag_str_len() returns the correct
+ * lexicographical length for empty, ASCII and Unicode strings. The len_03 tests
+ * seems to indicate that there may be a possible bug when considering combined
+ * characters as in the Devenagari script. TODO: need to research more on this.
+ */
+
+
+AG_TEST_INIT(len_01, "ag_str_len() returns 0 for an empty string") {
+        ag_str_auto *s = ag_str_new_empty();
+        AG_TEST_ASSERT (!ag_str_len(s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(len_02, "ag_str_len() returns the length of an ASCII string") {
+        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (ag_str_len(s) == 13);
+} AG_TEST_EXIT();
+
+
+/* WARNING: This test indicates a possible bug with Devanagari characters */
+AG_TEST_INIT(len_03, "ag_str_len() returns the length of a Unicode string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_TEST_ASSERT (ag_str_len(s) == 14);
+} AG_TEST_EXIT();
 
 
 extern ag_test_suite *test_suite_str(void)
@@ -454,7 +503,8 @@ extern ag_test_suite *test_suite_str(void)
                 cmp_04, cmp_05, cmp_06, cmp_07, cmp_08, cmp_09, lt_01, lt_02,
                 lt_03, lt_04, lt_05, lt_06, lt_07, lt_08, lt_09, eq_01, eq_02,
                 eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09, gt_01, gt_02,
-                gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09,
+                gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09, empty_01,
+                empty_02, empty_03, len_01, len_02, len_03,
         };
 
         const char *desc[] = {
@@ -469,6 +519,8 @@ extern ag_test_suite *test_suite_str(void)
                 eq_04_desc, eq_05_desc, eq_06_desc, eq_07_desc, eq_08_desc,
                 eq_09_desc, gt_01_desc, gt_02_desc, gt_03_desc, gt_04_desc,
                 gt_05_desc, gt_06_desc, gt_07_desc, gt_08_desc, gt_09_desc,
+                empty_01_desc, empty_02_desc, empty_03_desc, len_01_desc,
+                len_02_desc, len_03_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
