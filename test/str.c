@@ -365,6 +365,86 @@ AG_TEST_INIT(eq_09, "ag_str_eq() returns false when comparing a Unicode string"
 } AG_TEST_EXIT();
 
 
+/*
+ * The following unit tests check whether ag_str_gt() works as expected with
+ * different combinations of empty, ASCII and Unicode strings.
+ */
+
+
+AG_TEST_INIT(gt_01, "ag_str_gt() returns false when comparing two empty"
+                " strings") {
+        ag_str_auto *s = ag_str_new_empty();
+        ag_str_auto *s2 = ag_str_new_empty();
+        AG_TEST_ASSERT (!ag_str_gt(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_02, "ag_str_gt() returns false when comparing an empty string"
+                " with a non-empty string") {
+        ag_str_auto *s = ag_str_new_empty();
+        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (!ag_str_gt(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_03, "ag_str_gt() returns true when comparing a string with an"
+                " empty string") {
+        ag_str_auto *s = ag_str_new_empty();
+        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (ag_str_gt(s2, s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_04, "ag_str_gt() returns false when comparing an ASCII string"
+                " that is lexicographically less than another string") {
+        ag_str_auto *s = ag_str_new("Goodbye, world!");
+        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (!ag_str_gt(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_05, "ag_str_gt() returns false when comparing an ASCII string"
+                " that is lexicographically equal to another string") {
+        ag_str_auto *s = ag_str_new("Goodbye, world!");
+        ag_str_auto *s2 = ag_str_copy(s);
+        AG_TEST_ASSERT (!ag_str_gt(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_06, "ag_str_gt() returns true when comparing an ASCII string"
+                " that is lexicographically greater than another string") {
+        ag_str_auto *s = ag_str_new("Goodbye, world!");
+        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (ag_str_gt(s2, s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_07, "ag_str_gt() returns false when comparing a Unicode string"
+                " that is lexicographically less than another string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_TEST_ASSERT (!ag_str_gt(s2, s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_08, "ag_str_gt() returns false when comparing a Unicode string"
+                " that is lexicographically equal to another string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        ag_str_auto *s2 = ag_str_copy(s);
+        AG_TEST_ASSERT (!ag_str_gt(s2, s));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_09, "ag_str_gt() returns true when comparing a Unicode string"
+                " that is lexicographically greater than another string") {
+        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_TEST_ASSERT (ag_str_gt(s, s2));
+} AG_TEST_EXIT();
+
+
+
+
 extern ag_test_suite *test_suite_str(void)
 {
         ag_test *test[] = {
@@ -373,7 +453,8 @@ extern ag_test_suite *test_suite_str(void)
                 release_02, release_03, release_04, cmp_01, cmp_02, cmp_03,
                 cmp_04, cmp_05, cmp_06, cmp_07, cmp_08, cmp_09, lt_01, lt_02,
                 lt_03, lt_04, lt_05, lt_06, lt_07, lt_08, lt_09, eq_01, eq_02,
-                eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09,
+                eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09, gt_01, gt_02,
+                gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09,
         };
 
         const char *desc[] = {
@@ -386,7 +467,8 @@ extern ag_test_suite *test_suite_str(void)
                 lt_03_desc, lt_04_desc, lt_05_desc, lt_06_desc, lt_07_desc,
                 lt_08_desc, lt_09_desc, eq_01_desc, eq_02_desc, eq_03_desc,
                 eq_04_desc, eq_05_desc, eq_06_desc, eq_07_desc, eq_08_desc,
-                eq_09_desc,
+                eq_09_desc, gt_01_desc, gt_02_desc, gt_03_desc, gt_04_desc,
+                gt_05_desc, gt_06_desc, gt_07_desc, gt_08_desc, gt_09_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
