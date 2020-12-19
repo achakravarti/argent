@@ -546,6 +546,64 @@ AG_TEST_INIT(refc_03, "ag_str_refc() detects decremented reference counts") {
 } AG_TEST_EXIT();
 
 
+/*
+ * The following test cases check whether ag_str_has() performs as expected with
+ * different combinations of empty, ASCII and Unicode needles and haystacks.
+ */
+
+
+AG_TEST_INIT(has_01, "ag_str_has() returns true when both needle and haystack"
+                " are empty strings") {
+        ag_str_auto *h = ag_str_new_empty(), *n = ag_str_new_empty();
+        AG_TEST_ASSERT (ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_02, "ag_str_has() returns false when haystack is empty and"
+                " needle is not") {
+        ag_str_auto *h = ag_str_new_empty(), *n = ag_str_new("Hello, world!");
+        AG_TEST_ASSERT (!ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_03, "ag_str_has() returns false when haystack is not empty and"
+                " needle is") {
+        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new_empty();
+        AG_TEST_ASSERT (!ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_04, "ag_str_has() returns true if it finds an ASCII needle in"
+                " an ASCII haystack") {
+        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new("o, wo");
+        AG_TEST_ASSERT (ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_05, "ag_str_has() returns false if it doesn't find an ASCII"
+                " needle in an ASCII haystack") {
+        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new("o, w!");
+        AG_TEST_ASSERT (!ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_06, "ag_str_has() returns true if it finds a Unicode needle in"
+                " a Unicode haystack") {
+        ag_str_auto *h = ag_str_new("नमस्ते दुनिया!");
+        ag_str_auto *n = ag_str_new("ते दुनि");
+        AG_TEST_ASSERT (ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(has_07, "ag_str_has() returns false if it doesn't find a Unicode"
+                " needle in a Unicode haystack") {
+        ag_str_auto *h = ag_str_new("नमस्ते दुनिया!");
+        ag_str_auto *n = ag_str_new("तेदुनि");
+        AG_TEST_ASSERT (!ag_str_has(h, n));
+} AG_TEST_EXIT();
+
+
+
 extern ag_test_suite *test_suite_str(void)
 {
         ag_test *test[] = {
@@ -557,7 +615,8 @@ extern ag_test_suite *test_suite_str(void)
                 eq_03, eq_04, eq_05, eq_06, eq_07, eq_08, eq_09, gt_01, gt_02,
                 gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09, empty_01,
                 empty_02, empty_03, len_01, len_02, len_03, sz_01, sz_02, sz_03,
-                refc_01, refc_02, refc_03,
+                refc_01, refc_02, refc_03, has_01, has_02, has_03, has_04,
+                has_05, has_06, has_07,
         };
 
         const char *desc[] = {
@@ -574,7 +633,9 @@ extern ag_test_suite *test_suite_str(void)
                 gt_05_desc, gt_06_desc, gt_07_desc, gt_08_desc, gt_09_desc,
                 empty_01_desc, empty_02_desc, empty_03_desc, len_01_desc,
                 len_02_desc, len_03_desc, sz_01_desc, sz_02_desc, sz_03_desc,
-                refc_01_desc, refc_02_desc, refc_03_desc,
+                refc_01_desc, refc_02_desc, refc_03_desc, has_01_desc,
+                has_02_desc, has_03_desc, has_04_desc, has_05_desc, has_06_desc,
+                has_07_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");

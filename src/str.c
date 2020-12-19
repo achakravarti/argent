@@ -157,7 +157,10 @@ extern enum ag_cmp ag_str_cmp(const ag_str *ctx,  const char *cmp)
 extern bool ag_str_has(const ag_str *ctx, const char *tgt)
 {
         AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_not_empty(tgt));
+        AG_ASSERT (is_string_valid(tgt));
+
+        if (AG_UNLIKELY (!*tgt && *ctx))
+                return false;
 
         return strstr(ctx, tgt);
 }
