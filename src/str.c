@@ -211,7 +211,11 @@ extern size_t ag_str_refc(const ag_str *ctx)
 
 /*
  * ag_str_lower() transforms a string to lowercase. Since we have chosen to keep
- * strings as immutable, we return a new string instance after processing. 
+ * strings as immutable, we return a new string instance after processing. Since
+ * we rely on tolower(), this function isn't guaranteed to work correctly with
+ * Unicode strings.
+ *
+ * TODO: make ag_str_lower() Unicode-safe.
  */
 extern ag_str *ag_str_lower(const ag_str *ctx)
 {
@@ -230,7 +234,10 @@ extern ag_str *ag_str_lower(const ag_str *ctx)
 /*
  * ag_str_upper() transforms a string to uppercase. As in the case of
  * ag_str_lower(), we choose to return a new instance instead of modifying the
- * original string.
+ * original string. Again, as in the case of ag_str_lower(), this function isn't
+ * guaranteed to be Unicode-safe.
+ *
+ * TODO: make ag_str_upper() Unicode-safe.
  */
 extern ag_str *ag_str_upper(const ag_str *ctx)
 {
@@ -254,7 +261,10 @@ extern ag_str *ag_str_upper(const ag_str *ctx)
  *   - it is preceded by a period.
  *
  * As in the case of ag_str_lower() and ag_str_upper(), we choose to return a
- * new string instance after processing.
+ * new string instance after processing. And like both these functions, this one
+ * isn't Unicode-safe.
+ *
+ * TODO: make ag_str_proper() Unicode-safe.
  */
 extern ag_str *ag_str_proper(const ag_str *ctx)
 {
@@ -275,7 +285,9 @@ extern ag_str *ag_str_proper(const ag_str *ctx)
 /*
  * ag_str_split() splits a string around a pivot, returning the left side of the
  * pivot. In case the pivot isn't found, then an empty string is returned. We
- * use the reentrant version of strtok() in order to be thread-safe.
+ * use the reentrant version of strtok() in order to be thread-safe. The caveat
+ * is that since strtok_r() doesn't seem to handle Unicode characters well.
+ * TODO: make ag_str_split() Unicode-safe.
  */
 extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 {
@@ -294,7 +306,10 @@ extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 /*
  * ag_str_split_right() splits a string around a pivot and returns the substring
  * on the right side of the pivot. As in the case of ag_str_split(), in case the
- * pivot doesn't exist then an empty string is returned.
+ * pivot doesn't exist then an empty string is returned. Again, since we're
+ * relying on strtok_r(), this function isn't Unicode-safe. 
+ *
+ * TODO: make ag_str_split_right() Unicode-safe.
  */
 extern ag_str *ag_str_split_right(const ag_str *ctx, const char *pvt)
 {
