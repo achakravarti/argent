@@ -23,7 +23,6 @@ struct ag_mblock_exception {
 extern void ag_mblock_exception_handler(const struct ag_exception *, void *);
 
 typedef void ag_mblock;
-#define ag_mblock_auto __attribute__((cleanup(ag_mblock_release))) ag_mblock
 
 extern ag_mblock *ag_mblock_new(size_t);
 extern ag_mblock *ag_mblock_new_align(size_t, size_t);

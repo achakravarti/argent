@@ -16,7 +16,7 @@ struct test2 {
 AG_TEST_INIT(new_01, "ag_mblock_new() allocates memory on the heap for"
                 " an int")
 {
-        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *m = ag_mblock_new(sizeof(int));
         AG_TEST_ASSERT (m);
 }
 AG_TEST_EXIT();
@@ -42,7 +42,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_03, "ag_mblock_new() returns a block with a reference count"
                 " of 1")
 {
-        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *m = ag_mblock_new(sizeof(int));
         AG_TEST_ASSERT (ag_mblock_refc(m) == 1);
 }
 AG_TEST_EXIT();
@@ -51,7 +51,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_04, "ag_mblock_new() returns a block with the requested data"
                 " size")
 {
-        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *m = ag_mblock_new(sizeof(int));
         AG_TEST_ASSERT (ag_mblock_sz(m) == sizeof(int));
 }
 AG_TEST_EXIT();
@@ -60,7 +60,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_05, "ag_mblock_new() returns a block with a total size >="
                 " requested data size")
 {
-        ag_mblock_auto *m = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *m = ag_mblock_new(sizeof(int));
         AG_TEST_ASSERT (ag_mblock_sz_total(m) >= sizeof(int));
 }
 AG_TEST_EXIT();
@@ -69,7 +69,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_align_01, "ag_mblock_new_align() allocates memory on the heap"
                 " for an int")
 {
-        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        AG_AUTO(ag_mblock) *m = ag_mblock_new_align(sizeof(int), 8);
         AG_TEST_ASSERT (m);
 }
 AG_TEST_EXIT();
@@ -94,7 +94,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_align_03, "ag_mblock_new_align() returns a block with a"
                 " reference count of 1")
 {
-        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        AG_AUTO(ag_mblock) *m = ag_mblock_new_align(sizeof(int), 8);
         AG_TEST_ASSERT (ag_mblock_refc(m) == 1);
 }
 AG_TEST_EXIT();
@@ -103,7 +103,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_align_04, "ag_mblock_new_align() returns a block with the"
                 " requested data size")
 {
-        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        AG_AUTO(ag_mblock) *m = ag_mblock_new_align(sizeof(int), 8);
         AG_TEST_ASSERT (ag_mblock_sz(m) == sizeof(int));
 }
 AG_TEST_EXIT();
@@ -112,7 +112,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_align_05, "ag_mblock_new_align() returns a block with a total"
                 " size >= requested data size")
 {
-        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 8);
+        AG_AUTO(ag_mblock) *m = ag_mblock_new_align(sizeof(int), 8);
         AG_TEST_ASSERT (ag_mblock_sz_total(m) >= sizeof(int));
 }
 AG_TEST_EXIT();
@@ -121,7 +121,7 @@ AG_TEST_EXIT();
 AG_TEST_INIT(new_align_06, "ag_mblock_new_align() returns a block with the"
                 " required alignment")
 {
-        ag_mblock_auto *m = ag_mblock_new_align(sizeof(int), 32);
+        AG_AUTO(ag_mblock) *m = ag_mblock_new_align(sizeof(int), 32);
         AG_TEST_ASSERT (ag_mblock_aligned(m, 32));
 }
 AG_TEST_EXIT();
@@ -164,8 +164,8 @@ AG_TEST_EXIT();
 
 AG_TEST_INIT(copy_03, "ag_mblock_copy() returns a copy with another address")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
         AG_TEST_ASSERT (src != cp);
 }
 AG_TEST_EXIT();
@@ -174,8 +174,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_04, "ag_mblock_copy() sets the reference count of the copy"
                 " to 1")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
         
         AG_TEST_ASSERT (ag_mblock_refc(cp) == 1);
 }
@@ -184,8 +184,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_05, "ag_mblock_copy() does not change the reference count of"
                 " the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
         
         AG_TEST_ASSERT (ag_mblock_refc(src) == 1);
 }
@@ -194,8 +194,8 @@ AG_TEST_EXIT();
 
 AG_TEST_INIT(copy_06, "ag_mblock_copy() preserves the data size of the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) == ag_mblock_sz(cp));
 }
@@ -204,8 +204,8 @@ AG_TEST_EXIT();
 
 AG_TEST_INIT(copy_07, "ag_mblock_copy() maintains the total size of the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy(src);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) >= ag_mblock_sz(cp));
 }
@@ -250,8 +250,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_03, "ag_mblock_copy_align() returns a copy with another"
                 " address")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy_align(src, 8);
         AG_TEST_ASSERT (src != cp);
 }
 AG_TEST_EXIT();
@@ -260,10 +260,10 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_04, "ag_mblock_copy_align() sets the reference count of"
                 " the copy to 1")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
         ag_mblock_retain(src);
-        ag_mblock_auto *cp = src;
-        ag_mblock_auto *cp2 = ag_mblock_copy_align(cp, 8);
+        AG_AUTO(ag_mblock) *cp = src;
+        AG_AUTO(ag_mblock) *cp2 = ag_mblock_copy_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(cp2) == 1);
 }
@@ -272,10 +272,10 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_05, "ag_mblock_copy_align() does not change the"
                 " reference count of the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
         ag_mblock_retain(src);
-        ag_mblock_auto *cp = src;
-        ag_mblock_auto *cp2 = ag_mblock_copy_align(cp, 8);
+        AG_AUTO(ag_mblock) *cp = src;
+        AG_AUTO(ag_mblock) *cp2 = ag_mblock_copy_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
 }
@@ -285,8 +285,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_06, "ag_mblock_copy_align() preserves the data size of"
                 " the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy_align(src, 8);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) == ag_mblock_sz(cp));
 }
@@ -296,8 +296,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_07, "ag_mblock_copy_align() maintains the total size of"
                 " the source")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_align(src, 8);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy_align(src, 8);
 
         AG_TEST_ASSERT (ag_mblock_sz(src) >= ag_mblock_sz(cp));
 }
@@ -307,8 +307,8 @@ AG_TEST_EXIT();
 AG_TEST_INIT(copy_align_08, "ag_mblock_copy_align() honours its alignment"
                 " request")
 {
-        ag_mblock_auto *src = ag_mblock_new(sizeof(int));
-        ag_mblock_auto *cp = ag_mblock_copy_align(src, 32);
+        AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy_align(src, 32);
 
         AG_TEST_ASSERT (ag_mblock_aligned(cp, 32));
 }
@@ -357,7 +357,7 @@ AG_TEST_INIT(release_05, "ag_mblock_release() reduces the reference count by 1"
 {
         int *i = ag_mblock_new(sizeof *i);
         ag_mblock_retain(i);
-        ag_mblock_auto *j = i;
+        AG_AUTO(ag_mblock) *j = i;
         ag_mblock_release((ag_mblock **)&i);
 
         AG_TEST_ASSERT (ag_mblock_refc(j) == 1);
@@ -368,9 +368,9 @@ AG_TEST_EXIT();
 AG_TEST_INIT(release_06, "ag_mblock_release() on a deep copy does not alter the"
                 " reference count of the source")
 {
-        ag_mblock_auto *i = ag_mblock_new(sizeof(int));
+        AG_AUTO(ag_mblock) *i = ag_mblock_new(sizeof(int));
         ag_mblock_retain(i);
-        ag_mblock_auto *j = i;
+        AG_AUTO(ag_mblock) *j = i;
         ag_mblock *k = ag_mblock_copy(j);
         ag_mblock_release(&k);
         

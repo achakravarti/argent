@@ -268,7 +268,7 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
                         + ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
         size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
 
-        ag_str_auto *s = ag_str_new_fmt("%d test suite(s), %d test(s),"
+        AG_AUTO(ag_str) *s = ag_str_new_fmt("%d test suite(s), %d test(s),"
                         " %d passed, %d skipped, %d failed.",
                         ag_test_harness_len(ctx), pass + skip + fail, 
                         pass, skip, fail);

@@ -301,7 +301,7 @@ extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
                 return ag_str_new_empty();
 
         char *save;
-        ag_str_auto *s = ag_str_new(ctx);
+        AG_AUTO(ag_str) *s = ag_str_new(ctx);
         return ag_str_new(strtok_r(s, pvt, &save));
 }
 
@@ -323,7 +323,7 @@ extern ag_str *ag_str_split_right(const ag_str *ctx, const char *pvt)
                 return ag_str_new_empty();
 
         char *save;
-        ag_str_auto *s = ag_str_new(ctx);
+        AG_AUTO(ag_str) *s = ag_str_new(ctx);
         (void)strtok_r(s, pvt, &save);
         return ag_str_new(save);
 }

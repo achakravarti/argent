@@ -34,14 +34,6 @@ extern "C" {
 
 typedef char ag_str;
 
-#if (defined __GNUC__ || defined __clang__)
-#       define ag_str_auto __attribute__((cleanup(ag_str_release))) ag_str
-#else
-#       define ag_str_auto ag_str
-#       warning "[!] ag_str_auto leaks memory on current compiler"
-#endif
-
-
 
 extern ag_str *ag_str_new(const char *);
 extern ag_str *ag_str_new_fmt(const char *, ...);

@@ -8,27 +8,26 @@
 
 
 AG_TEST_INIT(new_01, "ag_str_new() can create an empty string") {
-        ag_str_auto *s = ag_str_new("");
+        AG_AUTO(ag_str) *s = ag_str_new("");
         AG_TEST_ASSERT (s && !*s);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_02, "ag_str_new() can create an ASCII string") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (s && *s && ag_str_eq(s, "Hello, world!"));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_03, "ag_str_new() can create a Unicode string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
         AG_TEST_ASSERT (s && *s && ag_str_eq(s, "नमस्ते दुनिया!"));
 } AG_TEST_EXIT();
 
 
 /* This unit test checks whether ag_str_new_empty() behaves as expected. */
 AG_TEST_INIT(new_empty_01, "ag_str_new_empty() creates an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
         AG_TEST_ASSERT (s && !*s);
 } AG_TEST_EXIT();
 
@@ -41,21 +40,21 @@ AG_TEST_INIT(new_empty_01, "ag_str_new_empty() creates an empty string") {
 
 
 AG_TEST_INIT(new_fmt_01, "ag_str_new_fmt() can create an empty string") {
-        ag_str_auto *s = ag_str_new_fmt("%s", "");
+        AG_AUTO(ag_str) *s = ag_str_new_fmt("%s", "");
         AG_TEST_ASSERT (s && !*s);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_fmt_02, "ag_str_new_fmt() can create a formatted ASCII"
                 " string") {
-        ag_str_auto *s = ag_str_new_fmt("%d. %s", 111, "Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_fmt("%d. %s", 111, "Hello, world!");
         AG_TEST_ASSERT (s && *s && ag_str_eq(s, "111. Hello, world!"));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_fmt_03, "ag_str_new_fmt() can create a formatted Unicode"
                 " string") {
-        ag_str_auto *s = ag_str_new_fmt("%d. %s", -12, "नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s = ag_str_new_fmt("%d. %s", -12, "नमस्ते दुनिया!");
         AG_TEST_ASSERT (s && *s && ag_str_eq(s, "-12. नमस्ते दुनिया!"));
 } AG_TEST_EXIT();
 
@@ -67,29 +66,29 @@ AG_TEST_INIT(new_fmt_03, "ag_str_new_fmt() can create a formatted Unicode"
 
 
 AG_TEST_INIT(copy_01, "ag_str_copy() can create a copy of an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (s2 && !*s2);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(copy_02, "ag_str_copy() can create a copy of an ASCII string") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (s2 && *s2 && ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(copy_03, "ag_str_copy() can create a copy of a Unicode string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (s2 && *s2 && ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(copy_04, "ag_str_copy() increases the reference count by 1") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_refc(s) == 2);
 } AG_TEST_EXIT();
 
@@ -124,8 +123,8 @@ AG_TEST_INIT(release_03, "ag_str_release() disposes a single instance of a"
 
 AG_TEST_INIT(release_04, "ag_str_release() reduces the reference count by 1") {
         ag_str *s = ag_str_new("Hello, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
-        ag_str_auto *s3 = ag_str_copy(s2);
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s3 = ag_str_copy(s2);
         ag_str_release(&s);
         AG_TEST_ASSERT (!s && ag_str_refc(s2) == 2);
 } AG_TEST_EXIT();
@@ -139,72 +138,72 @@ AG_TEST_INIT(release_04, "ag_str_release() reduces the reference count by 1") {
 
 AG_TEST_INIT(cmp_01, "ag_str_cmp() returns AG_CMP_EQ when comparing two empty"
                 " strings") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new_empty();
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_EQ);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_02, "ag_str_cmp() return AG_CMP_LT when comparing an empty"
                 " string with another string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_LT);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_03, "ag_str_cmp() return AG_CMP_EQ when comparing two equal"
                 " ASCII strings") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_EQ);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_04, "ag_str_cmp() returns AG_CMP_LT when comparing an ASCII"
                 " string that is lexicographically less than another") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_LT);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_05, "ag_str_cmp() returns AG_CMP_GT when comparing an ASCII"
                 " string that is lexicographically greater than another") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_cmp(s2, s) == AG_CMP_GT);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_06, "ag_str_cmp() returns AG_CMP_GT when comparing an ASCII"
                 " string to an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_cmp(s2, s) == AG_CMP_GT);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_07, "ag_str_cmp() returns AG_CMP_EQ when comparing two equal"
                 " Unicode strings") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_EQ);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_08, "ag_str_cmp() returns AG_CMP_LT when comparing a Unicode"
                 " string that is lexicographically less than another") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (ag_str_cmp(s2, s) == AG_CMP_LT);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_09, "ag_str_cmp() returns AG_CMP_GT when comparing a Unicode"
                 " string that is lexicographically greater than another") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (ag_str_cmp(s, s2) == AG_CMP_GT);
 } AG_TEST_EXIT();
 
@@ -217,72 +216,72 @@ AG_TEST_INIT(cmp_09, "ag_str_cmp() returns AG_CMP_GT when comparing a Unicode"
 
 AG_TEST_INIT(lt_01, "ag_str_lt() returns false when comparing two empty"
                 " strings") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new_empty();
         AG_TEST_ASSERT (!ag_str_lt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_02, "ag_str_lt() returns true when comparing an empty string"
                 " with a non-empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_lt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_03, "ag_str_lt() returns false when comparing a string with an"
                 " empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_lt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_04, "ag_str_lt() returns true when comparing an ASCII string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_lt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_05, "ag_str_lt() returns false when comparing an ASCII string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (!ag_str_lt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_06, "ag_str_lt() returns false when comparing an ASCII string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_lt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_07, "ag_str_lt() returns true when comparing a Unicode string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (ag_str_lt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_08, "ag_str_lt() returns false when comparing a Unicode string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (!ag_str_lt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_09, "ag_str_lt() returns false when comparing a Unicode string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (!ag_str_lt(s, s2));
 } AG_TEST_EXIT();
 
@@ -295,72 +294,72 @@ AG_TEST_INIT(lt_09, "ag_str_lt() returns false when comparing a Unicode string"
 
 AG_TEST_INIT(eq_01, "ag_str_eq() returns true when comparing two empty"
                 " strings") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new_empty();
         AG_TEST_ASSERT (ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_02, "ag_str_eq() returns false when comparing an empty string"
                 " with a non-empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_03, "ag_str_eq() returns false when comparing a string with an"
                 " empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_eq(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_04, "ag_str_eq() returns false when comparing an ASCII string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_05, "ag_str_eq() returns true when comparing an ASCII string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_06, "ag_str_eq() returns false when comparing an ASCII string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_eq(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_07, "ag_str_eq() returns false when comparing a Unicode string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (!ag_str_eq(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_08, "ag_str_eq() returns true when comparing a Unicode string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_eq(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_09, "ag_str_eq() returns false when comparing a Unicode string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (!ag_str_eq(s, s2));
 } AG_TEST_EXIT();
 
@@ -373,72 +372,72 @@ AG_TEST_INIT(eq_09, "ag_str_eq() returns false when comparing a Unicode string"
 
 AG_TEST_INIT(gt_01, "ag_str_gt() returns false when comparing two empty"
                 " strings") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new_empty();
         AG_TEST_ASSERT (!ag_str_gt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_02, "ag_str_gt() returns false when comparing an empty string"
                 " with a non-empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_gt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_03, "ag_str_gt() returns true when comparing a string with an"
                 " empty string") {
-        ag_str_auto *s = ag_str_new_empty();
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_gt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_04, "ag_str_gt() returns false when comparing an ASCII string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_gt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_05, "ag_str_gt() returns false when comparing an ASCII string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (!ag_str_gt(s, s2));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_06, "ag_str_gt() returns true when comparing an ASCII string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("Goodbye, world!");
-        ag_str_auto *s2 = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Goodbye, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_gt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_07, "ag_str_gt() returns false when comparing a Unicode string"
                 " that is lexicographically less than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (!ag_str_gt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_08, "ag_str_gt() returns false when comparing a Unicode string"
                 " that is lexicographically equal to another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
         AG_TEST_ASSERT (!ag_str_gt(s2, s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_09, "ag_str_gt() returns true when comparing a Unicode string"
                 " that is lexicographically greater than another string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_new("अभिषेक बहुत बुरा गाता है।");
         AG_TEST_ASSERT (ag_str_gt(s, s2));
 } AG_TEST_EXIT();
 
@@ -450,19 +449,19 @@ AG_TEST_INIT(gt_09, "ag_str_gt() returns true when comparing a Unicode string"
 
 
 AG_TEST_INIT(empty_01, "ag_str_empty() returns true for an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
         AG_TEST_ASSERT (ag_str_empty(s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(empty_02, "ag_str_empty() returns false for an ASCII string") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_empty(s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(empty_03, "ag_str_empty() returns false for a Unicode string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
         AG_TEST_ASSERT (!ag_str_empty(s));
 } AG_TEST_EXIT();
 
@@ -476,19 +475,19 @@ AG_TEST_INIT(empty_03, "ag_str_empty() returns false for a Unicode string") {
 
 
 AG_TEST_INIT(len_01, "ag_str_len() returns 0 for an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
         AG_TEST_ASSERT (!ag_str_len(s));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(len_02, "ag_str_len() returns the length of an ASCII string") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_len(s) == 13);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(len_03, "ag_str_len() returns the length of a Unicode string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
         AG_TEST_ASSERT (ag_str_len(s) == 14);
 } AG_TEST_EXIT();
 
@@ -500,19 +499,19 @@ AG_TEST_INIT(len_03, "ag_str_len() returns the length of a Unicode string") {
 
 
 AG_TEST_INIT(sz_01, "ag_str_sz() returns 1 for an empty string") {
-        ag_str_auto *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
         AG_TEST_ASSERT (ag_str_sz(s) == 1);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(sz_02, "ag_str_sz() determines the size of an ASCII string") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_sz(s) == 14);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(sz_03, "ag_str_sz() determines the size of Unicode string") {
-        ag_str_auto *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
         AG_TEST_ASSERT (ag_str_sz(s) == 39);
 } AG_TEST_EXIT();
 
@@ -524,24 +523,24 @@ AG_TEST_INIT(sz_03, "ag_str_sz() determines the size of Unicode string") {
 
 
 AG_TEST_INIT(refc_01, "ag_str_refc() returns 1 for a single instance") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (ag_str_refc(s) == 1);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(refc_02, "ag_str_refc() detects incremented reference counts") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
-        ag_str_auto *s2 = ag_str_copy(s);
-        ag_str_auto *s3 = ag_str_copy(s2);
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s3 = ag_str_copy(s2);
         AG_TEST_ASSERT (ag_str_refc(s) == 3);
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(refc_03, "ag_str_refc() detects decremented reference counts") {
-        ag_str_auto *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
         ag_str *s2 = ag_str_copy(s);
         ag_str_release(&s2);
-        ag_str_auto *s3 = ag_str_copy(s);
+        AG_AUTO(ag_str) *s3 = ag_str_copy(s);
         AG_TEST_ASSERT (ag_str_refc(s) == 2);
 } AG_TEST_EXIT();
 
@@ -554,54 +553,57 @@ AG_TEST_INIT(refc_03, "ag_str_refc() detects decremented reference counts") {
 
 AG_TEST_INIT(has_01, "ag_str_has() returns true when both needle and haystack"
                 " are empty strings") {
-        ag_str_auto *h = ag_str_new_empty(), *n = ag_str_new_empty();
+        AG_AUTO(ag_str) *h = ag_str_new_empty(), *n = ag_str_new_empty();
         AG_TEST_ASSERT (ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_02, "ag_str_has() returns false when haystack is empty and"
                 " needle is not") {
-        ag_str_auto *h = ag_str_new_empty(), *n = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *h = ag_str_new_empty(),
+                        *n = ag_str_new("Hello, world!");
         AG_TEST_ASSERT (!ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_03, "ag_str_has() returns false when haystack is not empty and"
                 " needle is") {
-        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new_empty();
+        AG_AUTO(ag_str) *h = ag_str_new("Hello, world!"), 
+                        *n = ag_str_new_empty();
         AG_TEST_ASSERT (!ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_04, "ag_str_has() returns true if it finds an ASCII needle in"
                 " an ASCII haystack") {
-        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new("o, wo");
+        AG_AUTO(ag_str) *h = ag_str_new("Hello, world!"),
+                        *n = ag_str_new("o, wo");
         AG_TEST_ASSERT (ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_05, "ag_str_has() returns false if it doesn't find an ASCII"
                 " needle in an ASCII haystack") {
-        ag_str_auto *h = ag_str_new("Hello, world!"), *n = ag_str_new("o, w!");
+        AG_AUTO(ag_str) *h = ag_str_new("Hello, world!"), 
+                        *n = ag_str_new("o, w!");
         AG_TEST_ASSERT (!ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_06, "ag_str_has() returns true if it finds a Unicode needle in"
                 " a Unicode haystack") {
-        ag_str_auto *h = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *n = ag_str_new("ते दुनि");
+        AG_AUTO(ag_str) *h = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *n = ag_str_new("ते दुनि");
         AG_TEST_ASSERT (ag_str_has(h, n));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(has_07, "ag_str_has() returns false if it doesn't find a Unicode"
                 " needle in a Unicode haystack") {
-        ag_str_auto *h = ag_str_new("नमस्ते दुनिया!");
-        ag_str_auto *n = ag_str_new("तेदुनि");
+        AG_AUTO(ag_str) *h = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *n = ag_str_new("तेदुनि");
         AG_TEST_ASSERT (!ag_str_has(h, n));
 } AG_TEST_EXIT();
-
 
 
 extern ag_test_suite *test_suite_str(void)
