@@ -101,41 +101,6 @@ static inline struct node *node_free(struct node *ctx)
 
 
 /*
- * str_new_fmt(): create new dynamic formatted string.
- *
- * @fmt: formatted static source string.
- * @...: format arguments.
- *
- * Return: new dynamic formatted string.
- */
-static char *str_new_fmt(const char *fmt, ...)
-{
-        va_list args;
-
-        va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-        va_end(args);
-
-        va_start(args, fmt);
-        (void) vsprintf(bfr, fmt, args);
-        va_end(args);
-
-        return bfr;
-}
-
-
-/*
- * str_free(): release dynamic string.
- *
- * @ctx: contextual string.
- */
-static inline void str_free(char *ctx)
-{
-        ag_mblock_release((ag_mblock **)&ctx);
-}
-
-
-/*
  * struct ag_test_harness: internal structure of `ag_test_harness`.
  *
  * @head: head of test suite list.
@@ -291,7 +256,8 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
         AG_ASSERT (ctx);
         AG_ASSERT (log);
 
-        struct node *n = ctx->head;
+        register struct node *n = ctx->head;
+
         while (AG_LIKELY (n)) {
                 ag_test_suite_log(n->ts, log);
                 n = n->nxt;
@@ -302,10 +268,10 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
                         + ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
         size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
 
-        char *s = str_new_fmt("%d test suite(s), %d test(s), %d passed,"
-                       " %d skipped, %d failed.", ag_test_harness_len(ctx),
-                       pass + skip + fail, pass, skip, fail);
+        ag_str_auto *s = ag_str_new_fmt("%d test suite(s), %d test(s),"
+                        " %d passed, %d skipped, %d failed.",
+                        ag_test_harness_len(ctx), pass + skip + fail, 
+                        pass, skip, fail);
         fprintf(log, "\n%s\n", s);
-        str_free(s);
 }
 
