@@ -298,7 +298,8 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
         }
 
         size_t pass = ag_test_harness_poll(ctx, AG_TEST_STATUS_OK);
-        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP);
+        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP)
+                        + ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
         size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
 
         char *s = str_new_fmt("%d test suite(s), %d test(s), %d passed,"

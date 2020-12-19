@@ -89,7 +89,8 @@ static inline void log_footer(const ag_test_suite *ctx, FILE *log)
         fprintf(log, "\n\n%lu test(s), %lu passed, %lu skipped, %lu failed.\n",
                         ag_test_suite_len(ctx),
                         ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
-                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP),
+                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP)
+                        + ag_test_suite_poll(ctx, AG_TEST_STATUS_WAIT),
                         ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
 }
 
@@ -170,8 +171,8 @@ extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
         AG_ASSERT (ctx);
 
         register size_t tot = 0;
-        
-        struct node *n = ctx->head;
+        register struct node *n = ctx->head;
+
         while (AG_LIKELY (n)) {
                 if ((n->status) == status)
                         tot++;
