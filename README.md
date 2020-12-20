@@ -21,4 +21,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
 
-[![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent)
+
+## Contents
+- [License](#license)
+- [Building](#building}
+
+
+## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent)
