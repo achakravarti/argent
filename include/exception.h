@@ -86,9 +86,13 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 
 
 /*
- * The `AG_ASSERT()` macro asserts whether a given predicate is true. This macro
+ * The AG_ASSERT() macro asserts whether a given predicate is true. This macro
  * is avaiable only in debug builds, and provides a way for both the Argent
  * Library and client code to assert conditions that should *never* be false.
+ *
+ * AG_ASSERT_PTR() is similar to AG_ASSERT(), except that it is specifically
+ * used to assert whether a pointer is valid. AG_ASSERT_PTR() provides a more
+ * focused failure message as compared to the generic one given by AG_ASSERT().
  */
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do {                                             \
@@ -100,8 +104,21 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                         abort();                                             \
                 }                                                            \
         } while (0)
+
+        #define AG_ASSERT_PTR(p) do {                                        \
+                if (AG_UNLIKELY (!(p))) {                                    \
+                        printf("[!] assertion failed: %s must not be null"   \
+                               " [%s(), %s:%d]\n", #p, __func__, __FILE__,   \
+                               __LINE__);                                    \
+                        ag_log_debug("assertion failed: %s must not be null" \
+                                     " [%s(), %s:%d\\n", #p, __func__,       \
+                                     __FILE__, __LINE__);                    \
+                        abort();                                             \
+                }                                                            \
+        } while (0)
 #else
 #       define AG_ASSERT(p)
+#       define AG_ASSERT_PTR(p)
 #endif
 
 /*

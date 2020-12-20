@@ -135,10 +135,7 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_harness *hnd = (ag_test_harness *)ctx;
-        ag_mblock_retain(hnd);
-
-        return hnd;
+        return ag_mblock_copy(ctx);
 }
 
 

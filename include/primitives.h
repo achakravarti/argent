@@ -6,6 +6,9 @@
         extern "C" {
 #endif
 
+#include <stdbool.h>
+#include <stddef.h>
+
 
 #if (defined __GNUC__ || defined __clang__)
 #       define AG_PURE __attribute__((pure))

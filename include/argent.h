@@ -28,8 +28,12 @@
 #include "./log.h"
 #include "./erno.h"
 #include "./exception.h"
-#include "./mblock.h"
+#include "./hash.h"
 #include "./str.h"
+#include "./mblock.h"
+#include "./typeid.h"
+#include "./uuid.h"
+#include "./obj.h"
 #include "./test.h"
 #include "./manager.h"
 

@@ -28,14 +28,8 @@
 #include <stdarg.h>
 
 
-/*
- * The following macros are helpers for the assertion checks. We use these
- * macros to improve readability when debugging. is_string_valid() checks
- * whether a given string is not a null pointer, and is_string_not_empty()
- * checks whether a string is not null and not empty.
- */
+/* is_string_not_empty() checks whether a string is not null and not empty. */
 #ifndef NDEBUG
-#       define is_string_valid(s) (s)
 #       define is_string_not_empty(s) (s && *s)
 #endif
 
@@ -54,7 +48,7 @@ extern inline bool ag_str_empty(const ag_str *);
  */
 extern ag_str *ag_str_new(const char *src)
 {
-        AG_ASSERT (is_string_valid(src));
+        AG_ASSERT_PTR (src);
 
         size_t sz = strlen(src);
         char *s = ag_mblock_new(sz + 1);
@@ -93,11 +87,9 @@ extern ag_str *ag_str_new_fmt(const char *fmt, ...)
 /* ag_str_copy() creates a shallow copy of a dynamic string. */
 extern ag_str *ag_str_copy(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
 
-        ag_str *cp = (ag_str *)ctx;
-        ag_mblock_retain(cp);
-        return cp;
+        return ag_mblock_copy(ctx);
 }
 
 
@@ -127,8 +119,8 @@ extern void ag_str_release(ag_str **ctx)
  */
 extern enum ag_cmp ag_str_cmp(const ag_str *ctx,  const char *cmp)
 {
-        AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_valid(cmp));
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
 
         if (!*ctx && *cmp)
                 return AG_CMP_LT;
@@ -156,8 +148,8 @@ extern enum ag_cmp ag_str_cmp(const ag_str *ctx,  const char *cmp)
 /* ag_str_has() checks whether a string contains a particular substring. */
 extern bool ag_str_has(const ag_str *ctx, const char *tgt)
 {
-        AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_valid(tgt));
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (tgt);
 
         if (AG_UNLIKELY (!*tgt && *ctx))
                 return false;
@@ -172,7 +164,7 @@ extern bool ag_str_has(const ag_str *ctx, const char *tgt)
  */
 extern size_t ag_str_len(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
 
         register size_t i = 0, len = 0;
 
@@ -194,7 +186,7 @@ extern size_t ag_str_len(const ag_str *ctx)
  */
 extern size_t ag_str_sz(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
 
         return ag_mblock_sz(ctx);
 }
@@ -206,7 +198,7 @@ extern size_t ag_str_sz(const ag_str *ctx)
  */
 extern size_t ag_str_refc(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
 
         return ag_mblock_refc(ctx);
 }
@@ -222,9 +214,9 @@ extern size_t ag_str_refc(const ag_str *ctx)
  */
 extern ag_str *ag_str_lower(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
 
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
@@ -244,9 +236,9 @@ extern ag_str *ag_str_lower(const ag_str *ctx)
  */
 extern ag_str *ag_str_upper(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
         
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
@@ -271,9 +263,9 @@ extern ag_str *ag_str_upper(const ag_str *ctx)
  */
 extern ag_str *ag_str_proper(const ag_str *ctx)
 {
-        AG_ASSERT (is_string_valid(ctx));
+        AG_ASSERT_PTR (ctx);
         
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {
@@ -293,8 +285,8 @@ extern ag_str *ag_str_proper(const ag_str *ctx)
  */
 extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 {
-        AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_valid(pvt));
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (pvt);
 
         if (AG_UNLIKELY (!*pvt))
                 return ag_str_copy(ctx);
@@ -321,8 +313,8 @@ extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
  */
 extern ag_str *ag_str_split_right(const ag_str *ctx, const char *pvt)
 {
-        AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_valid(pvt));
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (pvt);
 
         if (AG_UNLIKELY (!*pvt))
                 return ag_str_copy(ctx);
