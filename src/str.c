@@ -287,22 +287,29 @@ extern ag_str *ag_str_proper(const ag_str *ctx)
 
 /*
  * ag_str_split() splits a string around a pivot, returning the left side of the
- * pivot. In case the pivot isn't found, then an empty string is returned. We
- * use the reentrant version of strtok() in order to be thread-safe. The caveat
- * is that since strtok_r() doesn't seem to handle Unicode characters well.
- * TODO: make ag_str_split() Unicode-safe.
+ * pivot. In case the pivot isn't found, then an empty string is returned. In
+ * the unlikely case that an empty string is provided for a pivot, then we
+ * return a copy of the original string.
  */
 extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 {
         AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_not_empty(pvt));
+        AG_ASSERT (is_string_valid(pvt));
 
-        if (AG_UNLIKELY (!(*ctx && strstr(ctx, pvt))))
+        if (AG_UNLIKELY (!*pvt))
+                return ag_str_copy(ctx);
+
+        char *find;
+
+        if (AG_UNLIKELY (!(*ctx && (find = strstr(ctx, pvt)))))
                 return ag_str_new_empty();
 
-        char *save;
-        AG_AUTO(ag_str) *s = ag_str_new(ctx);
-        return ag_str_new(strtok_r(s, pvt, &save));
+        size_t sz = find - ctx;
+        ag_str *lhs = ag_mblock_new(sz + 1);
+        strncpy(lhs, ctx, sz);
+        lhs[sz] = '\0';
+
+        return lhs;
 }
 
 
