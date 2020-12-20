@@ -661,6 +661,129 @@ AG_TEST_INIT(proper_02, "ag_str_proper() converts an ASCII string to proper"
 } AG_TEST_EXIT();
 
 
+/*
+ * The following test cases check whether ag_str_split() behaves as expected
+ * with different combinations of empty, ASCII and Unicode strings.
+ */
+
+
+AG_TEST_INIT(split_01, "ag_str_split() returns an empty string if applied on an"
+                " empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, " wo");
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_02, "ag_str_split() returns the original string if the pivot"
+                " is an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, "");
+        AG_TEST_ASSERT (ag_str_eq(s, s2));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(split_03, "ag_str_split() returns an empty string if both the"
+                " string and the pivot are empty") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, "");
+        AG_TEST_ASSERT (ag_str_eq(s2, ""));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_04, "ag_str_split() returns an empty string if the pivot is"
+                " not found") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, "xyz");
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_05, "ag_str_split() returns an empty string if both the"
+                " string and pivot are the same") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, s);
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_06, "ag_str_split() returns the left side of the pivot if it"
+                " exists in an ASCII string") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, " wo");
+        AG_TEST_ASSERT (ag_str_eq(s2, "Hello,"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_07, "ag_str_split() returns the left side of the pivot if it"
+                " exists in a Unicode string") {
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, "या");
+        AG_TEST_ASSERT (ag_str_eq(s2, "नमस्ते दुनि"));
+} AG_TEST_EXIT();
+
+
+/*
+ * The following test cases check whether ag_str_split_right() behaves as
+ * expected with different combinations of empty, ASCII and Unicode strings.
+ */
+
+
+AG_TEST_INIT(split_right_01, "ag_str_split_right() returns an empty string if"
+                " applied on an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, " wo");
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_02, "ag_str_split_right() returns the original string"
+                " if the pivot is an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, "");
+        AG_TEST_ASSERT (ag_str_eq(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_03, "ag_str_split_right() returns an empty string if"
+                " both the string and the pivot are empty") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_split(s, "");
+        AG_TEST_ASSERT (ag_str_eq(s2, ""));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_04, "ag_str_split_right() returns an empty string if"
+                " the pivot is not found") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, "xyz");
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_05, "ag_str_split_right() returns an empty string if"
+                " both the string and pivot are the same") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, s);
+        AG_TEST_ASSERT (ag_str_empty(s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_06, "ag_str_split_right() returns the right side of"
+                " the pivot if it exists in an ASCII string") {
+        AG_AUTO(ag_str) *s = ag_str_new("Hello, world!");
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, " w");
+        AG_TEST_ASSERT (ag_str_eq(s2, "orld!"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(split_right_07, "ag_str_split() returns the right side of the"
+                " pivot if it exists in a Unicode string") {
+        AG_AUTO(ag_str) *s = ag_str_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_str) *s2 = ag_str_split_right(s, "स्ते");
+        AG_TEST_ASSERT (ag_str_eq(s2, " दुनिया!"));
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_str(void)
 {
         ag_test *test[] = {
@@ -674,7 +797,10 @@ extern ag_test_suite *test_suite_str(void)
                 empty_02, empty_03, len_01, len_02, len_03, sz_01, sz_02, sz_03,
                 refc_01, refc_02, refc_03, has_01, has_02, has_03, has_04,
                 has_05, has_06, has_07, lower_01, lower_02, upper_01, upper_02,
-                proper_01, proper_02,
+                proper_01, proper_02, split_01, split_02, split_03, split_04,
+                split_05, split_06, split_07, split_right_01, split_right_02,
+                split_right_03, split_right_04, split_right_05, split_right_06,
+                split_right_07,
         };
 
         const char *desc[] = {
@@ -694,7 +820,11 @@ extern ag_test_suite *test_suite_str(void)
                 refc_01_desc, refc_02_desc, refc_03_desc, has_01_desc,
                 has_02_desc, has_03_desc, has_04_desc, has_05_desc, has_06_desc,
                 has_07_desc, lower_01_desc, lower_02_desc, upper_01_desc,
-                upper_02_desc, proper_01_desc, proper_02_desc,
+                upper_02_desc, proper_01_desc, proper_02_desc, split_01_desc,
+                split_02_desc, split_03_desc, split_04_desc, split_05_desc,
+                split_06_desc, split_07_desc, split_right_01_desc,
+                split_right_02_desc, split_right_03_desc, split_right_04_desc,
+                split_right_05_desc, split_right_06_desc, split_right_07_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
