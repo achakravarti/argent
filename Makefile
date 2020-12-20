@@ -26,7 +26,7 @@ SRC_LIB = $(sort $(shell find $(DIR_LIB)/ -type f -name '*.c'))
 OBJ_LIB = $(patsubst $(DIR_LIB)/%.c, $(DIR_BLD)/%.o, $(SRC_LIB))
 BIN_LIB = bld/libargent.so
 
-CC = ccache gcc
+CCC = ccache $(CC)
 CFLAGS = -fPIC -g -Wall -Wextra -I $(shell pg_config --includedir)
 LDFLAGS = -shared -L $(shell pg_config --libdir) -lpq
 
@@ -52,7 +52,7 @@ $(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
 	$(LINK.c) $^ -o $@
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_LIB) | $(DIR_BLD)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CCC) $(CFLAGS) $^ -o $@
 
 $(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
 	$(COMPILE.c) $^ -o $@
