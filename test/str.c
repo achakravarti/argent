@@ -470,7 +470,9 @@ AG_TEST_INIT(empty_03, "ag_str_empty() returns false for a Unicode string") {
  * The following unit tests check whether ag_str_len() returns the correct
  * lexicographical length for empty, ASCII and Unicode strings. The len_03 tests
  * seems to indicate that there may be a possible bug when considering combined
- * characters as in the Devenagari script. TODO: need to research more on this.
+ * characters as in the Devenagari script.
+ *
+ * TODO: Research more on Devanagari string lengths.
  */
 
 
@@ -606,6 +608,59 @@ AG_TEST_INIT(has_07, "ag_str_has() returns false if it doesn't find a Unicode"
 } AG_TEST_EXIT();
 
 
+/*
+ * The following test cases check whether the case transformation functions of
+ * the string interface perform as expected. Note that these test cases are only
+ * for empty and ASCII strings since the case transformation functions are not
+ * yet Unicode friendly.
+ * 
+ * TODO: Add Unicode tests for string case transformation functions.
+ */
+
+
+AG_TEST_INIT(lower_01, "ag_str_lower() has no effect on an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_lower(s);
+        AG_TEST_ASSERT (ag_str_eq(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(lower_02, "ag_str_lower() converts an ASCII string to lowercase") {
+        AG_AUTO(ag_str) *s = ag_str_new("HElLo, WOrlD!");
+        AG_AUTO(ag_str) *s2 = ag_str_lower(s);
+        AG_TEST_ASSERT (ag_str_eq(s2, "hello, world!"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(upper_01, "ag_str_upper() has no effect on an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_upper(s);
+        AG_TEST_ASSERT (ag_str_eq(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(upper_02, "ag_str_upper() converts an ASCII string to uppercase") {
+        AG_AUTO(ag_str) *s = ag_str_new("heLlO, woRLd!");
+        AG_AUTO(ag_str) *s2 = ag_str_upper(s);
+        AG_TEST_ASSERT (ag_str_eq(s2, "HELLO, WORLD!"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(proper_01, "ag_str_proper() has no effect on an empty string") {
+        AG_AUTO(ag_str) *s = ag_str_new_empty();
+        AG_AUTO(ag_str) *s2 = ag_str_proper(s);
+        AG_TEST_ASSERT (ag_str_eq(s, s2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(proper_02, "ag_str_proper() converts an ASCII string to proper"
+                " case") {
+        AG_AUTO(ag_str) *s = ag_str_new("tHIS isN'T.iN pRopER cASe.");
+        AG_AUTO(ag_str) *s2 = ag_str_proper(s);
+        AG_TEST_ASSERT (ag_str_eq(s2, "This Isn't.In Proper Case."));
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_str(void)
 {
         ag_test *test[] = {
@@ -618,7 +673,8 @@ extern ag_test_suite *test_suite_str(void)
                 gt_03, gt_04, gt_05, gt_06, gt_07, gt_08, gt_09, empty_01,
                 empty_02, empty_03, len_01, len_02, len_03, sz_01, sz_02, sz_03,
                 refc_01, refc_02, refc_03, has_01, has_02, has_03, has_04,
-                has_05, has_06, has_07,
+                has_05, has_06, has_07, lower_01, lower_02, upper_01, upper_02,
+                proper_01, proper_02,
         };
 
         const char *desc[] = {
@@ -637,7 +693,8 @@ extern ag_test_suite *test_suite_str(void)
                 len_02_desc, len_03_desc, sz_01_desc, sz_02_desc, sz_03_desc,
                 refc_01_desc, refc_02_desc, refc_03_desc, has_01_desc,
                 has_02_desc, has_03_desc, has_04_desc, has_05_desc, has_06_desc,
-                has_07_desc,
+                has_07_desc, lower_01_desc, lower_02_desc, upper_01_desc,
+                upper_02_desc, proper_01_desc, proper_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_str interface");
