@@ -100,11 +100,11 @@
  *      The ag_threadlocal macro hints that a given variable has thread local
  *      storage [DM:2.6].
  */
-#if (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L)
+#if (defined __GNUC__ || defined __clang__)
+#   define ag_threadlocal __thread
+#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L)
 #   include <threads.h>
 #   define ag_threadlocal thread_local
-#elif (defined __GNUC__ || defined __clang__)
-#   define ag_threadlocal __thread
 #else
 #    define ag_threadlocal
 #    warning "[!] ag_threadlocal not supported by current compiler"
