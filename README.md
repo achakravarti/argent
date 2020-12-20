@@ -24,7 +24,7 @@ You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
 
 ## Contents
 - [License](#license)
-- [Building](#building}
+- [Building](#building)
 
 
 ## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent)
