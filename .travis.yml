@@ -5,14 +5,12 @@ dist: bionic
 language: c
 
 compiler:
-  - musl-gcc
+  - gcc
 
 before_install:
   - sudo apt update
-  - sudo apt install libgc-dev
-  - sudo apt install musl-dev
-  - sudo apt install musl-tools
+  - sudo apt install valgrind
 
 script:
-  - make test
+  - make check
 
