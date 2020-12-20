@@ -6,6 +6,10 @@ language: c
 compiler:
   - gcc
 
+before_install:
+  - sudo apt update
+  - sudo apt upgrade
+
 script:
   - make test
 
