@@ -52,7 +52,7 @@
 #elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
                 && !defined __STDC_NO_TRHEADS__)
 #   include <threads.h>
-#   define ag_threadlocal thread_local
+#   define AG_THREADLOCAL thread_local
 #else
 #    define AG_THREADLOCAL
 #    warning "[!] AG_THREADLOCAL not supported by current compiler"
