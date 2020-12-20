@@ -4,11 +4,13 @@ dist: bionic
 language: c
 
 compiler:
-  - gcc
+  - musl-gcc
 
 before_install:
   - sudo apt update
-  - sudo apt upgrade
+  - sudo apt install libgc-dev
+  - sudo apt install musl-dev
+  - sudo apt install musl-tools
 
 script:
   - make test
