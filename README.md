@@ -1,13 +1,12 @@
 # Argent Library
 > Infrastructure for building web services
 
-## License
-[![GitHub license](https://img.shields.io/github/license/achakravarti/argent.svg)](https://github.com/achakravarti/argent/blob/master/LICENSE)
+## License [![GitHub license](https://img.shields.io/github/license/achakravarti/argent.svg)](https://github.com/achakravarti/argent/blob/master/LICENSE)
 
-Argent - infrastructure for building web services
-Copyright (C) 2020 Abhishek Chakravarti
+Copyright (C) 2020 Abhishek Chakravarti  
+<abhishek@taranjali.org>
  
-This program is free software: you can redistribute it and/or modify it under
+This Library is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version.
