@@ -30,6 +30,7 @@
 #include "./exception.h"
 #include "./mblock.h"
 #include "./str.h"
+#include "./obj.h"
 #include "./test.h"
 #include "./manager.h"
 
