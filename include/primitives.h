@@ -47,12 +47,12 @@
 #endif
 
 
-#if (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
+#if (defined __GNUC__ || defined __clang__)
+#   define AG_THREADLOCAL __thread
+#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
                 && !defined __STDC_NO_TRHEADS__)
 #   include <threads.h>
 #   define ag_threadlocal thread_local
-#elif (defined __GNUC__ || defined __clang__)
-#   define AG_THREADLOCAL __thread
 #else
 #    define AG_THREADLOCAL
 #    warning "[!] AG_THREADLOCAL not supported by current compiler"
