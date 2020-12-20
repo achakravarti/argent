@@ -316,22 +316,29 @@ extern ag_str *ag_str_split(const ag_str *ctx, const char *pvt)
 /*
  * ag_str_split_right() splits a string around a pivot and returns the substring
  * on the right side of the pivot. As in the case of ag_str_split(), in case the
- * pivot doesn't exist then an empty string is returned. Again, since we're
- * relying on strtok_r(), this function isn't Unicode-safe. 
- *
- * TODO: make ag_str_split_right() Unicode-safe.
+ * pivot doesn't exist then an empty string is returned, and if the pivot is an
+ * empty string then a copy of the original string is returned.
  */
 extern ag_str *ag_str_split_right(const ag_str *ctx, const char *pvt)
 {
         AG_ASSERT (is_string_valid(ctx));
-        AG_ASSERT (is_string_not_empty(pvt));
+        AG_ASSERT (is_string_valid(pvt));
 
-        if (AG_UNLIKELY (!(*ctx && strstr(ctx, pvt))))
+        if (AG_UNLIKELY (!*pvt))
+                return ag_str_copy(ctx);
+
+        char *find;
+
+        if (AG_UNLIKELY (!(*ctx && (find = strstr(ctx, pvt)))))
                 return ag_str_new_empty();
 
-        char *save;
-        AG_AUTO(ag_str) *s = ag_str_new(ctx);
-        (void)strtok_r(s, pvt, &save);
-        return ag_str_new(save);
+        size_t off = strlen(pvt);
+        size_t sz = strlen(find) - off;
+
+        ag_str *rhs = ag_mblock_new(sz + 1);
+        strncpy(rhs, find + strlen(pvt), sz);
+        rhs[sz] = '\0';
+
+        return rhs;
 }
 
