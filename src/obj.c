@@ -8,6 +8,12 @@ struct ag_obj {
 };
 
 
+#ifndef NDEBUG
+#       define is_object_ptr_valid(o) (o)
+#       define is_object_ptr_ptr_valid(o) (o && *o)
+#       define is_object_payload_ptr_valid(p) (p)
+#endif
+
 static inline const struct ag_obj_vtable *vtable_get(const ag_obj *ctx)
 {
         return ag_obj_registry_get(ctx->ob_typeid);
@@ -22,6 +28,8 @@ extern inline bool ag_obj_empty(const ag_obj *);
 
 extern ag_obj *ag_obj_new(size_t typeid, ag_mblock *payload)
 {
+        AG_ASSERT (is_object_payload_ptr_valid(payload));
+
         ag_obj *ctx = ag_mblock_new(sizeof *ctx);
         
         ctx->ob_objid = 1;
@@ -34,6 +42,8 @@ extern ag_obj *ag_obj_new(size_t typeid, ag_mblock *payload)
 
 extern ag_obj *ag_obj_copy(const ag_obj *ctx)
 {
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         ag_obj *cp = (ag_obj *)ctx;
         ag_mblock_retain(cp);
         
@@ -43,8 +53,7 @@ extern ag_obj *ag_obj_copy(const ag_obj *ctx)
 
 extern ag_obj *ag_obj_clone(const ag_obj *ctx)
 {
-        //return ag_mblock_copy(ctx);
-        //return vtable_get(ctx)->vt_clone(ctx);
+        AG_ASSERT (is_object_ptr_valid(ctx));
 
         return ag_obj_new(ctx->ob_typeid,
                           vtable_get(ctx)->vt_clone(ctx->ob_payload));
@@ -64,59 +73,73 @@ extern void ag_obj_release(ag_obj **ctx)
 
 extern enum ag_cmp ag_obj_cmp(const ag_obj *ctx, const ag_obj *cmp)
 {
-        //return ag_mblock_cmp(ctx, cmp);
+        AG_ASSERT (is_object_ptr_valid(ctx));
+        AG_ASSERT (is_object_ptr_valid(cmp));
+        
         return vtable_get(ctx)->vt_cmp(ctx, cmp);
 }
 
 
 extern bool ag_obj_valid(const ag_obj *ctx)
 {
-        //return ctx;
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         return vtable_get(ctx)->vt_valid(ctx);
 }
 
 
 extern size_t ag_obj_sz(const ag_obj *ctx)
 {
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         return ag_mblock_sz(ctx) + ag_mblock_sz(ctx->ob_payload);
 }
 
 
 extern size_t ag_obj_refc(const ag_obj *ctx)
 {
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         return ag_mblock_refc(ctx);
 }
 
 
 extern size_t ag_obj_len(const ag_obj *ctx)
 {
-        //return 1;
+        AG_ASSERT (is_object_ptr_valid(ctx));
+        
         return vtable_get(ctx)->vt_len(ctx);
 }
 
 
 extern size_t ag_obj_hash(const ag_obj *ctx)
 {
-        //return 1;
+        AG_ASSERT (is_object_ptr_valid(ctx));
+        
         return vtable_get(ctx)->vt_hash(ctx);
 }
 
 
 extern ag_str *ag_obj_str(const ag_obj *ctx)
 {
-        //return ag_mblock_str(ctx);
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         return vtable_get(ctx)->vt_str(ctx);
 }
 
 
 extern const ag_mblock *ag_obj_payload(const ag_obj *ctx)
 {
+        AG_ASSERT (is_object_ptr_valid(ctx));
+
         return ctx->ob_payload;
 }
 
 
 extern ag_mblock *ag_obj_payload_mutable(ag_obj **ctx)
 {
+        AG_ASSERT (is_object_ptr_ptr_valid(ctx));
+
         ag_obj *o = *ctx;
         ag_mblock *m = o;
 
