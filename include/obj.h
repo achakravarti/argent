@@ -44,13 +44,13 @@ typedef ag_str *(ag_obj_str_virt)(const ag_obj *);
 
 
 struct ag_obj_vtable {
-        ag_mblock       *(*clone)(const ag_mblock *);
-        void             (*dispose)(ag_mblock *);
-        enum ag_cmp      (*cmp)(const ag_obj *, const ag_obj *);
-        bool             (*valid)(const ag_obj *);
-        size_t           (*len)(const ag_obj *);
-        size_t           (*hash)(const ag_obj *);
-        ag_str          *(*str)(const ag_obj *);
+        ag_obj_clone_virt   *vt_clone;   /* Clone callback              */
+        ag_obj_release_virt *vt_release; /* Release callback            */
+        ag_obj_cmp_virt     *vt_cmp;     /* Comparison callback         */
+        ag_obj_valid_virt   *vt_valid;   /* Validation callback         */
+        ag_obj_len_virt     *vt_len;     /* Length computation callback */
+        ag_obj_hash_virt    *vt_hash;    /* Hash computation callback   */
+        ag_obj_str_virt     *vt_str;     /* String generation callback  */
 };
 
 
