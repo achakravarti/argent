@@ -105,7 +105,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                 }                                                            \
         } while (0)
 
-        #define AG_ASSER_PTR(p) do {                                         \
+        #define AG_ASSERT_PTR(p) do {                                        \
                 if (AG_UNLIKELY (!(p))) {                                    \
                         printf("[!] assertion failed: %s must not be null"   \
                                " [%s(), %s:%d]\n", #p, __func__, __FILE__,   \
@@ -115,7 +115,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                                      __FILE__, __LINE__);                    \
                         abort();                                             \
                 }                                                            \
-        }
+        } while (0)
 #else
 #       define AG_ASSERT(p)
 #       define AG_ASSERT_PTR(p)
