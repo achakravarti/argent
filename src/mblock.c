@@ -132,17 +132,6 @@ extern ag_mblock *ag_mblock_clone_align(const ag_mblock *ctx, size_t align)
 }
 
 
-extern void ag_mblock_dispose(ag_mblock **ctx)
-{
-        ag_mblock *hnd;
-
-        if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                free(meta_head(hnd));
-                *ctx = NULL;
-        }
-
-}
-
 extern void ag_mblock_release(ag_mblock **ctx)
 {
         size_t *hnd;
@@ -212,7 +201,7 @@ extern void ag_mblock_resize(ag_mblock **ctx, size_t sz)
         ag_mblock *cp = ag_mblock_new(sz);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_dispose(ctx);
+        ag_mblock_release(ctx);
         *ctx = cp;
 }
 
@@ -229,7 +218,7 @@ extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
         ag_mblock *cp = ag_mblock_new_align(sz, align);
         memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
         
-        ag_mblock_dispose(ctx);
+        ag_mblock_release(ctx);
         *ctx = cp;
 }
 
