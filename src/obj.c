@@ -38,10 +38,7 @@ extern ag_obj *ag_obj_copy(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        ag_obj *cp = (ag_obj *)ctx;
-        ag_mblock_retain(cp);
-        
-        return cp;
+        return ag_mblock_copy(ctx);
 }
 
 

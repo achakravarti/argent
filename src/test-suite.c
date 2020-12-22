@@ -124,10 +124,7 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
-        ag_test_suite *hnd = (ag_test_suite *)ctx;
-        ag_mblock_retain(hnd);
-
-        return hnd;
+        return ag_mblock_copy(ctx);
 }
 
 
