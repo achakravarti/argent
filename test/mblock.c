@@ -261,8 +261,7 @@ AG_TEST_INIT(clone_align_04, "ag_mblock_clone_align() sets the reference count o
                 " the copy to 1")
 {
         AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
-        ag_mblock_retain(src);
-        AG_AUTO(ag_mblock) *cp = src;
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
         AG_AUTO(ag_mblock) *cp2 = ag_mblock_clone_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(cp2) == 1);
@@ -273,8 +272,7 @@ AG_TEST_INIT(clone_align_05, "ag_mblock_clone_align() does not change the"
                 " reference count of the source")
 {
         AG_AUTO(ag_mblock) *src = ag_mblock_new(sizeof(int));
-        ag_mblock_retain(src);
-        AG_AUTO(ag_mblock) *cp = src;
+        AG_AUTO(ag_mblock) *cp = ag_mblock_copy(src);
         AG_AUTO(ag_mblock) *cp2 = ag_mblock_clone_align(cp, 8);
         
         AG_TEST_ASSERT (ag_mblock_refc(src) == 2 && ag_mblock_refc(cp) == 2);
@@ -356,8 +354,7 @@ AG_TEST_INIT(release_05, "ag_mblock_release() reduces the reference count by 1"
                 "for lazy copies")
 {
         int *i = ag_mblock_new(sizeof *i);
-        ag_mblock_retain(i);
-        AG_AUTO(ag_mblock) *j = i;
+        AG_AUTO(ag_mblock) *j = ag_mblock_copy(i);
         ag_mblock_release((ag_mblock **)&i);
 
         AG_TEST_ASSERT (ag_mblock_refc(j) == 1);
@@ -369,8 +366,7 @@ AG_TEST_INIT(release_06, "ag_mblock_release() on a deep copy does not alter the"
                 " reference count of the source")
 {
         AG_AUTO(ag_mblock) *i = ag_mblock_new(sizeof(int));
-        ag_mblock_retain(i);
-        AG_AUTO(ag_mblock) *j = i;
+        AG_AUTO(ag_mblock) *j = ag_mblock_copy(i);
         ag_mblock *k = ag_mblock_clone(j);
         ag_mblock_release(&k);
         
@@ -401,8 +397,7 @@ AG_TEST_INIT(cmp_02, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a"
 {
         int *i = ag_mblock_new(sizeof *i);
         *i = 555;
-        ag_mblock_retain(i);
-        int *j = i;
+        int *j = ag_mblock_copy(i);
 
         AG_TEST_ASSERT(ag_mblock_cmp(i, j) == AG_CMP_EQ);
 
@@ -452,9 +447,7 @@ AG_TEST_INIT(cmp_05, "ag_mblock_cmp() returns AG_CMP_EQ when comparing a"
         a->i = 555;
         a->j = -666;
 
-        ag_mblock_retain(a);
-        struct test2 *b = a;
-
+        struct test2 *b = ag_mblock_copy(a);
         AG_TEST_ASSERT(ag_mblock_cmp(a, b) == AG_CMP_EQ);
 
         ag_mblock_release((ag_mblock **)&a);

@@ -26,7 +26,6 @@ extern ag_mblock *ag_mblock_copy(const ag_mblock *);
 extern ag_mblock *ag_mblock_clone(const ag_mblock *);
 extern ag_mblock *ag_mblock_clone_align(const ag_mblock *, size_t);
 extern void ag_mblock_dispose(ag_mblock **);
-extern void ag_mblock_retain(ag_mblock *);
 extern void ag_mblock_release(ag_mblock **);
 
 // warning: don't use with structs containing non-scalar members
