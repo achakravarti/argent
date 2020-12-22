@@ -81,7 +81,7 @@ static inline size_t typeid_index(int typeid)
 
 static inline struct vector *vector_new(size_t cap)
 {
-        struct vector *ctx = ag_mblock_new(cap);
+        struct vector *ctx = ag_mblock_new(sizeof *ctx);
         ctx->vt = ag_mblock_new(sizeof *ctx->vt * cap);
         ctx->cap = cap;
 
