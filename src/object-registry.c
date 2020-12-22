@@ -15,8 +15,8 @@ static struct vector *g_client;
  * Prototypes for the helper functions for selecting the appropriate vector and
  * determining the vector index according to type ID.
  */
-static inline struct vector *typeid_vector(int);
-static inline size_t typeid_index(int);
+static inline struct vector *typeid_vector(ag_typeid);
+static inline size_t typeid_index(ag_typeid);
 
 
 /* Prototypes to manage managing vectors */
@@ -55,27 +55,28 @@ extern void ag_obj_registry_exit(void)
 }
 
 
-extern const struct ag_obj_vtable *ag_obj_registry_get(int typeid)
+extern const struct ag_obj_vtable *ag_obj_registry_get(ag_typeid typeid)
 {
         return vector_get(typeid_vector(typeid), typeid_index(typeid));
 }
 
 
-extern void ag_obj_registry_set(int typeid, const struct ag_obj_vtable *vt)
+extern void ag_obj_registry_set(ag_typeid typeid,
+                                const struct ag_obj_vtable *vt)
 {
         vector_set(typeid_vector(typeid), typeid_index(typeid), vt);
 }
 
 
-static inline struct vector *typeid_vector(int typeid)
+static inline struct vector *typeid_vector(ag_typeid typeid)
 {
-        return typeid < 0 ? g_argent : g_client;
+        return typeid < AG_TYPEID_OBJECT ? g_argent : g_client;
 }
 
 
-static inline size_t typeid_index(int typeid)
+static inline size_t typeid_index(ag_typeid typeid)
 {
-        return typeid < 0 ? 0 - typeid : typeid;
+        return typeid < AG_TYPEID_OBJECT ? AG_TYPEID_OBJECT - typeid : typeid;
 }
 
 

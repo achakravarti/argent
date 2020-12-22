@@ -20,7 +20,7 @@ extern inline bool ag_obj_gt(const ag_obj *, const ag_obj *);
 extern inline bool ag_obj_empty(const ag_obj *);
 
 
-extern ag_obj *ag_obj_new(size_t typeid, ag_mblock *payload)
+extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
 {
         AG_ASSERT_PTR (payload);
 

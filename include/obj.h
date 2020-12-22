@@ -54,7 +54,7 @@ struct ag_obj_vtable {
 };
 
 
-extern ag_obj *ag_obj_new(size_t, ag_mblock *);
+extern ag_obj *ag_obj_new(ag_typeid, ag_mblock *);
 extern ag_obj *ag_obj_copy(const ag_obj *);
 extern ag_obj *ag_obj_clone(const ag_obj *);
 extern void ag_obj_release(ag_obj **);
@@ -96,8 +96,8 @@ inline bool ag_obj_empty(const ag_obj *ctx)
 extern void ag_obj_registry_init(void);
 extern void ag_obj_registry_exit(void);
 
-extern const struct ag_obj_vtable *ag_obj_registry_get(int);
-extern void ag_obj_registry_set(int , const struct ag_obj_vtable *);
+extern const struct ag_obj_vtable *ag_obj_registry_get(ag_typeid);
+extern void ag_obj_registry_set(ag_typeid, const struct ag_obj_vtable *);
 
 
 #ifdef __cplusplus
