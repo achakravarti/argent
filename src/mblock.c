@@ -13,32 +13,6 @@
 #endif
 
 
-/*
- * str_new_fmt(): create new dynamic formatted string.
- *
- * @fmt: formatted static source string.
- * @...: format arguments.
- *
- * Return: new dynamic formatted string.
- */
-#if 0
-static char *str_new_fmt(const char *fmt, ...)
-{
-        va_list args;
-
-        va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-        va_end(args);
-
-        va_start(args, fmt);
-        (void) vsprintf(bfr, fmt, args);
-        va_end(args);
-
-        return bfr;
-}
-#endif
-
-
 static inline size_t *meta_head(const ag_mblock *ctx)
 {
         return &((size_t *)ctx)[-2];
