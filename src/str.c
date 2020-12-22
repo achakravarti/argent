@@ -89,9 +89,7 @@ extern ag_str *ag_str_copy(const ag_str *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        ag_str *cp = (ag_str *)ctx;
-        ag_mblock_retain(cp);
-        return cp;
+        return ag_mblock_copy(ctx);
 }
 
 

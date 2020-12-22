@@ -22,6 +22,7 @@ typedef void ag_mblock;
 
 extern ag_mblock *ag_mblock_new(size_t);
 extern ag_mblock *ag_mblock_new_align(size_t, size_t);
+extern ag_mblock *ag_mblock_copy(const ag_mblock *);
 extern ag_mblock *ag_mblock_clone(const ag_mblock *);
 extern ag_mblock *ag_mblock_clone_align(const ag_mblock *, size_t);
 extern void ag_mblock_dispose(ag_mblock **);

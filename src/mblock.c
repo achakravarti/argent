@@ -98,6 +98,15 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 }
 
 
+extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
+{
+        ag_mblock *cp = (ag_mblock *)ctx;
+        ((size_t *)cp)[-2]++;
+
+        return cp;
+}
+
+
 extern ag_mblock *ag_mblock_clone(const ag_mblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
