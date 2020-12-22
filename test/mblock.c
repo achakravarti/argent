@@ -769,12 +769,11 @@ AG_TEST_INIT(str_01, "ag_mblock_str() generates the string representation of a"
                 " memory block")
 {
         int *i = ag_mblock_new(sizeof *i);
-        char *s = ag_mblock_str(i);
+        AG_AUTO(ag_str) *s = ag_mblock_str(i);
 
         AG_TEST_ASSERT (s && *s);
 
         ag_mblock_release((ag_mblock **)&i);
-        ag_mblock_release((ag_mblock **)&s);
 }
 AG_TEST_EXIT();
 
