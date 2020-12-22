@@ -218,7 +218,7 @@ extern ag_str *ag_str_lower(const ag_str *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
@@ -240,7 +240,7 @@ extern ag_str *ag_str_upper(const ag_str *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
@@ -267,7 +267,7 @@ extern ag_str *ag_str_proper(const ag_str *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        ag_str *s = ag_mblock_copy(ctx);
+        ag_str *s = ag_mblock_clone(ctx);
         register size_t sz = ag_mblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {

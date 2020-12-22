@@ -48,7 +48,7 @@ extern void ag_obj_registry_set(size_t typeid, const struct ag_obj_vtable *vt)
 
 static ag_mblock *def_clone(const ag_mblock *ctx)
 {
-        return ag_mblock_copy(ctx);
+        return ag_mblock_clone(ctx);
 }
 
 

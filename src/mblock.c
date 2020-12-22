@@ -98,7 +98,7 @@ extern ag_mblock *ag_mblock_new_align(size_t sz, size_t align)
 }
 
 
-extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
+extern ag_mblock *ag_mblock_clone(const ag_mblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -110,7 +110,7 @@ extern ag_mblock *ag_mblock_copy(const ag_mblock *ctx)
 }
 
 
-extern ag_mblock *ag_mblock_copy_align(const ag_mblock *ctx, size_t align)
+extern ag_mblock *ag_mblock_clone_align(const ag_mblock *ctx, size_t align)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (is_alignment_valid(align));
