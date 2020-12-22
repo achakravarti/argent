@@ -26,8 +26,8 @@ extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
 
         ag_obj *ctx = ag_mblock_new(sizeof *ctx);
         
-        ctx->objid = 1;
-        ctx->typeid = typeid;
+        ctx->objid   = 1;
+        ctx->typeid  = typeid;
         ctx->payload = payload;
 
         return ctx;
