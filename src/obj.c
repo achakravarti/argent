@@ -52,12 +52,15 @@ extern ag_obj *ag_obj_clone(const ag_obj *ctx)
 
 extern void ag_obj_release(ag_obj **ctx)
 {
-        ag_obj *o = *ctx;
-        vtable_get(o)->release(o->payload);
+        ag_obj *o;
 
-        ag_mblock *m = o;
-        ag_mblock_release(&m);
-        *ctx = m;
+        if (AG_LIKELY (ctx && (o = *ctx))) {
+                vtable_get(o)->release(o->payload);
+
+                ag_mblock *m = o;
+                ag_mblock_release(&m);
+                *ctx = m;
+        }
 }
 
 
