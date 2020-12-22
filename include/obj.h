@@ -93,12 +93,11 @@ inline bool ag_obj_empty(const ag_obj *ctx)
 }
 
 
-extern void ag_obj_registry_init(size_t);
+extern void ag_obj_registry_init(void);
 extern void ag_obj_registry_exit(void);
 
-extern const struct ag_obj_vtable *ag_obj_registry_get(size_t);
-
-extern void ag_obj_registry_set(size_t, const struct ag_obj_vtable *);
+extern const struct ag_obj_vtable *ag_obj_registry_get(int);
+extern void ag_obj_registry_set(int , const struct ag_obj_vtable *);
 
 
 #ifdef __cplusplus
