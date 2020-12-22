@@ -2,15 +2,15 @@
 
 
 struct ag_obj {
-        size_t     ob_objid;   /* Object ID      */
-        size_t     ob_typeid;  /* Object type ID */
-        ag_mblock *ob_payload; /* Object payload */
+        size_t     objid;   /* Object ID      */
+        size_t     typeid;  /* Object type ID */
+        ag_mblock *payload; /* Object payload */
 };
 
 
 static inline const struct ag_obj_vtable *vtable_get(const ag_obj *ctx)
 {
-        return ag_obj_registry_get(ctx->ob_typeid);
+        return ag_obj_registry_get(ctx->typeid);
 }
 
 
@@ -26,9 +26,9 @@ extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
 
         ag_obj *ctx = ag_mblock_new(sizeof *ctx);
         
-        ctx->ob_objid = 1;
-        ctx->ob_typeid = typeid;
-        ctx->ob_payload = payload;
+        ctx->objid = 1;
+        ctx->typeid = typeid;
+        ctx->payload = payload;
 
         return ctx;
 }
@@ -46,15 +46,14 @@ extern ag_obj *ag_obj_clone(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_obj_new(ctx->ob_typeid,
-                          vtable_get(ctx)->vt_clone(ctx->ob_payload));
+        return ag_obj_new(ctx->typeid, vtable_get(ctx)->clone(ctx->payload));
 }
 
 
 extern void ag_obj_release(ag_obj **ctx)
 {
         ag_obj *o = *ctx;
-        vtable_get(o)->vt_release(o->ob_payload);
+        vtable_get(o)->release(o->payload);
 
         ag_mblock *m = o;
         ag_mblock_release(&m);
@@ -67,7 +66,7 @@ extern enum ag_cmp ag_obj_cmp(const ag_obj *ctx, const ag_obj *cmp)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
         
-        return vtable_get(ctx)->vt_cmp(ctx, cmp);
+        return vtable_get(ctx)->cmp(ctx, cmp);
 }
 
 
@@ -75,7 +74,7 @@ extern bool ag_obj_valid(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return vtable_get(ctx)->vt_valid(ctx);
+        return vtable_get(ctx)->valid(ctx);
 }
 
 
@@ -83,7 +82,7 @@ extern size_t ag_obj_sz(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_mblock_sz(ctx) + ag_mblock_sz(ctx->ob_payload);
+        return vtable_get(ctx)->sz(ctx);
 }
 
 
@@ -99,7 +98,7 @@ extern size_t ag_obj_len(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        return vtable_get(ctx)->vt_len(ctx);
+        return vtable_get(ctx)->len(ctx);
 }
 
 
@@ -107,7 +106,7 @@ extern size_t ag_obj_hash(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        return vtable_get(ctx)->vt_hash(ctx);
+        return vtable_get(ctx)->hash(ctx);
 }
 
 
@@ -115,7 +114,7 @@ extern ag_str *ag_obj_str(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return vtable_get(ctx)->vt_str(ctx);
+        return vtable_get(ctx)->str(ctx);
 }
 
 
@@ -123,7 +122,7 @@ extern const ag_mblock *ag_obj_payload(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ctx->ob_payload;
+        return ctx->payload;
 }
 
 
@@ -139,7 +138,6 @@ extern ag_mblock *ag_obj_payload_mutable(ag_obj **ctx)
                 *ctx = ag_obj_clone(o);
         }
 
-        return (*ctx)->ob_payload;
+        return (*ctx)->payload;
 }
-
 

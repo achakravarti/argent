@@ -34,23 +34,25 @@ extern "C" {
 
 typedef struct ag_obj ag_obj;
 
-typedef ag_mblock *(ag_obj_clone_virt)(const ag_mblock *);
-typedef void (ag_obj_release_virt)(ag_mblock *);
-typedef enum ag_cmp (ag_obj_cmp_virt)(const ag_obj *, const ag_obj *);
-typedef bool (ag_obj_valid_virt)(const ag_obj *);
-typedef size_t (ag_obj_len_virt)(const ag_obj *);
-typedef size_t (ag_obj_hash_virt)(const ag_obj *);
-typedef ag_str *(ag_obj_str_virt)(const ag_obj *);
+typedef ag_mblock   *(ag_obj_clone_virt)(const ag_mblock *);
+typedef void         (ag_obj_release_virt)(ag_mblock *);
+typedef enum ag_cmp  (ag_obj_cmp_virt)(const ag_obj *, const ag_obj *);
+typedef bool         (ag_obj_valid_virt)(const ag_obj *);
+typedef size_t       (ag_obj_sz_virt)(const ag_obj *);
+typedef size_t       (ag_obj_len_virt)(const ag_obj *);
+typedef size_t       (ag_obj_hash_virt)(const ag_obj *);
+typedef ag_str      *(ag_obj_str_virt)(const ag_obj *);
 
 
 struct ag_obj_vtable {
-        ag_obj_clone_virt   *vt_clone;   /* Clone callback              */
-        ag_obj_release_virt *vt_release; /* Release callback            */
-        ag_obj_cmp_virt     *vt_cmp;     /* Comparison callback         */
-        ag_obj_valid_virt   *vt_valid;   /* Validation callback         */
-        ag_obj_len_virt     *vt_len;     /* Length computation callback */
-        ag_obj_hash_virt    *vt_hash;    /* Hash computation callback   */
-        ag_obj_str_virt     *vt_str;     /* String generation callback  */
+        ag_obj_clone_virt   *clone;   /* Clone callback              */
+        ag_obj_release_virt *release; /* Release callback            */
+        ag_obj_cmp_virt     *cmp;     /* Comparison callback         */
+        ag_obj_valid_virt   *valid;   /* Validation callback         */
+        ag_obj_sz_virt      *sz;      /* Size computation callback   */
+        ag_obj_len_virt     *len;     /* Length computation callback */
+        ag_obj_hash_virt    *hash;    /* Hash computation callback   */
+        ag_obj_str_virt     *str;     /* String generation callback  */
 };
 
 

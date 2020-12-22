@@ -36,6 +36,7 @@ static ag_mblock *def_clone(const ag_mblock *);
 static void def_release(ag_mblock *);
 static enum ag_cmp def_cmp(const ag_obj *, const ag_obj *);
 static bool def_valid(const ag_obj *);
+static size_t def_sz(const ag_obj *);
 static size_t def_len(const ag_obj *);
 static size_t def_hash(const ag_obj *);
 static ag_str *def_str(const ag_obj *);
@@ -130,13 +131,14 @@ static void vector_set(struct vector *ctx, size_t idx,
         vector_resize(ctx, cap);
 
         struct ag_obj_vtable *dst = &ctx->vt[idx];
-        dst->vt_clone   = vt->vt_clone   ? vt->vt_clone   : def_clone;
-        dst->vt_release = vt->vt_release ? vt->vt_release : def_release;
-        dst->vt_cmp     = vt->vt_cmp     ? vt->vt_cmp     : def_cmp;
-        dst->vt_valid   = vt->vt_valid   ? vt->vt_valid   : def_valid;
-        dst->vt_len     = vt->vt_len     ? vt->vt_len     : def_len;
-        dst->vt_hash    = vt->vt_hash    ? vt->vt_hash    : def_hash;
-        dst->vt_str     = vt->vt_str     ? vt->vt_str     : def_str;
+        dst->clone   = vt->clone   ? vt->clone   : def_clone;
+        dst->release = vt->release ? vt->release : def_release;
+        dst->cmp     = vt->cmp     ? vt->cmp     : def_cmp;
+        dst->valid   = vt->valid   ? vt->valid   : def_valid;
+        dst->sz      = vt->sz      ? vt->sz      : def_sz;
+        dst->len     = vt->len     ? vt->len     : def_len;
+        dst->hash    = vt->hash    ? vt->hash    : def_hash;
+        dst->str     = vt->str     ? vt->str     : def_str;
 }
 
 
@@ -161,6 +163,12 @@ static enum ag_cmp def_cmp(const ag_obj *ctx, const ag_obj *cmp)
 static bool def_valid(const ag_obj *ctx)
 {
         return ctx;
+}
+
+
+static size_t def_sz(const ag_obj *ctx)
+{
+        return ag_mblock_sz(ctx) + ag_mblock_sz(ag_obj_payload(ctx));
 }
 
 
