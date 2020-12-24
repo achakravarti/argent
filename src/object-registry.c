@@ -191,6 +191,11 @@ static ag_hash def_hash(const ag_obj *ctx)
 
 static ag_str *def_str(const ag_obj *ctx)
 {
-        return ag_mblock_str(ctx);
+        AG_AUTO(ag_uuid) *u    = ag_obj_uuid(ctx);
+        AG_AUTO(ag_str)  *ustr = ag_uuid_str(u);
+        AG_AUTO(ag_str)  *mstr = ag_mblock_str(ctx);
+
+        return ag_str_new_fmt("typeid = %d, uuid = %s, %s", ag_obj_typeid(ctx),
+                              ustr, mstr);
 }
 
