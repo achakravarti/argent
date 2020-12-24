@@ -2,8 +2,8 @@
 
 
 struct ag_obj {
-        size_t     objid;   /* Object ID      */
-        size_t     typeid;  /* Object type ID */
+        ag_typeid  typeid;  /* Object type ID */
+        ag_uuid   *uuid;    /* Object ID      */
         ag_mblock *payload; /* Object payload */
 };
 
@@ -26,7 +26,7 @@ extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
 
         ag_obj *ctx = ag_mblock_new(sizeof *ctx);
         
-        ctx->objid   = 1;
+        ctx->uuid    = ag_uuid_new();
         ctx->typeid  = typeid;
         ctx->payload = payload;
 
@@ -70,6 +70,22 @@ extern enum ag_cmp ag_obj_cmp(const ag_obj *ctx, const ag_obj *cmp)
         AG_ASSERT_PTR (cmp);
         
         return vtable_get(ctx)->cmp(ctx, cmp);
+}
+
+
+extern ag_typeid ag_obj_typeid(const ag_obj *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return ctx->typeid;
+}
+
+
+extern ag_uuid *ag_obj_uuid(const ag_obj *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return ag_uuid_copy(ctx->uuid);
 }
 
 

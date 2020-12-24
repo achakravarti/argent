@@ -80,6 +80,8 @@ inline bool ag_obj_gt(const ag_obj *ctx, const ag_obj *cmp)
 }
 
 
+extern ag_typeid ag_obj_typeid(const ag_obj *);
+extern ag_uuid *ag_obj_uuid(const ag_obj *);
 extern bool ag_obj_valid(const ag_obj *);
 extern size_t ag_obj_sz(const ag_obj *);
 extern size_t ag_obj_refc(const ag_obj *);
