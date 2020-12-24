@@ -181,8 +181,7 @@ static size_t def_len(const ag_obj *ctx)
 
 static size_t def_hash(const ag_obj *ctx)
 {
-        (void)ctx;
-        return 1;
+        return ag_uuid_hash(ag_obj_uuid(ctx));
 }
 
 
