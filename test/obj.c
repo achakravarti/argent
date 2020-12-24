@@ -93,9 +93,10 @@ static size_t virt_len(const ag_obj *ctx)
 }
 
 
-static size_t virt_hash(const ag_obj *ctx)
+static ag_hash virt_hash(const ag_obj *ctx)
 {
-        return 2;
+        const struct payload_derived *p = ag_obj_payload(ctx);
+        return ag_hash_new((size_t)p->x);
 }
 
 
@@ -122,7 +123,7 @@ static void register_derived(void)
         struct ag_obj_vtable vt = {
                 .clone = NULL, .release = NULL, .cmp = NULL,
                 .valid = NULL, .sz      = NULL, .len = NULL,
-                .hash = NULL,  .str     = NULL,
+                .hash  = NULL, .str     = NULL,
         };
 
         ag_obj_registry_set(TYPEID_DERIVED, &vt);
