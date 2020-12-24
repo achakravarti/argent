@@ -121,7 +121,7 @@ extern size_t ag_obj_len(const ag_obj *ctx)
 }
 
 
-extern size_t ag_obj_hash(const ag_obj *ctx)
+extern ag_hash ag_obj_hash(const ag_obj *ctx)
 {
         AG_ASSERT_PTR (ctx);
         

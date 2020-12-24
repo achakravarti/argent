@@ -40,7 +40,7 @@ typedef enum ag_cmp  (ag_obj_cmp_virt)(const ag_obj *, const ag_obj *);
 typedef bool         (ag_obj_valid_virt)(const ag_obj *);
 typedef size_t       (ag_obj_sz_virt)(const ag_obj *);
 typedef size_t       (ag_obj_len_virt)(const ag_obj *);
-typedef size_t       (ag_obj_hash_virt)(const ag_obj *);
+typedef ag_hash      (ag_obj_hash_virt)(const ag_obj *);
 typedef ag_str      *(ag_obj_str_virt)(const ag_obj *);
 
 
@@ -86,7 +86,7 @@ extern bool ag_obj_valid(const ag_obj *);
 extern size_t ag_obj_sz(const ag_obj *);
 extern size_t ag_obj_refc(const ag_obj *);
 extern size_t ag_obj_len(const ag_obj *);
-extern size_t ag_obj_hash(const ag_obj *);
+extern ag_hash ag_obj_hash(const ag_obj *);
 extern ag_str *ag_obj_str(const ag_obj *);
 extern const ag_mblock *ag_obj_payload(const ag_obj *);
 extern ag_mblock *ag_obj_payload_mutable(ag_obj **);

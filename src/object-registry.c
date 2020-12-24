@@ -179,7 +179,7 @@ static size_t def_len(const ag_obj *ctx)
 }
 
 
-static size_t def_hash(const ag_obj *ctx)
+static ag_hash def_hash(const ag_obj *ctx)
 {
         return ag_uuid_hash(ag_obj_uuid(ctx));
 }
