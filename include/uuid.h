@@ -39,6 +39,7 @@ inline bool ag_uuid_gt(const ag_uuid *ctx, const ag_uuid *cmp)
 
 
 extern bool ag_uuid_empty(const ag_uuid *);
+extern ag_hash ag_uuid_hash(const ag_uuid *);
 extern ag_str *ag_uuid_str(const ag_uuid *);
 
 
