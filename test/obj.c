@@ -142,17 +142,50 @@ AG_TEST_INIT(new_02, "ag_obj_new() creates a new derived object") {
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(copy_01, "ag_obj_copy() makes a shallow copy of a base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (o == o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_02, "ag_obj_copy() makes a shallow copy of a derived"
+                      " object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (o == o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_03, "ag_obj_copy() updates the reference count of a shallow"
+                      " copy of a base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_04, "ag_obj_copy() updates the reference count of a shallow"
+                      " copy of a derived object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
         register_derived();
 
         ag_test *test[] = {
-                new_01, new_02,
+                new_01,  new_02,  copy_01, copy_02,
+                copy_03, copy_04,
         };
 
         const char *desc[] = {
-                new_01_desc, new_02_desc,
+                new_01_desc,  new_02_desc,  copy_01_desc, copy_02_desc,
+                copy_03_desc, copy_04_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
