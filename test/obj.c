@@ -1,8 +1,8 @@
 #include "./test.h"
 
 
-#define TYPEID_BASE    ((ag_typeid) 101)
-#define TYPEID_DERIVED ((ag_typeid) 102)
+#define TYPEID_BASE    ((ag_typeid) 1)
+#define TYPEID_DERIVED ((ag_typeid) 2)
 
 
 struct payload_base {
@@ -130,14 +130,30 @@ static void register_derived(void)
 }
 
 
+AG_TEST_INIT(new_01, "ag_obj_new() creates a new base object") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_TEST_ASSERT (o);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(new_02, "ag_obj_new() creates a new derived object") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_TEST_ASSERT (o);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
-        ag_test _*test[] = {
+        register_base();
+        register_derived();
+
+        ag_test *test[] = {
+                new_01, new_02,
         };
 
         const char *desc[] = {
+                new_01_desc, new_02_desc,
         };
-
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
         ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
