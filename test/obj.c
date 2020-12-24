@@ -66,6 +66,10 @@ static void virt_release(ag_mblock *payload)
 
 static enum ag_cmp virt_cmp(const ag_obj *ctx, const ag_obj *cmp)
 {
+        AG_AUTO(ag_uuid) *u1 = ag_obj_uuid(ctx);
+        AG_AUTO(ag_uuid) *u2 = ag_obj_uuid(cmp);
+
+        return ag_uuid_cmp(u1, u2);
 }
 
 
@@ -76,21 +80,28 @@ static bool virt_valid(const ag_obj *ctx)
 
 static size_t virt_sz(const ag_obj *ctx)
 {
+        const struct payload_derived *p = ag_obj_payload(ctx);
+
+        return ag_mblock_sz(ctx) + ag_mblock_sz(p) + ag_mblock_sz(p->x)
+               + ag_mblock_sz(p->y);
 }
 
 
 static size_t virt_len(const ag_obj *ctx)
 {
+        return 2;
 }
 
 
 static size_t virt_hash(const ag_obj *ctx)
 {
+        return 2;
 }
 
 
 static ag_str *virt_str(const ag_obj *ctx)
 {
+        return ag_str_new("This is a sample derived object");
 }
 
 
