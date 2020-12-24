@@ -28,6 +28,7 @@
 #include "./log.h"
 #include "./erno.h"
 #include "./exception.h"
+#include "./hash.h"
 #include "./str.h"
 #include "./mblock.h"
 #include "./typeid.h"
