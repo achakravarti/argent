@@ -150,9 +150,11 @@ static ag_mblock *def_clone(const ag_mblock *ctx)
 }
 
 
+// we don't do anything because ag_obj_release() takes care of releasing the
+// memory allocated to the payload
 static void def_release(ag_mblock *ctx)
 {
-        ag_mblock_release(&ctx);
+        (void)ctx;
 }
 
 

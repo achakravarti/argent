@@ -121,9 +121,9 @@ static void register_base(void)
 static void register_derived(void)
 {
         struct ag_obj_vtable vt = {
-                .clone = NULL, .release = NULL, .cmp = NULL,
-                .valid = NULL, .sz      = NULL, .len = NULL,
-                .hash  = NULL, .str     = NULL,
+                .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
+                .valid = virt_valid, .sz      = virt_sz,      .len = virt_len,
+                .hash  = virt_hash,  .str     = virt_str,
         };
 
         ag_obj_registry_set(TYPEID_DERIVED, &vt);
@@ -156,7 +156,7 @@ extern ag_test_suite *test_suite_obj(void)
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
-        //ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
+        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
         return ctx;
 }

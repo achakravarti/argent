@@ -55,9 +55,13 @@ extern void ag_obj_release(ag_obj **ctx)
         ag_obj *o;
 
         if (AG_LIKELY (ctx && (o = *ctx))) {
+                ag_uuid_release(&o->uuid);
                 vtable_get(o)->release(o->payload);
 
-                ag_mblock *m = o;
+                ag_mblock *m = o->payload;
+                ag_mblock_release(&m);
+
+                m = o;
                 ag_mblock_release(&m);
                 *ctx = m;
         }
