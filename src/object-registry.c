@@ -125,10 +125,12 @@ static void vector_set(struct vector *ctx, size_t idx,
 {
         register size_t cap = ctx->cap;
 
-        while (cap < idx)
-                cap *= 2;
+        if (cap < idx) {
+                while (cap < idx)
+                        cap *= 2;
 
-        vector_resize(ctx, cap);
+                vector_resize(ctx, cap);
+        }
 
         struct ag_obj_vtable *dst = &ctx->vt[idx];
         dst->clone   = vt->clone   ? vt->clone   : def_clone;

@@ -27,6 +27,7 @@ int main(int argc, char **argv)
         ag_test_suite_release(&log);
         ag_test_suite_release(&mblock);
         ag_test_suite_release(&str);
+        ag_test_suite_release(&obj);
 
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);

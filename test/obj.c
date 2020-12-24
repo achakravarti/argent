@@ -156,7 +156,7 @@ extern ag_test_suite *test_suite_obj(void)
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
-        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
+        //ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
         return ctx;
 }

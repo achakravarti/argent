@@ -348,11 +348,14 @@ static inline ag_exception_handler *vector_hnd(const struct vector *ctx,
 static void vector_set(struct vector *ctx, size_t idx, const char *msg,
                 ag_exception_handler *hnd)
 {
-        size_t cap = ctx->cap;
-        while (cap < idx)
-                cap *= 2;
+        register size_t cap = ctx->cap;
+       
+        if (cap < idx) { 
+                while (cap < idx)
+                        cap *= 2;
 
-        vector_resize(ctx, cap);
+                vector_resize(ctx, cap);
+        }
 
         str_dispose(ctx->msg[idx]);
         ctx->msg[idx] = str_new(msg);
