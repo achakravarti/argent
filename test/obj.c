@@ -300,6 +300,55 @@ AG_TEST_INIT(release_06, "ag_obj_release() reduces the reference count by 1 for"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(cmp_01, "ag_obj_cmp() returns AG_CMP_EQ when comparing the same"
+                     " base objects") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_cmp(o, o2) == AG_CMP_EQ);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(cmp_02, "ag_obj_cmp() return AG_CMP_EQ when comparing the same"
+                     " derived objects") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_cmp(o, o2) == AG_CMP_EQ);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(lt_01, "ag_obj_lt() returns false when comparing the same base"
+                    " objects") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (!ag_obj_lt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(lt_02, "ag_obj_lt() returns false when comparing the same derived"
+                    " objects") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (!ag_obj_lt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_01, "ag_obj_gt() returns false when comparing the same base"
+                    " objects") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (!ag_obj_gt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_02, "ag_obj_gt() returns false when comparing the same derived"
+                    " objects") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (!ag_obj_gt(o, o2));
+} AG_TEST_EXIT();
+
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
@@ -311,6 +360,8 @@ extern ag_test_suite *test_suite_obj(void)
                 clone_01,   clone_02,   clone_03,   clone_04,
                 clone_05,   clone_06,   release_01, release_02,
                 release_03, release_04, release_05, release_06,
+                cmp_01,     cmp_02,     lt_01,      lt_02,
+                gt_01,      gt_02,
         };
 
         const char *desc[] = {
@@ -320,7 +371,9 @@ extern ag_test_suite *test_suite_obj(void)
                 clone_02_desc,   clone_03_desc,   clone_04_desc,
                 clone_05_desc,   clone_06_desc,   release_01_desc,
                 release_02_desc, release_03_desc, release_04_desc,
-                release_05_desc, release_06_desc,
+                release_05_desc, release_06_desc, cmp_01_desc,
+                cmp_02_desc,     lt_01_desc,      lt_02_desc,
+                gt_01_desc,      gt_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
