@@ -251,23 +251,76 @@ AG_TEST_INIT(clone_06, "ag_obj_copy() preserves the data of the deep copy of a"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(release_01, "ag_obj_release() performs a no-op if passed NULL") {
+        ag_obj_release(NULL);
+        AG_TEST_ASSERT (true);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_02, "ag_obj_release() performs a no-op if passed a handle"
+                         " to a null pointer") {
+        ag_obj *o = NULL;
+        ag_obj_release(&o);
+        AG_TEST_ASSERT (true);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_03, "ag_obj_release() releases a base object") {
+        ag_obj *o = sample_base();
+        ag_obj_release(&o);
+        AG_TEST_ASSERT (!o);
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(release_04, "ag_obj_release() releases a derived object") {
+        ag_obj *o = sample_derived();
+        ag_obj_release(&o);
+        AG_TEST_ASSERT (!o);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_05, "ag_obj_release() reduces the reference count by 1 for"
+                         " a base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        ag_obj          *o3 = ag_obj_copy(o);
+
+        ag_obj_release(&o3);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_06, "ag_obj_release() reduces the reference count by 1 for"
+                         " a derived object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        ag_obj          *o3 = ag_obj_copy(o);
+
+        ag_obj_release(&o3);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
         register_derived();
 
         ag_test *test[] = {
-                new_01,   new_02,   copy_01,  copy_02,
-                copy_03,  copy_04,  copy_05,  copy_06,
-                clone_01, clone_02, clone_03, clone_04,
-                clone_05, clone_06,
+                new_01,     new_02,     copy_01,    copy_02,
+                copy_03,    copy_04,    copy_05,    copy_06,
+                clone_01,   clone_02,   clone_03,   clone_04,
+                clone_05,   clone_06,   release_01, release_02,
+                release_03, release_04, release_05, release_06,
         };
 
         const char *desc[] = {
-                new_01_desc,   new_02_desc,   copy_01_desc,  copy_02_desc,
-                copy_03_desc,  copy_04_desc,  copy_05_desc,  copy_06_desc,
-                clone_01_desc, clone_02_desc, clone_03_desc, clone_04_desc,
-                clone_05_desc, clone_06_desc,
+                new_01_desc,     new_02_desc,     copy_01_desc,
+                copy_02_desc,    copy_03_desc,    copy_04_desc,
+                copy_05_desc,    copy_06_desc,    clone_01_desc,
+                clone_02_desc,   clone_03_desc,   clone_04_desc,
+                clone_05_desc,   clone_06_desc,   release_01_desc,
+                release_02_desc, release_03_desc, release_04_desc,
+                release_05_desc, release_06_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
