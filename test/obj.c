@@ -197,19 +197,77 @@ AG_TEST_INIT(copy_06, "ag_obj_copy() preserves the data of the shallow copy of"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(clone_01, "ag_obj_clone() makes a deep copy of a base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+        AG_TEST_ASSERT (o != o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_02, "ag_obj_clone() makes a deep copy of a derived object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+        AG_TEST_ASSERT (o != o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_03, "ag_obj_clone() does not affect the reference count of"
+                       " the original base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_04, "ag_obj_clone() does not affect the reference count of"
+                       " the original derived object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_05, "ag_obj_clone() preserves the data of the deep copy of a"
+                       " base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+
+        const struct payload_base *p  = ag_obj_payload(o);
+        const struct payload_base *p2 = ag_obj_payload(o2);
+
+        AG_TEST_ASSERT (p->x == p2->x && p->y == p2->y);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_06, "ag_obj_copy() preserves the data of the deep copy of a"
+                       " a derived object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_clone(o);
+
+        const struct payload_derived *p  = ag_obj_payload(o);
+        const struct payload_derived *p2 = ag_obj_payload(o2);
+
+        AG_TEST_ASSERT (*p->x == *p2->x && *p->y == *p2->y);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
         register_derived();
 
         ag_test *test[] = {
-                new_01,  new_02,  copy_01, copy_02,
-                copy_03, copy_04, copy_05, copy_06,
+                new_01,   new_02,   copy_01,  copy_02,
+                copy_03,  copy_04,  copy_05,  copy_06,
+                clone_01, clone_02, clone_03, clone_04,
+                clone_05, clone_06,
         };
 
         const char *desc[] = {
-                new_01_desc,  new_02_desc,  copy_01_desc, copy_02_desc,
-                copy_03_desc, copy_04_desc, copy_05_desc, copy_06_desc,
+                new_01_desc,   new_02_desc,   copy_01_desc,  copy_02_desc,
+                copy_03_desc,  copy_04_desc,  copy_05_desc,  copy_06_desc,
+                clone_01_desc, clone_02_desc, clone_03_desc, clone_04_desc,
+                clone_05_desc, clone_06_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
