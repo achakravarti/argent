@@ -92,7 +92,7 @@ static size_t virt_sz(const ag_obj *ctx)
 static size_t virt_len(const ag_obj *ctx)
 {
         (void)ctx;
-        return 2;
+        return 0;
 }
 
 
@@ -421,9 +421,9 @@ AG_TEST_INIT(len_01, "ag_obj_len() returns 1 for a base object") {
 } AG_TEST_EXIT();
 
 
-AG_TEST_INIT(len_02, "ag_obj_len() returns 2 for a derived object") {
+AG_TEST_INIT(len_02, "ag_obj_len() returns 0 for a derived object") {
         AG_AUTO(ag_obj) *o = sample_derived();
-        AG_TEST_ASSERT (ag_obj_len(o) == 2);
+        AG_TEST_ASSERT (ag_obj_len(o) == 0);
 } AG_TEST_EXIT();
 
 
@@ -473,6 +473,20 @@ AG_TEST_INIT(str_02, "ag_obj_str() executes its provided callback if"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(empty_01, "ag_obj_empty() returns false if the object length"
+                       " is greater than zero") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_TEST_ASSERT (!ag_obj_empty(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_02, "ag_obj_empty() returns true if the object length is"
+                       " zero") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_TEST_ASSERT (ag_obj_empty(o));
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
@@ -489,7 +503,8 @@ extern ag_test_suite *test_suite_obj(void)
                 uuid_01,    uuid_02,    sz_01,      sz_02,
                 sz_03,      refc_01,    refc_02,    len_01,
                 len_02,     valid_01,   valid_02,   hash_01,
-                hash_02,    str_01,     str_02,
+                hash_02,    str_01,     str_02,     empty_01,
+                empty_02,
         };
 
         const char *desc[] = {
@@ -507,7 +522,7 @@ extern ag_test_suite *test_suite_obj(void)
                 refc_01_desc,    refc_02_desc,    len_01_desc,
                 len_02_desc,     valid_01_desc,   valid_02_desc,
                 hash_01_desc,    hash_02_desc,    str_01_desc,
-                str_02_desc,
+                str_02_desc,     empty_01_desc,   empty_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
