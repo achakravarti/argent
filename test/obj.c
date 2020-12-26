@@ -75,6 +75,8 @@ static enum ag_cmp virt_cmp(const ag_obj *ctx, const ag_obj *cmp)
 
 static bool virt_valid(const ag_obj *ctx)
 {
+        const struct payload_derived *p = ag_obj_payload(ctx);
+        return *p->x == 555 && *p->y == -666;
 }
 
 
@@ -89,6 +91,7 @@ static size_t virt_sz(const ag_obj *ctx)
 
 static size_t virt_len(const ag_obj *ctx)
 {
+        (void)ctx;
         return 2;
 }
 
@@ -412,6 +415,32 @@ AG_TEST_INIT(refc_02, "ag_obj_refc() returns the reference count of a derived"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(len_01, "ag_obj_len() returns 1 for a base object") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_TEST_ASSERT (ag_obj_len(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(len_02, "ag_obj_len() returns 2 for a derived object") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_TEST_ASSERT (ag_obj_len(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(valid_01, "ag_obj_valid() executes its default callback if not"
+                       " overridden") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_TEST_ASSERT (ag_obj_valid(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(valid_02, "ag_obj_valid() executes its provieded callback if"
+                       " if overridden") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_TEST_ASSERT (ag_obj_valid(o));
+} AG_TEST_EXIT();
+
+
 
 extern ag_test_suite *test_suite_obj(void)
 {
@@ -427,7 +456,8 @@ extern ag_test_suite *test_suite_obj(void)
                 cmp_01,     cmp_02,     lt_01,      lt_02,
                 gt_01,      gt_02,      typeid_01,  typeid_02,
                 uuid_01,    uuid_02,    sz_01,      sz_02,
-                sz_03,      refc_01,    refc_02,
+                sz_03,      refc_01,    refc_02,    len_01,
+                len_02,     valid_01,   valid_02,
         };
 
         const char *desc[] = {
@@ -442,7 +472,8 @@ extern ag_test_suite *test_suite_obj(void)
                 gt_01_desc,      gt_02_desc,      typeid_01_desc,
                 typeid_02_desc,  uuid_01_desc,    uuid_02_desc,
                 sz_01_desc,      sz_02_desc,      sz_03_desc,
-                refc_01_desc,    refc_02_desc,
+                refc_01_desc,    refc_02_desc,    len_01_desc,
+                len_02_desc,     valid_01_desc,   valid_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
