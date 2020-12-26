@@ -99,7 +99,7 @@ static size_t virt_len(const ag_obj *ctx)
 static ag_hash virt_hash(const ag_obj *ctx)
 {
         const struct payload_derived *p = ag_obj_payload(ctx);
-        return ag_hash_new((size_t)p->x);
+        return ag_hash_new(*p->x);
 }
 
 
@@ -434,11 +434,28 @@ AG_TEST_INIT(valid_01, "ag_obj_valid() executes its default callback if not"
 } AG_TEST_EXIT();
 
 
-AG_TEST_INIT(valid_02, "ag_obj_valid() executes its provieded callback if"
-                       " if overridden") {
+AG_TEST_INIT(valid_02, "ag_obj_valid() executes its provided callback if"
+                       " overridden") {
         AG_AUTO(ag_obj) *o = sample_derived();
         AG_TEST_ASSERT (ag_obj_valid(o));
 } AG_TEST_EXIT();
+
+
+AG_TEST_INIT(hash_01, "ag_obj_hash() executes its default callback if not"
+                      " overridden") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_AUTO(ag_uuid) *u = ag_obj_uuid(o);
+        AG_TEST_ASSERT (ag_obj_hash(o) == ag_uuid_hash(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(hash_02, "ag_obj_hash() executes its provided callback if"
+                      " overridden") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        const struct payload_derived *p = ag_obj_payload(o);
+        AG_TEST_ASSERT (ag_obj_hash(o) == ag_hash_new(*p->x));
+} AG_TEST_EXIT();
+                      
 
 
 
@@ -457,7 +474,8 @@ extern ag_test_suite *test_suite_obj(void)
                 gt_01,      gt_02,      typeid_01,  typeid_02,
                 uuid_01,    uuid_02,    sz_01,      sz_02,
                 sz_03,      refc_01,    refc_02,    len_01,
-                len_02,     valid_01,   valid_02,
+                len_02,     valid_01,   valid_02,   hash_01,
+                hash_02,
         };
 
         const char *desc[] = {
@@ -474,6 +492,7 @@ extern ag_test_suite *test_suite_obj(void)
                 sz_01_desc,      sz_02_desc,      sz_03_desc,
                 refc_01_desc,    refc_02_desc,    len_01_desc,
                 len_02_desc,     valid_01_desc,   valid_02_desc,
+                hash_01_desc,    hash_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
