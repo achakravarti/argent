@@ -362,6 +362,40 @@ AG_TEST_INIT(typeid_02, "ag_obj_typeid() returns the type ID of a derived"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(uuid_01, "ag_obj_uuid() returns the UUID of a base object") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_AUTO(ag_uuid) *u = ag_obj_uuid(o);
+        AG_TEST_ASSERT (!ag_uuid_empty(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(uuid_02, "ag_obj_uuid() returns the UUID of a derived object") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_AUTO(ag_uuid) *u = ag_obj_uuid(o);
+        AG_TEST_ASSERT (!ag_uuid_empty(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_01, "ag_obj_sz() returns the size of a base object") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_TEST_ASSERT (ag_obj_sz(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_02, "ag_obj_sz() returns the size of a derived object") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_TEST_ASSERT (ag_obj_sz(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_03, "ag_obj_sz() returns a greater size for a derived object"
+                    " than that of a base object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = sample_derived();
+        AG_TEST_ASSERT (ag_obj_sz(o2) > ag_obj_sz(o));
+} AG_TEST_EXIT();
+
+
 
 extern ag_test_suite *test_suite_obj(void)
 {
@@ -376,6 +410,8 @@ extern ag_test_suite *test_suite_obj(void)
                 release_03, release_04, release_05, release_06,
                 cmp_01,     cmp_02,     lt_01,      lt_02,
                 gt_01,      gt_02,      typeid_01,  typeid_02,
+                uuid_01,    uuid_02,    sz_01,      sz_02,
+                sz_03,
         };
 
         const char *desc[] = {
@@ -388,7 +424,8 @@ extern ag_test_suite *test_suite_obj(void)
                 release_05_desc, release_06_desc, cmp_01_desc,
                 cmp_02_desc,     lt_01_desc,      lt_02_desc,
                 gt_01_desc,      gt_02_desc,      typeid_01_desc,
-                typeid_02_desc,
+                typeid_02_desc,  uuid_01_desc,    uuid_02_desc,
+                sz_01_desc,      sz_02_desc,      sz_03_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
