@@ -455,8 +455,22 @@ AG_TEST_INIT(hash_02, "ag_obj_hash() executes its provided callback if"
         const struct payload_derived *p = ag_obj_payload(o);
         AG_TEST_ASSERT (ag_obj_hash(o) == ag_hash_new(*p->x));
 } AG_TEST_EXIT();
-                      
 
+
+AG_TEST_INIT(str_01, "ag_obj_str() executes its default callback if not"
+                     " overridden") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        AG_AUTO(ag_str) *s = ag_obj_str(o);
+        AG_TEST_ASSERT (ag_str_has(s, "uuid"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(str_02, "ag_obj_str() executes its provided callback if"
+                     " overridden") {
+        AG_AUTO(ag_obj) *o = sample_derived();
+        AG_AUTO(ag_str) *s = ag_obj_str(o);
+        AG_TEST_ASSERT (ag_str_eq(s, "This is a sample derived object"));
+} AG_TEST_EXIT();
 
 
 extern ag_test_suite *test_suite_obj(void)
@@ -475,7 +489,7 @@ extern ag_test_suite *test_suite_obj(void)
                 uuid_01,    uuid_02,    sz_01,      sz_02,
                 sz_03,      refc_01,    refc_02,    len_01,
                 len_02,     valid_01,   valid_02,   hash_01,
-                hash_02,
+                hash_02,    str_01,     str_02,
         };
 
         const char *desc[] = {
@@ -492,7 +506,8 @@ extern ag_test_suite *test_suite_obj(void)
                 sz_01_desc,      sz_02_desc,      sz_03_desc,
                 refc_01_desc,    refc_02_desc,    len_01_desc,
                 len_02_desc,     valid_01_desc,   valid_02_desc,
-                hash_01_desc,    hash_02_desc,
+                hash_01_desc,    hash_02_desc,    str_01_desc,
+                str_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
