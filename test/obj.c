@@ -487,6 +487,14 @@ AG_TEST_INIT(empty_02, "ag_obj_empty() returns true if the object length is"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(payload_01, "ag_obj_payload() gets a handle to the object"
+                         " payload") {
+        AG_AUTO(ag_obj) *o = sample_base();
+        const struct payload_base *p = ag_obj_payload(o);
+        AG_TEST_ASSERT (p->x == 555 && p->y == -666);
+} AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_obj(void)
 {
         register_base();
@@ -504,7 +512,7 @@ extern ag_test_suite *test_suite_obj(void)
                 sz_03,      refc_01,    refc_02,    len_01,
                 len_02,     valid_01,   valid_02,   hash_01,
                 hash_02,    str_01,     str_02,     empty_01,
-                empty_02,
+                empty_02,   payload_01,
         };
 
         const char *desc[] = {
@@ -523,6 +531,7 @@ extern ag_test_suite *test_suite_obj(void)
                 len_02_desc,     valid_01_desc,   valid_02_desc,
                 hash_01_desc,    hash_02_desc,    str_01_desc,
                 str_02_desc,     empty_01_desc,   empty_02_desc,
+                payload_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
