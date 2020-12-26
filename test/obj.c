@@ -396,6 +396,22 @@ AG_TEST_INIT(sz_03, "ag_obj_sz() returns a greater size for a derived object"
 } AG_TEST_EXIT();
 
 
+AG_TEST_INIT(refc_01, "ag_obj_refc() returns the reference count of a base"
+                      " object") {
+        AG_AUTO(ag_obj) *o  = sample_base();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_02, "ag_obj_refc() returns the reference count of a derived"
+                      " object") {
+        AG_AUTO(ag_obj) *o  = sample_derived();
+        AG_AUTO(ag_obj) *o2 = ag_obj_copy(o);
+        AG_TEST_ASSERT (ag_obj_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
 
 extern ag_test_suite *test_suite_obj(void)
 {
@@ -411,7 +427,7 @@ extern ag_test_suite *test_suite_obj(void)
                 cmp_01,     cmp_02,     lt_01,      lt_02,
                 gt_01,      gt_02,      typeid_01,  typeid_02,
                 uuid_01,    uuid_02,    sz_01,      sz_02,
-                sz_03,
+                sz_03,      refc_01,    refc_02,
         };
 
         const char *desc[] = {
@@ -426,6 +442,7 @@ extern ag_test_suite *test_suite_obj(void)
                 gt_01_desc,      gt_02_desc,      typeid_01_desc,
                 typeid_02_desc,  uuid_01_desc,    uuid_02_desc,
                 sz_01_desc,      sz_02_desc,      sz_03_desc,
+                refc_01_desc,    refc_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_obj interface");
