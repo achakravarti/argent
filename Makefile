@@ -52,7 +52,7 @@ $(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
 	$(LINK.c) $^ -o $@
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_LIB) | $(DIR_BLD)
-	$(CCC) $(CFLAGS) $^ -o $@
+	$(CCC) $(CFLAGS) $^ -lpq -luuid -o $@
 
 $(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
 	$(COMPILE.c) $^ -o $@
