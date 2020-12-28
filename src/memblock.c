@@ -1,211 +1,274 @@
-/*******************************************************************************
- *                        __   ____   ___  ____  __ _  ____ 
- *                       / _\ (  _ \ / __)(  __)(  ( \(_  _)
- *                      /    \ )   /( (_ \ ) _) /    /  )(  
- *                      \_/\_/(__\_) \___/(____)\_)__) (__)                     
- *
- * Argent Library
- * Copyright (c) 2020 Abhishek Chakravarti <abhishek@taranjali.org>
- *
- * This file is part of the Argent Library. It implements the memory block
- * interface of the Argent Library.
- *
- * The contents of this file are released under the GPLv3 License. See the
- * accompanying LICENSE file or the generated Developer Manual (section I:?) for 
- * complete licensing details.
- *
- * BY CONTINUING TO USE AND/OR DISTRIBUTE THIS FILE, YOU ACKNOWLEDGE THAT YOU
- * HAVE UNDERSTOOD THESE LICENSE TERMS AND ACCEPT TO BE LEGALLY BOUND BY THEM.
- ******************************************************************************/
-
+#include "../include/argent.h"
 
 #include <malloc.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
-#include "./api.h"
 
 
+#ifndef NDEBUG
+static inline bool      is_size_valid(size_t );
+static inline bool      is_alignment_valid(size_t);
+#endif
 
 
-/*******************************************************************************
- *                           INTERFACE IMPLEMENTATION
- */
-
-
-/*
- * Function  : `ag_memblock_new()`
- * Synopsis  : Allocates block of heap memory.
- * Parameters: `sz` - size in bytes to allocate.
- * Return    : Allocated block of heap memory.
- *
- * `ag_memblock_new()` is responsible for allocating a new block of heap memory.
- * The size in bytes to allocate is passed through the `sz` parameter. The value
- * of `sz` is required to be greater than zero; this condition is asserted in
- * debug builds.
- *
- * If successful, a handle to the new block of heap memory (initialised to zero)
- * is returned. In case of failure to allocate heap memory, `ag_memblock_new()` 
- * raises an exception with the `AG_ERNO_MEMBLOCK_NEW` error code, which is left
- * for the exception handler callback function (defined by client code) to 
- * process. Hence, there is no need to check for the returned handle being 
- * non-`NULL` in the normal flow of code.
- *
- * It is important to note that the actual size of the allocated block may well
- * be greater than that specified by `sz`. This is because the underlying
- * `malloc()` function may allocate a larger block in order to account for
- * alignment and minimum size constraints.
- *
- * The two most likely reasons for failure are the value of `sz` being larger
- * than the amount of heap memory physically available, and excess fragmentation
- * of the heap. Neither of these faiulre conditions have been tested, though.
- */
-extern ag_memblock_t *ag_memblock_new(size_t sz)
+static inline size_t *
+meta_head(const ag_memblock *ctx)
 {
-    ag_assert (sz);
-    void *bfr = malloc(sz);
-    ag_require (bfr, AG_ERNO_MEMBLOCK_NEW, NULL);
-
-    memset(bfr, 0, sz);
-    return bfr;
+        return &((size_t *)ctx)[-2];
 }
 
 
-/*
- * Function  :  `ag_memblock_copy()`
- * Synopsis  : Copies existing block of heap memory.
- * Parameters: `bfr` - heap block to copy.
- * Return    : Copied block of heap memory.
- *
- * `ag_memblock_copy()` makes a deep copy of an existing block of heap memory,
- * passed as a handle to its only parameter `bfr`. `bfr` is required to be
- * valid; this is asserted in debug guilds. Additionally, it is required for
- * `bfr` to have been allocated in the heap by an earlier call to
- * `ag_memblock_new()` (or `ag_memblock_copy()` itself); passing a handle to a
- * block of memory on the stack is an error, leading to undefined behaviour
- * (most likely a segmentation fault).
- *
- * On successful completion, `ag_memblock_copy()` returns a handle to the newly
- * allocated copy of `bfr`. In case of failure to do so, the
- * `AG_ERNO_MEMBLOCK_NEW` exception is raised, and control is passed to the
- * client-provided exception handler. Since in the normal flow of control the
- * newly allocated copy is guaranteed to be valid, there is no need for client
- * code to make a further check on the return value.
- *
- * Since `ag_memblock_copy()` relies on a non-standard `libc` call, it is
- * important to remember the portability restrictions this entails; see
- * `ag_memblock_sz()` for more details.
- */
-extern ag_memblock_t *ag_memblock_copy(const ag_memblock_t *bfr)
+static inline size_t
+meta_sz(const ag_memblock *ctx)
 {
-    ag_assert (bfr);
-    size_t sz = ag_memblock_sz(bfr);
-
-    ag_memblock_t *cp = ag_memblock_new(sz);
-    memcpy(cp, bfr, sz);
-
-    return cp;
+        return ((size_t *)ctx)[-1];
 }
 
 
-/*
- * Function  : `ag_memblock_sz()`
- * Synopsis  : Gets size of block of heap memory.
- * Parameters: `bfr` - heap block to query.
- * Return    : size in bytes of heap block.
- *
- * Sometimes it is useful to be able to determine the size of a block of heap
- * memory that was allocated earlier without having to resort to storing the
- * size in a separate variable. The interface function `ag_memblock_sz()`
- * provides a way to do os, allowing client code to query the size of a block of
- * heap memory `bfr` that was allocated by either `ag_memblock_new()` or
- * `ag_memblock_copy()`.
- *
- * `ag_memblock_sz()` requires that `bfr` be a valid handle to a block of heap
- * memory; this function asserts in debug builds that the handle is not `NULL`.
- * Passing a pointer to the stack memory is an error, and will result in
- * undefined behavour, most likely leading to a segmentation fault.
- *
- * As in the case of `ag_memblock_new()`, it is important to remember that the
- * size returned by `ag_memblock_sz()` may be greater than that which had been
- * originally requested at the time of allocation, since the underlying
- * `malloc()` call needs to take into account alignment and size restrictions.
- *
- * There is an important caveat regarding portability. The C standard does not
- * define a way to query the size of the heap block returned by `malloc()`, and
- * so we need to rely on the functionality provided by the underlying `libc`
- * implementation. As of the current version, `ag_memblock_sz()` is guaranteed
- * to work on GNU/Linux, Cygwin and the various BSDs.
- */
-extern size_t ag_memblock_sz(const ag_memblock_t *bfr)
+static inline size_t
+meta_refc(const ag_memblock *ctx)
 {
-    ag_assert (bfr);
-    return malloc_usable_size((void *) bfr);
+        return ((size_t *)ctx)[-2];
 }
 
 
-/* 
- * Function  : `ag_memblock_resize()`
- * Synopsis  : Resizes allocated block of heap memory.
- * Parameters: `bfr` - heap block to resize,
- *             `sz` - new size in bytes.
- *
- * The `ag_memblock_resize()` function is responsible for resizing the amount of
- * memory allocated to an existing block of heap memory. Although this function
- * is not used commonly within the Argent Library itself, it may prove to be
- * useful for client code, especially for the resizing of dynamic data
- * structures that can grow and shrink, such as vectors.
- *
- * `ag_memblock_resize()` takes two arguments, the first being the handle to the
- * heap buffer `bfr` that is to be allocated, and the second being the new size
- * `sz` value. `bfr` is expected to be a valid pointer to a pointer to a memory
- * block, and `sz` is expected to be greater than zero; these two conditions are
- * asserted in debug builds.
- *
- * If successful, the heap memory block pointed to by `bfr` will be resized to
- * the value specified by \texttt{sz}. Note that, as in the case of
- * `ag_memblock_new()`, the actual size of the heap buffer may be larger than
- * that requested in order to account for alignment and minimum size
- * constraints. In case the resizing operation failed, the `AG_MEMBLOCK_RESIZE`
- * exception is raised. Since ag_memblock_resize() is guaranteed to either
- * succeed, or to raise an exception, there is no need to test whether the heap
- * buffer pointed to by `bfr` is valid after the operation.
- */
-extern void ag_memblock_resize(ag_memblock_t **bfr, size_t sz)
+extern void
+ag_memblock_exception_handler(const struct ag_exception *ex, void *opt)
 {
-    ag_assert (bfr && *bfr && sz);
-    *bfr = realloc(*bfr, sz);
-    ag_require (*bfr, AG_ERNO_MEMBLOCK_RESIZE, NULL);
+        struct ag_memblock_exception *x = (struct ag_memblock_exception *) opt;
+
+        printf("[!] %d [%s(), %s:%lu]: %s\n", ex->erno, ex->func, ex->file,
+            ex->line, ag_exception_registry_msg(ex->erno));
+        
+        ag_log_err("%d [%s(), %s:%lu]: %s", ex->erno, ex->func, ex->file,
+            ex->line, ag_exception_registry_msg(ex->erno));
+
+        if (x->align) {
+                printf("[!] requested %lu bytes alignmed to %lu bytes\n",
+                    x->sz, x->align);
+                ag_log_err("requested %lu bytes aligned to %lu bytes", x->sz,
+                    x->align);
+        } else {
+                printf("[!] requested %lu bytes\n", x->sz);
+                ag_log_err("requested %lu bytes", x->sz);
+        }
+
+        ag_exit(EXIT_FAILURE);
 }
 
 
-/*
- * Function  : `ag_memblock_free()`
- * Synopsis  : Releases allocated block of heap memory.
- * Parameters: `bfr` - heap block to release.
- *
- * After `ag_memblock_new()`, the `ag_memblock_free() function is perhaps the
- * most important one in the memory module of the Argent Library.
- * `ag_memblock_free()` is responsible for releasing the heap memory that has
- * been allocated through either `ag_memblock_new()` or `ag_memblock_copy()`.
- * 
- * `ag_memblock_free()` accepts only one argument `bfr`, which is a pointer to
- * the heap memory block that has been allocated earlier. If both `bfr` and the
- * heap memory block pointed by it are valid (i.e.  non-`NULL`, then the latter
- * is released and the former is set to `NULL`.  This ensures that `bfr` is not
- * a dangling pointer after the memory block it points to has been released.
- * 
- * `ag_memblock_free()` is designed to be robust, and performs a safe no-op if
- * either `bfr` or the heap memory block pointed to by it are invalid (i.e.
- * `NULL`. This allows `ag_memblock_free()` to be safely called even in
- * exception conditions. However, it is important to remember that passing a
- * `bfr` to `ag_memblock_free()` that has not been created by either
- * `ag_memblock_new()` or ag_memblock_copy()` will result in undefined
- * behaviour.
- */
-extern void ag_memblock_free(ag_memblock_t **bfr)
+extern ag_memblock *
+ag_memblock_new(size_t sz)
 {
-    if (ag_likely (bfr && *bfr)) {
-        free(*bfr);
-        *bfr = NULL;
-    }
+        AG_ASSERT (is_size_valid(sz));
+
+        struct ag_memblock_exception x = {
+                .sz = sz,
+                .align = 0,
+        };
+
+        size_t *ctx = malloc(sizeof(size_t) * 2 + sz);
+        AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
+
+        memset(ctx, 0, sz);
+        ctx[0] = 1;
+        ctx[1] = sz;
+
+        return (ag_memblock *)&(ctx[2]);
 }
+
+
+extern ag_memblock *
+ag_memblock_new_align(size_t sz, size_t align)
+{
+        AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT (is_alignment_valid(align));
+        
+        struct ag_memblock_exception x = {
+                .sz = sz,
+                .align = align,
+        };
+
+        size_t *ctx;
+        (void) posix_memalign((void **)&ctx, align, sizeof(size_t) * 2 + sz);
+        AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
+        
+        memset(ctx, 0, sz);
+        ctx[0] = 1;
+        ctx[1] = sz;
+
+        return (ag_memblock *)&(ctx[2]);
+}
+
+
+extern ag_memblock *
+ag_memblock_copy(const ag_memblock *ctx)
+{
+        ag_memblock *cp = (ag_memblock *)ctx;
+        ((size_t *)cp)[-2]++;
+
+        return cp;
+}
+
+
+extern ag_memblock *
+ag_memblock_clone(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        size_t sz = meta_sz(ctx);
+        ag_memblock *cp = ag_memblock_new(sz);
+        memcpy(cp, ctx, sz);
+
+        return cp;
+}
+
+
+extern ag_memblock *
+ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (is_alignment_valid(align));
+
+        size_t sz = meta_sz(ctx);
+        ag_memblock *cp = ag_memblock_new_align(sz, align);
+        memcpy(cp, ctx, sz);
+
+        return cp;
+}
+
+
+extern void
+ag_memblock_release(ag_memblock **ctx)
+{
+        size_t *hnd;
+
+        if (AG_LIKELY (ctx && (hnd = (size_t *)*ctx))) {
+                if (!(--hnd[-2]))
+                        free(&hnd[-2]);
+                        
+                *ctx = NULL;
+        }
+}
+
+
+extern enum ag_cmp
+ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
+{
+        return ctx == cmp ? AG_CMP_EQ : memcmp(ctx, cmp, meta_sz(ctx));
+}
+
+
+extern inline bool      ag_memblock_lt(const ag_memblock *,
+                            const ag_memblock *);
+extern inline bool      ag_memblock_eq(const ag_memblock *,
+                            const ag_memblock *);
+extern inline bool      ag_memblock_gt(const ag_memblock *,
+                            const ag_memblock *);
+
+
+extern size_t
+ag_memblock_sz(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return meta_sz(ctx);
+}
+
+extern size_t
+ag_memblock_sz_total(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return malloc_usable_size(meta_head(ctx));
+}
+
+
+
+
+extern size_t
+ag_memblock_refc(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return meta_refc(ctx);
+}
+
+
+extern bool
+ag_memblock_aligned(const ag_memblock *ctx, size_t align)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (is_alignment_valid(align));
+
+        return !((uintptr_t)meta_head(ctx) & (align - 1));
+}
+
+
+extern void
+ag_memblock_resize(ag_memblock **ctx, size_t sz)
+{
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT (is_size_valid(sz));
+
+        ag_memblock *hnd = *ctx;
+        size_t oldsz = meta_sz(hnd);
+
+        ag_memblock *cp = ag_memblock_new(sz);
+        memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
+        
+        ag_memblock_release(ctx);
+        *ctx = cp;
+}
+
+
+extern void
+ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
+{
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT (is_alignment_valid(align));
+
+        ag_memblock *hnd = *ctx;
+        size_t oldsz = meta_sz(hnd);
+
+        ag_memblock *cp = ag_memblock_new_align(sz, align);
+        memcpy(cp, hnd, sz < oldsz ? sz : oldsz);
+        
+        ag_memblock_release(ctx);
+        *ctx = cp;
+}
+
+
+extern ag_string *
+ag_memblock_str(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return (ag_string_new_fmt("address = %p, data sz = %lu,"
+            " total data = %lu, refc = %lu", (void *)meta_head(ctx),
+            meta_sz(ctx), ag_memblock_sz_total(ctx), meta_refc(ctx)));
+
+}
+
+
+#ifndef NDEBUG
+static inline bool
+is_size_valid(size_t sz)
+{
+        return sz;
+}
+#endif
+
+
+#ifndef NDEBUG
+static inline bool
+is_alignment_valid(size_t align)
+{
+        return align && !(align % 2);
+
+}
+#endif
 

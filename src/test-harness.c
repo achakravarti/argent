@@ -43,8 +43,8 @@
  * @nxt: next node in list.
  */
 struct node {
-        ag_test_suite *ts;
-        struct node *nxt;
+        ag_test_suite   *ts;
+        struct node     *nxt;
 };
 
 
@@ -55,13 +55,14 @@ struct node {
  *
  * Return: new test suite list node.
  */
-static inline struct node *node_new(const ag_test_suite *ts)
+static inline struct node *
+node_new(const ag_test_suite *ts)
 {
-        struct node *n = ag_mblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
-        return n;
+        return (n);
 }
 
 
@@ -72,13 +73,14 @@ static inline struct node *node_new(const ag_test_suite *ts)
  *
  * Return: copy of @ctx.
  */
-static inline struct node *node_copy(const struct node *ctx)
+static inline struct node *
+node_copy(const struct node *ctx)
 {
-        struct node *n = ag_mblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
-        return n;
+        return (n);
 }
 
 
@@ -89,14 +91,15 @@ static inline struct node *node_copy(const struct node *ctx)
  *
  * Return: node next to @ctx.
  */
-static inline struct node *node_free(struct node *ctx)
+static inline struct node *
+node_free(struct node *ctx)
 {
         struct node *nxt = ctx->nxt;
 
         ag_test_suite_release(&ctx->ts);
-        ag_mblock_release((ag_mblock **)&ctx);
+        ag_memblock_release((ag_memblock **)&ctx);
 
-        return nxt;
+        return (nxt);
 }
 
 
@@ -106,7 +109,7 @@ static inline struct node *node_free(struct node *ctx)
  * @head: head of test suite list.
  */
 struct ag_test_harness {
-        struct node *head;
+        struct node     *head;
 };
 
 
@@ -115,12 +118,13 @@ struct ag_test_harness {
  *
  * Return: new test harness.
  */
-extern ag_test_harness *ag_test_harness_new(void)
+extern ag_test_harness *
+ag_test_harness_new(void)
 {
-        ag_test_harness *ctx = ag_mblock_new(sizeof *ctx);
+        ag_test_harness *ctx = ag_memblock_new(sizeof *ctx);
         ctx->head = NULL;
 
-        return ctx;
+        return (ctx);
 }
 
 
@@ -131,11 +135,12 @@ extern ag_test_harness *ag_test_harness_new(void)
  *
  * Return: copy of @ctx.
  */
-extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
+extern ag_test_harness *
+ag_test_harness_copy(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
-        return ag_mblock_copy(ctx);
+        return (ag_memblock_copy(ctx));
 }
 
 
@@ -144,18 +149,19 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
  *
  * @ctx: contextual test suite.
  */
-extern void ag_test_harness_release(ag_test_harness **ctx)
+extern void
+ag_test_harness_release(ag_test_harness **ctx)
 {
         ag_test_harness *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                if (ag_mblock_refc(hnd) == 1) {
+                if (ag_memblock_refc(hnd) == 1) {
                         struct node *n = hnd->head;
                         while (n)
                                 n = node_free(n);
                 }
 
-                ag_mblock_release((ag_mblock **)ctx);
+                ag_memblock_release((ag_memblock **)ctx);
         }
 }
 
@@ -167,7 +173,8 @@ extern void ag_test_harness_release(ag_test_harness **ctx)
  *
  * Return: number of test suites in @ctx.
  */
-extern int ag_test_harness_len(const ag_test_harness *ctx)
+extern int
+ag_test_harness_len(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
@@ -179,7 +186,7 @@ extern int ag_test_harness_len(const ag_test_harness *ctx)
                 n = n->nxt;
         }
 
-        return len;
+        return (len);
 }
 
 
@@ -191,8 +198,8 @@ extern int ag_test_harness_len(const ag_test_harness *ctx)
  *
  * Return: number of test cases in @ctx with @status.
  */
-extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
-                enum ag_test_status status)
+extern size_t
+ag_test_harness_poll(const ag_test_harness *ctx, enum ag_test_status status)
 {
         AG_ASSERT (ctx);
 
@@ -204,7 +211,7 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
                 n = n->nxt;
         }
 
-        return tot;
+        return (tot);
 }
 
 
@@ -214,7 +221,8 @@ extern size_t ag_test_harness_poll(const ag_test_harness *ctx,
  * @ctx: contextual test harness.
  * @ts : test suite to push into @ctx.
  */
-extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
+extern void
+ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (ts);
@@ -237,7 +245,8 @@ extern void ag_test_harness_push(ag_test_harness *ctx, const ag_test_suite *ts)
  *
  * @ctx: contextual test harness.
  */
-extern void ag_test_harness_exec(ag_test_harness *ctx)
+extern void
+ag_test_harness_exec(ag_test_harness *ctx)
 {
         struct node *n = ctx->head;
 
@@ -248,7 +257,8 @@ extern void ag_test_harness_exec(ag_test_harness *ctx)
 }
 
 
-extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
+extern void
+ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (log);
@@ -261,14 +271,13 @@ extern void ag_test_harness_log(const ag_test_harness *ctx, FILE *log)
         }
 
         size_t pass = ag_test_harness_poll(ctx, AG_TEST_STATUS_OK);
-        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP)
-                        + ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
+        size_t skip = ag_test_harness_poll(ctx, AG_TEST_STATUS_SKIP) +
+            ag_test_harness_poll(ctx, AG_TEST_STATUS_WAIT);
         size_t fail = ag_test_harness_poll(ctx, AG_TEST_STATUS_FAIL);
 
-        AG_AUTO(ag_str) *s = ag_str_new_fmt("%d test suite(s), %d test(s),"
-                        " %d passed, %d skipped, %d failed.",
-                        ag_test_harness_len(ctx), pass + skip + fail, 
-                        pass, skip, fail);
+        AG_AUTO(ag_string) *s = ag_string_new_fmt("%d test suite(s), %d test(s),"
+            " %d passed, %d skipped, %d failed.", ag_test_harness_len(ctx),
+            pass + skip + fail, pass, skip, fail);
         fprintf(log, "\n%s\n", s);
 }
 

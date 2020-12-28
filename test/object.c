@@ -1,336 +1,50 @@
-#if 0
-
-#include "../src/api.h"
 #include "./test.h"
-#include <string.h>
 
 
+#define TYPEID_BASE    ((ag_typeid) 1)
+#define TYPEID_DERIVED ((ag_typeid) 2)
 
 
-/*******************************************************************************
- *                              BASE OBJECT TESTS
- */
-
-
-                                         /* payload for base object [AgDM:??] */
-struct base_payload {
-    int x;
-    int y;
+struct payload_base {
+        int x;
+        int y;
 };
 
 
-                                          /* type ID of base object [AgDM:??] */
-#define BASE_OBJECT 102
-
-
-                                      /* creates sample base object [AgDM:??] */
-static ag_object_t *base_sample(void)
-{
-    struct base_payload *p = ag_memblock_new(sizeof *p);
-    p->x = 555;
-    p->y = 666;
-
-    return ag_object_new(BASE_OBJECT, p);
-}
-
-
-                                    /* test case #1 for base object [AgDM:??] */
-static void base_test_new(void)
-{
-    printf("ag_object_new() creates a base object");
-
-    ag_object_smart_t *obj = base_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                    /* test case #2 for base object [AgDM:??] */
-static void base_test_dispose(void)
-{
-    printf("ag_object_dispose() releases a base object");
-    
-    ag_object_t *obj = base_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    ag_object_dispose(&obj);
-    ag_require (!obj, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                    /* test case #3 for base object [AgDM:??] */
-static void base_test_type(void)
-{
-    printf("ag_object_type() gets the type of a base object");
-    
-    ag_object_smart_t *obj = base_sample();
-    size_t t = ag_object_type(obj);
-
-    ag_require (t == BASE_OBJECT, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                    /* test case #4 for base object [AgDM:??] */
-static void base_test_id(void)
-{
-    printf("ag_object_id() defaults to 0 for a base object");
-    
-    ag_object_smart_t *obj = base_sample();
-    size_t id = ag_object_id(obj);
-
-    ag_require (!id, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                    /* test case #5 for base object [AgDM:??] */
-static void base_test_hash(void)
-{
-    printf("ag_object_hash() defaults to 0 for a base object");
-    
-    ag_object_smart_t *obj = base_sample();
-    size_t h = ag_object_hash(obj);
-
-    ag_require (!h, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                    /* test case #6 for base object [AgDM:??] */
-static void base_test_sz(void)
-{
-    printf("ag_object_sz() defaults to 0 for a base object");
-    
-    ag_object_smart_t *o = base_sample();
-    ag_require (ag_object_sz(o) == ag_memblock_sz(ag_object_payload(o)), 
-            AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                    /* test case #7 for base object [AgDM:??] */
-static void base_test_empty(void)
-{
-    printf("ag_object_empty() defaults to false for a base object");
-    
-    ag_object_smart_t *o = base_sample();
-    ag_require (!ag_object_empty(o), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                    /* test case #8 for base object [AgDM:??] */
-static void base_test_len(void)
-{
-    printf("ag_object_len() defaults to 1 for a base object");
-    
-    ag_object_smart_t *o = base_sample();
-    ag_require (ag_object_len(o) == 1, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                    /* test case #9 for base object [AgDM:??] */
-static void base_test_cmp(void)
-{
-    printf("ag_object_cmp() returns AG_TRISTATE_GND for the same base object");
-
-    ag_object_smart_t *o1 = base_sample();
-    ag_object_smart_t *o2 = base_sample();
-
-    ag_require (ag_object_cmp(o1, o2) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                   /* test case #10 for base object [AgDM:??] */
-static void base_test_lt(void)
-{
-    printf("ag_object_lt() returns false for the same base object");
-
-    ag_object_smart_t *o1 = base_sample();
-    ag_object_smart_t *o2 = base_sample();
-
-    ag_require (!ag_object_lt(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                   /* test case #11 for base object [AgDM:??] */
-static void base_test_eq(void)
-{
-    printf("ag_object_eq() returns true for the same base object");
-
-    ag_object_smart_t *o1 = base_sample();
-    ag_object_smart_t *o2 = base_sample();
-
-    ag_require (ag_object_eq(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                   /* test case #12 for base object [AgDM:??] */
-static void base_test_gt(void)
-{
-    printf("ag_object_gt() returns false for the same base object");
-
-    ag_object_smart_t *o1 = base_sample();
-    ag_object_smart_t *o2 = base_sample();
-
-    ag_require (!ag_object_gt(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                   /* test case #13 for base object [AgDM:??] */
-static void base_test_payload(void)
-{
-    printf("ag_object_payload() gets the payload of a base object");
-
-    ag_object_smart_t *obj = base_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    const struct base_payload *p = ag_object_payload(obj);
-    ag_require (p->x == 555, AG_ERNO_TEST, NULL);
-    ag_require (p->y == 666, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                   /* test case #14 for base object [AgDM:??] */
-static void base_test_payload_mutable(void)
-{
-    printf("ag_object_payload_mutable() gets a mutable handle to the payload"
-            " of a base object");
-
-    ag_object_smart_t *obj = base_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    struct base_payload *p = ag_object_payload_mutable(&obj);
-    p->x = 666;
-    p->y = 555;
-    
-    ag_require (p->x == 666, AG_ERNO_TEST, NULL);
-    ag_require (p->y == 555, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                   /* test case #15 for base object [AgDM:??] */
-static void base_test_str(void)
-{
-    printf("ag_object_str() returns a string for a base object");
-
-    ag_object_smart_t *o = base_sample();
-    ag_string_smart_t *s = ag_object_str(o);
-
-    ag_require (s && *s, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                   /* test case #16 for base object [AgDM:??] */
-static void base_test_refc(void)
-{
-    printf("ag_object_refc() returns 1 when a base object is created");
-    
-    ag_object_smart_t *o = base_sample();
-    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                   /* test case #17 for base object [AgDM:??] */
-static void base_test_refc_2(void)
-{
-    printf("ag_object_refc() accounts for a base object being copied");
-    
-    ag_object_smart_t *o = base_sample();
-    ag_object_smart_t *cp1 = ag_object_copy(o);
-    ag_object_smart_t *cp2 = ag_object_copy(cp1);
-    ag_require (ag_object_refc(o) == 3, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp1) == 3, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp2) == 3, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                   /* test case #18 for base object [AgDM:??] */
-static void base_test_refc_3(void)
-{
-    printf("ag_object_refc() accounts for a base object being disposed");
-    
-    ag_object_t *o = base_sample();
-    ag_object_smart_t *cp1 = ag_object_copy(o);
-    ag_object_t *cp2 = ag_object_copy(cp1);
-
-    ag_object_dispose(&o);
-    ag_object_dispose(&cp2);
-    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-static void base_test_refc_4(void)
-{
-    printf("ag_object_refc() accounts for mutable handles to base object"
-            " payloads");
-    
-    ag_object_t *o = base_sample();
-    ag_object_t *cp1 = ag_object_copy(o);
-    ag_object_t *cp2 = ag_object_copy(cp1);
-
-    struct base_payload *p = ag_object_payload_mutable(&cp1);
-    (void) p;
-
-    ag_require (ag_object_refc(o) == 2, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp2) == 2, AG_ERNO_TEST, NULL);
-
-    ag_object_dispose(&cp1);
-    ag_object_dispose(&cp2);
-    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
-    ag_object_dispose(&o);
-
-    printf("...OK\n");
-}
-
-
-
-
-/*******************************************************************************
- *                             DERIVED OBJECT TESTS 
- */
-
-
-                                      /* payload for derived object [AgDM:??] */
-struct derived_payload {
-    int *x;
-    int *y;
+struct payload_derived {
+        int *x;
+        int *y;
 };
 
 
-                                       /* type ID of derived object [AgDM:??] */
-#define DERIVED_OBJECT 101
-
-
-                      /* method to deep copy derived object payload [AgDM:??] */
-static ag_memblock_t *derived_method_copy(const ag_memblock_t *payload)
+static ag_object *sample_base(void)
 {
-    const struct derived_payload *p = payload;
-    struct derived_payload *cp = ag_memblock_new(sizeof *p);
+        struct payload_base *p = ag_memblock_new(sizeof *p);
+        p->x = 555;
+        p->y = -666;
+
+        return ag_object_new(TYPEID_BASE, p);
+}
+
+
+static ag_object *sample_derived(void)
+{
+        struct payload_derived *p = ag_memblock_new(sizeof *p);
+
+        p->x = ag_memblock_new(sizeof *p->x);
+        p->y = ag_memblock_new(sizeof *p->y);
+
+        *p->x = 555;
+        *p->y = -666;
+
+        return ag_object_new(TYPEID_DERIVED, p);
+}
+
+
+static ag_memblock *virt_clone(const ag_memblock *payload)
+{
+    const struct payload_derived *p = (const struct payload_derived *)payload;
+    struct payload_derived *cp = ag_memblock_new(sizeof *p);
 
     cp->x = ag_memblock_new(sizeof *cp->x);
     cp->y = ag_memblock_new(sizeof *cp->y);
@@ -342,433 +56,539 @@ static ag_memblock_t *derived_method_copy(const ag_memblock_t *payload)
 }
 
 
-                                  /* method to dispose derived object payload */
-static inline void derived_method_dispose(ag_memblock_t *payload)
+static void virt_release(ag_memblock *payload)
 {
-    struct derived_payload *p = (struct derived_payload *) payload;
-    ag_memblock_free((void **) &p->x);
-    ag_memblock_free((void **) &p->y);
+    struct payload_derived *p = (struct payload_derived *)payload;
+    ag_memblock_release((void **) &p->x);
+    ag_memblock_release((void **) &p->y);
 }
 
 
-                              /* method to get ID of derived object [AgDM:??] */
-static inline size_t derived_method_id(const ag_object_t *obj)
+static enum ag_cmp virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
-    const struct derived_payload *p = ag_object_payload(obj);
-    return *p->x + *p->y;
+        AG_AUTO(ag_uuid) *u1 = ag_object_uuid(ctx);
+        AG_AUTO(ag_uuid) *u2 = ag_object_uuid(cmp);
+
+        return ag_uuid_cmp(u1, u2);
 }
 
 
-                            /* method to get size of derived object [AgDM:??] */
-static inline size_t derived_method_sz(const ag_object_t *obj)
+static bool virt_valid(const ag_object *ctx)
 {
-    const struct derived_payload *p = ag_object_payload(obj);
-    return sizeof (p->x) + sizeof (p->y);
+        const struct payload_derived *p = ag_object_payload(ctx);
+        return *p->x == 555 && *p->y == -666;
 }
 
 
-                          /* method to get length of derived object [AgDM:??] */
-static inline size_t derived_method_len(const ag_object_t *obj)
+static size_t virt_sz(const ag_object *ctx)
 {
-    const struct derived_payload *p = ag_object_payload(obj);
-    return (*p->x + *p->y) / 2;
+        const struct payload_derived *p = ag_object_payload(ctx);
+
+        return ag_memblock_sz(ctx) + ag_memblock_sz(p) + ag_memblock_sz(p->x)
+               + ag_memblock_sz(p->y);
 }
 
 
-                            /* method to get hash of derived object [AgDM:??] */
-static inline size_t derived_method_hash(const ag_object_t *obj)
+static size_t virt_len(const ag_object *ctx)
 {
-    const struct derived_payload *p = ag_object_payload(obj);
-    return (*p->x + *p->y) % 2;
+        (void)ctx;
+        return 0;
 }
 
 
-                            /* method to compare two derived object [AgDM:??] */
-static inline enum ag_tristate derived_method_cmp(const ag_object_t *lhs, 
-        const ag_object_t *rhs)
+static ag_hash virt_hash(const ag_object *ctx)
 {
-    size_t lid = ag_object_id(lhs);
-    size_t rid = ag_object_id(rhs);
-
-    if (lid == rid)
-        return AG_TRISTATE_GND;
-
-    return lid < rid ? AG_TRISTATE_LO : AG_TRISTATE_HI;
+        const struct payload_derived *p = ag_object_payload(ctx);
+        return ag_hash_new(*p->x);
 }
 
 
-           /* method to get string representation of derived object [AgDM:??] */
-static inline ag_string_t *derived_method_str(const ag_object_t *obj)
+static ag_string *virt_str(const ag_object *ctx)
 {
-    (void) obj;
-    return ag_string_new("derived");
+        (void)ctx;
+        return ag_string_new("This is a sample derived object");
 }
 
 
-                                   /* creates sample derived object [AgDM:??] */
-static ag_object_t *derived_sample(void)
+static void register_base(void)
 {
-    struct derived_payload *p = ag_memblock_new(sizeof *p);
+        struct ag_object_vtable vt = {
+                .clone = NULL, .release = NULL, .cmp = NULL,
+                .valid = NULL, .sz      = NULL, .len = NULL,
+                .hash = NULL,  .str     = NULL,
+        };
 
-    p->x = ag_memblock_new(sizeof *p->x);
-    p->y = ag_memblock_new(sizeof *p->y);
-
-    *p->x = 555;
-    *p->y = 666; 
-
-   return ag_object_new(DERIVED_OBJECT, p);
+        ag_object_registry_set(TYPEID_BASE, &vt);
 }
 
 
-                                 /* test case #1 for derived object [AgDM:??] */
-static void derived_test_new(void)
-{    
-    printf("ag_object_new() creates a derived object with a payload");
-
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #2 for derived object [AgDM:??] */
-static void derived_test_dispose(void)
+static void register_derived(void)
 {
-    printf("ag_object_dispose() releases a derived object");
-    
-    ag_object_t *obj = derived_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
+        struct ag_object_vtable vt = {
+                .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
+                .valid = virt_valid, .sz      = virt_sz,      .len = virt_len,
+                .hash  = virt_hash,  .str     = virt_str,
+        };
 
-    ag_object_dispose(&obj);
-    ag_require (!obj, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
+        ag_object_registry_set(TYPEID_DERIVED, &vt);
 }
 
 
-                                 /* test case #3 for derived object [AgDM:??] */
-static void derived_test_type(void)
+AG_TEST_INIT(new_01, "ag_object_new() creates a new base object") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_TEST_ASSERT (o);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(new_02, "ag_object_new() creates a new derived object") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_TEST_ASSERT (o);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_01, "ag_object_copy() makes a shallow copy of a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (o == o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_02, "ag_object_copy() makes a shallow copy of a derived"
+                      " object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (o == o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_03, "ag_object_copy() updates the reference count of a shallow"
+                      " copy of a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_04, "ag_object_copy() updates the reference count of a shallow"
+                      " copy of a derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_05, "ag_object_copy() preserves the data of the shallow copy of"
+                      " a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+
+        const struct payload_base *p  = ag_object_payload(o);
+        const struct payload_base *p2 = ag_object_payload(o2);
+
+        AG_TEST_ASSERT (p->x == p2->x && p->y == p2->y);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(copy_06, "ag_object_copy() preserves the data of the shallow copy of"
+                      " a derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+
+        const struct payload_derived *p  = ag_object_payload(o);
+        const struct payload_derived *p2 = ag_object_payload(o2);
+
+        AG_TEST_ASSERT (*p->x == *p2->x && *p->y == *p2->y);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_01, "ag_object_clone() makes a deep copy of a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+        AG_TEST_ASSERT (o != o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_02, "ag_object_clone() makes a deep copy of a derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+        AG_TEST_ASSERT (o != o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_03, "ag_object_clone() does not affect the reference count of"
+                       " the original base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_04, "ag_object_clone() does not affect the reference count of"
+                       " the original derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_05, "ag_object_clone() preserves the data of the deep copy of a"
+                       " base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+
+        const struct payload_base *p  = ag_object_payload(o);
+        const struct payload_base *p2 = ag_object_payload(o2);
+
+        AG_TEST_ASSERT (p->x == p2->x && p->y == p2->y);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_06, "ag_object_copy() preserves the data of the deep copy of a"
+                       " a derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_clone(o);
+
+        const struct payload_derived *p  = ag_object_payload(o);
+        const struct payload_derived *p2 = ag_object_payload(o2);
+
+        AG_TEST_ASSERT (*p->x == *p2->x && *p->y == *p2->y);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_01, "ag_object_release() performs a no-op if passed NULL") {
+        ag_object_release(NULL);
+        AG_TEST_ASSERT (true);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_02, "ag_object_release() performs a no-op if passed a handle"
+                         " to a null pointer") {
+        ag_object *o = NULL;
+        ag_object_release(&o);
+        AG_TEST_ASSERT (true);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_03, "ag_object_release() releases a base object") {
+        ag_object *o = sample_base();
+        ag_object_release(&o);
+        AG_TEST_ASSERT (!o);
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(release_04, "ag_object_release() releases a derived object") {
+        ag_object *o = sample_derived();
+        ag_object_release(&o);
+        AG_TEST_ASSERT (!o);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_05, "ag_object_release() reduces the reference count by 1 for"
+                         " a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        ag_object          *o3 = ag_object_copy(o);
+
+        ag_object_release(&o3);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_06, "ag_object_release() reduces the reference count by 1 for"
+                         " a derived object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        ag_object          *o3 = ag_object_copy(o);
+
+        ag_object_release(&o3);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(cmp_01, "ag_object_cmp() returns AG_CMP_EQ when comparing the same"
+                     " base objects") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_cmp(o, o2) == AG_CMP_EQ);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(cmp_02, "ag_object_cmp() return AG_CMP_EQ when comparing the same"
+                     " derived objects") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_cmp(o, o2) == AG_CMP_EQ);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(lt_01, "ag_object_lt() returns false when comparing the same base"
+                    " objects") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (!ag_object_lt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(lt_02, "ag_object_lt() returns false when comparing the same derived"
+                    " objects") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (!ag_object_lt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_01, "ag_object_gt() returns false when comparing the same base"
+                    " objects") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (!ag_object_gt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_02, "ag_object_gt() returns false when comparing the same derived"
+                    " objects") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (!ag_object_gt(o, o2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(typeid_01, "ag_object_typeid() returns the type ID of a base"
+                        " object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_TEST_ASSERT (ag_object_typeid(o) == TYPEID_BASE);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(typeid_02, "ag_object_typeid() returns the type ID of a derived"
+                        " object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_TEST_ASSERT (ag_object_typeid(o) == TYPEID_DERIVED);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(uuid_01, "ag_object_uuid() returns the UUID of a base object") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
+        AG_TEST_ASSERT (!ag_uuid_empty(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(uuid_02, "ag_object_uuid() returns the UUID of a derived object") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
+        AG_TEST_ASSERT (!ag_uuid_empty(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_01, "ag_object_sz() returns the size of a base object") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_TEST_ASSERT (ag_object_sz(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_02, "ag_object_sz() returns the size of a derived object") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_TEST_ASSERT (ag_object_sz(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(sz_03, "ag_object_sz() returns a greater size for a derived object"
+                    " than that of a base object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = sample_derived();
+        AG_TEST_ASSERT (ag_object_sz(o2) > ag_object_sz(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_01, "ag_object_refc() returns the reference count of a base"
+                      " object") {
+        AG_AUTO(ag_object) *o  = sample_base();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_02, "ag_object_refc() returns the reference count of a derived"
+                      " object") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_TEST_ASSERT (ag_object_refc(o) == 2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(len_01, "ag_object_len() returns 1 for a base object") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_TEST_ASSERT (ag_object_len(o) == 1);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(len_02, "ag_object_len() returns 0 for a derived object") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_TEST_ASSERT (ag_object_len(o) == 0);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(valid_01, "ag_object_valid() executes its default callback if not"
+                       " overridden") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_TEST_ASSERT (ag_object_valid(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(valid_02, "ag_object_valid() executes its provided callback if"
+                       " overridden") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_TEST_ASSERT (ag_object_valid(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(hash_01, "ag_object_hash() executes its default callback if not"
+                      " overridden") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
+        AG_TEST_ASSERT (ag_object_hash(o) == ag_uuid_hash(u));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(hash_02, "ag_object_hash() executes its provided callback if"
+                      " overridden") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        const struct payload_derived *p = ag_object_payload(o);
+        AG_TEST_ASSERT (ag_object_hash(o) == ag_hash_new(*p->x));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(str_01, "ag_object_str() executes its default callback if not"
+                     " overridden") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_AUTO(ag_string) *s = ag_object_str(o);
+        AG_TEST_ASSERT (ag_string_has(s, "uuid"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(str_02, "ag_object_str() executes its provided callback if"
+                     " overridden") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_AUTO(ag_string) *s = ag_object_str(o);
+        AG_TEST_ASSERT (ag_string_eq(s, "This is a sample derived object"));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_01, "ag_object_empty() returns false if the object length"
+                       " is greater than zero") {
+        AG_AUTO(ag_object) *o = sample_base();
+        AG_TEST_ASSERT (!ag_object_empty(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_02, "ag_object_empty() returns true if the object length is"
+                       " zero") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_TEST_ASSERT (ag_object_empty(o));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(payload_01, "ag_object_payload() gets a handle to the object"
+                         " payload") {
+        AG_AUTO(ag_object) *o = sample_base();
+        const struct payload_base *p = ag_object_payload(o);
+        AG_TEST_ASSERT (p->x == 555 && p->y == -666);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(payload_mutable_01, "ag_object_payload_mutable() gets a handle to"
+                                 " the object payload") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        struct payload_derived *p = ag_object_payload_mutable(&o);
+        AG_TEST_ASSERT (*p->x == 555 && *p->y == -666);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(payload_mutable_02, "ag_object_payload_mutable() does not create a"
+                                 " clone of the object if its refc is 1") {
+        AG_AUTO(ag_object) *o  = sample_derived();
+        ag_object          *o2 = o;
+        (void)ag_object_payload_mutable(&o);
+        AG_TEST_ASSERT (o == o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(payload_mutable_03, "ag_object_payload_mutable() creates a clone of"
+                                 " the object if its refc > 1") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        (void)ag_object_payload_mutable(&o);
+        AG_TEST_ASSERT (o != o2);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(payload_mutable_04, "ag_object_payload_mutable() reduces the refc of"
+                                 " the original object by 1 if it creates a"
+                                 " clone") {
+        AG_AUTO(ag_object) *o = sample_derived();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+        AG_AUTO(ag_object) *o3 = ag_object_copy(o);
+        (void)ag_object_payload_mutable(&o);
+        AG_TEST_ASSERT (ag_object_refc(o3) == 2);
+} AG_TEST_EXIT();
+
+
+extern ag_test_suite *test_suite_object(void)
 {
-    printf("ag_object_type() gets the type of a derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    size_t t = ag_object_type(obj);
+        register_base();
+        register_derived();
 
-    ag_require (t == DERIVED_OBJECT, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
+        ag_test *test[] = {
+                new_01,             new_02,             copy_01,
+                copy_02,            copy_03,            copy_04,
+                copy_05,            copy_06,            clone_01,
+                clone_02,           clone_03,           clone_04,
+                clone_05,           clone_06,           release_01,
+                release_02,         release_03,         release_04,
+                release_05,         release_06,         cmp_01,
+                cmp_02,             lt_01,              lt_02,
+                gt_01,              gt_02,              typeid_01,
+                typeid_02,          uuid_01,            uuid_02,
+                sz_01,              sz_02,              sz_03,
+                refc_01,            refc_02,            len_01,
+                len_02,             valid_01,           valid_02,
+                hash_01,            hash_02,            str_01,
+                str_02,             empty_01,           empty_02,
+                payload_01,         payload_mutable_01, payload_mutable_02,
+                payload_mutable_03, payload_mutable_04,
+        };
+
+        const char *desc[] = {
+                new_01_desc,             new_02_desc,     
+                copy_01_desc,            copy_02_desc,    
+                copy_03_desc,            copy_04_desc,
+                copy_05_desc,            copy_06_desc,    
+                clone_01_desc,           clone_02_desc,   
+                clone_03_desc,           clone_04_desc,
+                clone_05_desc,           clone_06_desc,   
+                release_01_desc,         release_02_desc, 
+                release_03_desc,         release_04_desc,
+                release_05_desc,         release_06_desc, 
+                cmp_01_desc,             cmp_02_desc,     
+                lt_01_desc,              lt_02_desc,
+                gt_01_desc,              gt_02_desc,      
+                typeid_01_desc,          typeid_02_desc,  
+                uuid_01_desc,            uuid_02_desc,
+                sz_01_desc,              sz_02_desc,      
+                sz_03_desc,              refc_01_desc,    
+                refc_02_desc,            len_01_desc,
+                len_02_desc,             valid_01_desc,   
+                valid_02_desc,           hash_01_desc,    
+                hash_02_desc,            str_01_desc,
+                str_02_desc,             empty_01_desc,   
+                empty_02_desc,           payload_01_desc, 
+                payload_mutable_01_desc, payload_mutable_02_desc,
+                payload_mutable_03_desc, payload_mutable_04_desc,
+        };
+
+        ag_test_suite *ctx = ag_test_suite_new("ag_object interface");
+        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
+
+        return ctx;
 }
 
-
-                                 /* test case #4 for derived object [AgDM:??] */
-static void derived_test_id(void)
-{
-    printf("ag_object_id() gets the ID of a derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (ag_object_id(obj) == derived_method_id(obj), 
-            AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #5 for derived object [AgDM:??] */
-static void derived_test_hash(void)
-{
-    printf("ag_object_hash() gets the hash of a derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (ag_object_hash(obj) == derived_method_hash(obj), 
-            AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #6 for derived object [AgDM:??] */
-static void derived_test_sz(void)
-{
-    printf("ag_object_sz() gets the size of a derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (ag_object_sz(obj) == derived_method_sz(obj), 
-            AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #7 for derived object [AgDM:??] */
-static void derived_test_len(void)
-{
-    printf("ag_object_len() gets the length of a derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (ag_object_len(obj) == derived_method_len(obj), 
-            AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #8 for derived object [AgDM:??] */
-static void derived_test_empty(void)
-{
-    printf("ag_object_empty() returns false for a non-empty derived object");
-    
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (!ag_object_empty(obj), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                 /* test case #9 for derived object [AgDM:??] */
-static void derived_test_cmp(void)
-{
-    printf("ag_object_cmp() returns AG_TRISTATE_GND for the same derived"
-            " object");
-
-    ag_object_smart_t *o1 = derived_sample();
-    ag_object_smart_t *o2 = derived_sample();
-
-    ag_require (ag_object_cmp(o1, o2) == AG_TRISTATE_GND, AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                /* test case #10 for derived object [AgDM:??] */
-static void derived_test_lt(void)
-{
-    printf("ag_object_lt() returns false for the same derived object");
-
-    ag_object_smart_t *o1 = derived_sample();
-    ag_object_smart_t *o2 = derived_sample();
-
-    ag_require (!ag_object_lt(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                /* test case #11 for derived object [AgDM:??] */
-static void derived_test_eq(void)
-{
-    printf("ag_object_eq() returns true for the same derived object");
-
-    ag_object_smart_t *o1 = derived_sample();
-    ag_object_smart_t *o2 = derived_sample();
-
-    ag_require (ag_object_eq(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                /* test case #12 for derived object [AgDM:??] */
-static void derived_test_gt(void)
-{
-    printf("ag_object_gt() returns false for the same derived object");
-
-    ag_object_smart_t *o1 = derived_sample();
-    ag_object_smart_t *o2 = derived_sample();
-
-    ag_require (!ag_object_gt(o1, o2), AG_ERNO_TEST, NULL);
-    printf("...OK\n");
-}
-
-
-                                /* test case #13 for derived object [AgDM:??] */
-static void derived_test_payload(void)
-{
-    printf("ag_object_payload() gets the payload of a derived object");
-
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    const struct derived_payload *p = ag_object_payload(obj);
-    ag_require (*p->x == 555, AG_ERNO_TEST, NULL);
-    ag_require (*p->y == 666, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                /* test case #14 for derived object [AgDM:??] */
-static void derived_test_payload_mutable(void)
-{
-    printf("ag_object_payload_mutable() gets a mutable handle to the payload"
-            " of a derived object");
-
-    ag_object_smart_t *obj = derived_sample();
-    ag_require (obj, AG_ERNO_TEST, NULL);
-
-    struct derived_payload *p = ag_object_payload_mutable(&obj);
-    *p->x = 666;
-    *p->y = 555;
-    
-    ag_require (*p->x == 666, AG_ERNO_TEST, NULL);
-    ag_require (*p->y == 555, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                /* test case #15 for derived object [AgDM:??] */
-static void derived_test_str(void)
-{
-    printf("ag_object_str() returns the string representation of a derived"
-            " object");
-
-    ag_object_smart_t *o = derived_sample();
-    ag_string_smart_t *s = ag_object_str(o);
-    ag_require (!strcmp("derived", s), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                /* test case #16 for derived object [AgDM:??] */
-static void derived_test_refc(void)
-{
-    printf("ag_object_refc() returns 1 when a derived object is created");
-    
-    ag_object_smart_t *o = derived_sample();
-    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                /* test case #17 for derived object [AgDM:??] */
-static void derived_test_refc_2(void)
-{
-    printf("ag_object_refc() accounts for a derived object being copied");
-    
-    ag_object_smart_t *o = derived_sample();
-    ag_object_smart_t *cp1 = ag_object_copy(o);
-    ag_object_smart_t *cp2 = ag_object_copy(cp1);
-    ag_require (ag_object_refc(o) == 3, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-                                /* test case #18 for derived object [AgDM:??] */
-static void derived_test_refc_3(void)
-{
-    printf("ag_object_refc() accounts for a derived object being disposed");
-    
-    ag_object_t *o = derived_sample();
-    ag_object_smart_t *cp1 = ag_object_copy(o);
-    ag_object_t *cp2 = ag_object_copy(cp1);
-
-    ag_object_dispose(&o);
-    ag_object_dispose(&cp2);
-    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-
-static void derived_test_refc_4(void)
-{
-    printf("ag_object_refc() accounts for mutable handles to derived object"
-            " payloads");
-    
-    ag_object_t *o = derived_sample();
-    ag_object_t *cp1 = ag_object_copy(o);
-    ag_object_t *cp2 = ag_object_copy(cp1);
-
-    struct base_payload *p = ag_object_payload_mutable(&cp1);
-    (void) p;
-
-    ag_require (ag_object_refc(o) == 2, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp1) == 1, AG_ERNO_TEST, NULL);
-    ag_require (ag_object_refc(cp2) == 2, AG_ERNO_TEST, NULL);
-
-    ag_object_dispose(&cp1);
-    ag_object_dispose(&cp2);
-    ag_require (ag_object_refc(o) == 1, AG_ERNO_TEST, NULL);
-    ag_object_dispose(&o);
-
-    printf("...OK\n");
-}
-
-
-
-
-extern void ag_test_object(void)
-{
-    struct ag_object_vtable vt = {
-        .copy = NULL,
-        .dispose = NULL,
-        .id = NULL,
-        .sz = NULL,
-        .len = NULL,
-        .hash = NULL,
-        .cmp = NULL,
-        .str = NULL
-    };
-    
-    ag_object_init(32);
-    ag_object_register(BASE_OBJECT, &vt);
-
-    vt.copy = &derived_method_copy;
-    vt.dispose = &derived_method_dispose;
-    vt.id = &derived_method_id;
-    vt.sz = &derived_method_sz;
-    vt.len = &derived_method_len;
-    vt.hash = &derived_method_hash;
-    vt.cmp = &derived_method_cmp;
-    vt.str = &derived_method_str;
-    ag_object_register(DERIVED_OBJECT, &vt);
-
-
-    printf("===============================================================\n");
-    printf("Starting object model interface test suite...\n\n");
-
-    base_test_new();
-    base_test_dispose();
-    base_test_type();
-    base_test_id();
-    base_test_hash();
-    base_test_sz();
-    base_test_len();
-    base_test_empty();
-    base_test_cmp();
-    base_test_lt();
-    base_test_eq();
-    base_test_gt();
-    base_test_payload();
-    base_test_payload_mutable();
-    base_test_str();
-    base_test_refc();
-    base_test_refc_2();
-    base_test_refc_3();
-    base_test_refc_4();
-
-    derived_test_new();
-    derived_test_dispose();
-    derived_test_type();
-    derived_test_id();
-    derived_test_hash();
-    derived_test_sz();
-    derived_test_len();
-    derived_test_empty();
-    derived_test_cmp();
-    derived_test_lt();
-    derived_test_eq();
-    derived_test_gt();
-    derived_test_payload();
-    derived_test_payload_mutable();
-    derived_test_str();
-    derived_test_refc();
-    derived_test_refc_2();
-    derived_test_refc_3();
-    derived_test_refc_4();
-
-    printf("\n");
-    ag_object_exit();
-}
-
-#endif

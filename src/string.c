@@ -1,200 +1,351 @@
+/*-
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Argent - infrastructure for building web services
+ * Copyright (C) 2020 Abhishek Chakravarti
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+ */
+
+
+#include "../include/argent.h"
+
+#include <ctype.h>
 #include <string.h>
 #include <stdarg.h>
-#include "./api.h"
 
 
-/*******************************************************************************
- *                               STRING INTERNALS
+/* is_string_not_empty() checks whether a string is not null and not empty. */
+#ifndef NDEBUG
+#       define is_string_not_empty(s) (s && *s)
+#endif
+
+
+/* Declare the public inline functions of the string interface. */
+extern inline ag_string *ag_string_new_empty(void);
+extern inline bool      ag_string_lt(const ag_string *, const char *);
+extern inline bool      ag_string_eq(const ag_string *, const char *);
+extern inline bool      ag_string_gt(const ag_string *, const char *);
+extern inline bool      ag_string_empty(const ag_string *);
+
+
+/* 
+ * ag_string_new() creates a new instance of a dynamic string from a statically
+ * allocated string.
  */
-
-                     /* index offset from string to reference count [AgDM:??] */
-#define STRING_OFFSET_REFC -2
-
-                                /* index offset from string to size [AgDM:??] */
-#define STRING_OFFSET_SZ -1
-
-                      /* size offset for terminating null character [AgDM:??] */
-#define STRING_OFFSET_NULL 1
-
-                                        /* index of reference count [AgDM:??] */
-#define STRING_INDEX_REFC 0
-
-                                                   /* index of size [AgDM:??[ */
-#define STRING_INDEX_SZ 1
-
-                                          /* index of string buffer [AgDM:??] */
-#define STRING_INDEX_STR 2
-
-                                       /* creates new padded string [AgDM:??] */
-static inline char *string_new(size_t sz)
+extern ag_string *
+ag_string_new(const char *src)
 {
-    size_t *p = ag_memblock_new(sizeof (size_t) * 2 + sz + STRING_OFFSET_NULL);
-    p[STRING_INDEX_REFC] = 1;
-    p[STRING_INDEX_SZ] = sz;
-    return (char *) &p[STRING_INDEX_STR];
-}
+        AG_ASSERT_PTR (src);
 
-                            /* gets starting point of padded string [AgDM:??] */
-static inline size_t *string_head(ag_string_t *ctx)
-{
-    return &((size_t *) ctx)[STRING_OFFSET_REFC];
-}
+        size_t sz = strlen(src);
+        char *s = ag_memblock_new(sz + 1);
 
-                                  /* gets reference count of string [AgDM:??] */
-static inline size_t string_sz(const ag_string_t *ctx)
-{
-    return ((size_t *) ctx)[STRING_OFFSET_SZ];
-}
-
-                                             /* gets size of string [AgDM:??] */
-static inline size_t string_refc(const ag_string_t *ctx)
-{
-    return ((size_t *) ctx)[STRING_OFFSET_REFC];
-}
-
-                             /* increases reference count of string [AgDM:??] */
-static inline void string_refc_inc(ag_string_t *ctx)
-{
-    ((size_t *) ctx)[STRING_OFFSET_REFC]++;
-}
-
-                             /* decreases reference count of string [AgDM:??] */
-static inline void string_refc_dec(ag_string_t *ctx)
-{
-    ((size_t *) ctx)[STRING_OFFSET_REFC]--;
+        strncpy(s, src, sz);
+        s[sz] = '\0';
+        return (s);
 }
 
 
-/*******************************************************************************
- *                               STRING EXTERNALS
+/*
+ * ag_string_new_fmt() creates a new instance of a dynamic string from a
+ * statically allocated format string with variable arguments a la printf(). By
+ * passing NULL and 0 as the first two arguments to vsnprintf() we determine the
+ * size of the formatted string (excluding the terminating null character).
  */
-
-
-                            /* declaration of ag_string_new_empty() [AgDM:??] */
-extern inline ag_string_t *ag_string_new_empty(void);
-
-                                   /* declaration of ag_string_lt() [AgDM:??] */
-extern inline bool ag_string_lt(const ag_string_t *lhs, const ag_string_t *rhs);
-
-                                   /* declaration of ag_string_eq() [AgDM:??] */
-extern inline bool ag_string_eq(const ag_string_t *lhs, const ag_string_t *rhs);
-
-                                   /* declaration of ag_string_gt() [AgDM:??] */
-extern inline bool ag_string_gt(const ag_string_t *lhs, const ag_string_t *rhs);
-
-                             /* declaration of ag_string_add_cstr() [AgDM:??] */
-extern inline void ag_string_add_cstr(ag_string_t **ctx, const char *cat);
-
-                               /* implementation of ag_string_new() [AgDM:??] */
-extern ag_string_t *ag_string_new(const char *cstr)
+extern ag_string *
+ag_string_new_fmt(const char *fmt, ...)
 {
-    ag_assert (cstr);
-    size_t sz = strlen(cstr);
-    char *s = string_new(sz);
+        AG_ASSERT (is_string_not_empty(fmt));
 
-    strncpy(s, cstr, sz);
-    s[sz] = '\0';
-    return s;
+        va_list args;
+        va_start(args, fmt);
+        char *bfr = ag_memblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
+        va_end(args);
+
+        va_start(args, fmt);
+        (void)vsprintf(bfr, fmt, args);
+        va_end(args);
+
+        char *s = ag_string_new(bfr);
+        ag_memblock_release((ag_memblock **)&bfr);
+        return (s);
 }
 
-                           /* implementation of ag_string_new_fmt() [AgDM:??] */
-extern ag_string_t *ag_string_new_fmt(const char *fmt, ...)
+
+/* ag_string_copy() creates a shallow copy of a dynamic string. */
+extern ag_string *
+ag_string_copy(const ag_string *ctx)
 {
-    va_list args;
+        AG_ASSERT_PTR (ctx);
 
-    ag_assert (fmt && *fmt);
-    va_start(args, fmt);
-    char *bfr = ag_memblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
-    va_end(args);
-
-    va_start(args, fmt);
-    (void) vsprintf(bfr, fmt, args);
-    va_end(args);
-
-    ag_string_t *s = ag_string_new(bfr);
-    ag_memblock_free((ag_memblock_t **) &bfr);
-    return s;
+        return (ag_memblock_copy(ctx));
 }
 
-                              /* implementation of ag_string_copy() [AgDM:??] */
-extern ag_string_t *ag_string_copy(const ag_string_t *ctx)
+
+/* 
+ * ag_string_release() releases a dynamic string. We don't cast ctx to (void **)
+ * when calling ag_memblock_release() in order to avoid potential portability
+ * issues in case the size of pointers differ. See the C-FAQ List question 4.9
+ * at http://c-faq.com/ptrs/genericpp.html.
+ */
+extern void
+ag_string_release(ag_string **ctx)
 {
-    ag_assert (ctx);
-    ag_string_t *cp = (ag_string_t *) ctx;
-
-    string_refc_inc(cp);
-    return cp;
-}
-
-                           /* implementation of ag_string_dispose() [AgDM:??] */
-extern void ag_string_dispose(ag_string_t **ctx)
-{
-    ag_string_t *hnd;
-
-    if (ag_likely (ctx && (hnd = *ctx))) {
-        string_refc_dec(hnd);
-
-        if (!string_refc(hnd)) {
-            size_t *h = string_head(hnd);
-            ag_memblock_free((ag_memblock_t **) &h);
+        if (AG_LIKELY (ctx && *ctx)) {
+                ag_string *hnd = *ctx;
+                void *ptr = hnd;
+                ag_memblock_release(&ptr);
+                *ctx = ptr;
         }
-    }
 }
 
-                               /* implementation of ag_string_len() [AgDM:??] */
-extern size_t ag_string_len(const ag_string_t *ctx)
+
+/* 
+ * ag_string_cmp() compares two strings lexicographically. We have adapted the
+ * code from the uf8cmp() function in Sheredom's UTF-8 header only library (see
+ * https://github.com/sheredom/utf8.h/blob/master/utf8.h). We could have simply
+ * used strcmp(), but there may be edge cases in Unicode strings which strcmp()
+ * doesn't handle.
+ */
+extern enum ag_cmp
+ag_string_cmp(const ag_string *ctx,  const char *cmp)
 {
-    register size_t i = 0, len = 0;
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
 
-    while (ctx[i]) {
-        if ((ctx[i] & 0xC0) != 0x80)
-            len++;
-        i++;
-    }
+        if (!*ctx && *cmp)
+                return (AG_CMP_LT);
 
-    return len;
+        if (*ctx && !*cmp)
+                return (AG_CMP_GT);
+
+        register const unsigned char *s1 = (const unsigned char *)ctx;
+        register const unsigned char *s2 = (const unsigned char *)cmp;
+
+        while (*s1 || *s2) {
+                if (*s1 < *s2)
+                        return (AG_CMP_LT);
+                else if (*s1 > *s2)
+                        return (AG_CMP_GT);
+
+                s1++;
+                s2++;
+        }
+
+        return (AG_CMP_EQ);
 }
 
-                                /* implementation of ag_string_sz() [AgDM:??] */
-extern size_t ag_string_sz(const ag_string_t *ctx)
+
+/* ag_string_has() checks whether a string contains a particular substring. */
+extern bool
+ag_string_has(const ag_string *ctx, const char *tgt)
 {
-    ag_assert (ctx);
-    return string_sz(ctx);
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (tgt);
+
+        if (AG_UNLIKELY (!*tgt && *ctx))
+                return false;
+
+        return strstr(ctx, tgt);
 }
 
-                               /* implementation of ag_string_cmp() [AgDM:??] */
-extern enum ag_tristate ag_string_cmp(const ag_string_t *lhs, 
-        const ag_string_t *rhs)
+
+/* 
+ * ag_string_len() determines the lexicographcical length of a string, taking
+ * into consideration that the string may contain non-ASCII UTF-8 characters.
+ */
+extern size_t
+ag_string_len(const ag_string *ctx)
 {
-    ag_assert (lhs && rhs);
-    int cmp = strcmp(lhs, rhs);
+        AG_ASSERT_PTR (ctx);
 
-    if (!cmp)
-        return AG_TRISTATE_GND;
+        register size_t i = 0, len = 0;
 
-    return cmp > 0 ? AG_TRISTATE_HI : AG_TRISTATE_LO;
+        while (ctx[i]) {
+                if ((ctx[i] & 0xC0) != 0x80)
+                        len++;
+                
+                i++;
+        }
+
+        return len;
 }
 
-                               /* implementation of ag_string_add() [AgDM:??] */
-extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat)
+
+/*
+ * ag_string_sz() gets the size in bytes of a dynamic string. Since dynamic
+ * strings are allocated through memory blocks, we can retrieve their size by
+ * querying ag_memblock_sz().
+ */
+extern size_t
+ag_string_sz(const ag_string *ctx)
 {
-    ag_assert (cat);
-    if (ag_unlikely (!*cat))
-        return;
+        AG_ASSERT_PTR (ctx);
 
-    ag_assert (ctx && *ctx);
-    ag_string_t *oldstr = *ctx;
-    size_t oldsz = string_sz(oldstr);
+        return (ag_memblock_sz(ctx));
+}
 
-    size_t addsz = string_sz(cat);
-    size_t newsz = oldsz + addsz;
 
-    char *s = string_new(newsz);
-    strncpy(s, oldstr, oldsz);
-    strncpy(s + oldsz, cat, addsz);
-    s[newsz] = '\0';
+/*
+ * ag_string_refc() gets the reference count of a dynamic string. Again, as in
+ * the case of ag_string_sz(), we use the memory block interface to do so.
+ */
+extern size_t
+ag_string_refc(const ag_string *ctx)
+{
+        AG_ASSERT_PTR (ctx);
 
-    ag_string_dispose(ctx);
-    *ctx = s;
+        return (ag_memblock_refc(ctx));
+}
+
+
+/*
+ * ag_string_lower() transforms a string to lowercase. Since we have chosen to
+ * keep strings as immutable, we return a new string instance after processing.
+ * Since we rely on tolower(), this function isn't guaranteed to work correctly
+ * with Unicode strings.
+ *
+ * TODO: make ag_string_lower() Unicode-safe.
+ */
+extern ag_string *
+ag_string_lower(const ag_string *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(ctx);
+
+        for (register size_t i = 0; i < sz; i++)
+                s[i] = tolower(s[i]);
+
+        return (s);
+}
+
+
+/*
+ * ag_string_upper() transforms a string to uppercase. As in the case of
+ * ag_string_lower(), we choose to return a new instance instead of modifying
+ * the original string. Again, as in the case of ag_string_lower(), this
+ * function isn't guaranteed to be Unicode-safe.
+ *
+ * TODO: make ag_string_upper() Unicode-safe.
+ */
+extern ag_string *
+ag_string_upper(const ag_string *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(ctx);
+
+        for (register size_t i = 0; i < sz; i++)
+                s[i] = toupper(s[i]);
+
+        return (s);
+}
+
+
+/* 
+ * ag_string_proper() transforms a string to proper case. In proper case, we
+ * capitalise a character if:
+ *   - it is the first character,
+ *   - it is preceded by a space, or
+ *   - it is preceded by a period.
+ *
+ * As in the case of ag_string_lower() and ag_string_upper(), we choose to
+ * return a new string instance after processing. And like both these functions,
+ * this one isn't Unicode-safe.
+ *
+ * TODO: make ag_string_proper() Unicode-safe.
+ */
+extern ag_string *
+ag_string_proper(const ag_string *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(s);
+
+        for (register size_t i = 0; i < sz; i++) {
+                s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.')
+                        ? toupper(s[i]) : tolower(s[i]);
+        }
+
+        return (s);
+}
+
+
+/*
+ * ag_string_split() splits a string around a pivot, returning the left side of
+ * the pivot. In case the pivot isn't found, then an empty string is returned.
+ * In the unlikely case that an empty string is provided for a pivot, then we
+ * return a copy of the original string.
+ */
+extern ag_string *
+ag_string_split(const ag_string *ctx, const char *pvt)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (pvt);
+
+        if (AG_UNLIKELY (!*pvt))
+                return ag_string_copy(ctx);
+
+        char *find;
+
+        if (AG_UNLIKELY (!(*ctx && (find = strstr(ctx, pvt)))))
+                return ag_string_new_empty();
+
+        size_t sz = find - ctx;
+        ag_string *lhs = ag_memblock_new(sz + 1);
+        strncpy(lhs, ctx, sz);
+        lhs[sz] = '\0';
+
+        return (lhs);
+}
+
+
+/*
+ * ag_string_split_right() splits a string around a pivot and returns the
+ * substring on the right side of the pivot. As in the case of
+ * ag_string_split(), in case the pivot doesn't exist then an empty string is
+ * returned, and if the pivot is an empty string then a copy of the original
+ * string is returned.
+ */
+extern ag_string *
+ag_string_split_right(const ag_string *ctx, const char *pvt)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (pvt);
+
+        if (AG_UNLIKELY (!*pvt))
+                return ag_string_copy(ctx);
+
+        char *find;
+
+        if (AG_UNLIKELY (!(*ctx && (find = strstr(ctx, pvt)))))
+                return ag_string_new_empty();
+
+        size_t off = strlen(pvt);
+        size_t sz = strlen(find) - off;
+
+        ag_string *rhs = ag_memblock_new(sz + 1);
+        strncpy(rhs, find + strlen(pvt), sz);
+        rhs[sz] = '\0';
+
+        return (rhs);
 }
 
