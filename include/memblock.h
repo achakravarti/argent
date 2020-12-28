@@ -1,5 +1,5 @@
-#ifndef __ARGENT_MBLOCK_H__
-#define __ARGENT_MBLOCK_H__
+#ifndef __ARGENT_MEMBLOCK_H__
+#define __ARGENT_MEMBLOCK_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -60,5 +60,5 @@ extern ag_str *ag_mblock_str(const ag_mblock *);
         }
 #endif
 
-#endif /* !__ARGENT_MBLOCK_H__ */
+#endif /* !__ARGENT_MEMBLOCK_H__ */
 

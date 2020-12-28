@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_OBJ_H__
-#define __ARGENT_OBJ_H__
+#ifndef __ARGENT_OBJECT_H__
+#define __ARGENT_OBJECT_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -108,5 +108,5 @@ extern void ag_obj_registry_set(ag_typeid, const struct ag_obj_vtable *);
 }
 #endif
 
-#endif /* !__ARGENT_OBJ_H__ */
+#endif /* !__ARGENT_OBJECT_H__ */
 
