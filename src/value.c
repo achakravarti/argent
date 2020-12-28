@@ -1,5 +1,5 @@
 #include "./api.h"
-
+#if 0
 
 /*******************************************************************************
  *                               VALUE INTERNALS
@@ -204,3 +204,4 @@ extern ag_object_t *ag_value_object(const ag_value_t *ctx)
     return (ag_object_t *)((uintptr_t)ctx & MASK_PTR);
 }
 
+#endif

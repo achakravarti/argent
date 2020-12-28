@@ -537,6 +537,7 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx);
  *                             DYNAMIC TYPE SYSTEM
  */
 
+#if 0
 typedef intptr_t ag_int;
 typedef uintptr_t ag_uint;
 typedef double ag_float;
@@ -862,4 +863,4 @@ extern void ag_list_map(const ag_list_t *ctx, void (*cbk)(
                           /* iterates mutably through nodes of list [AgDM:??] */
 extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
         void *opt), void *opt);
-
+#endif

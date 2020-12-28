@@ -1,5 +1,5 @@
 #include "./api.h"
-
+#if 0
 
 
 
@@ -315,4 +315,4 @@ extern void ag_list_map_mutable(ag_list_t **ctx, void (*cbk)(ag_object_t **node,
         n = n->nxt;
     }
 }
-
+#endif
