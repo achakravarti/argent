@@ -15,7 +15,7 @@ struct node {
 
 static struct node *node_new(ag_test *test, const char *desc)
 {
-        struct node *n = ag_mblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
         n->test = test;
         n->desc = ag_string_new_fmt("%s", desc);
         n->status = AG_TEST_STATUS_WAIT;
@@ -30,7 +30,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *next = ctx->next;
 
         ag_string_release(&ctx->desc);
-        ag_mblock_release((ag_mblock **)&ctx);
+        ag_memblock_release((ag_memblock **)&ctx);
 
         return next;
 }
@@ -112,7 +112,7 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
 {
         AG_ASSERT (desc && *desc);
 
-        ag_test_suite *ctx = ag_mblock_new(sizeof *ctx);
+        ag_test_suite *ctx = ag_memblock_new(sizeof *ctx);
         ctx->desc = ag_string_new_fmt("%s", desc);
         ctx->head = NULL;
 
@@ -124,7 +124,7 @@ extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
-        return ag_mblock_copy(ctx);
+        return ag_memblock_copy(ctx);
 }
 
 
@@ -133,7 +133,7 @@ extern void ag_test_suite_release(ag_test_suite **ctx)
         ag_test_suite *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                if (ag_mblock_refc(hnd) == 1) {
+                if (ag_memblock_refc(hnd) == 1) {
                         ag_string_release(&hnd->desc);
 
                         struct node *n = hnd->head;
@@ -141,7 +141,7 @@ extern void ag_test_suite_release(ag_test_suite **ctx)
                                 n = node_free(n);
                 }
 
-                ag_mblock_release((ag_mblock **)ctx);
+                ag_memblock_release((ag_memblock **)ctx);
         }
 }
 

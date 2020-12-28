@@ -34,14 +34,14 @@ extern "C" {
 
 typedef struct ag_object ag_object;
 
-typedef ag_mblock   *(ag_object_clone_virt)(const ag_mblock *);
-typedef void         (ag_object_release_virt)(ag_mblock *);
+typedef ag_memblock *(ag_object_clone_virt)(const ag_memblock *);
+typedef void         (ag_object_release_virt)(ag_memblock *);
 typedef enum ag_cmp  (ag_object_cmp_virt)(const ag_object *, const ag_object *);
 typedef bool         (ag_object_valid_virt)(const ag_object *);
 typedef size_t       (ag_object_sz_virt)(const ag_object *);
 typedef size_t       (ag_object_len_virt)(const ag_object *);
 typedef ag_hash      (ag_object_hash_virt)(const ag_object *);
-typedef ag_string      *(ag_object_str_virt)(const ag_object *);
+typedef ag_string   *(ag_object_str_virt)(const ag_object *);
 
 
 struct ag_object_vtable {
@@ -56,7 +56,7 @@ struct ag_object_vtable {
 };
 
 
-extern ag_object *ag_object_new(ag_typeid, ag_mblock *);
+extern ag_object *ag_object_new(ag_typeid, ag_memblock *);
 extern ag_object *ag_object_copy(const ag_object *);
 extern ag_object *ag_object_clone(const ag_object *);
 extern void ag_object_release(ag_object **);
@@ -88,8 +88,8 @@ extern size_t ag_object_refc(const ag_object *);
 extern size_t ag_object_len(const ag_object *);
 extern ag_hash ag_object_hash(const ag_object *);
 extern ag_string *ag_object_str(const ag_object *);
-extern const ag_mblock *ag_object_payload(const ag_object *);
-extern ag_mblock *ag_object_payload_mutable(ag_object **);
+extern const ag_memblock *ag_object_payload(const ag_object *);
+extern ag_memblock *ag_object_payload_mutable(ag_object **);
 
 inline bool ag_object_empty(const ag_object *ctx)
 {

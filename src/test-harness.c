@@ -57,7 +57,7 @@ struct node {
  */
 static inline struct node *node_new(const ag_test_suite *ts)
 {
-        struct node *n = ag_mblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ts);
         n->nxt = NULL;
 
@@ -74,7 +74,7 @@ static inline struct node *node_new(const ag_test_suite *ts)
  */
 static inline struct node *node_copy(const struct node *ctx)
 {
-        struct node *n = ag_mblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
         n->ts = ag_test_suite_copy(ctx->ts);
         n->nxt = ctx->nxt;
 
@@ -94,7 +94,7 @@ static inline struct node *node_free(struct node *ctx)
         struct node *nxt = ctx->nxt;
 
         ag_test_suite_release(&ctx->ts);
-        ag_mblock_release((ag_mblock **)&ctx);
+        ag_memblock_release((ag_memblock **)&ctx);
 
         return nxt;
 }
@@ -117,7 +117,7 @@ struct ag_test_harness {
  */
 extern ag_test_harness *ag_test_harness_new(void)
 {
-        ag_test_harness *ctx = ag_mblock_new(sizeof *ctx);
+        ag_test_harness *ctx = ag_memblock_new(sizeof *ctx);
         ctx->head = NULL;
 
         return ctx;
@@ -135,7 +135,7 @@ extern ag_test_harness *ag_test_harness_copy(const ag_test_harness *ctx)
 {
         AG_ASSERT (ctx);
 
-        return ag_mblock_copy(ctx);
+        return ag_memblock_copy(ctx);
 }
 
 
@@ -149,13 +149,13 @@ extern void ag_test_harness_release(ag_test_harness **ctx)
         ag_test_harness *hnd;
 
         if (AG_LIKELY (ctx && (hnd = *ctx))) {
-                if (ag_mblock_refc(hnd) == 1) {
+                if (ag_memblock_refc(hnd) == 1) {
                         struct node *n = hnd->head;
                         while (n)
                                 n = node_free(n);
                 }
 
-                ag_mblock_release((ag_mblock **)ctx);
+                ag_memblock_release((ag_memblock **)ctx);
         }
 }
 

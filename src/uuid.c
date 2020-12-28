@@ -14,7 +14,7 @@ extern inline bool ag_uuid_gt(const ag_uuid *, const ag_uuid *);
 
 extern ag_uuid *ag_uuid_new(void)
 {
-        ag_uuid *ctx = ag_mblock_new(sizeof *ctx);
+        ag_uuid *ctx = ag_memblock_new(sizeof *ctx);
         uuid_generate_random(ctx->uuid);
 
         return ctx;
@@ -23,7 +23,7 @@ extern ag_uuid *ag_uuid_new(void)
 
 extern ag_uuid *ag_uuid_new_empty(void)
 {
-        ag_uuid *ctx = ag_mblock_new(sizeof *ctx);
+        ag_uuid *ctx = ag_memblock_new(sizeof *ctx);
         uuid_clear(ctx->uuid);
 
         return ctx;
@@ -34,7 +34,7 @@ extern ag_uuid *ag_uuid_parse(const char *src)
 {
         AG_ASSERT_PTR (src && *src);
 
-        ag_uuid *ctx = ag_mblock_new(sizeof *ctx);
+        ag_uuid *ctx = ag_memblock_new(sizeof *ctx);
         (void)uuid_parse((char *)src, ctx->uuid);
 
         return ctx;
@@ -45,8 +45,8 @@ extern ag_uuid *ag_uuid_copy(const ag_uuid *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        ag_mblock *cp = (ag_mblock *)ctx;
-        return ag_mblock_copy(cp);
+        ag_memblock *cp = (ag_memblock *)ctx;
+        return ag_memblock_copy(cp);
 }
 
 
@@ -54,7 +54,7 @@ extern ag_uuid *ag_uuid_clone(const ag_uuid *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_mblock_clone(ctx);
+        return ag_memblock_clone(ctx);
 }
 
 
@@ -63,8 +63,8 @@ extern void ag_uuid_release(ag_uuid **ctx)
         ag_uuid *u;
 
         if (AG_LIKELY (ctx && (u = *ctx))) {
-                ag_mblock *m = (ag_mblock *)u;
-                ag_mblock_release(&m);
+                ag_memblock *m = (ag_memblock *)u;
+                ag_memblock_release(&m);
                 *ctx = m;
         }
 }

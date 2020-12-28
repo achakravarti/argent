@@ -51,7 +51,7 @@ extern ag_string *ag_string_new(const char *src)
         AG_ASSERT_PTR (src);
 
         size_t sz = strlen(src);
-        char *s = ag_mblock_new(sz + 1);
+        char *s = ag_memblock_new(sz + 1);
 
         strncpy(s, src, sz);
         s[sz] = '\0';
@@ -71,7 +71,7 @@ extern ag_string *ag_string_new_fmt(const char *fmt, ...)
 
         va_list args;
         va_start(args, fmt);
-        char *bfr = ag_mblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
+        char *bfr = ag_memblock_new(vsnprintf(NULL, 0, fmt, args) + 1);
         va_end(args);
 
         va_start(args, fmt);
@@ -79,7 +79,7 @@ extern ag_string *ag_string_new_fmt(const char *fmt, ...)
         va_end(args);
 
         char *s = ag_string_new(bfr);
-        ag_mblock_release((ag_mblock **)&bfr);
+        ag_memblock_release((ag_memblock **)&bfr);
         return s;
 }
 
@@ -89,13 +89,13 @@ extern ag_string *ag_string_copy(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_mblock_copy(ctx);
+        return ag_memblock_copy(ctx);
 }
 
 
 /* 
  * ag_string_release() releases a dynamic string. We don't cast ctx to (void **)
- * when calling ag_mblock_release() in order to avoid potential portability
+ * when calling ag_memblock_release() in order to avoid potential portability
  * issues in case the size of pointers differ. See the C-FAQ List question 4.9
  * at http://c-faq.com/ptrs/genericpp.html.
  */
@@ -104,7 +104,7 @@ extern void ag_string_release(ag_string **ctx)
         if (AG_LIKELY (ctx && *ctx)) {
                 ag_string *hnd = *ctx;
                 void *ptr = hnd;
-                ag_mblock_release(&ptr);
+                ag_memblock_release(&ptr);
                 *ctx = ptr;
         }
 }
@@ -182,13 +182,13 @@ extern size_t ag_string_len(const ag_string *ctx)
 /*
  * ag_string_sz() gets the size in bytes of a dynamic string. Since dynamic
  * strings are allocated through memory blocks, we can retrieve their size by
- * querying ag_mblock_sz().
+ * querying ag_memblock_sz().
  */
 extern size_t ag_string_sz(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_mblock_sz(ctx);
+        return ag_memblock_sz(ctx);
 }
 
 
@@ -200,7 +200,7 @@ extern size_t ag_string_refc(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_mblock_refc(ctx);
+        return ag_memblock_refc(ctx);
 }
 
 
@@ -216,8 +216,8 @@ extern ag_string *ag_string_lower(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        ag_string *s = ag_mblock_clone(ctx);
-        register size_t sz = ag_mblock_sz(ctx);
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
                 s[i] = tolower(s[i]);
@@ -238,8 +238,8 @@ extern ag_string *ag_string_upper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        ag_string *s = ag_mblock_clone(ctx);
-        register size_t sz = ag_mblock_sz(ctx);
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(ctx);
 
         for (register size_t i = 0; i < sz; i++)
                 s[i] = toupper(s[i]);
@@ -265,8 +265,8 @@ extern ag_string *ag_string_proper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
-        ag_string *s = ag_mblock_clone(ctx);
-        register size_t sz = ag_mblock_sz(s);
+        ag_string *s = ag_memblock_clone(ctx);
+        register size_t sz = ag_memblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {
                 s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.')
@@ -297,7 +297,7 @@ extern ag_string *ag_string_split(const ag_string *ctx, const char *pvt)
                 return ag_string_new_empty();
 
         size_t sz = find - ctx;
-        ag_string *lhs = ag_mblock_new(sz + 1);
+        ag_string *lhs = ag_memblock_new(sz + 1);
         strncpy(lhs, ctx, sz);
         lhs[sz] = '\0';
 
@@ -328,7 +328,7 @@ extern ag_string *ag_string_split_right(const ag_string *ctx, const char *pvt)
         size_t off = strlen(pvt);
         size_t sz = strlen(find) - off;
 
-        ag_string *rhs = ag_mblock_new(sz + 1);
+        ag_string *rhs = ag_memblock_new(sz + 1);
         strncpy(rhs, find + strlen(pvt), sz);
         rhs[sz] = '\0';
 

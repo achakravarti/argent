@@ -19,7 +19,7 @@ struct payload_derived {
 
 static ag_object *sample_base(void)
 {
-        struct payload_base *p = ag_mblock_new(sizeof *p);
+        struct payload_base *p = ag_memblock_new(sizeof *p);
         p->x = 555;
         p->y = -666;
 
@@ -29,10 +29,10 @@ static ag_object *sample_base(void)
 
 static ag_object *sample_derived(void)
 {
-        struct payload_derived *p = ag_mblock_new(sizeof *p);
+        struct payload_derived *p = ag_memblock_new(sizeof *p);
 
-        p->x = ag_mblock_new(sizeof *p->x);
-        p->y = ag_mblock_new(sizeof *p->y);
+        p->x = ag_memblock_new(sizeof *p->x);
+        p->y = ag_memblock_new(sizeof *p->y);
 
         *p->x = 555;
         *p->y = -666;
@@ -41,13 +41,13 @@ static ag_object *sample_derived(void)
 }
 
 
-static ag_mblock *virt_clone(const ag_mblock *payload)
+static ag_memblock *virt_clone(const ag_memblock *payload)
 {
     const struct payload_derived *p = (const struct payload_derived *)payload;
-    struct payload_derived *cp = ag_mblock_new(sizeof *p);
+    struct payload_derived *cp = ag_memblock_new(sizeof *p);
 
-    cp->x = ag_mblock_new(sizeof *cp->x);
-    cp->y = ag_mblock_new(sizeof *cp->y);
+    cp->x = ag_memblock_new(sizeof *cp->x);
+    cp->y = ag_memblock_new(sizeof *cp->y);
 
     *cp->x = *p->x;
     *cp->y = *p->y;
@@ -56,11 +56,11 @@ static ag_mblock *virt_clone(const ag_mblock *payload)
 }
 
 
-static void virt_release(ag_mblock *payload)
+static void virt_release(ag_memblock *payload)
 {
     struct payload_derived *p = (struct payload_derived *)payload;
-    ag_mblock_release((void **) &p->x);
-    ag_mblock_release((void **) &p->y);
+    ag_memblock_release((void **) &p->x);
+    ag_memblock_release((void **) &p->y);
 }
 
 
@@ -84,8 +84,8 @@ static size_t virt_sz(const ag_object *ctx)
 {
         const struct payload_derived *p = ag_object_payload(ctx);
 
-        return ag_mblock_sz(ctx) + ag_mblock_sz(p) + ag_mblock_sz(p->x)
-               + ag_mblock_sz(p->y);
+        return ag_memblock_sz(ctx) + ag_memblock_sz(p) + ag_memblock_sz(p->x)
+               + ag_memblock_sz(p->y);
 }
 
 

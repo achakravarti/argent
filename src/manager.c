@@ -16,7 +16,7 @@ extern void ag_init(void)
                 {
                         .erno = AG_ERNO_MBLOCK, 
                         .msg = AG_ERNO_MSG(AG_ERNO_MBLOCK),
-                        .hnd = &ag_mblock_exception_handler
+                        .hnd = &ag_memblock_exception_handler
                 },
         };
 

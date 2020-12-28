@@ -16,30 +16,30 @@ static struct vector *g_client;
  * determining the vector index according to type ID.
  */
 static inline struct vector *typeid_vector(ag_typeid);
-static inline size_t typeid_index(ag_typeid);
+static inline size_t         typeid_index(ag_typeid);
 
 
 /* Prototypes to manage managing vectors */
 static inline struct vector *vector_new(size_t);
-static void vector_release(struct vector **);
-static inline void vector_resize(struct vector *, size_t);
+static void                  vector_release(struct vector **);
+static inline void           vector_resize(struct vector *, size_t);
 
 
 /* Prototypes for vector accessor and mutator */
 static inline const struct ag_object_vtable *vector_get(const struct vector *,
-                                                     size_t);
+                                                        size_t);
 static void vector_set(struct vector *, size_t, const struct ag_object_vtable *);
 
 
 /* Prototypes for the default callback functions */
-static ag_mblock *def_clone(const ag_mblock *);
-static void def_release(ag_mblock *);
-static enum ag_cmp def_cmp(const ag_object *, const ag_object *);
-static bool def_valid(const ag_object *);
-static size_t def_sz(const ag_object *);
-static size_t def_len(const ag_object *);
-static size_t def_hash(const ag_object *);
-static ag_string *def_str(const ag_object *);
+static ag_memblock *def_clone(const ag_memblock *);
+static void         def_release(ag_memblock *);
+static enum ag_cmp  def_cmp(const ag_object *, const ag_object *);
+static bool         def_valid(const ag_object *);
+static size_t       def_sz(const ag_object *);
+static size_t       def_len(const ag_object *);
+static size_t       def_hash(const ag_object *);
+static ag_string   *def_str(const ag_object *);
 
 
 extern void ag_object_registry_init(void)
@@ -83,8 +83,8 @@ static inline size_t typeid_index(ag_typeid typeid)
 
 static inline struct vector *vector_new(size_t cap)
 {
-        struct vector *ctx = ag_mblock_new(sizeof *ctx);
-        ctx->vt = ag_mblock_new(sizeof *ctx->vt * cap);
+        struct vector *ctx = ag_memblock_new(sizeof *ctx);
+        ctx->vt = ag_memblock_new(sizeof *ctx->vt * cap);
         ctx->cap = cap;
 
         return ctx;
@@ -96,11 +96,11 @@ static void vector_release(struct vector **ctx)
         struct vector *v;
 
         if (AG_LIKELY (ctx && (v = *ctx))) {
-                ag_mblock *m = v->vt;
-                ag_mblock_release(&m);
+                ag_memblock *m = v->vt;
+                ag_memblock_release(&m);
 
                 m = v;
-                ag_mblock_release(&m);
+                ag_memblock_release(&m);
                 *ctx = m;
         }
 }
@@ -108,8 +108,8 @@ static void vector_release(struct vector **ctx)
 
 static inline void vector_resize(struct vector *ctx, size_t cap)
 {
-        ag_mblock *m = ctx->vt;
-        ag_mblock_resize(&m, cap);
+        ag_memblock *m = ctx->vt;
+        ag_memblock_resize(&m, cap);
 }
 
 
@@ -144,15 +144,15 @@ static void vector_set(struct vector *ctx, size_t idx,
 }
 
 
-static ag_mblock *def_clone(const ag_mblock *ctx)
+static ag_memblock *def_clone(const ag_memblock *ctx)
 {
-        return ag_mblock_clone(ctx);
+        return ag_memblock_clone(ctx);
 }
 
 
 // we don't do anything because ag_object_release() takes care of releasing the
 // memory allocated to the payload
-static void def_release(ag_mblock *ctx)
+static void def_release(ag_memblock *ctx)
 {
         (void)ctx;
 }
@@ -160,7 +160,7 @@ static void def_release(ag_mblock *ctx)
 
 static enum ag_cmp def_cmp(const ag_object *ctx, const ag_object *cmp)
 {
-        return ag_mblock_cmp(ctx, cmp);
+        return ag_memblock_cmp(ctx, cmp);
 }
 
 
@@ -172,7 +172,7 @@ static bool def_valid(const ag_object *ctx)
 
 static size_t def_sz(const ag_object *ctx)
 {
-        return ag_mblock_sz(ctx) + ag_mblock_sz(ag_object_payload(ctx));
+        return ag_memblock_sz(ctx) + ag_memblock_sz(ag_object_payload(ctx));
 }
 
 
@@ -194,7 +194,7 @@ static ag_string *def_str(const ag_object *ctx)
 {
         AG_AUTO(ag_uuid) *u    = ag_object_uuid(ctx);
         AG_AUTO(ag_string)  *ustr = ag_uuid_str(u);
-        AG_AUTO(ag_string)  *mstr = ag_mblock_str(ctx);
+        AG_AUTO(ag_string)  *mstr = ag_memblock_str(ctx);
 
         return ag_string_new_fmt("typeid = %d, uuid = %s, %s", ag_object_typeid(ctx),
                               ustr, mstr);
