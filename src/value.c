@@ -36,7 +36,7 @@ extern ag_value *
 ag_value_new_int(ag_int val)
 {
         intptr_t bits = ((intptr_t)val << SHIFT_INT) | AG_VALUE_TYPE_INT;
-        return (ag_value *)bits;
+        return ((ag_value *)bits);
 }
 
 
@@ -44,7 +44,7 @@ extern ag_value *
 ag_value_new_uint(ag_uint val)
 {
         uintptr_t bits = ((uintptr_t)val << SHIFT_UINT) | AG_VALUE_TYPE_UINT;
-        return (ag_value *)bits;
+        return ((ag_value *)bits);
 }
 
 
@@ -55,7 +55,7 @@ ag_value_new_float(ag_float val)
         *v = val;
 
         uintptr_t bits = (uintptr_t)v | AG_VALUE_TYPE_FLOAT;
-        return (ag_value *)bits;
+        return ((ag_value *)bits);
 }
 
 
@@ -66,7 +66,7 @@ ag_value_new_string(const ag_string *val)
 
         ag_value *v = ag_string_copy(val);
         uintptr_t bits = (uintptr_t)v | AG_VALUE_TYPE_STRING;
-        return (ag_value *)bits;    
+        return ((ag_value *) bits);
 }
 
 
@@ -77,7 +77,7 @@ ag_value_new_object(const ag_object *val)
 
         ag_value *v = ag_object_copy(val);
         uintptr_t bits = (uintptr_t)v | AG_VALUE_TYPE_OBJECT;
-        return (ag_value *)bits;
+        return ((ag_value *)bits);
 }
 
 
@@ -95,7 +95,7 @@ ag_value_copy(const ag_value *ctx)
         if (ag_value_type_float(ctx))
                 return ag_value_new_float(ag_value_float(ctx));
 
-        return (ag_value *)ctx;
+        return ((ag_value *)ctx);
 }
 
 
@@ -137,21 +137,21 @@ ag_value_cmp(const ag_value *ctx, const ag_value *cmp)
 
         switch (ag_value_type(ctx)) {
         case AG_VALUE_TYPE_OBJECT:
-                return ag_object_cmp(ag_value_object(ctx),
-                    ag_value_object(cmp));
+                return (ag_object_cmp(ag_value_object(ctx),
+                    ag_value_object(cmp)));
                 break;
         case AG_VALUE_TYPE_STRING:
-                return ag_string_cmp(ag_value_string(ctx),
-                    ag_value_string(cmp));
+                return (ag_string_cmp(ag_value_string(ctx),
+                    ag_value_string(cmp)));
                 break;
         case AG_VALUE_TYPE_FLOAT:
-                return ag_float_cmp(ag_value_float(ctx), ag_value_float(cmp));
+                return (ag_float_cmp(ag_value_float(ctx), ag_value_float(cmp)));
                 break;
         case AG_VALUE_TYPE_UINT:
-                return ag_uint_cmp(ag_value_uint(ctx), ag_value_uint(cmp));
+                return (ag_uint_cmp(ag_value_uint(ctx), ag_value_uint(cmp)));
                 break;
         default:
-                return ag_int_cmp(ag_value_int(ctx), ag_value_int(cmp));
+                return (ag_int_cmp(ag_value_int(ctx), ag_value_int(cmp)));
         };
 }
 
@@ -164,9 +164,9 @@ ag_value_type(const ag_value *ctx)
         uintptr_t bits = (uintptr_t)ctx;
 
         if ((bits & AG_VALUE_TYPE_UINT) == AG_VALUE_TYPE_UINT)
-                return AG_VALUE_TYPE_UINT;
+                return (AG_VALUE_TYPE_UINT);
 
-        return bits & MASK_TAG;
+        return (bits & MASK_TAG);
 }
 
 
@@ -176,7 +176,7 @@ ag_value_int(const ag_value *ctx)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_int(ctx));
 
-        return (intptr_t)ctx >> SHIFT_INT;
+        return ((intptr_t)ctx >> SHIFT_INT);
 }
 
 
@@ -186,7 +186,7 @@ ag_value_uint(const ag_value *ctx)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_uint(ctx));
 
-        return (uintptr_t)ctx >> SHIFT_UINT;
+        return ((uintptr_t)ctx >> SHIFT_UINT);
 }
 
 
@@ -196,7 +196,7 @@ ag_value_float(const ag_value *ctx)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_float(ctx));
 
-        return *((double *)((uintptr_t)ctx & MASK_PTR));
+        return (*((double *)((uintptr_t)ctx & MASK_PTR)));
 }
 
 
@@ -206,7 +206,7 @@ ag_value_string(const ag_value *ctx)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_string(ctx));
 
-        return (ag_string *)((uintptr_t)ctx & MASK_PTR);
+        return ((ag_string *)((uintptr_t)ctx & MASK_PTR));
 }
 
 
@@ -216,6 +216,6 @@ ag_value_object(const ag_value *ctx)
         AG_ASSERT_PTR (ctx); 
         AG_ASSERT (ag_value_type_object(ctx));
 
-        return (ag_object *)((uintptr_t)ctx & MASK_PTR);
+        return ((ag_object *)((uintptr_t)ctx & MASK_PTR));
 }
 
