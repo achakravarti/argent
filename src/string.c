@@ -36,17 +36,18 @@
 
 /* Declare the public inline functions of the string interface. */
 extern inline ag_string *ag_string_new_empty(void);
-extern inline bool ag_string_lt(const ag_string *, const char *);
-extern inline bool ag_string_eq(const ag_string *, const char *);
-extern inline bool ag_string_gt(const ag_string *, const char *);
-extern inline bool ag_string_empty(const ag_string *);
+extern inline bool      ag_string_lt(const ag_string *, const char *);
+extern inline bool      ag_string_eq(const ag_string *, const char *);
+extern inline bool      ag_string_gt(const ag_string *, const char *);
+extern inline bool      ag_string_empty(const ag_string *);
 
 
 /* 
  * ag_string_new() creates a new instance of a dynamic string from a statically
  * allocated string.
  */
-extern ag_string *ag_string_new(const char *src)
+extern ag_string *
+ag_string_new(const char *src)
 {
         AG_ASSERT_PTR (src);
 
@@ -55,7 +56,7 @@ extern ag_string *ag_string_new(const char *src)
 
         strncpy(s, src, sz);
         s[sz] = '\0';
-        return s;
+        return (s);
 }
 
 
@@ -65,7 +66,8 @@ extern ag_string *ag_string_new(const char *src)
  * passing NULL and 0 as the first two arguments to vsnprintf() we determine the
  * size of the formatted string (excluding the terminating null character).
  */
-extern ag_string *ag_string_new_fmt(const char *fmt, ...)
+extern ag_string *
+ag_string_new_fmt(const char *fmt, ...)
 {
         AG_ASSERT (is_string_not_empty(fmt));
 
@@ -80,16 +82,17 @@ extern ag_string *ag_string_new_fmt(const char *fmt, ...)
 
         char *s = ag_string_new(bfr);
         ag_memblock_release((ag_memblock **)&bfr);
-        return s;
+        return (s);
 }
 
 
 /* ag_string_copy() creates a shallow copy of a dynamic string. */
-extern ag_string *ag_string_copy(const ag_string *ctx)
+extern ag_string *
+ag_string_copy(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_memblock_copy(ctx);
+        return (ag_memblock_copy(ctx));
 }
 
 
@@ -99,7 +102,8 @@ extern ag_string *ag_string_copy(const ag_string *ctx)
  * issues in case the size of pointers differ. See the C-FAQ List question 4.9
  * at http://c-faq.com/ptrs/genericpp.html.
  */
-extern void ag_string_release(ag_string **ctx)
+extern void
+ag_string_release(ag_string **ctx)
 {
         if (AG_LIKELY (ctx && *ctx)) {
                 ag_string *hnd = *ctx;
@@ -117,36 +121,38 @@ extern void ag_string_release(ag_string **ctx)
  * used strcmp(), but there may be edge cases in Unicode strings which strcmp()
  * doesn't handle.
  */
-extern enum ag_cmp ag_string_cmp(const ag_string *ctx,  const char *cmp)
+extern enum ag_cmp
+ag_string_cmp(const ag_string *ctx,  const char *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
 
         if (!*ctx && *cmp)
-                return AG_CMP_LT;
+                return (AG_CMP_LT);
 
         if (*ctx && !*cmp)
-                return AG_CMP_GT;
+                return (AG_CMP_GT);
 
         register const unsigned char *s1 = (const unsigned char *)ctx;
         register const unsigned char *s2 = (const unsigned char *)cmp;
 
         while (*s1 || *s2) {
                 if (*s1 < *s2)
-                        return AG_CMP_LT;
+                        return (AG_CMP_LT);
                 else if (*s1 > *s2)
-                        return AG_CMP_GT;
+                        return (AG_CMP_GT);
 
                 s1++;
                 s2++;
         }
 
-        return AG_CMP_EQ;
+        return (AG_CMP_EQ);
 }
 
 
 /* ag_string_has() checks whether a string contains a particular substring. */
-extern bool ag_string_has(const ag_string *ctx, const char *tgt)
+extern bool
+ag_string_has(const ag_string *ctx, const char *tgt)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (tgt);
@@ -162,7 +168,8 @@ extern bool ag_string_has(const ag_string *ctx, const char *tgt)
  * ag_string_len() determines the lexicographcical length of a string, taking
  * into consideration that the string may contain non-ASCII UTF-8 characters.
  */
-extern size_t ag_string_len(const ag_string *ctx)
+extern size_t
+ag_string_len(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -184,11 +191,12 @@ extern size_t ag_string_len(const ag_string *ctx)
  * strings are allocated through memory blocks, we can retrieve their size by
  * querying ag_memblock_sz().
  */
-extern size_t ag_string_sz(const ag_string *ctx)
+extern size_t
+ag_string_sz(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_memblock_sz(ctx);
+        return (ag_memblock_sz(ctx));
 }
 
 
@@ -196,11 +204,12 @@ extern size_t ag_string_sz(const ag_string *ctx)
  * ag_string_refc() gets the reference count of a dynamic string. Again, as in
  * the case of ag_string_sz(), we use the memory block interface to do so.
  */
-extern size_t ag_string_refc(const ag_string *ctx)
+extern size_t
+ag_string_refc(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_memblock_refc(ctx);
+        return (ag_memblock_refc(ctx));
 }
 
 
@@ -212,7 +221,8 @@ extern size_t ag_string_refc(const ag_string *ctx)
  *
  * TODO: make ag_string_lower() Unicode-safe.
  */
-extern ag_string *ag_string_lower(const ag_string *ctx)
+extern ag_string *
+ag_string_lower(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -222,7 +232,7 @@ extern ag_string *ag_string_lower(const ag_string *ctx)
         for (register size_t i = 0; i < sz; i++)
                 s[i] = tolower(s[i]);
 
-        return s;
+        return (s);
 }
 
 
@@ -234,7 +244,8 @@ extern ag_string *ag_string_lower(const ag_string *ctx)
  *
  * TODO: make ag_string_upper() Unicode-safe.
  */
-extern ag_string *ag_string_upper(const ag_string *ctx)
+extern ag_string *
+ag_string_upper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -244,7 +255,7 @@ extern ag_string *ag_string_upper(const ag_string *ctx)
         for (register size_t i = 0; i < sz; i++)
                 s[i] = toupper(s[i]);
 
-        return s;
+        return (s);
 }
 
 
@@ -261,7 +272,8 @@ extern ag_string *ag_string_upper(const ag_string *ctx)
  *
  * TODO: make ag_string_proper() Unicode-safe.
  */
-extern ag_string *ag_string_proper(const ag_string *ctx)
+extern ag_string *
+ag_string_proper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -273,7 +285,7 @@ extern ag_string *ag_string_proper(const ag_string *ctx)
                         ? toupper(s[i]) : tolower(s[i]);
         }
 
-        return s;
+        return (s);
 }
 
 
@@ -283,7 +295,8 @@ extern ag_string *ag_string_proper(const ag_string *ctx)
  * In the unlikely case that an empty string is provided for a pivot, then we
  * return a copy of the original string.
  */
-extern ag_string *ag_string_split(const ag_string *ctx, const char *pvt)
+extern ag_string *
+ag_string_split(const ag_string *ctx, const char *pvt)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (pvt);
@@ -301,7 +314,7 @@ extern ag_string *ag_string_split(const ag_string *ctx, const char *pvt)
         strncpy(lhs, ctx, sz);
         lhs[sz] = '\0';
 
-        return lhs;
+        return (lhs);
 }
 
 
@@ -312,7 +325,8 @@ extern ag_string *ag_string_split(const ag_string *ctx, const char *pvt)
  * returned, and if the pivot is an empty string then a copy of the original
  * string is returned.
  */
-extern ag_string *ag_string_split_right(const ag_string *ctx, const char *pvt)
+extern ag_string *
+ag_string_split_right(const ag_string *ctx, const char *pvt)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (pvt);
@@ -332,6 +346,6 @@ extern ag_string *ag_string_split_right(const ag_string *ctx, const char *pvt)
         strncpy(rhs, find + strlen(pvt), sz);
         rhs[sz] = '\0';
 
-        return rhs;
+        return (rhs);
 }
 

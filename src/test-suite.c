@@ -6,14 +6,15 @@
 
 
 struct node {
-        ag_test *test;
-        ag_string *desc;
-        enum ag_test_status status;
-        struct node *next;
+        ag_test         *test;
+        ag_string       *desc;
+        enum            ag_test_status status;
+        struct          node *next;
 };
 
 
-static struct node *node_new(ag_test *test, const char *desc)
+static struct node *
+node_new(ag_test *test, const char *desc)
 {
         struct node *n = ag_memblock_new(sizeof *n);
         n->test = test;
@@ -21,22 +22,24 @@ static struct node *node_new(ag_test *test, const char *desc)
         n->status = AG_TEST_STATUS_WAIT;
         n->next = NULL;
 
-        return n;
+        return (n);
 }
 
 
-static inline struct node *node_free(struct node *ctx)
+static inline struct node *
+node_free(struct node *ctx)
 {
         struct node *next = ctx->next;
 
         ag_string_release(&ctx->desc);
         ag_memblock_release((ag_memblock **)&ctx);
 
-        return next;
+        return (next);
 }
 
 
-static void node_log(const struct node *ctx, FILE *log)
+static void
+node_log(const struct node *ctx, FILE *log)
 {
         switch (ctx->status) {
                 case AG_TEST_STATUS_OK:
@@ -66,14 +69,15 @@ static void node_log(const struct node *ctx, FILE *log)
 
 
 struct ag_test_suite {
-        ag_string *desc;
-        struct node *head;
+        ag_string       *desc;
+        struct          node *head;
 };
 
 
 
 
-static void log_header(const ag_test_suite *ctx, FILE *log)
+static void
+log_header(const ag_test_suite *ctx, FILE *log)
 {
         fprintf(log, "\nTest Suite: %s\n", ctx->desc);
 
@@ -84,18 +88,19 @@ static void log_header(const ag_test_suite *ctx, FILE *log)
 }
 
 
-static inline void log_footer(const ag_test_suite *ctx, FILE *log)
+static inline void
+log_footer(const ag_test_suite *ctx, FILE *log)
 {
         fprintf(log, "\n\n%lu test(s), %lu passed, %lu skipped, %lu failed.\n",
-                        ag_test_suite_len(ctx),
-                        ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
-                        ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP)
-                        + ag_test_suite_poll(ctx, AG_TEST_STATUS_WAIT),
-                        ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
+            ag_test_suite_len(ctx), ag_test_suite_poll(ctx, AG_TEST_STATUS_OK),
+            ag_test_suite_poll(ctx, AG_TEST_STATUS_SKIP) +
+                ag_test_suite_poll(ctx, AG_TEST_STATUS_WAIT),
+            ag_test_suite_poll(ctx, AG_TEST_STATUS_FAIL));
 }
 
 
-static void log_body(const ag_test_suite *ctx, FILE *log)
+static void
+log_body(const ag_test_suite *ctx, FILE *log)
 {
         register size_t i = 0;
 
@@ -108,7 +113,8 @@ static void log_body(const ag_test_suite *ctx, FILE *log)
 }
 
 
-extern ag_test_suite *ag_test_suite_new(const char *desc)
+extern ag_test_suite *
+ag_test_suite_new(const char *desc)
 {
         AG_ASSERT (desc && *desc);
 
@@ -116,19 +122,21 @@ extern ag_test_suite *ag_test_suite_new(const char *desc)
         ctx->desc = ag_string_new_fmt("%s", desc);
         ctx->head = NULL;
 
-        return ctx;
+        return (ctx);
 }
 
 
-extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *ctx)
+extern ag_test_suite *
+ag_test_suite_copy(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
-        return ag_memblock_copy(ctx);
+        return (ag_memblock_copy(ctx));
 }
 
 
-extern void ag_test_suite_release(ag_test_suite **ctx)
+extern void
+ag_test_suite_release(ag_test_suite **ctx)
 {
         ag_test_suite *hnd;
 
@@ -146,7 +154,8 @@ extern void ag_test_suite_release(ag_test_suite **ctx)
 }
 
 
-extern size_t ag_test_suite_len(const ag_test_suite *ctx)
+extern size_t
+ag_test_suite_len(const ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
@@ -158,12 +167,12 @@ extern size_t ag_test_suite_len(const ag_test_suite *ctx)
                 n = n->next;
         }
 
-        return len;
+        return (len);
 }
 
 
-extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
-                enum ag_test_status status)
+extern size_t
+ag_test_suite_poll(const ag_test_suite *ctx, enum ag_test_status status)
 {
         AG_ASSERT (ctx);
 
@@ -176,12 +185,12 @@ extern size_t ag_test_suite_poll(const ag_test_suite *ctx,
                 n = n->next;
         }
 
-        return tot;
+        return (tot);
 }
 
 
-extern void ag_test_suite_push(ag_test_suite *ctx, ag_test *test,
-                const char *desc)
+extern void
+ag_test_suite_push(ag_test_suite *ctx, ag_test *test, const char *desc)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (test);
@@ -200,8 +209,9 @@ extern void ag_test_suite_push(ag_test_suite *ctx, ag_test *test,
 }
 
 
-extern void ag_test_suite_push_array(ag_test_suite *ctx, ag_test *test[],
-                const char *desc[], size_t len)
+extern void
+ag_test_suite_push_array(ag_test_suite *ctx, ag_test *test[],
+    const char *desc[], size_t len)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (test);
@@ -213,7 +223,8 @@ extern void ag_test_suite_push_array(ag_test_suite *ctx, ag_test *test[],
 }
 
 
-extern void ag_test_suite_exec(ag_test_suite *ctx)
+extern void
+ag_test_suite_exec(ag_test_suite *ctx)
 {
         AG_ASSERT (ctx);
 
@@ -229,7 +240,8 @@ extern void ag_test_suite_exec(ag_test_suite *ctx)
 }
 
 
-extern void ag_test_suite_log(const ag_test_suite *ctx, FILE *log)
+extern void
+ag_test_suite_log(const ag_test_suite *ctx, FILE *log)
 {
         AG_ASSERT (ctx);
         AG_ASSERT (log);
