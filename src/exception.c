@@ -18,7 +18,7 @@
  * HAVE UNDERSTOOD THESE LICENSE TERMS AND ACCEPT TO BE LEGALLY BOUND BY THEM.
  ******************************************************************************/
 
-
+#if 0
 #include "./api.h"
 
 
@@ -122,4 +122,4 @@ static void eh_default(const struct ag_exception *ex, void *opt)
 
     exit(EXIT_FAILURE);
 }
-
+#endif

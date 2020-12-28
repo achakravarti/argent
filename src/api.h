@@ -19,6 +19,7 @@
  ******************************************************************************/
 
 
+#if 0
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -537,7 +538,6 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx);
  *                             DYNAMIC TYPE SYSTEM
  */
 
-#if 0
 typedef intptr_t ag_int;
 typedef uintptr_t ag_uint;
 typedef double ag_float;

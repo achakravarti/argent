@@ -1,3 +1,4 @@
+#if 0
 #include <string.h>
 #include <stdarg.h>
 #include "./api.h"
@@ -197,4 +198,4 @@ extern void ag_string_add(ag_string_t **ctx, const ag_string_t *cat)
     ag_string_dispose(ctx);
     *ctx = s;
 }
-
+#endif

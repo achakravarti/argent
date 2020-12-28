@@ -18,7 +18,7 @@
  * HAVE UNDERSTOOD THESE LICENSE TERMS AND ACCEPT TO BE LEGALLY BOUND BY THEM.
  ******************************************************************************/
 
-
+#if 0
 #include <math.h>
 #include "./api.h"
 
@@ -372,4 +372,4 @@ extern ag_string_t *ag_object_str(const ag_object_t *ctx)
     ag_assert (ctx && vtable);
     return vtable_get(ctx->type)->str(ctx);
 }
-
+#endif

@@ -18,7 +18,7 @@
  * HAVE UNDERSTOOD THESE LICENSE TERMS AND ACCEPT TO BE LEGALLY BOUND BY THEM.
  ******************************************************************************/
 
-
+#if 0
 #include <malloc.h>
 #include <string.h>
 #include "./api.h"
@@ -208,4 +208,4 @@ extern void ag_memblock_free(ag_memblock_t **bfr)
         *bfr = NULL;
     }
 }
-
+#endif
