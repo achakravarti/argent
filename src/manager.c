@@ -4,13 +4,14 @@
 
 
 struct node {
-        ag_erno erno;
-        const char *msg;
-        ag_exception_handler *hnd;
+        ag_erno                  erno;
+        char                    *msg;
+        ag_exception_handler    *hnd;
 };
 
 
-extern void ag_init(void)
+extern void
+ag_init(void)
 {
         struct node list[] = {
                 {
@@ -33,7 +34,8 @@ extern void ag_init(void)
 }
 
 
-extern void ag_exit(int status)
+extern void
+ag_exit(int status)
 {
         ag_object_registry_exit();
         ag_exception_registry_exit();

@@ -9,7 +9,8 @@
  */
 
                                          /* writes a syslog message [AgDM:??] */
-static inline void log_write(int pr, const char *fmt, va_list ap)
+static inline void
+log_write(int pr, const char *fmt, va_list ap)
 {
     openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
     vsyslog(pr, fmt, ap);
@@ -22,7 +23,8 @@ static inline void log_write(int pr, const char *fmt, va_list ap)
  */
 
                                 /* implementation of ag_log_emerg() [AgDM:??] */
-extern void ag_log_emerg(const char *fmt, ...)
+extern void
+ag_log_emerg(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -32,8 +34,10 @@ extern void ag_log_emerg(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                 /* implementation of ag_log_alert() [AgDM:??] */
-extern void ag_log_alert(const char *fmt, ...)
+extern void
+ag_log_alert(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -43,8 +47,10 @@ extern void ag_log_alert(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                  /* implementation of ag_log_crit() [AgDM:??] */
-extern void ag_log_crit(const char *fmt, ...)
+extern void
+ag_log_crit(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -54,8 +60,10 @@ extern void ag_log_crit(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                   /* implementation of ag_log_err() [AgDM:??] */
-extern void ag_log_err(const char *fmt, ...)
+extern void
+ag_log_err(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -65,8 +73,10 @@ extern void ag_log_err(const char *fmt, ...)
     va_end(ap);
 }
 
+
                               /* implementation of ag_log_warning() [AgDM:??] */
-extern void ag_log_warning(const char *fmt, ...)
+extern void
+ag_log_warning(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -76,8 +86,10 @@ extern void ag_log_warning(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                /* implementation of ag_log_notice() [AgDM:??] */
-extern void ag_log_notice(const char *fmt, ...)
+extern void 
+ag_log_notice(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -87,8 +99,10 @@ extern void ag_log_notice(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                  /* implementation of ag_log_info() [AgDM:??] */
-extern void ag_log_info(const char *fmt, ...)
+extern void
+ag_log_info(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
@@ -98,8 +112,10 @@ extern void ag_log_info(const char *fmt, ...)
     va_end(ap);
 }
 
+
                                 /* implementation of ag_log_debug() [AgDM:??] */
-extern void ag_log_debug(const char *fmt, ...)
+extern void
+ag_log_debug(const char *fmt, ...)
 {
     AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
