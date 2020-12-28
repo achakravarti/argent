@@ -1,30 +1,30 @@
 #include "../include/argent.h"
 
 
-struct ag_obj {
+struct ag_object {
         ag_typeid  typeid;  /* Object type ID */
         ag_uuid   *uuid;    /* Object ID      */
         ag_mblock *payload; /* Object payload */
 };
 
 
-static inline const struct ag_obj_vtable *vtable_get(const ag_obj *ctx)
+static inline const struct ag_object_vtable *vtable_get(const ag_object *ctx)
 {
-        return ag_obj_registry_get(ctx->typeid);
+        return ag_object_registry_get(ctx->typeid);
 }
 
 
-extern inline bool ag_obj_lt(const ag_obj *, const ag_obj *);
-extern inline bool ag_obj_eq(const ag_obj *, const ag_obj *);
-extern inline bool ag_obj_gt(const ag_obj *, const ag_obj *);
-extern inline bool ag_obj_empty(const ag_obj *);
+extern inline bool ag_object_lt(const ag_object *, const ag_object *);
+extern inline bool ag_object_eq(const ag_object *, const ag_object *);
+extern inline bool ag_object_gt(const ag_object *, const ag_object *);
+extern inline bool ag_object_empty(const ag_object *);
 
 
-extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
+extern ag_object *ag_object_new(ag_typeid typeid, ag_mblock *payload)
 {
         AG_ASSERT_PTR (payload);
 
-        ag_obj *ctx = ag_mblock_new(sizeof *ctx);
+        ag_object *ctx = ag_mblock_new(sizeof *ctx);
         
         ctx->uuid    = ag_uuid_new();
         ctx->typeid  = typeid;
@@ -34,7 +34,7 @@ extern ag_obj *ag_obj_new(ag_typeid typeid, ag_mblock *payload)
 }
 
 
-extern ag_obj *ag_obj_copy(const ag_obj *ctx)
+extern ag_object *ag_object_copy(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -42,17 +42,17 @@ extern ag_obj *ag_obj_copy(const ag_obj *ctx)
 }
 
 
-extern ag_obj *ag_obj_clone(const ag_obj *ctx)
+extern ag_object *ag_object_clone(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_obj_new(ctx->typeid, vtable_get(ctx)->clone(ctx->payload));
+        return ag_object_new(ctx->typeid, vtable_get(ctx)->clone(ctx->payload));
 }
 
 
-extern void ag_obj_release(ag_obj **ctx)
+extern void ag_object_release(ag_object **ctx)
 {
-        ag_obj    *o;
+        ag_object    *o;
         ag_mblock *m;
 
         if (AG_LIKELY (ctx && (o = *ctx))) {
@@ -71,7 +71,7 @@ extern void ag_obj_release(ag_obj **ctx)
 }
 
 
-extern enum ag_cmp ag_obj_cmp(const ag_obj *ctx, const ag_obj *cmp)
+extern enum ag_cmp ag_object_cmp(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
@@ -80,7 +80,7 @@ extern enum ag_cmp ag_obj_cmp(const ag_obj *ctx, const ag_obj *cmp)
 }
 
 
-extern ag_typeid ag_obj_typeid(const ag_obj *ctx)
+extern ag_typeid ag_object_typeid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -88,7 +88,7 @@ extern ag_typeid ag_obj_typeid(const ag_obj *ctx)
 }
 
 
-extern ag_uuid *ag_obj_uuid(const ag_obj *ctx)
+extern ag_uuid *ag_object_uuid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -96,7 +96,7 @@ extern ag_uuid *ag_obj_uuid(const ag_obj *ctx)
 }
 
 
-extern bool ag_obj_valid(const ag_obj *ctx)
+extern bool ag_object_valid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -104,7 +104,7 @@ extern bool ag_obj_valid(const ag_obj *ctx)
 }
 
 
-extern size_t ag_obj_sz(const ag_obj *ctx)
+extern size_t ag_object_sz(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -112,7 +112,7 @@ extern size_t ag_obj_sz(const ag_obj *ctx)
 }
 
 
-extern size_t ag_obj_refc(const ag_obj *ctx)
+extern size_t ag_object_refc(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -120,7 +120,7 @@ extern size_t ag_obj_refc(const ag_obj *ctx)
 }
 
 
-extern size_t ag_obj_len(const ag_obj *ctx)
+extern size_t ag_object_len(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -128,7 +128,7 @@ extern size_t ag_obj_len(const ag_obj *ctx)
 }
 
 
-extern ag_hash ag_obj_hash(const ag_obj *ctx)
+extern ag_hash ag_object_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -136,7 +136,7 @@ extern ag_hash ag_obj_hash(const ag_obj *ctx)
 }
 
 
-extern ag_str *ag_obj_str(const ag_obj *ctx)
+extern ag_str *ag_object_str(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -144,7 +144,7 @@ extern ag_str *ag_obj_str(const ag_obj *ctx)
 }
 
 
-extern const ag_mblock *ag_obj_payload(const ag_obj *ctx)
+extern const ag_mblock *ag_object_payload(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -152,16 +152,16 @@ extern const ag_mblock *ag_obj_payload(const ag_obj *ctx)
 }
 
 
-extern ag_mblock *ag_obj_payload_mutable(ag_obj **ctx)
+extern ag_mblock *ag_object_payload_mutable(ag_object **ctx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
 
-        ag_obj *o = *ctx;
+        ag_object *o = *ctx;
         ag_mblock *m = o;
 
         if (ag_mblock_refc(m) > 1) {
                 ag_mblock_release(&m);
-                *ctx = ag_obj_clone(o);
+                *ctx = ag_object_clone(o);
         }
 
         return (*ctx)->payload;

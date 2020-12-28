@@ -21,7 +21,7 @@ extern void ag_init(void)
         };
 
         ag_exception_registry_init(32);
-        ag_obj_registry_init();
+        ag_object_registry_init();
 
         register struct node n;
         register size_t len = sizeof list / sizeof *list;
@@ -35,7 +35,7 @@ extern void ag_init(void)
 
 extern void ag_exit(int status)
 {
-        ag_obj_registry_exit();
+        ag_object_registry_exit();
         ag_exception_registry_exit();
 
         exit(status);
