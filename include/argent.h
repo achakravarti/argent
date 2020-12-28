@@ -34,6 +34,7 @@
 #include "./typeid.h"
 #include "./uuid.h"
 #include "./object.h"
+#include "./value.h"
 #include "./test.h"
 #include "./manager.h"
 

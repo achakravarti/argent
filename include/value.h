@@ -28,7 +28,7 @@ extern ag_value *ag_value_new_float(ag_float);
 extern ag_value *ag_value_new_string(const ag_string *);
 extern ag_value *ag_value_new_object(const ag_object *);
 extern ag_value *ag_value_copy(const ag_value *);
-extern void ag_value_dispose(ag_value **);
+extern void ag_value_release(ag_value **);
 
 
 
@@ -36,45 +36,45 @@ extern enum ag_cmp ag_value_cmp(const ag_value *, const ag_value *);
 
 inline bool ag_value_lt(const ag_value *ctx, const ag_value *cmp)
 {
-    return ag_value_cmp(ctx, cmp) == AG_CMP_LT;
+        return ag_value_cmp(ctx, cmp) == AG_CMP_LT;
 }
 
 inline bool ag_value_eq(const ag_value *ctx, const ag_value *cmp)
 {
-    return ag_value_cmp(ctx, cmp) == AG_CMP_EQ;
+        return ag_value_cmp(ctx, cmp) == AG_CMP_EQ;
 }
 
 inline bool ag_value_gt(const ag_value *ctx, const ag_value *cmp)
 {
-    return ag_value_cmp(ctx, cmp) == AG_CMP_GT;
+        return ag_value_cmp(ctx, cmp) == AG_CMP_GT;
 }
 
 
 extern enum ag_value_type ag_value_type(const ag_value *);
 
-inline bool ag_value_is_int(const ag_value *ctx)
+inline bool ag_value_type_int(const ag_value *ctx)
 {
-    return ag_value_type(ctx) == AG_VALUE_TYPE_INT;
+        return ag_value_type(ctx) == AG_VALUE_TYPE_INT;
 }
 
-inline bool ag_value_is_uint(const ag_value *ctx)
+inline bool ag_value_type_uint(const ag_value *ctx)
 {
-    return ag_value_type(ctx) == AG_VALUE_TYPE_UINT;
+        return ag_value_type(ctx) == AG_VALUE_TYPE_UINT;
 }
 
-inline bool ag_value_is_float(const ag_value *ctx)
+inline bool ag_value_type_float(const ag_value *ctx)
 {
-    return ag_value_type(ctx) == AG_VALUE_TYPE_FLOAT;
+        return ag_value_type(ctx) == AG_VALUE_TYPE_FLOAT;
 }
 
-inline bool ag_value_is_string(const ag_value *ctx)
+inline bool ag_value_type_string(const ag_value *ctx)
 {
-    return ag_value_type(ctx) == AG_VALUE_TYPE_STRING;
+        return ag_value_type(ctx) == AG_VALUE_TYPE_STRING;
 }
 
-inline bool ag_value_is_object(const ag_value *ctx)
+inline bool ag_value_type_object(const ag_value *ctx)
 {
-    return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
+        return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
 }
 
 
