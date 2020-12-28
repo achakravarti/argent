@@ -41,7 +41,7 @@ typedef bool         (ag_object_valid_virt)(const ag_object *);
 typedef size_t       (ag_object_sz_virt)(const ag_object *);
 typedef size_t       (ag_object_len_virt)(const ag_object *);
 typedef ag_hash      (ag_object_hash_virt)(const ag_object *);
-typedef ag_str      *(ag_object_str_virt)(const ag_object *);
+typedef ag_string      *(ag_object_str_virt)(const ag_object *);
 
 
 struct ag_object_vtable {
@@ -87,7 +87,7 @@ extern size_t ag_object_sz(const ag_object *);
 extern size_t ag_object_refc(const ag_object *);
 extern size_t ag_object_len(const ag_object *);
 extern ag_hash ag_object_hash(const ag_object *);
-extern ag_str *ag_object_str(const ag_object *);
+extern ag_string *ag_object_str(const ag_object *);
 extern const ag_mblock *ag_object_payload(const ag_object *);
 extern ag_mblock *ag_object_payload_mutable(ag_object **);
 

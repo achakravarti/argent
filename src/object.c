@@ -136,7 +136,7 @@ extern ag_hash ag_object_hash(const ag_object *ctx)
 }
 
 
-extern ag_str *ag_object_str(const ag_object *ctx)
+extern ag_string *ag_object_str(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 

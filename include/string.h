@@ -32,55 +32,55 @@ extern "C" {
 #include "./argent.h"
 
 
-typedef char ag_str;
+typedef char ag_string;
 
 
-extern ag_str *ag_str_new(const char *);
-extern ag_str *ag_str_new_fmt(const char *, ...);
-extern ag_str *ag_str_copy(const ag_str *);
-extern void ag_str_release(ag_str **);
+extern ag_string *ag_string_new(const char *);
+extern ag_string *ag_string_new_fmt(const char *, ...);
+extern ag_string *ag_string_copy(const ag_string *);
+extern void ag_string_release(ag_string **);
 
-inline ag_str *ag_str_new_empty(void)
+inline ag_string *ag_string_new_empty(void)
 {
-    return ag_str_new("");
+    return ag_string_new("");
 }
 
 
-extern enum ag_cmp ag_str_cmp(const ag_str *,  const char *);
+extern enum ag_cmp ag_string_cmp(const ag_string *,  const char *);
 
-inline bool ag_str_lt(const ag_str *ctx, const char *cmp)
+inline bool ag_string_lt(const ag_string *ctx, const char *cmp)
 {
-    return ag_str_cmp(ctx, cmp) == AG_CMP_LT;
+    return ag_string_cmp(ctx, cmp) == AG_CMP_LT;
 }
 
-inline bool ag_str_eq(const ag_str *ctx, const char *cmp)
+inline bool ag_string_eq(const ag_string *ctx, const char *cmp)
 {
-    return ag_str_cmp(ctx, cmp) == AG_CMP_EQ;
+    return ag_string_cmp(ctx, cmp) == AG_CMP_EQ;
 }
 
-inline bool ag_str_gt(const ag_str *ctx, const char *cmp)
+inline bool ag_string_gt(const ag_string *ctx, const char *cmp)
 {
-    return ag_str_cmp(ctx, cmp) == AG_CMP_GT;
-}
-
-
-extern size_t ag_str_len(const ag_str *);
-extern size_t ag_str_sz(const ag_str *);
-extern size_t ag_str_refc(const ag_str *);
-extern bool ag_str_has(const ag_str *, const char *);
-
-inline bool ag_str_empty(const ag_str *ctx)
-{
-        return ag_str_sz(ctx) == 1;
+    return ag_string_cmp(ctx, cmp) == AG_CMP_GT;
 }
 
 
+extern size_t ag_string_len(const ag_string *);
+extern size_t ag_string_sz(const ag_string *);
+extern size_t ag_string_refc(const ag_string *);
+extern bool ag_string_has(const ag_string *, const char *);
 
-extern ag_str *ag_str_lower(const ag_str *);
-extern ag_str *ag_str_upper(const ag_str *);
-extern ag_str *ag_str_proper(const ag_str *);
-extern ag_str *ag_str_split(const ag_str *, const char *);
-extern ag_str *ag_str_split_right(const ag_str *, const char *);
+inline bool ag_string_empty(const ag_string *ctx)
+{
+        return ag_string_sz(ctx) == 1;
+}
+
+
+
+extern ag_string *ag_string_lower(const ag_string *);
+extern ag_string *ag_string_upper(const ag_string *);
+extern ag_string *ag_string_proper(const ag_string *);
+extern ag_string *ag_string_split(const ag_string *, const char *);
+extern ag_string *ag_string_split_right(const ag_string *, const char *);
 
 
 #ifdef __cplusplus

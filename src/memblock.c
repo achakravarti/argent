@@ -223,14 +223,14 @@ extern void ag_mblock_resize_align(ag_mblock **ctx, size_t sz, size_t align)
 }
 
 
-extern ag_str *ag_mblock_str(const ag_mblock *ctx)
+extern ag_string *ag_mblock_str(const ag_mblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        return ag_str_new_fmt("address = %p, data sz = %lu, total data = %lu,"
-                              " refc = %lu", (void *)meta_head(ctx),
-                              meta_sz(ctx), ag_mblock_sz_total(ctx),
-                              meta_refc(ctx));
+        return ag_string_new_fmt("address = %p, data sz = %lu,"
+                                 " total data = %lu, refc = %lu",
+                                 (void *)meta_head(ctx), meta_sz(ctx),
+                                 ag_mblock_sz_total(ctx), meta_refc(ctx));
 
 }
 

@@ -53,7 +53,7 @@ extern bool ag_mblock_aligned(const ag_mblock *, size_t);
 
 extern void ag_mblock_resize(ag_mblock **, size_t);
 extern void ag_mblock_resize_align(ag_mblock **, size_t, size_t);
-extern ag_str *ag_mblock_str(const ag_mblock *);
+extern ag_string *ag_mblock_str(const ag_mblock *);
 
 
 #ifdef __cplusplus

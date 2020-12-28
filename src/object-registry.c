@@ -39,7 +39,7 @@ static bool def_valid(const ag_object *);
 static size_t def_sz(const ag_object *);
 static size_t def_len(const ag_object *);
 static size_t def_hash(const ag_object *);
-static ag_str *def_str(const ag_object *);
+static ag_string *def_str(const ag_object *);
 
 
 extern void ag_object_registry_init(void)
@@ -190,13 +190,13 @@ static ag_hash def_hash(const ag_object *ctx)
 }
 
 
-static ag_str *def_str(const ag_object *ctx)
+static ag_string *def_str(const ag_object *ctx)
 {
         AG_AUTO(ag_uuid) *u    = ag_object_uuid(ctx);
-        AG_AUTO(ag_str)  *ustr = ag_uuid_str(u);
-        AG_AUTO(ag_str)  *mstr = ag_mblock_str(ctx);
+        AG_AUTO(ag_string)  *ustr = ag_uuid_str(u);
+        AG_AUTO(ag_string)  *mstr = ag_mblock_str(ctx);
 
-        return ag_str_new_fmt("typeid = %d, uuid = %s, %s", ag_object_typeid(ctx),
+        return ag_string_new_fmt("typeid = %d, uuid = %s, %s", ag_object_typeid(ctx),
                               ustr, mstr);
 }
 

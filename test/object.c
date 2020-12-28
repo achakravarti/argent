@@ -103,10 +103,10 @@ static ag_hash virt_hash(const ag_object *ctx)
 }
 
 
-static ag_str *virt_str(const ag_object *ctx)
+static ag_string *virt_str(const ag_object *ctx)
 {
         (void)ctx;
-        return ag_str_new("This is a sample derived object");
+        return ag_string_new("This is a sample derived object");
 }
 
 
@@ -461,16 +461,16 @@ AG_TEST_INIT(hash_02, "ag_object_hash() executes its provided callback if"
 AG_TEST_INIT(str_01, "ag_object_str() executes its default callback if not"
                      " overridden") {
         AG_AUTO(ag_object) *o = sample_base();
-        AG_AUTO(ag_str) *s = ag_object_str(o);
-        AG_TEST_ASSERT (ag_str_has(s, "uuid"));
+        AG_AUTO(ag_string) *s = ag_object_str(o);
+        AG_TEST_ASSERT (ag_string_has(s, "uuid"));
 } AG_TEST_EXIT();
 
 
 AG_TEST_INIT(str_02, "ag_object_str() executes its provided callback if"
                      " overridden") {
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_AUTO(ag_str) *s = ag_object_str(o);
-        AG_TEST_ASSERT (ag_str_eq(s, "This is a sample derived object"));
+        AG_AUTO(ag_string) *s = ag_object_str(o);
+        AG_TEST_ASSERT (ag_string_eq(s, "This is a sample derived object"));
 } AG_TEST_EXIT();
 
 

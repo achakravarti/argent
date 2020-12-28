@@ -81,7 +81,7 @@ extern enum ag_cmp ag_uuid_cmp(const ag_uuid *ctx, const ag_uuid *cmp)
 
 extern ag_hash ag_uuid_hash(const ag_uuid *ctx)
 {
-        AG_AUTO(ag_str) *s = ag_uuid_str(ctx);
+        AG_AUTO(ag_string) *s = ag_uuid_str(ctx);
         return ag_hash_new_str(s);
 }
 
@@ -94,13 +94,13 @@ extern bool ag_uuid_empty(const ag_uuid *ctx)
 }
 
 
-extern ag_str *ag_uuid_str(const ag_uuid *ctx)
+extern ag_string *ag_uuid_str(const ag_uuid *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
         char bfr[37];
         uuid_unparse_upper(ctx->uuid, bfr);
 
-        return ag_str_new(bfr);
+        return ag_string_new(bfr);
 }
 
