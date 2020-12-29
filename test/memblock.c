@@ -773,7 +773,7 @@ AG_TEST_EXIT();
 
 
 
-extern ag_test_suite *ag_test_suite_mblock(void)
+extern ag_test_suite *test_suite_memblock(void)
 {
         ag_test *test[] = { &new_01, &new_02, &new_03, &new_04, &new_05,
                 &new_align_01, &new_align_02, &new_align_03, &new_align_04,

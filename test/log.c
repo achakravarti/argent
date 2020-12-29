@@ -104,7 +104,7 @@ AG_TEST_INIT(debug_01, "ag_log_debug() logs a debug record") {
  * Generate a test suite containing the above unit tests and return it so that
  * it can be excecuted by a test harness.
  */
-extern ag_test_suite *test_log(void)
+extern ag_test_suite *test_suite_log(void)
 {
         ag_test *test[] = {
                 emerg_01, alert_01, crit_01, err_01, warning_01, notice_01,

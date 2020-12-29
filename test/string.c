@@ -784,7 +784,7 @@ AG_TEST_INIT(split_right_07, "ag_string_split() returns the right side of the"
 } AG_TEST_EXIT();
 
 
-extern ag_test_suite *test_suite_str(void)
+extern ag_test_suite *test_suite_string(void)
 {
         ag_test *test[] = {
                 new_01, new_02, new_03, new_empty_01, new_fmt_01, new_fmt_02,

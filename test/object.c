@@ -533,7 +533,7 @@ AG_TEST_INIT(payload_mutable_04, "ag_object_payload_mutable() reduces the refc o
 } AG_TEST_EXIT();
 
 
-extern ag_test_suite *test_suite_obj(void)
+extern ag_test_suite *test_suite_object(void)
 {
         register_base();
         register_derived();

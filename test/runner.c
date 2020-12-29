@@ -14,10 +14,10 @@ int main(int argc, char **argv)
 
         ag_test_harness *th = ag_test_harness_new();
 
-        ag_test_suite *log = test_log();
-        ag_test_suite *mblock = ag_test_suite_mblock();
-        ag_test_suite *str = test_suite_str();
-        ag_test_suite *obj = test_suite_obj();
+        ag_test_suite *log = test_suite_log();
+        ag_test_suite *mblock = test_suite_memblock();
+        ag_test_suite *str = test_suite_string();
+        ag_test_suite *obj = test_suite_object();
 
         ag_test_harness_push(th, log);
         ag_test_harness_push(th, mblock);
