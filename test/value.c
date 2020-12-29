@@ -1,14 +1,110 @@
 #include "./test.h"
 
 
+AG_TEST_INIT(int_new, "ag_value_new_int() creates a new int value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-123456);
+        AG_TEST_ASSERT (v && ag_value_int(v) == -123456);
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_copy, "ag_value_copy() copies an int value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-1029394);
+        AG_AUTO(ag_value) *cp = ag_value_copy(v);
+        AG_TEST_ASSERT (ag_value_int(v) == ag_value_int(cp));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_type_int, "ag_value_type_int() is true for an int value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(11111);
+        AG_TEST_ASSERT (v && ag_value_type_int(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_type_uint, "ag_value_type_uint() is false for a uint value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-1111);
+        AG_TEST_ASSERT (v && !ag_value_type_uint(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_type_float,
+    "ag_value_type_float() is false for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(1111);
+        AG_TEST_ASSERT (v && !ag_value_type_float(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_type_string,
+    "ag_value_type_string() is false for a string value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-987654321);
+        AG_TEST_ASSERT (v && !ag_value_type_string(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_type_object,
+    "ag_value_type_object() is false for an object value") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(987654321);
+        AG_TEST_ASSERT (v && !ag_value_type_object(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_lt_1, "ag_value_lt() returns true for -123 < 123") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
+        AG_TEST_ASSERT (ag_value_lt(v1, v2));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_lt_2, "ag_value_lt() returns false for -123 < -123") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-123);
+        AG_TEST_ASSERT (!ag_value_lt(v, v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_lt_3, "ag_value_lt() returns false for 123 < -123") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(-123);
+        AG_TEST_ASSERT (!ag_value_lt(v1, v2));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_eq_1, "ag_value_eq() returns true for -123 == -123") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-123);
+        AG_TEST_ASSERT (ag_value_eq(v, v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_eq_2, "ag_value_eq() returns false for -123 == 123") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
+        AG_TEST_ASSERT (!ag_value_eq(v1, v2));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_gt_1, "ag_value_gt() returns true for 123 > -123") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(-123);
+        AG_TEST_ASSERT (ag_value_gt(v1, v2));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_gt_2, "ag_value_gt() returns false for -123 > -123") {
+        AG_AUTO(ag_value) *v = ag_value_new_int(-123);
+        AG_TEST_ASSERT (!ag_value_gt(v, v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(int_gt_3, "ag_value_gt() returns false for -123 > 123") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
+        AG_TEST_ASSERT (!ag_value_gt(v1, v2));
+} AG_TEST_EXIT();
+
+
+
 extern ag_test_suite *
 test_suite_value(void)
 {
 
         ag_test *test[] = {
+                int_new, int_copy, int_type_int,
+                int_type_uint, int_type_float, int_type_string,
+                int_type_object, int_lt_1, int_lt_2,
+                int_lt_3, int_eq_1, int_eq_2,
+                int_gt_1, int_gt_2, int_gt_3,
         };
 
         const char *desc[] = {
+                int_new_desc, int_copy_desc, int_type_int_desc,
+                int_type_uint_desc, int_type_float_desc, int_type_string_desc,
+                int_type_object_desc, int_lt_1_desc, int_lt_2_desc,
+                int_lt_3_desc, int_eq_1_desc, int_eq_2_desc, int_gt_1_desc,
+                int_gt_2_desc, int_gt_3_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
