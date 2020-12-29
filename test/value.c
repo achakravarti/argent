@@ -1,3 +1,23 @@
+#include "./test.h"
+
+
+extern ag_test_suite *
+test_suite_value(void)
+{
+
+        ag_test *test[] = {
+        };
+
+        const char *desc[] = {
+        };
+
+        ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
+        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
+
+        return ctx;
+}
+
+
 #if 0
 
 #include "../src/api.h"
