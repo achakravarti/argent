@@ -9,7 +9,10 @@ extern "C" {
 #include "./argent.h"
 
 
-typedef ag_object ag_list;
+typedef ag_object       ag_list;
+typedef void            (ag_list_iterator)(const ag_value *, void *);
+typedef void            (ag_list_iterator_mutable)(ag_value **, void *);
+
 
 extern ag_list *ag_list_new(void);
 
@@ -144,6 +147,17 @@ inline ag_string *ag_list_str(const ag_list *ctx)
 
         return ag_object_str(ctx);
 }
+
+extern ag_value *ag_list_get(const ag_list *);
+extern ag_value *ag_list_get_at(const ag_list *, size_t);
+extern void ag_list_map(const ag_list *, ag_list_iterator *, void *);
+
+extern void ag_list_set(ag_list **, const ag_value *);
+extern void ag_list_set_at(ag_list **, size_t, const ag_value *);
+extern void ag_list_map_mutable(ag_list **, ag_list_iterator_mutable *, void *);
+extern void ag_list_start(ag_list **);
+extern bool ag_list_next(ag_list **);
+extern void ag_list_push(ag_list **, const ag_value *);
 
 
 #ifdef __cplusplus
