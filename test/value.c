@@ -1,6 +1,52 @@
 #include "./test.h"
 
 
+struct object_payload {
+    int x;
+    int y;
+};
+
+#define OBJECT_TYPEID ((ag_typeid)1)
+
+static enum ag_cmp object_cmp(const ag_object *lhs, const ag_object *rhs)
+{
+    const struct object_payload *p1 = ag_object_payload(lhs);
+    const struct object_payload *p2 = ag_object_payload(rhs);
+
+    if (p1->x == p2->x && p1->y == p2->y)
+        return AG_CMP_EQ;
+
+    return AG_CMP_LT;
+}
+
+static inline void object_register(void)
+{
+    struct ag_object_vtable vt = {
+            .clone = NULL, .release = NULL, .cmp = object_cmp,
+            .valid = NULL, .sz = NULL,      .len = NULL, 
+            .hash = NULL,  .str = NULL,
+    };
+
+    ag_object_registry_set(OBJECT_TYPEID, &vt);
+}
+
+
+static ag_object *object_sample(void)
+{
+    struct object_payload *p = ag_memblock_new(sizeof *p);
+    p->x = 555;
+    p->y = 666;
+    return ag_object_new(OBJECT_TYPEID, p);
+}
+
+
+static inline ag_value *object_sample_value(void)
+{
+    AG_AUTO(ag_object) *o = object_sample();
+    return ag_value_new_object(o);
+}
+
+
 AG_TEST_INIT(int_new, "ag_value_new_int() creates a new int value") {
         AG_AUTO(ag_value) *v = ag_value_new_int(-123456);
         AG_TEST_ASSERT (v && ag_value_int(v) == -123456);
@@ -338,9 +384,57 @@ AG_TEST_INIT(string_type_object,
 
 
 
+
+AG_TEST_INIT(object_new, "ag_value_new_object() creates a new object value") {
+        AG_AUTO(ag_object) *o = object_sample();
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (v && ag_object_eq(ag_value_object(o), o));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_copy, "ag_value_copy() copies an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *cp = ag_value_copy(v);
+        AG_TEST_ASSERT (ag_object_eq(ag_value_object(v), ag_value_object(cp)));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_type_int,
+    "ag_value_type_int() is false for an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (!ag_value_type_int(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_type_uint,
+    "ag_value_type_uint() is false for an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (!ag_value_type_uint(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_type_float,
+    "ag_value_type_float() is false for an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (!ag_value_type_float(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_type_string,
+    "ag_value_type_string() is false for an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (!ag_value_type_string(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(object_type_object,
+    "ag_value_type_object() is true for an object value") {
+        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_TEST_ASSERT (ag_value_type_object(v));
+} AG_TEST_EXIT();
+
+
+
+
+
 extern ag_test_suite *
 test_suite_value(void)
 {
+        object_register();
 
         ag_test *test[] = {
                 int_new,         int_copy,       int_type_int,
@@ -364,6 +458,10 @@ test_suite_value(void)
                 string_new,         string_copy,       string_type_int,
                 string_type_uint,   string_type_float, string_type_string,
                 string_type_object,
+    
+                object_new,         object_copy,       object_type_int,
+                object_type_uint,   object_type_float, object_type_string,
+                object_type_object,
         };
 
         const char *desc[] = {
@@ -395,6 +493,11 @@ test_suite_value(void)
                 string_type_int_desc,    string_type_uint_desc,  
                 string_type_float_desc,  string_type_string_desc,
                 string_type_object_desc,
+                
+                object_new_desc,         object_copy_desc,
+                object_type_int_desc,    object_type_uint_desc,   
+                object_type_float_desc,  object_type_string_desc,
+                object_type_object_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
@@ -415,153 +518,16 @@ test_suite_value(void)
 
 
 
-/*******************************************************************************
- *                              STRING VALUE TESTS
- */
 
 
 
-/*******************************************************************************
- *                              OBJECT VALUE TESTS
- */
 
-struct object_payload {
-    int x;
-    int y;
-};
-
-#define OBJECT_CLASS 103
-
-static inline enum ag_tristate object_cmp(const ag_object_t *lhs, 
-    const ag_object_t *rhs)
-{
-    const struct object_payload *p1 = ag_object_payload(lhs);
-    const struct object_payload *p2 = ag_object_payload(rhs);
-
-    if (p1->x == p2->x && p1->y == p2->y)
-        return AG_TRISTATE_GND;
-
-    return AG_TRISTATE_LO;
-}
-
-static inline void object_register(void)
-{
-    struct ag_object_vtable vt = {
-        .copy = NULL,
-        .dispose = NULL,
-        .id = NULL,
-        .sz = NULL,
-        .len = NULL,
-        .hash = NULL,
-        .cmp = &object_cmp,
-        .str = NULL
-    };
-
-    ag_object_init(32);
-    ag_object_register(OBJECT_CLASS, &vt);
-}
-
-
-static ag_object_t *object_sample(void)
-{
-    struct object_payload *p = ag_memblock_new(sizeof *p);
-    p->x = 555;
-    p->y = 666;
-    return ag_object_new(OBJECT_CLASS, p);
-}
-
-static inline ag_value_t *object_sample_value(void)
-{
-    ag_object_smart_t *o = object_sample();
-    return ag_value_new_object(o);
-}
-
-
-static void object_new(void)
-{
-    printf("ag_value_new_object() creates a new object value");
-
-    ag_object_smart_t *o = object_sample();
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (v && ag_object_eq(ag_value_object(o), o), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_copy(void)
-{
-    printf("ag_value_copy() copies an object value");
-    
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_AUTO(ag_value) *cp = ag_value_copy(v);
-    AG_TEST_ASSERT (ag_object_eq(ag_value_object(v), ag_value_object(cp)), 
-        AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_type_int(void)
-{
-    printf("ag_value_type_int() is false for an object value");
-
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (!ag_value_type_int(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_type_uint(void)
-{
-    printf("ag_value_type_uint() is false for an object value");
-
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (!ag_value_type_uint(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_type_float(void)
-{
-    printf("ag_value_type_float() is false for an object value");
-
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (!ag_value_type_float(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_type_string(void)
-{
-    printf("ag_value_type_string() is false for an object value");
-
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (!ag_value_type_string(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void object_type_object(void)
-{
-    printf("ag_value_type_object() is true for an object value");
-
-    AG_AUTO(ag_value) *v = object_sample_value();
-    AG_TEST_ASSERT (ag_value_type_object(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
 
 static void object_test(void)
 {
 
     object_register();
 
-    object_new();
-    object_copy();
-    object_type_int();
-    object_type_uint();
-    object_type_float();
-    object_type_string();
-    object_type_object();
 }
 
 
