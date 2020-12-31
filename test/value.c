@@ -280,6 +280,63 @@ AG_TEST_INIT(float_gt_3, "ag_value_gt() returns false for 123.456 > 123.4567") {
 
 
 
+static inline ag_value *string_sample_ascii(void)
+{
+    AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+    return ag_value_new_string(s);
+}
+
+static inline ag_value *string_sample_unicode(void)
+{
+    AG_AUTO(ag_string) *s = ag_string_new("Привет, мир!");
+    return ag_value_new_string(s);
+}
+
+
+AG_TEST_INIT(string_new, "ag_value_new_string() creates a new string value") {
+        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_TEST_ASSERT (v && ag_string_eq(ag_value_string(v), s));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_copy, "ag_value_copy() copies a string value") {
+        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_AUTO(ag_value) *cp = ag_value_copy(v);
+        AG_TEST_ASSERT (ag_string_eq(ag_value_string(v), ag_value_string(cp)));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_type_int,
+    "ag_value_type_int() is false for a string value") {
+        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_TEST_ASSERT (!ag_value_type_int(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_type_uint,
+    "ag_value_type_uint() is false for a string value") {
+        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_TEST_ASSERT (!ag_value_type_int(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_type_float,
+    "ag_value_type_float() is false for a string value") {
+        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_TEST_ASSERT (!ag_value_type_float(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_type_string,
+    "ag_value_type_string() is true for a string value") {
+        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_TEST_ASSERT (ag_value_type_string(v));
+} AG_TEST_EXIT();
+
+AG_TEST_INIT(string_type_object,
+    "ag_value_type_object() is false for a string value") {
+        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_TEST_ASSERT (!ag_value_type_object(v));
+} AG_TEST_EXIT();
+
+
+
 
 extern ag_test_suite *
 test_suite_value(void)
@@ -303,6 +360,10 @@ test_suite_value(void)
                 float_type_object, float_lt_1,      float_lt_2,
                 float_lt_3,        float_eq_1,      float_eq_2,
                 float_gt_1,        float_gt_2,      float_gt_3,
+    
+                string_new,         string_copy,       string_type_int,
+                string_type_uint,   string_type_float, string_type_string,
+                string_type_object,
         };
 
         const char *desc[] = {
@@ -329,6 +390,11 @@ test_suite_value(void)
                 float_eq_1_desc,        float_eq_2_desc,
                 float_gt_1_desc,        float_gt_2_desc,
                 float_gt_3_desc,
+                
+                string_new_desc,         string_copy_desc,
+                string_type_int_desc,    string_type_uint_desc,  
+                string_type_float_desc,  string_type_string_desc,
+                string_type_object_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
@@ -353,101 +419,6 @@ test_suite_value(void)
  *                              STRING VALUE TESTS
  */
 
-static inline ag_value_t *string_sample_ascii(void)
-{
-    ag_string_smart_t *s = ag_string_new("Hello, world!");
-    return ag_value_new_string(s);
-}
-
-static inline ag_value_t *string_sample_unicode(void)
-{
-    ag_string_smart_t *s = ag_string_new("Привет, мир!");
-    return ag_value_new_string(s);
-}
-
-static void string_new(void)
-{
-    printf("ag_value_new_string() creates a new string value");
-
-    AG_AUTO(ag_value) *v = string_sample_ascii();
-    ag_string_smart_t *s = ag_string_new("Hello, world!");
-    AG_TEST_ASSERT (v && ag_string_eq(ag_value_string(v), s), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_copy(void)
-{
-    printf("ag_value_copy() copies a string value");
-    
-    AG_AUTO(ag_value) *v = string_sample_unicode();
-    AG_AUTO(ag_value) *cp = ag_value_copy(v);
-    AG_TEST_ASSERT (ag_string_eq(ag_value_string(v), ag_value_string(cp)),
-        AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_type_int(void)
-{
-    printf("ag_value_type_int() is false for a string value");
-
-    AG_AUTO(ag_value) *v = string_sample_ascii();
-    AG_TEST_ASSERT (!ag_value_type_int(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_type_uint(void)
-{
-    printf("ag_value_type_uint() is false for a string value");
-    
-    AG_AUTO(ag_value) *v = string_sample_unicode();
-    AG_TEST_ASSERT (!ag_value_type_int(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_type_float(void)
-{
-    printf("ag_value_type_float() is false for a string value");
-    
-    AG_AUTO(ag_value) *v = string_sample_ascii();
-    AG_TEST_ASSERT (!ag_value_type_float(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_type_string(void)
-{
-    printf("ag_value_type_string() is true for a string value");
-    
-    AG_AUTO(ag_value) *v = string_sample_unicode();
-    AG_TEST_ASSERT (ag_value_type_string(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_type_object(void)
-{
-    printf("ag_value_type_object() is false for a string value");
-    
-    AG_AUTO(ag_value) *v = string_sample_ascii();
-    AG_TEST_ASSERT (!ag_value_type_object(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void string_test(void)
-{
-    string_new();
-    string_copy();
-    string_type_int();
-    string_type_uint();
-    string_type_float();
-    string_type_string();
-    string_type_object();
-}
 
 
 /*******************************************************************************
