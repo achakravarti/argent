@@ -32,12 +32,29 @@ extern "C" {
 #include "./argent.h"
 
 
+/*
+ * Declare the types associated with the list interface. ag_list is an opaque
+ * object representing a list that can hold any value type. For convenience, we
+ * have also typedef'd two callback functions that serve as iterators to a list.
+ * ag_list_iterator is a callback that iterates through an immutable list, and
+ * ag_list_iterator_mutable is a callback that iterates through a mutable list.
+ */
+
+
 typedef ag_object       ag_list;
 typedef void            (ag_list_iterator)(const ag_value *, void *);
 typedef void            (ag_list_iterator_mutable)(ag_value **, void *);
 
 
+/*
+ * Declare the manager interface for ag_list. Since ag_list is a specialisation
+ * of ag_object, ag_list_copy(), ag_list_clone() and ag_list_release() are
+ * simply aliases for their object counterparts.
+ */
+
+
 extern ag_list *ag_list_new(void);
+
 
 inline ag_list *ag_list_copy(const ag_list *ctx)
 {
@@ -47,6 +64,7 @@ inline ag_list *ag_list_copy(const ag_list *ctx)
         return ag_object_copy(ctx);
 }
 
+
 inline ag_list *ag_list_clone(const ag_list *ctx)
 {
         AG_ASSERT_PTR (ctx);
@@ -55,10 +73,18 @@ inline ag_list *ag_list_clone(const ag_list *ctx)
         return ag_object_clone(ctx);
 }
 
+
 inline void ag_list_release(ag_list **ctx)
 {
         ag_object_release(ctx);
 }
+
+
+/*
+ * Declare the comparator interface for ag_list. Again, we can take advantage of
+ * the fact that ag_list instances are specialised instances of ag_object to
+ * simply provided aliased counterparts.
+ */
 
 
 inline enum ag_cmp ag_list_cmp(const ag_list *ctx, const ag_list *cmp)
@@ -71,6 +97,7 @@ inline enum ag_cmp ag_list_cmp(const ag_list *ctx, const ag_list *cmp)
         return ag_object_cmp(ctx, cmp);
 }
 
+
 inline bool ag_list_lt(const ag_list *ctx, const ag_list *cmp)
 {
         AG_ASSERT_PTR (ctx);
@@ -80,6 +107,7 @@ inline bool ag_list_lt(const ag_list *ctx, const ag_list *cmp)
 
         return ag_object_lt(ctx, cmp);
 }
+
 
 inline bool ag_list_eq(const ag_list *ctx, const ag_list *cmp)
 {
@@ -91,6 +119,7 @@ inline bool ag_list_eq(const ag_list *ctx, const ag_list *cmp)
         return ag_object_eq(ctx, cmp);
 }
 
+
 inline bool ag_list_gt(const ag_list *ctx, const ag_list *cmp)
 {
         AG_ASSERT_PTR (ctx);
@@ -98,6 +127,15 @@ inline bool ag_list_gt(const ag_list *ctx, const ag_list *cmp)
 
         return ag_object_gt(ctx, cmp);
 }
+
+
+/*
+ * Declare the accessor interface for ag_list. The inline functions are all
+ * aliases of their ag_object counterparts. ag_list_get() and ag_list_get_at()
+ * are used to retrieve a value from a list, and ag_list_map() is used to run an
+ * iterator across an immutable list instance.
+ */
+
 
 inline bool ag_list_empty(const ag_list *ctx)
 {
@@ -174,6 +212,15 @@ inline ag_string *ag_list_str(const ag_list *ctx)
 extern ag_value *ag_list_get(const ag_list *);
 extern ag_value *ag_list_get_at(const ag_list *, size_t);
 extern void ag_list_map(const ag_list *, ag_list_iterator *, void *);
+
+
+/*
+ * Decalre the mutator interface for ag_list. ag_list_set() and ag_list_set_at()
+ * are used to set a value in a list, ag_list_push() is used to push a value to
+ * the end of a list, ag_list_map_mutable() is used to iterate across a mutable
+ * list, ag_list_start() and ag_list_next() are used to traverse across a list.
+ */
+
 
 extern void ag_list_set(ag_list **, const ag_value *);
 extern void ag_list_set_at(ag_list **, size_t, const ag_value *);
