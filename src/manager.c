@@ -31,6 +31,8 @@ ag_init(void)
                 n = list[i];
                 ag_exception_registry_set(n.erno, n.msg, n.hnd);
         }
+
+        __ag_list_register__();
 }
 
 

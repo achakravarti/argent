@@ -132,7 +132,6 @@ ag_value_cmp(const ag_value *ctx, const ag_value *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
-
         AG_ASSERT (ag_value_type(ctx) == ag_value_type(cmp));
 
         switch (ag_value_type(ctx)) {
@@ -167,6 +166,103 @@ ag_value_type(const ag_value *ctx)
                 return (AG_VALUE_TYPE_UINT);
 
         return (bits & MASK_TAG);
+}
+
+
+/*
+ * Define the ag_value_valid() interface function. This function checks whether
+ * a value is valid. Numeric values are always considered to be valid, string
+ * values are valid if they're not empty, and object values are valid if calling
+ * ag_object_valid() with them returns true. Note that as of now we're not
+ * considering NaN as an invalid float value, but perhaps we should do so in
+ * future.
+ *
+ * TODO: should NaN be an invalid float value?
+ */
+
+
+extern bool
+ag_value_valid(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return !ag_string_empty(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_valid(ag_value_object(ctx));
+                break;
+        default:
+                return true;
+        };
+}
+
+
+/*
+ * Define the ag_value_hash() interface function. This function returns the hash
+ * of a value, generating the result according to the type. In the case of
+ * object values, we call ag_object_hash() to determine the hash. The hash of
+ * string values are determined by ag_hash_new_str(), and that of numeric values
+ * by ag_hash_new().
+ *
+ * TODO: research about the hashes of negative and floating point numbers.
+ */
+
+
+extern ag_hash
+ag_value_hash(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_hash_new_str(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_hash(ag_value_object(ctx));
+                break;
+        case AG_VALUE_TYPE_UINT:
+                return ag_hash_new(ag_value_uint(ctx));
+                break;
+        case AG_VALUE_TYPE_FLOAT:
+                return ag_hash_new(ag_value_float(ctx));
+                break;
+        default:
+                return ag_hash_new(ag_value_int(ctx));
+        }
+}
+
+
+/*
+ * Define the ag_value_sz() interface function. This function returns the size
+ * in bytes of the value that it is holding. The size of the numeric values is
+ * determined at compile-time, whereas the size of object and string values is
+ * determined at runtime.
+ */
+
+
+extern size_t
+ag_value_sz(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_string_sz(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_sz(ag_value_object(ctx));
+                break;
+        case AG_VALUE_TYPE_UINT:
+                return sizeof(ag_uint);
+                break;
+        case AG_VALUE_TYPE_FLOAT:
+                return sizeof(ag_float);
+                break;
+        default:
+                return sizeof(ag_int);
+        }
 }
 
 

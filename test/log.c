@@ -52,52 +52,52 @@
  */
 
 
-AG_TEST_INIT(emerg_01, "ag_log_emerg() logs an emergency record") {
+AG_TEST_CASE(emerg_01, "ag_log_emerg() logs an emergency record") {
         ag_log_emerg("Testing ag_log_emerg()...");
-        AG_TEST_ASSERT (log_check("emerg"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("emerg"));
+}
 
 
-AG_TEST_INIT(alert_01, "ag_log_alert() logs an alert record") {
+AG_TEST_CASE(alert_01, "ag_log_alert() logs an alert record") {
         ag_log_alert("Testing ag_log_alert()...");
-        AG_TEST_ASSERT (log_check("alert"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("alert"));
+}
 
 
-AG_TEST_INIT(crit_01, "ag_log_crit() logs a critical record") {
+AG_TEST_CASE(crit_01, "ag_log_crit() logs a critical record") {
         ag_log_crit("Testing ag_log_crit()...");
-        AG_TEST_ASSERT (log_check("crit"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("crit"));
+}
 
 
-AG_TEST_INIT(err_01, "ag_log_err() logs an error record") {
+AG_TEST_CASE(err_01, "ag_log_err() logs an error record") {
         ag_log_err("Testing ag_log_err()...");
-        AG_TEST_ASSERT (log_check("err"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("err"));
+}
 
 
-AG_TEST_INIT(warning_01, "ag_log_warning() logs a warning record") {
+AG_TEST_CASE(warning_01, "ag_log_warning() logs a warning record") {
         ag_log_warning("Testing ag_log_warning()...");
-        AG_TEST_ASSERT (log_check("warning"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("warning"));
+}
 
 
-AG_TEST_INIT(notice_01, "ag_log_notice() logs a notice record") {
+AG_TEST_CASE(notice_01, "ag_log_notice() logs a notice record") {
         ag_log_notice("Testing ag_log_notice()...");
-        AG_TEST_ASSERT (log_check("notice"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("notice"));
+}
 
 
-AG_TEST_INIT(info_01, "ag_log_info() logs an information record") {
+AG_TEST_CASE(info_01, "ag_log_info() logs an information record") {
         ag_log_info("Testing ag_log_info()...");
-        AG_TEST_ASSERT (log_check("info"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("info"));
+}
 
 
-AG_TEST_INIT(debug_01, "ag_log_debug() logs a debug record") {
+AG_TEST_CASE(debug_01, "ag_log_debug() logs a debug record") {
         ag_log_debug("Testing ag_log_debug()...");
-        AG_TEST_ASSERT (log_check("debug"));
-} AG_TEST_EXIT();
+        AG_TEST (log_check("debug"));
+}
 
 
 /*

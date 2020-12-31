@@ -79,15 +79,12 @@ enum ag_test_status {
 
 typedef enum ag_test_status (ag_test)(void);
 
-#define AG_TEST_INIT(n, d)                                              \
+#define AG_TEST_CASE(n, d)                                              \
         static const char *n##_desc = d;                                \
         static enum ag_test_status n(void) {                            \
         enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
 #define AG_TEST_EXIT() return __ck__; }
-
-#define AG_TEST_ASSERT(p)                                               \
-        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
 
 #ifdef NDEBUG
 #       define AG_TEST_ASSERT_DEBUG(p)                                  \
@@ -95,6 +92,11 @@ typedef enum ag_test_status (ag_test)(void);
 #else
 #       define AG_TEST_ASSERT_DEBUG(p) AG_TEST_ASSERT(p)
 #endif
+
+
+#define AG_TEST(p)                                                      \
+        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL);       \
+        } return __ck__;
 
 
 /*-

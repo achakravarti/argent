@@ -9,7 +9,8 @@ extern "C" {
 typedef int ag_typeid;
 
 
-#define AG_TYPEID_OBJECT ((ag_typeid) 0)
+#define AG_TYPEID_OBJECT        ((ag_typeid) 0)
+#define AG_TYPEID_LIST          ((ag_typeid) -1)
 
 
 #ifdef __cplusplus

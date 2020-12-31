@@ -22,13 +22,13 @@ typedef void ag_value;
 
 
 
-extern ag_value *ag_value_new_int(ag_int);
-extern ag_value *ag_value_new_uint(ag_uint);
-extern ag_value *ag_value_new_float(ag_float);
-extern ag_value *ag_value_new_string(const ag_string *);
-extern ag_value *ag_value_new_object(const ag_object *);
-extern ag_value *ag_value_copy(const ag_value *);
-extern void ag_value_release(ag_value **);
+extern ag_value         *ag_value_new_int(ag_int);
+extern ag_value         *ag_value_new_uint(ag_uint);
+extern ag_value         *ag_value_new_float(ag_float);
+extern ag_value         *ag_value_new_string(const ag_string *);
+extern ag_value         *ag_value_new_object(const ag_object *);
+extern ag_value         *ag_value_copy(const ag_value *);
+extern void              ag_value_release(ag_value **);
 
 
 
@@ -50,7 +50,15 @@ inline bool ag_value_gt(const ag_value *ctx, const ag_value *cmp)
 }
 
 
-extern enum ag_value_type ag_value_type(const ag_value *);
+extern enum ag_value_type        ag_value_type(const ag_value *);
+extern bool                      ag_value_valid(const ag_value *);
+extern ag_hash                   ag_value_hash(const ag_value *);
+extern size_t                    ag_value_sz(const ag_value *);
+extern ag_int                    ag_value_int(const ag_value *);
+extern ag_uint                   ag_value_uint(const ag_value *);
+extern ag_float                  ag_value_float(const ag_value *);
+extern ag_string                *ag_value_string(const ag_value *);
+extern ag_object                *ag_value_object(const ag_value *);
 
 inline bool ag_value_type_int(const ag_value *ctx)
 {
@@ -76,13 +84,6 @@ inline bool ag_value_type_object(const ag_value *ctx)
 {
         return ag_value_type(ctx) == AG_VALUE_TYPE_OBJECT;
 }
-
-
-extern ag_int ag_value_int(const ag_value *);
-extern ag_uint ag_value_uint(const ag_value *);
-extern ag_float ag_value_float(const ag_value *);
-extern ag_string *ag_value_string(const ag_value *);
-extern ag_object *ag_value_object(const ag_value *);
 
 
 #ifdef __cplusplus
