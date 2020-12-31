@@ -113,6 +113,7 @@ ag_list_new(void)
 extern ag_value *
 ag_list_get(const ag_list *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -124,6 +125,8 @@ ag_list_get(const ag_list *ctx)
 extern ag_value *
 ag_list_get_at(const ag_list *ctx, size_t idx)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (idx >= 1 && idx <= ag_list_len(ctx));
 }
 
 
@@ -135,6 +138,8 @@ ag_list_get_at(const ag_list *ctx, size_t idx)
 extern void
 ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (itr);
 }
 
 
@@ -146,6 +151,8 @@ ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
 extern void
 ag_list_set(ag_list **ctx, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (val);
 }
 
 
@@ -155,8 +162,11 @@ ag_list_set(ag_list **ctx, const ag_value *val)
 
 
 extern void
-ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *opt)
+ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (val);
+        AG_ASSERT (idx >= 1 && idx <= ag_list_len(*ctx));
 }
 
 
@@ -168,6 +178,8 @@ ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *opt)
 extern void
 ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (itr);
 }
 
 
@@ -179,6 +191,7 @@ ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
 extern void
 ag_list_start(ag_list **ctx)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
 }
 
 
@@ -190,6 +203,7 @@ ag_list_start(ag_list **ctx)
 extern bool
 ag_list_next(ag_list **ctx)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
 }
 
 
@@ -201,6 +215,8 @@ ag_list_next(ag_list **ctx)
 extern void
 ag_list_push(ag_list **ctx, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (val);
 }
 
 
@@ -213,6 +229,7 @@ ag_list_push(ag_list **ctx, const ag_value *val)
 static ag_memblock *
 virt_clone(const ag_memblock *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -225,6 +242,7 @@ virt_clone(const ag_memblock *ctx)
 static void
 virt_release(ag_memblock *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -237,6 +255,7 @@ virt_release(ag_memblock *ctx)
 static enum ag_cmp
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -249,6 +268,7 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
 static bool
 virt_valid(const ag_object *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -261,6 +281,7 @@ virt_valid(const ag_object *ctx)
 static size_t
 virt_sz(const ag_object *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -273,6 +294,7 @@ virt_sz(const ag_object *ctx)
 static size_t
 virt_len(const ag_object *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -285,6 +307,7 @@ virt_len(const ag_object *ctx)
 static ag_hash
 virt_hash(const ag_object *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
 
@@ -297,5 +320,6 @@ virt_hash(const ag_object *ctx)
 static ag_string
 *virt_str(const ag_object *ctx)
 {
+        AG_ASSERT_PTR (ctx);
 }
 
