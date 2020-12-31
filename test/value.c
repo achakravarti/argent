@@ -175,6 +175,110 @@ AG_TEST_INIT(uint_gt_3, "ag_value_gt() returns false for 123 > 124") {
 
 
 
+AG_TEST_INIT(float_new, "ag_value_new_float() creates a new float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(-123.456);
+        AG_TEST_ASSERT (v && ag_value_float(v) == -123.456);
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_copy, "ag_value_copy() copies a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
+        AG_AUTO(ag_value) *cp = ag_value_copy(v);
+        AG_TEST_ASSERT (ag_value_float(v) == ag_value_float(cp));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_type_int, "ag_value_type_int() is false for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(-123456.789);
+        AG_TEST_ASSERT (v && !ag_value_type_int(v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_type_uint, 
+    "ag_value_type_uint() is false for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(123456.789);
+        AG_TEST_ASSERT (v && !ag_value_type_uint(v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_type_float,
+    "ag_value_type_float() is true for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(-789.123456);
+        AG_TEST_ASSERT (v && ag_value_type_float(v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_type_string,
+    "ag_value_type_string() is false for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(789.123456);
+        AG_TEST_ASSERT (v && !ag_value_type_string(v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_type_object,
+    "ag_value_type_object is false for a float value") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(-9876.5433);
+        AG_TEST_ASSERT (v && !ag_value_type_object(v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_lt_1, "ag_value_lt() returns true for 123.456 < 123.4567") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
+        AG_AUTO(ag_value) *v2 = ag_value_new_float(124.4567);
+        AG_TEST_ASSERT (ag_value_lt(v1, v2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_lt_2, "ag_value_lt() returns false for 123.456 < 123.456") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
+        AG_TEST_ASSERT (!ag_value_lt(v, v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_lt_3, "ag_value_lt() returns false for 123.4567 < 123.456") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
+        AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
+        AG_TEST_ASSERT (!ag_value_lt(v1, v2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_eq_1,
+    "ag_value_eq() returns true for -123.4567 == -123.4567") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(-123.4567);
+        AG_TEST_ASSERT (ag_value_eq(v, v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_eq_2,
+    "ag_value_eq() returns false for -123.456 == -123.4567") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_float(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_float(123.4567);
+        AG_TEST_ASSERT (!ag_value_eq(v1, v2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_gt_1, "ag_value_gt() returns true for 123.4567 > 123.456") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
+        AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
+        AG_TEST_ASSERT (ag_value_gt(v1, v2));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_gt_2,
+    "ag_value_gt() returns false for 123.4567 > 123.4567") {
+        AG_AUTO(ag_value) *v = ag_value_new_float(123.4567);
+        AG_TEST_ASSERT (!ag_value_gt(v, v));
+} AG_TEST_EXIT();
+
+
+AG_TEST_INIT(float_gt_3, "ag_value_gt() returns false for 123.456 > 123.4567") {
+        AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
+        AG_AUTO(ag_value) *v2 = ag_value_new_float(123.4567);
+        AG_TEST_ASSERT (!ag_value_gt(v1, v2));
+} AG_TEST_EXIT();
+
+
+
 
 
 extern ag_test_suite *
@@ -193,6 +297,12 @@ test_suite_value(void)
                 uint_type_object, uint_lt_1,       uint_lt_2,
                 uint_lt_3,        uint_eq_1,       uint_eq_2,
                 uint_gt_1,        uint_gt_2,       uint_gt_3,
+    
+                float_new,         float_copy,      float_type_int,
+                float_type_uint,   float_type_float,float_type_string,
+                float_type_object, float_lt_1,      float_lt_2,
+                float_lt_3,        float_eq_1,      float_eq_2,
+                float_gt_1,        float_gt_2,      float_gt_3,
         };
 
         const char *desc[] = {
@@ -210,6 +320,15 @@ test_suite_value(void)
                 uint_eq_1_desc,        uint_eq_2_desc,
                 uint_gt_1_desc,        uint_gt_2_desc,
                 uint_gt_3_desc,
+                
+                float_new_desc,         float_copy_desc,
+                float_type_int_desc,    float_type_uint_desc,
+                float_type_float_desc,  float_type_string_desc,
+                float_type_object_desc, float_lt_1_desc,
+                float_lt_2_desc,        float_lt_3_desc,
+                float_eq_1_desc,        float_eq_2_desc,
+                float_gt_1_desc,        float_gt_2_desc,
+                float_gt_3_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
@@ -229,209 +348,6 @@ test_suite_value(void)
 
 
 
-/*******************************************************************************
- *                               UINT VALUE TESTS
- */
-
-
-static void uint_test(void)
-{
-    uint_new();
-    uint_copy();
-    uint_type_int();
-    uint_type_uint();
-    uint_type_float();
-    uint_type_string();
-    uint_type_object();
-    uint_lt_1();
-    uint_lt_2();
-    uint_lt_3();
-    uint_eq_1();
-    uint_eq_2();
-    uint_gt_1();
-    uint_gt_2();
-    uint_gt_3();
-}
-
-
-/*******************************************************************************
- *                              FLOAT VALUE TESTS
- */
-
-static void float_new(void)
-{
-    printf("ag_value_new_float() creates a new float value");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(-123.456);
-    AG_TEST_ASSERT (v && ag_value_float(v) == -123.456, AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_copy(void)
-{
-    printf("ag_value_copy() copies a float value");
-
-    AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
-    AG_AUTO(ag_value) *cp = ag_value_copy(v);
-    AG_TEST_ASSERT (ag_value_float(v) == ag_value_float(cp), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_type_int(void)
-{
-    printf("ag_value_type_int() is false for a float value");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(-123456.789);
-    AG_TEST_ASSERT (v && !ag_value_type_int(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_type_uint(void)
-{
-    printf("ag_value_type_uint() is false for a float value");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(123456.789);
-    AG_TEST_ASSERT (v && !ag_value_type_uint(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_type_float(void)
-{
-    printf("ag_value_type_float() is true for a float value");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(-789.123456);
-    AG_TEST_ASSERT (v && ag_value_type_float(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_type_string(void)
-{
-    printf("ag_value_type_string() is false for a float value");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(789.123456);
-    AG_TEST_ASSERT (v && !ag_value_type_string(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_type_object(void)
-{
-    printf("ag_value_type_object is false for a float value ");
-    
-    AG_AUTO(ag_value) *v = ag_value_new_float(-9876.5433);
-    AG_TEST_ASSERT (v && !ag_value_type_object(v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_lt_1(void)
-{
-    printf("ag_value_lt() returns true for 123.456 < 123.4567");
-
-    AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
-    AG_AUTO(ag_value) *v2 = ag_value_new_float(124.4567);
-    AG_TEST_ASSERT (ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_lt_2(void)
-{
-    printf("ag_value_lt() returns false for 123.456 < 123.456");
-
-    AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
-    AG_TEST_ASSERT (!ag_value_lt(v, v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_lt_3(void)
-{
-    printf("ag_value_lt() returns false for 123.4567 < 123.456");
-
-    AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
-    AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
-    AG_TEST_ASSERT (!ag_value_lt(v1, v2), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_eq_1(void)
-{
-    printf("ag_value_eq() returns true for -123.4567 == -123.4567");
-
-    AG_AUTO(ag_value) *v = ag_value_new_float(-123.4567);
-    AG_TEST_ASSERT (ag_value_eq(v, v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_eq_2(void)
-{
-    printf("ag_value_eq() returns false for -123.456 == -123.4567");
-
-    AG_AUTO(ag_value) *v1 = ag_value_new_float(-123);
-    AG_AUTO(ag_value) *v2 = ag_value_new_float(123.4567);
-    AG_TEST_ASSERT (!ag_value_eq(v1, v2), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_gt_1(void)
-{
-    printf("ag_value_gt() returns true for 123.4567 > 123.456");
-
-    AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
-    AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
-    AG_TEST_ASSERT (ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_gt_2(void)
-{
-    printf("ag_value_gt() returns false for 123.4567 > 123.4567");
-
-    AG_AUTO(ag_value) *v = ag_value_new_float(123.4567);
-    AG_TEST_ASSERT (!ag_value_gt(v, v), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_gt_3(void)
-{
-    printf("ag_value_gt() returns false for 123.456 > 123.4567");
-
-    AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
-    AG_AUTO(ag_value) *v2 = ag_value_new_float(123.4567);
-    AG_TEST_ASSERT (!ag_value_gt(v1, v2), AG_ERNO_TEST, NULL);
-
-    printf("...OK\n");
-}
-
-static void float_test(void)
-{
-    float_new();
-    float_copy();
-    float_type_int();
-    float_type_uint();
-    float_type_float();
-    float_type_string();
-    float_type_object();
-    float_lt_1();
-    float_lt_2();
-    float_lt_3();
-    float_eq_1();
-    float_eq_2();
-    float_gt_1();
-    float_gt_2();
-    float_gt_3();
-}
 
 /*******************************************************************************
  *                              STRING VALUE TESTS
