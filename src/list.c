@@ -40,8 +40,8 @@ struct node {
 /*
  * Define the object payload of a list. We choose to keep a pointer to the last
  * node in order to speed up push operations. Again, in order to avoid having to
- * iterate through the entire list, we maintain the lenght and cumulative size
- * of the list.
+ * iterate through the entire list, we maintain the length and cumulative size
+ * of the list. 
  */
 
 
@@ -52,6 +52,29 @@ struct payload {
         size_t           len;  /* number of items           */
         size_t           sz;   /* cumulative size           */
 };
+
+
+/*
+ * Declare the prototypes for the node helper functions. node_new() helps create
+ * a new node, and node_release() helps destroy an existing one.
+ */
+
+
+static inline struct node       *node_new(const ag_value *);
+static inline struct node       *node_release(struct node *);
+                                
+
+
+/*
+ * Declare the prototypes for the payload helper functions. payload_new() helps
+ * create a new payload instance, either empty or filled with the values cloned
+ * from another payload instance. payload_push() helps push a new node to the
+ * end of the list.
+ */
+
+
+static struct payload   *payload_new(const struct node *);
+static void              payload_push(struct payload *, const ag_value *);
 
 
 /*
@@ -217,6 +240,73 @@ ag_list_push(ag_list **ctx, const ag_value *val)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (val);
+}
+
+
+/*
+ * Define the node_new() helper function. The node_new() function is responsible
+ * for creating a new node on the heap. By default, the pointer to the next node
+ * will always be NULL when a new node is created. Since we're performing a
+ * shallow copy using ag_value_copy(), creating a new node is relatively
+ * inexpensive.
+ */
+
+
+static inline struct node*
+node_new(const ag_value *val)
+{
+        AG_ASSERT_PTR (val);
+
+        struct node *n = ag_memblock_new(sizeof *n);
+        n->val = ag_value_copy(val);
+        n->nxt = NULL;
+
+        return n;
+}
+
+
+/*
+ * Define the node_new() helper function. We release the heap memory allocated
+ * to a node and return a pointer to the next node (which may be NULL). By
+ * returning a pointer to the next node, we make it easier to iterate through
+ * the list with this function. Note that we're taking care to avoid casting to
+ * (void **) in the call to ag_memblock_release() in order to avoid potential
+ * undefined behaviour.
+ */
+
+
+static inline struct node*
+node_release(struct node *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        struct node *nxt = ctx->nxt;
+        void *ptr = ctx;
+        ag_memblock_release(&ptr);
+
+        return nxt;
+}
+
+
+/*
+ * Define the payload_new() helper function.
+ */
+
+
+static struct payload*
+payload_new(const struct node *head)
+{
+}
+
+
+/*
+ * Define the payload_push() helper function.
+ */
+
+
+static void
+payload_push(struct payload *ctx, const ag_value *val)
+{
 }
 
 
