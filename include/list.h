@@ -49,10 +49,13 @@ typedef void            (ag_list_iterator_mutable)(ag_value **, void *);
 /*
  * Declare the manager interface for ag_list. Since ag_list is a specialisation
  * of ag_object, ag_list_copy(), ag_list_clone() and ag_list_release() are
- * simply aliases for their object counterparts.
+ * simply aliases for their object counterparts. __ag_list_register()__ is a
+ * special utility function that registers the list type with the object
+ * registry.
  */
 
 
+extern void __ag_list_register__(void);
 extern ag_list *ag_list_new(void);
 
 

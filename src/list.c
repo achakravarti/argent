@@ -119,6 +119,27 @@ extern inline ag_string         *ag_list_str(const ag_list *);
 
 
 /*
+ * Define the __ag_list_register__() utility function. This is a special
+ * function that is *not* part of the public list interface. It is invoked by
+ * the Argent manager to register the dynamic dispatch callback functions for
+ * the list type with the object registry.
+ */
+
+
+extern void
+__ag_list_register__(void)
+{
+        struct ag_object_vtable vt = {
+                .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
+                .valid = virt_valid, .sz = virt_sz,           .len = virt_len,
+                .hash = virt_hash,   .str = virt_str,
+        };
+
+        ag_object_registry_set(AG_TYPEID_LIST, &vt);
+}
+
+
+/*
  * Define the ag_list_new() interface function.
  */
 
@@ -533,6 +554,8 @@ virt_hash(const ag_object *ctx)
 /*
  * Define the virt_str() dynamic dispatch callback function. This function is
  * called by ag_object_str() when ag_list_str() is invoked.
+ *
+ * TODO: Improve definition
  */
 
 
@@ -541,5 +564,7 @@ static ag_string
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        return ag_string_new_fmt("list len = %lu", ag_object_len(ctx));
 }
 
