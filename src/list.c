@@ -271,8 +271,13 @@ node_new(const ag_value *val)
  * to a node and return a pointer to the next node (which may be NULL). By
  * returning a pointer to the next node, we make it easier to iterate through
  * the list with this function. Note that we're taking care to avoid casting to
- * (void **) in the call to ag_memblock_release() in order to avoid potential
- * undefined behaviour.
+ * (ag_memblock **) in the call to ag_memblock_release() in order to avoid
+ * potential undefined behaviour. 
+ *
+ * We know that there will always be only one given instance of a particular
+ * node, i.e., there will be no shallow copies of the node. Hence, we can safely
+ * release the value encapsulated by the node without checking the reference
+ * count.
  */
 
 
@@ -280,9 +285,11 @@ static inline struct node*
 node_release(struct node *ctx)
 {
         AG_ASSERT_PTR (ctx);
-
+        
         struct node *nxt = ctx->nxt;
         void *ptr = ctx;
+        
+        ag_value_release(&ctx->val);
         ag_memblock_release(&ptr);
 
         return nxt;
@@ -354,7 +361,8 @@ payload_push(struct payload *ctx, const ag_value *val)
 
 /*
  * Define the virt_clone() dynamic dispatch callback function. This function is
- * called by ab_object_clone() when ag_list_clone() is invoked.
+ * called by ab_object_clone() when ag_list_clone() is invoked. We create a new
+ * list using the contextual list as a reference.
  */
 
 
@@ -362,12 +370,22 @@ static ag_memblock *
 virt_clone(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
+
+        const struct payload *p = (const struct payload *)ctx;
+        return payload_new(p->head);
 }
 
 
 /*
  * Define the virt_release() dynamic dispatch callback function. This function
- * is called by ag_object_release() when ag_list_release() is invoked.
+ * is called by ag_object_release() when ag_list_release() is invoked. We simply
+ * iterate through each of the nodes in the list and release the node through
+ * node_release(). node_release() takes care of releasing the encapsulated value
+ * and returns NULL when it reaches the tail node.
+ *
+ * We don't need to check whether the reference count has fallen to 1 before
+ * performing the cleanup operation because ag_object_release() takes care of
+ * that before invoking this callback.
  */
 
 
@@ -375,12 +393,21 @@ static void
 virt_release(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
+
+        struct payload *p = (struct payload *)ctx;
+        register struct node *n = p->head;
+
+        while (n)
+                n = node_release(n);
 }
 
 
 /*
  * Define the virt_cmp() dynamic dispatch callback function. This function is
- * called by ag_object_cmp() when ag_list_cmp() is invoked.
+ * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
+ * lexicographical comparison of the two lists. Although we're not considering
+ * it now, it's important to keep in mind that sorting can affect the result of
+ * this comparison. See also https://stackoverflow.com/questions/13052857/.
  */
 
 
@@ -388,12 +415,45 @@ static enum ag_cmp
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
+        //AG_ASSERT (ag_list_type(ctx) == ag_list_type(cmp));
+
+        const struct payload *p = ag_object_payload(ctx);
+        const struct payload *p2 = ag_object_payload(cmp);
+
+        size_t lim = p->len < p2->len ? p->len : p2->len;
+        register const struct node *n = p->head;
+        register const struct node *n2 = p2->head;
+        register enum ag_cmp chk;
+
+        AG_ASSERT (ag_value_type(n->val) == ag_value_type(n2->val));
+
+        for (register size_t i = 0; i < lim; i++) {
+                if ((chk = ag_value_cmp(n->val, n2->val)))
+                        return chk;
+
+                n = n->nxt;
+                n2 = n2->nxt;
+        }
+
+        if (p->len == p2->len)
+                return AG_CMP_EQ;
+        else
+                return p->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
 }
 
 
 /*
  * Define the virt_valid() dynamic dispatch callback function. This function is
- * called by ag_object_valid() when ag_list_valid() is invoked.
+ * called by ag_object_valid() when ag_list_valid() is invoked. We consider a
+ * list to be valid if (a) it's not empty, and (b) each of the values contained
+ * within it is valid.
+ *
+ * In our implementation, we first check if the list is not empty, and then
+ * iterate through each of its values, checking if each is valid. If we reach
+ * the end of the list successfully in this manner, the iterator will be NULL
+ * since it'll have crossed the tail.
  */
 
 
@@ -401,12 +461,25 @@ static bool
 virt_valid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
+
+        if (AG_UNLIKELY (!n))
+                return false;
+
+        while (n && ag_value_valid(n->val))
+                n = n->nxt;
+
+        return !n;
 }
 
 
 /*
  * Define the virt_sz() dynamic dispatch callback function. This function is
- * called by ag_object_sz() when ag_list_sz() is invoked.
+ * called by ag_object_sz() when ag_list_sz() is invoked. The size of list is
+ * the cumulative size of all the values contained within it.
  */
 
 
@@ -414,12 +487,17 @@ static size_t
 virt_sz(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return p->sz;
 }
 
 
 /*
  * Define the virt_len() dynamic dispatch callback function. This function is
- * called by ag_object_len() when ag_list_len() is invoked.
+ * called by ag_object_len() when ag_list_len() is invoked. The length of a list
+ * is the number of values contained within it.
  */
 
 
@@ -427,12 +505,17 @@ static size_t
 virt_len(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return p->len;
 }
 
 
 /*
  * Define the virt_hash() dynamic dispatch callback function. This function is
- * called by ag_object_hash() when ag_list_hash() is invoked.
+ * called by ag_object_hash() when ag_list_hash() is invoked. The hash of a list
+ * is the cumulative hash of all the values contained within it.
  */
 
 
@@ -440,6 +523,10 @@ static ag_hash
 virt_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        
+        const struct payload *p = ag_object_payload(ctx);
+        return p->hash;
 }
 
 
@@ -453,5 +540,6 @@ static ag_string
 *virt_str(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
 }
 
