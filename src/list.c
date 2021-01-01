@@ -159,6 +159,10 @@ extern ag_value *
 ag_list_get(const ag_list *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (!ag_list_empty(ctx));
+
+        const struct payload *p = ag_object_payload(ctx);
+        return ag_object_copy(p->itr->val);
 }
 
 
@@ -171,7 +175,16 @@ extern ag_value *
 ag_list_get_at(const ag_list *ctx, size_t idx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (!ag_list_empty(ctx));
         AG_ASSERT (idx >= 1 && idx <= ag_list_len(ctx));
+
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
+
+        for (register size_t i = 1; i < idx; i++)
+                n = n->nxt;
+
+        return ag_object_copy(n->val);
 }
 
 
@@ -198,6 +211,11 @@ ag_list_set(ag_list **ctx, const ag_value *val)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (val);
+        AG_ASSERT (!ag_list_empty(*ctx));
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        ag_value_release(&p->itr->val);
+        p->itr->val = ag_value_copy(val);
 }
 
 
@@ -211,7 +229,17 @@ ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *val)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (val);
+        AG_ASSERT (!ag_list_empty(*ctx));
         AG_ASSERT (idx >= 1 && idx <= ag_list_len(*ctx));
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        register struct node *n = p->head;
+
+        for (register size_t i = 1; i < idx; i++)
+                n = n->nxt;
+
+        ag_value_release(&n->val);
+        n->val = ag_value_copy(val);
 }
 
 
@@ -237,6 +265,9 @@ extern void
 ag_list_start(ag_list **ctx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        p->itr = p->head;
 }
 
 
@@ -249,6 +280,15 @@ extern bool
 ag_list_next(ag_list **ctx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        
+        if (AG_LIKELY (p->itr)) {
+                p->itr = p->itr->nxt;
+                return p->itr->nxt;
+        }
+        
+        return false;
 }
 
 
@@ -262,6 +302,9 @@ ag_list_push(ag_list **ctx, const ag_value *val)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (val);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        payload_push(p, val);
 }
 
 
