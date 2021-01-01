@@ -40,8 +40,8 @@ struct node {
 /*
  * Define the object payload of a list. We choose to keep a pointer to the last
  * node in order to speed up push operations. Again, in order to avoid having to
- * iterate through the entire list, we maintain the length and cumulative size
- * of the list. 
+ * iterate through the entire list, we maintain the length, cumulative size, and
+ * cumulative hash of the list. 
  */
 
 
@@ -51,6 +51,7 @@ struct payload {
         struct node     *itr;  /* current iterator position */
         size_t           len;  /* number of items           */
         size_t           sz;   /* cumulative size           */
+        ag_hash          hash; /* cumulative hash           */
 };
 
 
@@ -289,24 +290,65 @@ node_release(struct node *ctx)
 
 
 /*
- * Define the payload_new() helper function.
+ * Define the payload_new() helper function. This function is responsible for
+ * creating a new payload instance, either empty or populated with the same
+ * values as in another payload. In either case, the internal iterator is reset,
+ * and the counters are updated accordingly.
  */
 
 
 static struct payload*
 payload_new(const struct node *head)
 {
+        struct payload *p = ag_memblock_new(sizeof *p);
+        p->len = p->sz = p->hash = 0;
+        p->itr = NULL;
+
+        if (!head) {
+                p->head = p->tail = NULL;
+                return p;
+        }
+
+        register const struct node *n = head;
+        while (n) {
+                payload_push(p, n->val);
+                n = n->nxt;
+        }
+
+        return p;
 }
 
 
 /*
- * Define the payload_push() helper function.
+ * Define the payload_push() helper function. This function is responsible for
+ * pushing a new value encapsulated as a node into the list. There are two
+ * possible scenarios where this function is called: When the list is empty, and
+ * when the list is not empty. Of these two possibilities, the latter is much
+ * more likely.
+ *
+ * When the list is empty, we set the pushed value to the start of the list.
+ * Otherwise, in the case where the list is not empty, we push the value to the
+ * end of the list. In either case, we update the tail pointer and the counters.
  */
 
 
 static void
 payload_push(struct payload *ctx, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (val);
+
+        struct node *n = node_new(val);
+
+        if (AG_LIKELY (ctx->tail))
+                ctx->tail->nxt = n;
+        else
+                ctx->head = n;
+
+        ctx->tail = n;
+        ctx->len++;
+        ctx->sz += ag_value_sz(val);
+        ctx->hash += ag_value_hash(val);
 }
 
 
