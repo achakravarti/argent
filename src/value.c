@@ -132,7 +132,6 @@ ag_value_cmp(const ag_value *ctx, const ag_value *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
-
         AG_ASSERT (ag_value_type(ctx) == ag_value_type(cmp));
 
         switch (ag_value_type(ctx)) {
@@ -167,6 +166,24 @@ ag_value_type(const ag_value *ctx)
                 return (AG_VALUE_TYPE_UINT);
 
         return (bits & MASK_TAG);
+}
+
+
+extern bool
+ag_value_valid(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return !ag_string_empty(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_valid(ag_value_object(ctx));
+                break;
+        default:
+                return true;
+        };
 }
 
 
