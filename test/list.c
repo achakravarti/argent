@@ -190,6 +190,42 @@ AG_TEST_INIT(lt_03,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(gt_01, 
+    "ag_list_lt() returns true if a list is lexicographically greater than"
+    " another")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_list) *l2 = sample_int_2();
+
+        AG_TEST_ASSERT (ag_list_gt(l2, l));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_02, 
+    "ag_list_gt() returns false if a list is lexicographically equal to"
+     " another")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_list) *l2 = sample_int();
+
+        AG_TEST_ASSERT (!ag_list_gt(l, l2));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(gt_03,
+    "ag_list_gt() returns false if a list is lexicographically less than"
+    " another")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_list) *l2 = sample_int();
+
+        AG_TEST_ASSERT (!ag_list_gt(l2, l));
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -204,6 +240,8 @@ extern ag_test_suite *test_suite_list(void)
                 release_04,
 
                 lt_01, lt_02, lt_03,
+                
+                gt_01, gt_02, gt_03,
         };
 
         const char *desc[] = {
@@ -219,6 +257,9 @@ extern ag_test_suite *test_suite_list(void)
 
                 lt_01_desc, lt_02_desc,
                 lt_03_desc,
+                
+                gt_01_desc, gt_02_desc,
+                gt_03_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
