@@ -140,13 +140,16 @@ __ag_list_register__(void)
 
 
 /*
- * Define the ag_list_new() interface function.
+ * Define the ag_list_new() interface function. Since lists are objects, we use
+ * the ag_object_new() function to create a new list, passing along the type ID
+ * and the payload specific to list instances.
  */
 
 
 extern ag_list *
 ag_list_new(void)
 {
+        return ag_object_new(AG_TYPEID_LIST, payload_new(NULL));
 }
 
 
