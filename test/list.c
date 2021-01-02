@@ -62,7 +62,60 @@ AG_TEST_INIT(copy_02, "ag_list_copy() increases the reference count by 1")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
+        
         AG_TEST_ASSERT (ag_list_refc(l) == 2);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_01, "ag_list_clone() creates a clone of an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
+
+        AG_TEST_ASSERT (l2 && l != l2);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_02, "ag_list_clone() creates a clone of a sample list")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
+
+        AG_TEST_ASSERT (l2 && l != l2);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_03, "ag_list_clone() has the same items as its parent")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
+
+        AG_TEST_ASSERT (ag_list_eq(l, l2));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(clone_04, "ag_list_clone() does not change the reference count")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
+
+        AG_TEST_ASSERT (ag_list_refc(l) == 1);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(release_04, "ag_list_dispose() reduces the reference count by 1")
+{
+        ag_list *l = sample_int();
+        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
+        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
+        ag_list_release(&l);
+
+        AG_TEST_ASSERT (!l && ag_list_refc(l2) == 2);
 }
 AG_TEST_EXIT();
 
@@ -95,30 +148,29 @@ AG_TEST_INIT(release_03,
 AG_TEST_EXIT();
 
 
-AG_TEST_INIT(release_04, "ag_list_dispose() reduces the reference count by 1")
-{
-        ag_list *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
-        ag_list_release(&l);
-
-        AG_TEST_ASSERT (!l && ag_list_refc(l2) == 2);
-}
-AG_TEST_EXIT();
-
-
-
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
-                new_01, new_02, copy_01,
-                copy_02, release_01, release_02,
-                release_03, release_04,
+                new_01, new_02, 
+                
+                copy_01, copy_02, 
+
+                clone_01, clone_02, clone_03,
+                clone_04,
+                
+                release_01, release_02, release_03, 
+                release_04,
         };
 
         const char *desc[] = {
-                new_01_desc, new_02_desc, copy_01_desc,
-                copy_02_desc, release_01_desc, release_02_desc,
+                new_01_desc, new_02_desc, 
+                
+                copy_01_desc, copy_02_desc, 
+                
+                clone_01_desc, clone_02_desc, 
+                clone_03_desc, clone_04_desc,
+                
+                release_01_desc, release_02_desc,
                 release_03_desc, release_04_desc,
         };
 
