@@ -192,7 +192,9 @@ ag_list_get_at(const ag_list *ctx, size_t idx)
 
 
 /*
- * Define the ag_list_map() interface function.
+ * Define the ag_list_map() interface function. This function allows an iterator
+ * to run through an immutable list, supplying it with the value at the
+ * currently iterated node and optional data.
  */
 
 
@@ -201,6 +203,14 @@ ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (itr);
+
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
+
+        while (n) {
+                itr(ag_value_copy(n->val), opt);
+                n = n->nxt;
+        }
 }
 
 
@@ -247,7 +257,10 @@ ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *val)
 
 
 /*
- * Define the ag_list_map_mutable_list() interface function.
+ * Define the ag_list_map_mutable_list() interface function. This function is
+ * similar to ag_list_map() in that it allows an iterator callback function to
+ * walk through a list. However, unlike ag_list_map(), this function allows the
+ * currently iterated value to be modified.
  */
 
 
@@ -256,6 +269,14 @@ ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (itr);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        register struct node *n = p->head;
+
+        while (n) {
+                itr(&n->val, opt);
+                n = n->nxt;
+        }
 }
 
 
