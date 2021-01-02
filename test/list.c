@@ -190,6 +190,41 @@ AG_TEST_INIT(lt_03,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(eq_01, 
+    "ag_list_eq() returns true if two lists are lexicographically equal")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_list) *l2 = sample_int();
+
+        AG_TEST_ASSERT (ag_list_eq(l, l2));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(eq_02, 
+    "ag_list_eq() returns false if a list is lexicographically less than"
+     " another")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_list) *l2 = sample_int_2();
+
+        AG_TEST_ASSERT (!ag_list_eq(l, l2));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(eq_03,
+    "ag_list_eq() returns false if a list is lexicographically greater than"
+    " another")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_list) *l2 = sample_int();
+
+        AG_TEST_ASSERT (!ag_list_eq(l2, l));
+}
+AG_TEST_EXIT();
+
+
 AG_TEST_INIT(gt_01, 
     "ag_list_lt() returns true if a list is lexicographically greater than"
     " another")
@@ -241,6 +276,8 @@ extern ag_test_suite *test_suite_list(void)
 
                 lt_01, lt_02, lt_03,
                 
+                eq_01, eq_02, eq_03,
+                
                 gt_01, gt_02, gt_03,
         };
 
@@ -257,6 +294,9 @@ extern ag_test_suite *test_suite_list(void)
 
                 lt_01_desc, lt_02_desc,
                 lt_03_desc,
+                
+                eq_01_desc, eq_02_desc,
+                eq_03_desc,
                 
                 gt_01_desc, gt_02_desc,
                 gt_03_desc,
