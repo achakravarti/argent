@@ -199,6 +199,41 @@ ag_value_valid(const ag_value *ctx)
 }
 
 
+/*
+ * Define the ag_value_hash() interface function. This function returns the hash
+ * of a value, generating the result according to the type. In the case of
+ * object values, we call ag_object_hash() to determine the hash. The hash of
+ * string values are determined by ag_hash_new_str(), and that of numeric values
+ * by ag_hash_new().
+ *
+ * TODO: research about the hashes of negative and floating point numbers.
+ */
+
+
+extern ag_hash
+ag_value_hash(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_hash_new_str(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_hash(ag_value_object(ctx));
+                break;
+        case AG_VALUE_TYPE_UINT:
+                return ag_hash_new(ag_value_uint(ctx));
+                break;
+        case AG_VALUE_TYPE_FLOAT:
+                return ag_hash_new(ag_value_float(ctx));
+                break;
+        default:
+                return ag_hash_new(ag_value_int(ctx));
+        }
+}
+
+
 extern ag_int
 ag_value_int(const ag_value *ctx)
 {
