@@ -279,6 +279,26 @@ AG_TEST_INIT(empty_02, "ag_list_empty() returns false for a non-empty list")
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(typeid_01, "ag_list_typeid() returns AG_TYPEID_LIST")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+
+        AG_TEST_ASSERT (ag_list_typeid(l) == AG_TYPEID_LIST);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(uuid_01, "ag_list_uuid() returns the UUID of a list")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_uuid) *u = ag_list_uuid(l);
+        AG_AUTO(ag_string) *s = ag_uuid_str(u);
+
+        AG_TEST_ASSERT (!ag_string_empty(s));
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -299,6 +319,8 @@ extern ag_test_suite *test_suite_list(void)
                 gt_01, gt_02, gt_03,
 
                 empty_01, empty_02,
+
+                typeid_01, uuid_01,
         };
 
         const char *desc[] = {
@@ -322,6 +344,8 @@ extern ag_test_suite *test_suite_list(void)
                 gt_03_desc,
 
                 empty_01_desc, empty_02_desc,
+
+                typeid_01_desc, uuid_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
