@@ -261,6 +261,24 @@ AG_TEST_INIT(gt_03,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(empty_01, "ag_list_empty() returns true for an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+
+        AG_TEST_ASSERT (ag_list_empty(l));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(empty_02, "ag_list_empty() returns false for a non-empty list")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+
+        AG_TEST_ASSERT (!ag_list_empty(l));
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -279,6 +297,8 @@ extern ag_test_suite *test_suite_list(void)
                 eq_01, eq_02, eq_03,
                 
                 gt_01, gt_02, gt_03,
+
+                empty_01, empty_02,
         };
 
         const char *desc[] = {
@@ -300,6 +320,8 @@ extern ag_test_suite *test_suite_list(void)
                 
                 gt_01_desc, gt_02_desc,
                 gt_03_desc,
+
+                empty_01_desc, empty_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
