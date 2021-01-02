@@ -169,6 +169,18 @@ ag_value_type(const ag_value *ctx)
 }
 
 
+/*
+ * Define the ag_value_valid() interface function. This function checks whether
+ * a value is valid. Numeric values are always considered to be valid, string
+ * values are valid if they're not empty, and object values are valid if calling
+ * ag_object_valid() with them returns true. Note that as of now we're not
+ * considering NaN as an invalid float value, but perhaps we should do so in
+ * future.
+ *
+ * TODO: should NaN be an invalid float value?
+ */
+
+
 extern bool
 ag_value_valid(const ag_value *ctx)
 {
