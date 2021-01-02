@@ -234,6 +234,38 @@ ag_value_hash(const ag_value *ctx)
 }
 
 
+/*
+ * Define the ag_value_sz() interface function. This function returns the size
+ * in bytes of the value that it is holding. The size of the numeric values is
+ * determined at compile-time, whereas the size of object and string values is
+ * determined at runtime.
+ */
+
+
+extern size_t
+ag_value_sz(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_string_sz(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_sz(ag_value_object(ctx));
+                break;
+        case AG_VALUE_TYPE_UINT:
+                return sizeof(ag_uint);
+                break;
+        case AG_VALUE_TYPE_FLOAT:
+                return sizeof(ag_float);
+                break;
+        default:
+                return sizeof(ag_int);
+        }
+}
+
+
 extern ag_int
 ag_value_int(const ag_value *ctx)
 {
