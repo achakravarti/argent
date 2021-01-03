@@ -13,14 +13,14 @@ struct test2 {
 };
 
 
-AG_TEST_INIT(new_01, "ag_memblock_new() allocates memory on the heap for an"
+AG_TEST_CASE(new_01, "ag_memblock_new() allocates memory on the heap for an"
              " int") {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
         AG_TEST (m);
 }
 
 
-AG_TEST_INIT(new_02, "ag_memblock_new() allocates memory on the heap for a test"
+AG_TEST_CASE(new_02, "ag_memblock_new() allocates memory on the heap for a test"
              " struct")
 {
         struct test *t = ag_memblock_new(sizeof *t);
@@ -37,7 +37,7 @@ AG_TEST_INIT(new_02, "ag_memblock_new() allocates memory on the heap for a test"
 }
 
 
-AG_TEST_INIT(new_03, "ag_memblock_new() returns a block with a reference count"
+AG_TEST_CASE(new_03, "ag_memblock_new() returns a block with a reference count"
                 " of 1")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
@@ -45,7 +45,7 @@ AG_TEST_INIT(new_03, "ag_memblock_new() returns a block with a reference count"
 }
 
 
-AG_TEST_INIT(new_04, "ag_memblock_new() returns a block with the requested data"
+AG_TEST_CASE(new_04, "ag_memblock_new() returns a block with the requested data"
                 " size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
@@ -53,7 +53,7 @@ AG_TEST_INIT(new_04, "ag_memblock_new() returns a block with the requested data"
 }
 
 
-AG_TEST_INIT(new_05, "ag_memblock_new() returns a block with a total size >="
+AG_TEST_CASE(new_05, "ag_memblock_new() returns a block with a total size >="
                 " requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
@@ -61,7 +61,7 @@ AG_TEST_INIT(new_05, "ag_memblock_new() returns a block with a total size >="
 }
 
 
-AG_TEST_INIT(new_align_01, "ag_memblock_new_align() allocates memory on the heap"
+AG_TEST_CASE(new_align_01, "ag_memblock_new_align() allocates memory on the heap"
                 " for an int")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
@@ -69,7 +69,7 @@ AG_TEST_INIT(new_align_01, "ag_memblock_new_align() allocates memory on the heap
 }
 
 
-AG_TEST_INIT(new_align_02, "ag_memblock_new_align() allocates memory on the heap"
+AG_TEST_CASE(new_align_02, "ag_memblock_new_align() allocates memory on the heap"
                 " for a test struct")
 {
         struct test *t = ag_memblock_new_align(sizeof *t, 8);
@@ -86,7 +86,7 @@ AG_TEST_INIT(new_align_02, "ag_memblock_new_align() allocates memory on the heap
 }
 
 
-AG_TEST_INIT(new_align_03, "ag_memblock_new_align() returns a block with a"
+AG_TEST_CASE(new_align_03, "ag_memblock_new_align() returns a block with a"
                 " reference count of 1")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
@@ -94,7 +94,7 @@ AG_TEST_INIT(new_align_03, "ag_memblock_new_align() returns a block with a"
 }
 
 
-AG_TEST_INIT(new_align_04, "ag_memblock_new_align() returns a block with the"
+AG_TEST_CASE(new_align_04, "ag_memblock_new_align() returns a block with the"
                 " requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
@@ -102,7 +102,7 @@ AG_TEST_INIT(new_align_04, "ag_memblock_new_align() returns a block with the"
 }
 
 
-AG_TEST_INIT(new_align_05, "ag_memblock_new_align() returns a block with a total"
+AG_TEST_CASE(new_align_05, "ag_memblock_new_align() returns a block with a total"
                 " size >= requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
@@ -110,7 +110,7 @@ AG_TEST_INIT(new_align_05, "ag_memblock_new_align() returns a block with a total
 }
 
 
-AG_TEST_INIT(new_align_06, "ag_memblock_new_align() returns a block with the"
+AG_TEST_CASE(new_align_06, "ag_memblock_new_align() returns a block with the"
                 " required alignment")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 32);
@@ -118,7 +118,7 @@ AG_TEST_INIT(new_align_06, "ag_memblock_new_align() returns a block with the"
 }
 
 
-AG_TEST_INIT(clone_01, "ag_memblock_clone() makes a deep copy of an int in the"
+AG_TEST_CASE(clone_01, "ag_memblock_clone() makes a deep copy of an int in the"
                 " heap")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -133,7 +133,7 @@ AG_TEST_INIT(clone_01, "ag_memblock_clone() makes a deep copy of an int in the"
         AG_TEST (chk);
 }
 
-AG_TEST_INIT(clone_02, "ag_memblock_clone() makes a deep copy of a test structure"
+AG_TEST_CASE(clone_02, "ag_memblock_clone() makes a deep copy of a test structure"
                 " in the heap")
 {
         struct test *t = ag_memblock_new(sizeof *t);
@@ -155,7 +155,7 @@ AG_TEST_INIT(clone_02, "ag_memblock_clone() makes a deep copy of a test structur
 }
 
 
-AG_TEST_INIT(clone_03, "ag_memblock_clone() returns a copy with another address")
+AG_TEST_CASE(clone_03, "ag_memblock_clone() returns a copy with another address")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
@@ -163,7 +163,7 @@ AG_TEST_INIT(clone_03, "ag_memblock_clone() returns a copy with another address"
 }
 
 
-AG_TEST_INIT(clone_04, "ag_memblock_clone() sets the reference count of the copy"
+AG_TEST_CASE(clone_04, "ag_memblock_clone() sets the reference count of the copy"
                 " to 1")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -172,7 +172,7 @@ AG_TEST_INIT(clone_04, "ag_memblock_clone() sets the reference count of the copy
         AG_TEST (ag_memblock_refc(cp) == 1);
 }
 
-AG_TEST_INIT(clone_05, "ag_memblock_clone() does not change the reference count"
+AG_TEST_CASE(clone_05, "ag_memblock_clone() does not change the reference count"
                        " of the source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -182,7 +182,7 @@ AG_TEST_INIT(clone_05, "ag_memblock_clone() does not change the reference count"
 }
 
 
-AG_TEST_INIT(clone_06, "ag_memblock_clone() preserves the data size of the"
+AG_TEST_CASE(clone_06, "ag_memblock_clone() preserves the data size of the"
                        " source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -192,7 +192,7 @@ AG_TEST_INIT(clone_06, "ag_memblock_clone() preserves the data size of the"
 }
 
 
-AG_TEST_INIT(clone_07, 
+AG_TEST_CASE(clone_07, 
              "ag_memblock_clone() maintains the total size of the source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -201,7 +201,7 @@ AG_TEST_INIT(clone_07,
         AG_TEST (ag_memblock_sz(src) >= ag_memblock_sz(cp));
 }
 
-AG_TEST_INIT(clone_align_01, 
+AG_TEST_CASE(clone_align_01, 
              "ag_memblock_clone_align() makes a deep copy of an int")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -217,7 +217,7 @@ AG_TEST_INIT(clone_align_01,
 }
 
 
-AG_TEST_INIT(clone_align_02, 
+AG_TEST_CASE(clone_align_02, 
              "ag_memblock_clone_align() makes a deep copy of a test structure")
 {
         struct test *t = ag_memblock_new(sizeof *t);
@@ -239,7 +239,7 @@ AG_TEST_INIT(clone_align_02,
 }
 
 
-AG_TEST_INIT(clone_align_03, "ag_memblock_clone_align() returns a copy with another"
+AG_TEST_CASE(clone_align_03, "ag_memblock_clone_align() returns a copy with another"
                 " address")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -248,7 +248,7 @@ AG_TEST_INIT(clone_align_03, "ag_memblock_clone_align() returns a copy with anot
 }
 
 
-AG_TEST_INIT(clone_align_04, "ag_memblock_clone_align() sets the reference count of"
+AG_TEST_CASE(clone_align_04, "ag_memblock_clone_align() sets the reference count of"
                 " the copy to 1")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -258,7 +258,7 @@ AG_TEST_INIT(clone_align_04, "ag_memblock_clone_align() sets the reference count
         AG_TEST (ag_memblock_refc(cp2) == 1);
 }
 
-AG_TEST_INIT(clone_align_05, "ag_memblock_clone_align() does not change the"
+AG_TEST_CASE(clone_align_05, "ag_memblock_clone_align() does not change the"
                 " reference count of the source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -269,7 +269,7 @@ AG_TEST_INIT(clone_align_05, "ag_memblock_clone_align() does not change the"
 }
 
 
-AG_TEST_INIT(clone_align_06, "ag_memblock_clone_align() preserves the data size of"
+AG_TEST_CASE(clone_align_06, "ag_memblock_clone_align() preserves the data size of"
                 " the source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -279,7 +279,7 @@ AG_TEST_INIT(clone_align_06, "ag_memblock_clone_align() preserves the data size 
 }
 
 
-AG_TEST_INIT(clone_align_07, "ag_memblock_clone_align() maintains the total size of"
+AG_TEST_CASE(clone_align_07, "ag_memblock_clone_align() maintains the total size of"
                 " the source")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -289,7 +289,7 @@ AG_TEST_INIT(clone_align_07, "ag_memblock_clone_align() maintains the total size
 }
 
 
-AG_TEST_INIT(clone_align_08, "ag_memblock_clone_align() honours its alignment"
+AG_TEST_CASE(clone_align_08, "ag_memblock_clone_align() honours its alignment"
                 " request")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
@@ -299,14 +299,14 @@ AG_TEST_INIT(clone_align_08, "ag_memblock_clone_align() honours its alignment"
 }
 
 
-AG_TEST_INIT(release_01, "ag_memblock_release() performs a no-op if passed NULL")
+AG_TEST_CASE(release_01, "ag_memblock_release() performs a no-op if passed NULL")
 {
         ag_memblock_release(NULL);
         AG_TEST (true);
 }
 
 
-AG_TEST_INIT(release_02, "ag_memblock_release() performs a no-op if passed a"
+AG_TEST_CASE(release_02, "ag_memblock_release() performs a no-op if passed a"
                 " handle to a null pointer")
 {
         ag_memblock *m = NULL;
@@ -315,7 +315,7 @@ AG_TEST_INIT(release_02, "ag_memblock_release() performs a no-op if passed a"
 }
 
 
-AG_TEST_INIT(release_03, "ag_memblock_release() release an int on the heap")
+AG_TEST_CASE(release_03, "ag_memblock_release() release an int on the heap")
 {
         int *i = ag_memblock_new(sizeof *i);
         ag_memblock_release((ag_memblock **)&i);
@@ -323,7 +323,7 @@ AG_TEST_INIT(release_03, "ag_memblock_release() release an int on the heap")
 }
 
 
-AG_TEST_INIT(release_04, "ag_memblock_release() releases a test struct on the"
+AG_TEST_CASE(release_04, "ag_memblock_release() releases a test struct on the"
                 " heap")
 {
         struct test *t = ag_memblock_new(sizeof *t);
@@ -332,7 +332,7 @@ AG_TEST_INIT(release_04, "ag_memblock_release() releases a test struct on the"
 }
 
 
-AG_TEST_INIT(release_05, "ag_memblock_release() reduces the reference count by 1"
+AG_TEST_CASE(release_05, "ag_memblock_release() reduces the reference count by 1"
                 "for lazy copies")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -343,7 +343,7 @@ AG_TEST_INIT(release_05, "ag_memblock_release() reduces the reference count by 1
 }
 
 
-AG_TEST_INIT(release_06, "ag_memblock_release() on a deep copy does not alter the"
+AG_TEST_CASE(release_06, "ag_memblock_release() on a deep copy does not alter the"
                 " reference count of the source")
 {
         AG_AUTO(ag_memblock) *i = ag_memblock_new(sizeof(int));
@@ -356,7 +356,7 @@ AG_TEST_INIT(release_06, "ag_memblock_release() on a deep copy does not alter th
 
 
 
-AG_TEST_INIT(cmp_01, "ag_memblock_cmp() returns AG_CMP_EQ for two int memory"
+AG_TEST_CASE(cmp_01, "ag_memblock_cmp() returns AG_CMP_EQ for two int memory"
                 " blocks with the same value")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -372,7 +372,7 @@ AG_TEST_INIT(cmp_01, "ag_memblock_cmp() returns AG_CMP_EQ for two int memory"
 }
 
 
-AG_TEST_INIT(cmp_02, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
+AG_TEST_CASE(cmp_02, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
                 " shallow copy of an int with its source")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -387,7 +387,7 @@ AG_TEST_INIT(cmp_02, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
 }
 
 
-AG_TEST_INIT(cmp_03, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
+AG_TEST_CASE(cmp_03, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
                 " copy of an int with its source")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -402,7 +402,7 @@ AG_TEST_INIT(cmp_03, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
 }
 
 
-AG_TEST_INIT(cmp_04, "ag_memblock_cmp() returns AG_CMP_EQ for two memory blocks"
+AG_TEST_CASE(cmp_04, "ag_memblock_cmp() returns AG_CMP_EQ for two memory blocks"
                 " with the same struct with scalar fields")
 {
         struct test2 *a = ag_memblock_new(sizeof *a);
@@ -420,7 +420,7 @@ AG_TEST_INIT(cmp_04, "ag_memblock_cmp() returns AG_CMP_EQ for two memory blocks"
 }
 
 
-AG_TEST_INIT(cmp_05, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
+AG_TEST_CASE(cmp_05, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
                 " shallow copy of a struct with scalar fields")
 {
         struct test2 *a = ag_memblock_new(sizeof *a);
@@ -437,7 +437,7 @@ AG_TEST_INIT(cmp_05, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
 }
 
 
-AG_TEST_INIT(cmp_06, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
+AG_TEST_CASE(cmp_06, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
                 " copy of a struct with scalar fields")
 {
         struct test2 *a = ag_memblock_new(sizeof *a);
@@ -453,7 +453,7 @@ AG_TEST_INIT(cmp_06, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
 }
 
 
-AG_TEST_INIT(cmp_07, "ag_memblock_cmp() returns AG_CMP_LT when comparing an int"
+AG_TEST_CASE(cmp_07, "ag_memblock_cmp() returns AG_CMP_LT when comparing an int"
                 " memory block to another whose first differing byte is"
                 " greater")
 {
@@ -470,7 +470,7 @@ AG_TEST_INIT(cmp_07, "ag_memblock_cmp() returns AG_CMP_LT when comparing an int"
 }
 
 
-AG_TEST_INIT(cmp_08, "ag_memblock_cmp() returns AG_CMP_GT when comparing an int"
+AG_TEST_CASE(cmp_08, "ag_memblock_cmp() returns AG_CMP_GT when comparing an int"
                 " memory block to another whose first differing byte is lower")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -486,7 +486,7 @@ AG_TEST_INIT(cmp_08, "ag_memblock_cmp() returns AG_CMP_GT when comparing an int"
 }
 
 
-AG_TEST_INIT(cmp_09, "ag_memblock_cmp() returns AG_CMP_LT when comparing a memory"
+AG_TEST_CASE(cmp_09, "ag_memblock_cmp() returns AG_CMP_LT when comparing a memory"
                 " block holding a struct with scalar fields to another whose"
                 " first differing byte is greater")
 {
@@ -506,7 +506,7 @@ AG_TEST_INIT(cmp_09, "ag_memblock_cmp() returns AG_CMP_LT when comparing a memor
 }
 
 
-AG_TEST_INIT(cmp_10, "ag_memblock_cmp() returns AG_CMP_GT when comparing a memory"
+AG_TEST_CASE(cmp_10, "ag_memblock_cmp() returns AG_CMP_GT when comparing a memory"
                 " block holding a struct with scalar fields to another whose"
                 " first differing byte is lower")
 {
@@ -526,7 +526,7 @@ AG_TEST_INIT(cmp_10, "ag_memblock_cmp() returns AG_CMP_GT when comparing a memor
 }
 
 
-AG_TEST_INIT(lt_01, "ag_memblock_lt() returns true for an int memory block with"
+AG_TEST_CASE(lt_01, "ag_memblock_lt() returns true for an int memory block with"
                 " a value lower than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -542,7 +542,7 @@ AG_TEST_INIT(lt_01, "ag_memblock_lt() returns true for an int memory block with"
 }
 
 
-AG_TEST_INIT(lt_02, "ag_memblock_lt() returns false for an int memory block with"
+AG_TEST_CASE(lt_02, "ag_memblock_lt() returns false for an int memory block with"
                 " the same value as another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -558,7 +558,7 @@ AG_TEST_INIT(lt_02, "ag_memblock_lt() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(lt_03, "ag_memblock_lt() returns false for an int memory block with"
+AG_TEST_CASE(lt_03, "ag_memblock_lt() returns false for an int memory block with"
                 " a greater value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -574,7 +574,7 @@ AG_TEST_INIT(lt_03, "ag_memblock_lt() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(gt_01, "ag_memblock_gt() returns true for an int memory block with"
+AG_TEST_CASE(gt_01, "ag_memblock_gt() returns true for an int memory block with"
                 " a value greater than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -590,7 +590,7 @@ AG_TEST_INIT(gt_01, "ag_memblock_gt() returns true for an int memory block with"
 }
 
 
-AG_TEST_INIT(gt_02, "ag_memblock_gt() returns false for an int memory block with"
+AG_TEST_CASE(gt_02, "ag_memblock_gt() returns false for an int memory block with"
                 " the same value as another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -606,7 +606,7 @@ AG_TEST_INIT(gt_02, "ag_memblock_gt() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(gt_03, "ag_memblock_gt() returns false for an int memory block with"
+AG_TEST_CASE(gt_03, "ag_memblock_gt() returns false for an int memory block with"
                 " a lower value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -622,7 +622,7 @@ AG_TEST_INIT(gt_03, "ag_memblock_gt() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(eq_01, "ag_memblock_eq() returns true for two int memory blocks with"
+AG_TEST_CASE(eq_01, "ag_memblock_eq() returns true for two int memory blocks with"
                 " the same value")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -638,7 +638,7 @@ AG_TEST_INIT(eq_01, "ag_memblock_eq() returns true for two int memory blocks wit
 }
 
 
-AG_TEST_INIT(eq_02, "ag_memblock_eq() returns false for an int memory block with"
+AG_TEST_CASE(eq_02, "ag_memblock_eq() returns false for an int memory block with"
                 " a lower value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -654,7 +654,7 @@ AG_TEST_INIT(eq_02, "ag_memblock_eq() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(eq_03, "ag_memblock_eq() returns false for an int memory block with"
+AG_TEST_CASE(eq_03, "ag_memblock_eq() returns false for an int memory block with"
                 " a greater value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
@@ -670,7 +670,7 @@ AG_TEST_INIT(eq_03, "ag_memblock_eq() returns false for an int memory block with
 }
 
 
-AG_TEST_INIT(resize_01, "ag_memblock_resize() resizes an existing memory block")
+AG_TEST_CASE(resize_01, "ag_memblock_resize() resizes an existing memory block")
 {
         char *bfr = ag_memblock_new(10);
         ag_memblock_resize((ag_memblock **)&bfr, 15);
@@ -682,7 +682,7 @@ AG_TEST_INIT(resize_01, "ag_memblock_resize() resizes an existing memory block")
 }
 
 
-AG_TEST_INIT(resize_02, "ag_memblock_resize() preserves data when resizing to a"
+AG_TEST_CASE(resize_02, "ag_memblock_resize() preserves data when resizing to a"
                 " larger size")
 {
         char *bfr = ag_memblock_new(6);
@@ -697,7 +697,7 @@ AG_TEST_INIT(resize_02, "ag_memblock_resize() preserves data when resizing to a"
 }
 
 
-AG_TEST_INIT(resize_align_01, "ag_memblock_resize_align() resizes an existing"
+AG_TEST_CASE(resize_align_01, "ag_memblock_resize_align() resizes an existing"
                 " memory block")
 {
         char *bfr = ag_memblock_new(10);
@@ -710,7 +710,7 @@ AG_TEST_INIT(resize_align_01, "ag_memblock_resize_align() resizes an existing"
 }
 
 
-AG_TEST_INIT(resize_align_02, "ag_memblock_resize_align() preserves data when"
+AG_TEST_CASE(resize_align_02, "ag_memblock_resize_align() preserves data when"
                 " resizing to a larger size")
 {
         char *bfr = ag_memblock_new(6);
@@ -725,7 +725,7 @@ AG_TEST_INIT(resize_align_02, "ag_memblock_resize_align() preserves data when"
 }
 
 
-AG_TEST_INIT(resize_align_03, "ag_memblock_resize_align() aligns to the requested"
+AG_TEST_CASE(resize_align_03, "ag_memblock_resize_align() aligns to the requested"
                 " boundary")
 {
         char *bfr = ag_memblock_new(6);
@@ -740,7 +740,7 @@ AG_TEST_INIT(resize_align_03, "ag_memblock_resize_align() aligns to the requeste
 }
 
 
-AG_TEST_INIT(str_01, "ag_memblock_str() generates the string representation of a"
+AG_TEST_CASE(str_01, "ag_memblock_str() generates the string representation of a"
                 " memory block")
 {
         int *i = ag_memblock_new(sizeof *i);

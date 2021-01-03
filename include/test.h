@@ -79,7 +79,7 @@ enum ag_test_status {
 
 typedef enum ag_test_status (ag_test)(void);
 
-#define AG_TEST_INIT(n, d)                                              \
+#define AG_TEST_CASE(n, d)                                              \
         static const char *n##_desc = d;                                \
         static enum ag_test_status n(void) {                            \
         enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
