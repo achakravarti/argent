@@ -136,45 +136,45 @@ static void register_derived(void)
 
 AG_TEST_INIT(new_01, "ag_object_new() creates a new base object") {
         AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST_ASSERT (o);
-} AG_TEST_EXIT();
+        AG_TEST (o);
+}
 
 
 AG_TEST_INIT(new_02, "ag_object_new() creates a new derived object") {
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST_ASSERT (o);
-} AG_TEST_EXIT();
+        AG_TEST (o);
+}
 
 
 AG_TEST_INIT(copy_01, "ag_object_copy() makes a shallow copy of a base object") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (o == o2);
-} AG_TEST_EXIT();
+        AG_TEST (o == o2);
+}
 
 
 AG_TEST_INIT(copy_02, "ag_object_copy() makes a shallow copy of a derived"
                       " object") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (o == o2);
-} AG_TEST_EXIT();
+        AG_TEST (o == o2);
+}
 
 
 AG_TEST_INIT(copy_03, "ag_object_copy() updates the reference count of a shallow"
                       " copy of a base object") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
 AG_TEST_INIT(copy_04, "ag_object_copy() updates the reference count of a shallow"
                       " copy of a derived object") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
 AG_TEST_INIT(copy_05, "ag_object_copy() preserves the data of the shallow copy of"
@@ -185,8 +185,8 @@ AG_TEST_INIT(copy_05, "ag_object_copy() preserves the data of the shallow copy o
         const struct payload_base *p  = ag_object_payload(o);
         const struct payload_base *p2 = ag_object_payload(o2);
 
-        AG_TEST_ASSERT (p->x == p2->x && p->y == p2->y);
-} AG_TEST_EXIT();
+        AG_TEST (p->x == p2->x && p->y == p2->y);
+}
 
 
 AG_TEST_INIT(copy_06, "ag_object_copy() preserves the data of the shallow copy of"
@@ -197,38 +197,38 @@ AG_TEST_INIT(copy_06, "ag_object_copy() preserves the data of the shallow copy o
         const struct payload_derived *p  = ag_object_payload(o);
         const struct payload_derived *p2 = ag_object_payload(o2);
 
-        AG_TEST_ASSERT (*p->x == *p2->x && *p->y == *p2->y);
-} AG_TEST_EXIT();
+        AG_TEST (*p->x == *p2->x && *p->y == *p2->y);
+}
 
 
 AG_TEST_INIT(clone_01, "ag_object_clone() makes a deep copy of a base object") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_clone(o);
-        AG_TEST_ASSERT (o != o2);
-} AG_TEST_EXIT();
+        AG_TEST (o != o2);
+}
 
 
 AG_TEST_INIT(clone_02, "ag_object_clone() makes a deep copy of a derived object") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_clone(o);
-        AG_TEST_ASSERT (o != o2);
-} AG_TEST_EXIT();
+        AG_TEST (o != o2);
+}
 
 
 AG_TEST_INIT(clone_03, "ag_object_clone() does not affect the reference count of"
                        " the original base object") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_clone(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 1);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 1);
+}
 
 
 AG_TEST_INIT(clone_04, "ag_object_clone() does not affect the reference count of"
                        " the original derived object") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_clone(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 1);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 1);
+}
 
 
 AG_TEST_INIT(clone_05, "ag_object_clone() preserves the data of the deep copy of a"
@@ -239,8 +239,8 @@ AG_TEST_INIT(clone_05, "ag_object_clone() preserves the data of the deep copy of
         const struct payload_base *p  = ag_object_payload(o);
         const struct payload_base *p2 = ag_object_payload(o2);
 
-        AG_TEST_ASSERT (p->x == p2->x && p->y == p2->y);
-} AG_TEST_EXIT();
+        AG_TEST (p->x == p2->x && p->y == p2->y);
+}
 
 
 AG_TEST_INIT(clone_06, "ag_object_copy() preserves the data of the deep copy of a"
@@ -251,35 +251,35 @@ AG_TEST_INIT(clone_06, "ag_object_copy() preserves the data of the deep copy of 
         const struct payload_derived *p  = ag_object_payload(o);
         const struct payload_derived *p2 = ag_object_payload(o2);
 
-        AG_TEST_ASSERT (*p->x == *p2->x && *p->y == *p2->y);
-} AG_TEST_EXIT();
+        AG_TEST (*p->x == *p2->x && *p->y == *p2->y);
+}
 
 
 AG_TEST_INIT(release_01, "ag_object_release() performs a no-op if passed NULL") {
         ag_object_release(NULL);
-        AG_TEST_ASSERT (true);
-} AG_TEST_EXIT();
+        AG_TEST (true);
+}
 
 
 AG_TEST_INIT(release_02, "ag_object_release() performs a no-op if passed a handle"
                          " to a null pointer") {
         ag_object *o = NULL;
         ag_object_release(&o);
-        AG_TEST_ASSERT (true);
-} AG_TEST_EXIT();
+        AG_TEST (true);
+}
 
 
 AG_TEST_INIT(release_03, "ag_object_release() releases a base object") {
         ag_object *o = sample_base();
         ag_object_release(&o);
-        AG_TEST_ASSERT (!o);
-} AG_TEST_EXIT();
+        AG_TEST (!o);
+}
 
 AG_TEST_INIT(release_04, "ag_object_release() releases a derived object") {
         ag_object *o = sample_derived();
         ag_object_release(&o);
-        AG_TEST_ASSERT (!o);
-} AG_TEST_EXIT();
+        AG_TEST (!o);
+}
 
 
 AG_TEST_INIT(release_05, "ag_object_release() reduces the reference count by 1 for"
@@ -289,8 +289,8 @@ AG_TEST_INIT(release_05, "ag_object_release() reduces the reference count by 1 f
         ag_object          *o3 = ag_object_copy(o);
 
         ag_object_release(&o3);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
 AG_TEST_INIT(release_06, "ag_object_release() reduces the reference count by 1 for"
@@ -300,237 +300,290 @@ AG_TEST_INIT(release_06, "ag_object_release() reduces the reference count by 1 f
         ag_object          *o3 = ag_object_copy(o);
 
         ag_object_release(&o3);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
 AG_TEST_INIT(cmp_01, "ag_object_cmp() returns AG_CMP_EQ when comparing the same"
                      " base objects") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_cmp(o, o2) == AG_CMP_EQ);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_cmp(o, o2) == AG_CMP_EQ);
+}
 
 
 AG_TEST_INIT(cmp_02, "ag_object_cmp() return AG_CMP_EQ when comparing the same"
                      " derived objects") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_cmp(o, o2) == AG_CMP_EQ);
-} AG_TEST_EXIT();
+        AG_TEST (ag_object_cmp(o, o2) == AG_CMP_EQ);
+}
 
 
 AG_TEST_INIT(lt_01, "ag_object_lt() returns false when comparing the same base"
                     " objects") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (!ag_object_lt(o, o2));
-} AG_TEST_EXIT();
+        AG_TEST (!ag_object_lt(o, o2));
+}
 
 
 AG_TEST_INIT(lt_02, "ag_object_lt() returns false when comparing the same derived"
                     " objects") {
         AG_AUTO(ag_object) *o  = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (!ag_object_lt(o, o2));
-} AG_TEST_EXIT();
+        AG_TEST (!ag_object_lt(o, o2));
+}
 
 
 AG_TEST_INIT(gt_01, "ag_object_gt() returns false when comparing the same base"
                     " objects") {
         AG_AUTO(ag_object) *o  = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (!ag_object_gt(o, o2));
-} AG_TEST_EXIT();
+        AG_TEST (!ag_object_gt(o, o2));
+}
 
 
-AG_TEST_INIT(gt_02, "ag_object_gt() returns false when comparing the same derived"
-                    " objects") {
-        AG_AUTO(ag_object) *o  = sample_derived();
+AG_TEST_INIT(gt_02,
+    "ag_object_gt() returns false when comparing the same derived objects")
+{
+        AG_AUTO(ag_object) *o = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (!ag_object_gt(o, o2));
-} AG_TEST_EXIT();
+
+        AG_TEST (!ag_object_gt(o, o2));
+}
 
 
-AG_TEST_INIT(typeid_01, "ag_object_typeid() returns the type ID of a base"
-                        " object") {
-        AG_AUTO(ag_object) *o  = sample_base();
-        AG_TEST_ASSERT (ag_object_typeid(o) == TYPEID_BASE);
-} AG_TEST_EXIT();
+AG_TEST_INIT(typeid_01,
+    "ag_object_typeid() returns the type ID of a base object")
+{
+        AG_AUTO(ag_object) *o = sample_base();
+
+        AG_TEST (ag_object_typeid(o) == TYPEID_BASE);
+}
 
 
-AG_TEST_INIT(typeid_02, "ag_object_typeid() returns the type ID of a derived"
-                        " object") {
-        AG_AUTO(ag_object) *o  = sample_derived();
-        AG_TEST_ASSERT (ag_object_typeid(o) == TYPEID_DERIVED);
-} AG_TEST_EXIT();
+AG_TEST_INIT(typeid_02, 
+    "ag_object_typeid() returns the type ID of a derived object")
+{
+        AG_AUTO(ag_object) *o = sample_derived();
+
+        AG_TEST (ag_object_typeid(o) == TYPEID_DERIVED);
+}
 
 
-AG_TEST_INIT(uuid_01, "ag_object_uuid() returns the UUID of a base object") {
+AG_TEST_INIT(uuid_01, "ag_object_uuid() returns the UUID of a base object")
+{
         AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
-        AG_TEST_ASSERT (!ag_uuid_empty(u));
-} AG_TEST_EXIT();
+
+        AG_TEST (!ag_uuid_empty(u));
+}
 
 
-AG_TEST_INIT(uuid_02, "ag_object_uuid() returns the UUID of a derived object") {
+AG_TEST_INIT(uuid_02, "ag_object_uuid() returns the UUID of a derived object")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
-        AG_TEST_ASSERT (!ag_uuid_empty(u));
-} AG_TEST_EXIT();
+
+        AG_TEST (!ag_uuid_empty(u));
+}
 
 
-AG_TEST_INIT(sz_01, "ag_object_sz() returns the size of a base object") {
+AG_TEST_INIT(sz_01, "ag_object_sz() returns the size of a base object")
+{
         AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST_ASSERT (ag_object_sz(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_sz(o));
+}
 
 
-AG_TEST_INIT(sz_02, "ag_object_sz() returns the size of a derived object") {
+AG_TEST_INIT(sz_02, "ag_object_sz() returns the size of a derived object")
+{
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST_ASSERT (ag_object_sz(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_sz(o));
+}
 
 
-AG_TEST_INIT(sz_03, "ag_object_sz() returns a greater size for a derived object"
-                    " than that of a base object") {
-        AG_AUTO(ag_object) *o  = sample_base();
+AG_TEST_INIT(sz_03,
+    "ag_object_sz() returns a greater size for a derived object than that of a"
+    " base object")
+{
+        AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_object) *o2 = sample_derived();
-        AG_TEST_ASSERT (ag_object_sz(o2) > ag_object_sz(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_sz(o2) > ag_object_sz(o));
+}
 
 
-AG_TEST_INIT(refc_01, "ag_object_refc() returns the reference count of a base"
-                      " object") {
-        AG_AUTO(ag_object) *o  = sample_base();
-        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
-
-
-AG_TEST_INIT(refc_02, "ag_object_refc() returns the reference count of a derived"
-                      " object") {
-        AG_AUTO(ag_object) *o  = sample_derived();
-        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-        AG_TEST_ASSERT (ag_object_refc(o) == 2);
-} AG_TEST_EXIT();
-
-
-AG_TEST_INIT(len_01, "ag_object_len() returns 1 for a base object") {
+AG_TEST_INIT(refc_01,
+    "ag_object_refc() returns the reference count of a base object")
+{
         AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST_ASSERT (ag_object_len(o) == 1);
-} AG_TEST_EXIT();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
-AG_TEST_INIT(len_02, "ag_object_len() returns 0 for a derived object") {
+AG_TEST_INIT(refc_02,
+    "ag_object_refc() returns the reference count of a derived object")
+{
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST_ASSERT (ag_object_len(o) == 0);
-} AG_TEST_EXIT();
+        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
+
+        AG_TEST (ag_object_refc(o) == 2);
+}
 
 
-AG_TEST_INIT(valid_01, "ag_object_valid() executes its default callback if not"
-                       " overridden") {
+AG_TEST_INIT(len_01, "ag_object_len() returns 1 for a base object")
+{
         AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST_ASSERT (ag_object_valid(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_len(o) == 1);
+}
 
 
-AG_TEST_INIT(valid_02, "ag_object_valid() executes its provided callback if"
-                       " overridden") {
+AG_TEST_INIT(len_02, "ag_object_len() returns 0 for a derived object")
+{
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST_ASSERT (ag_object_valid(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_len(o) == 0);
+}
 
 
-AG_TEST_INIT(hash_01, "ag_object_hash() executes its default callback if not"
-                      " overridden") {
+AG_TEST_INIT(valid_01,
+    "ag_object_valid() executes its default callback if not overridden")
+{
+        AG_AUTO(ag_object) *o = sample_base();
+
+        AG_TEST (ag_object_valid(o));
+}
+
+
+AG_TEST_INIT(valid_02,
+    "ag_object_valid() executes its provided callback if overridden")
+{
+        AG_AUTO(ag_object) *o = sample_derived();
+
+        AG_TEST (ag_object_valid(o));
+}
+
+
+AG_TEST_INIT(hash_01,
+    "ag_object_hash() executes its default callback if not overridden")
+{
         AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
-        AG_TEST_ASSERT (ag_object_hash(o) == ag_uuid_hash(u));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_hash(o) == ag_uuid_hash(u));
+}
 
 
-AG_TEST_INIT(hash_02, "ag_object_hash() executes its provided callback if"
-                      " overridden") {
+AG_TEST_INIT(hash_02,
+    "ag_object_hash() executes its provided callback if overridden")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         const struct payload_derived *p = ag_object_payload(o);
-        AG_TEST_ASSERT (ag_object_hash(o) == ag_hash_new(*p->x));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_hash(o) == ag_hash_new(*p->x));
+}
 
 
-AG_TEST_INIT(str_01, "ag_object_str() executes its default callback if not"
-                     " overridden") {
+AG_TEST_INIT(str_01,
+    "ag_object_str() executes its default callback if not overridden")
+{
         AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_string) *s = ag_object_str(o);
-        AG_TEST_ASSERT (ag_string_has(s, "uuid"));
-} AG_TEST_EXIT();
+        
+        AG_TEST (ag_string_has(s, "uuid"));
+}
 
 
-AG_TEST_INIT(str_02, "ag_object_str() executes its provided callback if"
-                     " overridden") {
+AG_TEST_INIT(str_02,
+    "ag_object_str() executes its provided callback if overridden")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         AG_AUTO(ag_string) *s = ag_object_str(o);
-        AG_TEST_ASSERT (ag_string_eq(s, "This is a sample derived object"));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_string_eq(s, "This is a sample derived object"));
+}
 
 
-AG_TEST_INIT(empty_01, "ag_object_empty() returns false if the object length"
-                       " is greater than zero") {
+AG_TEST_INIT(empty_01,
+    "ag_object_empty() returns false if the object length is greater than zero")
+{
         AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST_ASSERT (!ag_object_empty(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (!ag_object_empty(o));
+}
 
 
-AG_TEST_INIT(empty_02, "ag_object_empty() returns true if the object length is"
-                       " zero") {
+AG_TEST_INIT(empty_02,
+    "ag_object_empty() returns true if the object length is zero")
+{
         AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST_ASSERT (ag_object_empty(o));
-} AG_TEST_EXIT();
+
+        AG_TEST (ag_object_empty(o));
+}
 
 
-AG_TEST_INIT(payload_01, "ag_object_payload() gets a handle to the object"
-                         " payload") {
+AG_TEST_INIT(payload_01,
+    "ag_object_payload() gets a handle to the object payload")
+{
         AG_AUTO(ag_object) *o = sample_base();
         const struct payload_base *p = ag_object_payload(o);
-        AG_TEST_ASSERT (p->x == 555 && p->y == -666);
-} AG_TEST_EXIT();
+
+        AG_TEST (p->x == 555 && p->y == -666);
+}
 
 
-AG_TEST_INIT(payload_mutable_01, "ag_object_payload_mutable() gets a handle to"
-                                 " the object payload") {
+AG_TEST_INIT(payload_mutable_01,
+    "ag_object_payload_mutable() gets a handle to the object payload")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         struct payload_derived *p = ag_object_payload_mutable(&o);
-        AG_TEST_ASSERT (*p->x == 555 && *p->y == -666);
-} AG_TEST_EXIT();
+
+        AG_TEST (*p->x == 555 && *p->y == -666);
+}
 
 
-AG_TEST_INIT(payload_mutable_02, "ag_object_payload_mutable() does not create a"
-                                 " clone of the object if its refc is 1") {
-        AG_AUTO(ag_object) *o  = sample_derived();
-        ag_object          *o2 = o;
+AG_TEST_INIT(payload_mutable_02,
+    "ag_object_payload_mutable() does not create a clone of the object if its"
+    " refc is 1")
+{
+        AG_AUTO(ag_object) *o = sample_derived();
+        ag_object *o2 = o;
         (void)ag_object_payload_mutable(&o);
-        AG_TEST_ASSERT (o == o2);
-} AG_TEST_EXIT();
+
+        AG_TEST (o == o2);
+}
 
 
-AG_TEST_INIT(payload_mutable_03, "ag_object_payload_mutable() creates a clone of"
-                                 " the object if its refc > 1") {
+AG_TEST_INIT(payload_mutable_03,
+    "ag_object_payload_mutable() creates a clone of  the object if its"
+    " refc > 1")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
         (void)ag_object_payload_mutable(&o);
-        AG_TEST_ASSERT (o != o2);
-} AG_TEST_EXIT();
+        
+        AG_TEST (o != o2);
+}
 
 
-AG_TEST_INIT(payload_mutable_04, "ag_object_payload_mutable() reduces the refc of"
-                                 " the original object by 1 if it creates a"
-                                 " clone") {
+AG_TEST_INIT(payload_mutable_04, 
+    "ag_object_payload_mutable() reduces the refc of the original object by 1"
+    " if it creates a clone")
+{
         AG_AUTO(ag_object) *o = sample_derived();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
         AG_AUTO(ag_object) *o3 = ag_object_copy(o);
         (void)ag_object_payload_mutable(&o);
-        AG_TEST_ASSERT (ag_object_refc(o3) == 2);
-} AG_TEST_EXIT();
+        
+        AG_TEST (ag_object_refc(o3) == 2);
+}
 
 
 extern ag_test_suite *test_suite_object(void)

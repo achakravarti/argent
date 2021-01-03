@@ -16,8 +16,8 @@ struct test2 {
 AG_TEST_INIT(new_01, "ag_memblock_new() allocates memory on the heap for an"
              " int") {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
-        AG_TEST_ASSERT (m);
-} AG_TEST_EXIT();
+        AG_TEST (m);
+}
 
 
 AG_TEST_INIT(new_02, "ag_memblock_new() allocates memory on the heap for a test"
@@ -27,50 +27,46 @@ AG_TEST_INIT(new_02, "ag_memblock_new() allocates memory on the heap for a test"
         t->i = ag_memblock_new(sizeof *t->i);
         t->j = ag_memblock_new(sizeof *t->j);
 
-        AG_TEST_ASSERT (t && t->i && t->j);
+        bool chk = (t && t->i && t->j);
         
         ag_memblock_release((ag_memblock **)&t->i);
         ag_memblock_release((ag_memblock **)&t->j);
         ag_memblock_release((ag_memblock **)&t);
 
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_03, "ag_memblock_new() returns a block with a reference count"
                 " of 1")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
-        AG_TEST_ASSERT (ag_memblock_refc(m) == 1);
+        AG_TEST (ag_memblock_refc(m) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_04, "ag_memblock_new() returns a block with the requested data"
                 " size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
-        AG_TEST_ASSERT (ag_memblock_sz(m) == sizeof(int));
+        AG_TEST (ag_memblock_sz(m) == sizeof(int));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_05, "ag_memblock_new() returns a block with a total size >="
                 " requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
-        AG_TEST_ASSERT (ag_memblock_sz_total(m) >= sizeof(int));
+        AG_TEST (ag_memblock_sz_total(m) >= sizeof(int));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_01, "ag_memblock_new_align() allocates memory on the heap"
                 " for an int")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
-        AG_TEST_ASSERT (m);
+        AG_TEST (m);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_02, "ag_memblock_new_align() allocates memory on the heap"
@@ -80,49 +76,46 @@ AG_TEST_INIT(new_align_02, "ag_memblock_new_align() allocates memory on the heap
         t->i = ag_memblock_new_align(sizeof *t->i, 32);
         t->j = ag_memblock_new_align(sizeof *t->j, 32);
 
-        AG_TEST_ASSERT (t && t->i && t->j);
+        bool chk = (t && t->i && t->j);
         
         ag_memblock_release((ag_memblock **)&t->i);
         ag_memblock_release((ag_memblock **)&t->j);
         ag_memblock_release((ag_memblock **)&t);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_03, "ag_memblock_new_align() returns a block with a"
                 " reference count of 1")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
-        AG_TEST_ASSERT (ag_memblock_refc(m) == 1);
+        AG_TEST (ag_memblock_refc(m) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_04, "ag_memblock_new_align() returns a block with the"
                 " requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
-        AG_TEST_ASSERT (ag_memblock_sz(m) == sizeof(int));
+        AG_TEST (ag_memblock_sz(m) == sizeof(int));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_05, "ag_memblock_new_align() returns a block with a total"
                 " size >= requested data size")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 8);
-        AG_TEST_ASSERT (ag_memblock_sz_total(m) >= sizeof(int));
+        AG_TEST (ag_memblock_sz_total(m) >= sizeof(int));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_align_06, "ag_memblock_new_align() returns a block with the"
                 " required alignment")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new_align(sizeof(int), 32);
-        AG_TEST_ASSERT (ag_memblock_aligned(m, 32));
+        AG_TEST (ag_memblock_aligned(m, 32));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_01, "ag_memblock_clone() makes a deep copy of an int in the"
@@ -132,12 +125,13 @@ AG_TEST_INIT(clone_01, "ag_memblock_clone() makes a deep copy of an int in the"
         *i = 555;
 
         int *j = ag_memblock_clone(i);
-        AG_TEST_ASSERT (*j == 555);
+        bool chk = (*j == 555);
 
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 AG_TEST_INIT(clone_02, "ag_memblock_clone() makes a deep copy of a test structure"
                 " in the heap")
@@ -150,23 +144,23 @@ AG_TEST_INIT(clone_02, "ag_memblock_clone() makes a deep copy of a test structur
         *t->j = -666;
 
         struct test *cp = ag_memblock_clone(t);
-        AG_TEST_ASSERT (*cp->i == *t->i && *cp->j == *t->j);
+        bool chk = (*cp->i == *t->i && *cp->j == *t->j);
 
         ag_memblock_release((ag_memblock **)&t->i);
         ag_memblock_release((ag_memblock **)&t->j);
         ag_memblock_release((ag_memblock **)&t);
         ag_memblock_release((ag_memblock **)&cp);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_03, "ag_memblock_clone() returns a copy with another address")
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
-        AG_TEST_ASSERT (src != cp);
+        AG_TEST (src != cp);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_04, "ag_memblock_clone() sets the reference count of the copy"
@@ -175,9 +169,8 @@ AG_TEST_INIT(clone_04, "ag_memblock_clone() sets the reference count of the copy
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
         
-        AG_TEST_ASSERT (ag_memblock_refc(cp) == 1);
+        AG_TEST (ag_memblock_refc(cp) == 1);
 }
-AG_TEST_EXIT();
 
 AG_TEST_INIT(clone_05, "ag_memblock_clone() does not change the reference count"
                        " of the source")
@@ -185,9 +178,8 @@ AG_TEST_INIT(clone_05, "ag_memblock_clone() does not change the reference count"
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
         
-        AG_TEST_ASSERT (ag_memblock_refc(src) == 1);
+        AG_TEST (ag_memblock_refc(src) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_06, "ag_memblock_clone() preserves the data size of the"
@@ -196,9 +188,8 @@ AG_TEST_INIT(clone_06, "ag_memblock_clone() preserves the data size of the"
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
 
-        AG_TEST_ASSERT (ag_memblock_sz(src) == ag_memblock_sz(cp));
+        AG_TEST (ag_memblock_sz(src) == ag_memblock_sz(cp));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_07, 
@@ -207,9 +198,8 @@ AG_TEST_INIT(clone_07,
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone(src);
 
-        AG_TEST_ASSERT (ag_memblock_sz(src) >= ag_memblock_sz(cp));
+        AG_TEST (ag_memblock_sz(src) >= ag_memblock_sz(cp));
 }
-AG_TEST_EXIT();
 
 AG_TEST_INIT(clone_align_01, 
              "ag_memblock_clone_align() makes a deep copy of an int")
@@ -218,12 +208,13 @@ AG_TEST_INIT(clone_align_01,
         *i = 555;
 
         int *j = ag_memblock_clone_align(i, 8);
-        AG_TEST_ASSERT (*j == 555);
+        bool chk = (*j == 555);
 
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_02, 
@@ -237,14 +228,15 @@ AG_TEST_INIT(clone_align_02,
         *t->j = -666;
 
         struct test *cp = ag_memblock_clone_align(t, 8);
-        AG_TEST_ASSERT (*cp->i == *t->i && *cp->j == *t->j);
+        bool chk = (*cp->i == *t->i && *cp->j == *t->j);
 
         ag_memblock_release((ag_memblock **)&t->i);
         ag_memblock_release((ag_memblock **)&t->j);
         ag_memblock_release((ag_memblock **)&t);
         ag_memblock_release((ag_memblock **)&cp);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_03, "ag_memblock_clone_align() returns a copy with another"
@@ -252,9 +244,8 @@ AG_TEST_INIT(clone_align_03, "ag_memblock_clone_align() returns a copy with anot
 {
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone_align(src, 8);
-        AG_TEST_ASSERT (src != cp);
+        AG_TEST (src != cp);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_04, "ag_memblock_clone_align() sets the reference count of"
@@ -264,9 +255,8 @@ AG_TEST_INIT(clone_align_04, "ag_memblock_clone_align() sets the reference count
         AG_AUTO(ag_memblock) *cp = ag_memblock_copy(src);
         AG_AUTO(ag_memblock) *cp2 = ag_memblock_clone_align(cp, 8);
         
-        AG_TEST_ASSERT (ag_memblock_refc(cp2) == 1);
+        AG_TEST (ag_memblock_refc(cp2) == 1);
 }
-AG_TEST_EXIT();
 
 AG_TEST_INIT(clone_align_05, "ag_memblock_clone_align() does not change the"
                 " reference count of the source")
@@ -275,9 +265,8 @@ AG_TEST_INIT(clone_align_05, "ag_memblock_clone_align() does not change the"
         AG_AUTO(ag_memblock) *cp = ag_memblock_copy(src);
         AG_AUTO(ag_memblock) *cp2 = ag_memblock_clone_align(cp, 8);
         
-        AG_TEST_ASSERT (ag_memblock_refc(src) == 2 && ag_memblock_refc(cp) == 2);
+        AG_TEST (ag_memblock_refc(src) == 2 && ag_memblock_refc(cp) == 2);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_06, "ag_memblock_clone_align() preserves the data size of"
@@ -286,9 +275,8 @@ AG_TEST_INIT(clone_align_06, "ag_memblock_clone_align() preserves the data size 
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone_align(src, 8);
 
-        AG_TEST_ASSERT (ag_memblock_sz(src) == ag_memblock_sz(cp));
+        AG_TEST (ag_memblock_sz(src) == ag_memblock_sz(cp));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_07, "ag_memblock_clone_align() maintains the total size of"
@@ -297,9 +285,8 @@ AG_TEST_INIT(clone_align_07, "ag_memblock_clone_align() maintains the total size
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone_align(src, 8);
 
-        AG_TEST_ASSERT (ag_memblock_sz(src) >= ag_memblock_sz(cp));
+        AG_TEST (ag_memblock_sz(src) >= ag_memblock_sz(cp));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_align_08, "ag_memblock_clone_align() honours its alignment"
@@ -308,17 +295,15 @@ AG_TEST_INIT(clone_align_08, "ag_memblock_clone_align() honours its alignment"
         AG_AUTO(ag_memblock) *src = ag_memblock_new(sizeof(int));
         AG_AUTO(ag_memblock) *cp = ag_memblock_clone_align(src, 32);
 
-        AG_TEST_ASSERT (ag_memblock_aligned(cp, 32));
+        AG_TEST (ag_memblock_aligned(cp, 32));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_01, "ag_memblock_release() performs a no-op if passed NULL")
 {
         ag_memblock_release(NULL);
-        AG_TEST_ASSERT (true);
+        AG_TEST (true);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_02, "ag_memblock_release() performs a no-op if passed a"
@@ -326,18 +311,16 @@ AG_TEST_INIT(release_02, "ag_memblock_release() performs a no-op if passed a"
 {
         ag_memblock *m = NULL;
         ag_memblock_release((ag_memblock **) &m);
-        AG_TEST_ASSERT (true);
+        AG_TEST (true);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_03, "ag_memblock_release() release an int on the heap")
 {
         int *i = ag_memblock_new(sizeof *i);
         ag_memblock_release((ag_memblock **)&i);
-        AG_TEST_ASSERT (!i);
+        AG_TEST (!i);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_04, "ag_memblock_release() releases a test struct on the"
@@ -345,9 +328,8 @@ AG_TEST_INIT(release_04, "ag_memblock_release() releases a test struct on the"
 {
         struct test *t = ag_memblock_new(sizeof *t);
         ag_memblock_release((ag_memblock **)&t);
-        AG_TEST_ASSERT (!t);
+        AG_TEST (!t);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_05, "ag_memblock_release() reduces the reference count by 1"
@@ -357,9 +339,8 @@ AG_TEST_INIT(release_05, "ag_memblock_release() reduces the reference count by 1
         AG_AUTO(ag_memblock) *j = ag_memblock_copy(i);
         ag_memblock_release((ag_memblock **)&i);
 
-        AG_TEST_ASSERT (ag_memblock_refc(j) == 1);
+        AG_TEST (ag_memblock_refc(j) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_06, "ag_memblock_release() on a deep copy does not alter the"
@@ -370,9 +351,8 @@ AG_TEST_INIT(release_06, "ag_memblock_release() on a deep copy does not alter th
         ag_memblock *k = ag_memblock_clone(j);
         ag_memblock_release(&k);
         
-        AG_TEST_ASSERT (ag_memblock_refc(i) == 2);
+        AG_TEST (ag_memblock_refc(i) == 2);
 }
-AG_TEST_EXIT();
 
 
 
@@ -384,12 +364,12 @@ AG_TEST_INIT(cmp_01, "ag_memblock_cmp() returns AG_CMP_EQ for two int memory"
         int *j = ag_memblock_new(sizeof *j);
         *j = 555;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(i, j) == AG_CMP_EQ);
-
+        bool chk = (ag_memblock_cmp(i, j) == AG_CMP_EQ);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_02, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
@@ -399,12 +379,12 @@ AG_TEST_INIT(cmp_02, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
         *i = 555;
         int *j = ag_memblock_copy(i);
 
-        AG_TEST_ASSERT(ag_memblock_cmp(i, j) == AG_CMP_EQ);
-
+        bool chk = (ag_memblock_cmp(i, j) == AG_CMP_EQ);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_03, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
@@ -414,12 +394,12 @@ AG_TEST_INIT(cmp_03, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
         *i = 555;
         int *j = ag_memblock_clone(i);
 
-        AG_TEST_ASSERT(ag_memblock_cmp(i, j) == AG_CMP_EQ);
-
+        bool chk = (ag_memblock_cmp(i, j) == AG_CMP_EQ);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_04, "ag_memblock_cmp() returns AG_CMP_EQ for two memory blocks"
@@ -432,12 +412,12 @@ AG_TEST_INIT(cmp_04, "ag_memblock_cmp() returns AG_CMP_EQ for two memory blocks"
         b->i = 555;
         b->j = -666;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(a, b) == AG_CMP_EQ);
-
+        bool chk = (ag_memblock_cmp(a, b) == AG_CMP_EQ);
         ag_memblock_release((ag_memblock **)&a);
         ag_memblock_release((ag_memblock **)&b);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_05, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
@@ -448,12 +428,13 @@ AG_TEST_INIT(cmp_05, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a"
         a->j = -666;
 
         struct test2 *b = ag_memblock_copy(a);
-        AG_TEST_ASSERT(ag_memblock_cmp(a, b) == AG_CMP_EQ);
+        bool chk = (ag_memblock_cmp(a, b) == AG_CMP_EQ);
 
         ag_memblock_release((ag_memblock **)&a);
         ag_memblock_release((ag_memblock **)&b);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_06, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
@@ -464,12 +445,12 @@ AG_TEST_INIT(cmp_06, "ag_memblock_cmp() returns AG_CMP_EQ when comparing a deep"
         a->j = -666;
         struct test2 *b = ag_memblock_clone(a);
 
-        AG_TEST_ASSERT(ag_memblock_cmp(a, b) == AG_CMP_EQ);
-
+        bool chk = (ag_memblock_cmp(a, b) == AG_CMP_EQ);
         ag_memblock_release((ag_memblock **)&a);
         ag_memblock_release((ag_memblock **)&b);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_07, "ag_memblock_cmp() returns AG_CMP_LT when comparing an int"
@@ -481,12 +462,12 @@ AG_TEST_INIT(cmp_07, "ag_memblock_cmp() returns AG_CMP_LT when comparing an int"
         int *j = ag_memblock_new(sizeof *j);
         *j = 2;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(i, j) == AG_CMP_LT);
-
+        bool chk = (ag_memblock_cmp(i, j) == AG_CMP_LT);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_08, "ag_memblock_cmp() returns AG_CMP_GT when comparing an int"
@@ -497,12 +478,12 @@ AG_TEST_INIT(cmp_08, "ag_memblock_cmp() returns AG_CMP_GT when comparing an int"
         int *j = ag_memblock_new(sizeof *j);
         *j = 1;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(i, j) == AG_CMP_GT);
-
+        bool chk = (ag_memblock_cmp(i, j) == AG_CMP_GT);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_09, "ag_memblock_cmp() returns AG_CMP_LT when comparing a memory"
@@ -517,12 +498,12 @@ AG_TEST_INIT(cmp_09, "ag_memblock_cmp() returns AG_CMP_LT when comparing a memor
         b->i = 2;
         b->j = 2;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(a, b) == AG_CMP_LT);
-
+        bool chk = (ag_memblock_cmp(a, b) == AG_CMP_LT);
         ag_memblock_release((ag_memblock **)&a);
         ag_memblock_release((ag_memblock **)&b);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(cmp_10, "ag_memblock_cmp() returns AG_CMP_GT when comparing a memory"
@@ -537,12 +518,12 @@ AG_TEST_INIT(cmp_10, "ag_memblock_cmp() returns AG_CMP_GT when comparing a memor
         b->i = 1;
         b->j = 1;
 
-        AG_TEST_ASSERT(ag_memblock_cmp(a, b) == AG_CMP_GT);
-
+        bool chk = ag_memblock_cmp(a, b) == AG_CMP_GT;
         ag_memblock_release((ag_memblock **)&a);
         ag_memblock_release((ag_memblock **)&b);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_01, "ag_memblock_lt() returns true for an int memory block with"
@@ -553,12 +534,12 @@ AG_TEST_INIT(lt_01, "ag_memblock_lt() returns true for an int memory block with"
         *i = 5;
         *j = 6;
 
-        AG_TEST_ASSERT (ag_memblock_lt(i, j));
-
+        bool chk = ag_memblock_lt(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+        
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_02, "ag_memblock_lt() returns false for an int memory block with"
@@ -569,12 +550,12 @@ AG_TEST_INIT(lt_02, "ag_memblock_lt() returns false for an int memory block with
         *i = 5;
         *j = 5;
 
-        AG_TEST_ASSERT (!ag_memblock_lt(i, j));
-
+        bool chk = !ag_memblock_lt(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_03, "ag_memblock_lt() returns false for an int memory block with"
@@ -585,12 +566,12 @@ AG_TEST_INIT(lt_03, "ag_memblock_lt() returns false for an int memory block with
         *i = 6;
         *j = 5;
 
-        AG_TEST_ASSERT (!ag_memblock_lt(i, j));
-        
+        bool chk = !ag_memblock_lt(i, j); 
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_01, "ag_memblock_gt() returns true for an int memory block with"
@@ -601,12 +582,12 @@ AG_TEST_INIT(gt_01, "ag_memblock_gt() returns true for an int memory block with"
         *i = 6;
         *j = 5;
 
-        AG_TEST_ASSERT (ag_memblock_gt(i, j));
-
+        bool chk = ag_memblock_gt(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_02, "ag_memblock_gt() returns false for an int memory block with"
@@ -617,12 +598,12 @@ AG_TEST_INIT(gt_02, "ag_memblock_gt() returns false for an int memory block with
         *i = 5;
         *j = 5;
 
-        AG_TEST_ASSERT (!ag_memblock_gt(i, j));
-
+        bool chk = !ag_memblock_gt(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_03, "ag_memblock_gt() returns false for an int memory block with"
@@ -633,12 +614,12 @@ AG_TEST_INIT(gt_03, "ag_memblock_gt() returns false for an int memory block with
         *i = 5;
         *j = 6;
 
-        AG_TEST_ASSERT (!ag_memblock_gt(i, j));
-        
+        bool chk = !ag_memblock_gt(i, j); 
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_01, "ag_memblock_eq() returns true for two int memory blocks with"
@@ -649,12 +630,12 @@ AG_TEST_INIT(eq_01, "ag_memblock_eq() returns true for two int memory blocks wit
         *i = 5;
         *j = 5;
 
-        AG_TEST_ASSERT (ag_memblock_eq(i, j));
-
+        bool chk = ag_memblock_eq(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_02, "ag_memblock_eq() returns false for an int memory block with"
@@ -665,12 +646,12 @@ AG_TEST_INIT(eq_02, "ag_memblock_eq() returns false for an int memory block with
         *i = 5;
         *j = 6;
 
-        AG_TEST_ASSERT (!ag_memblock_eq(i, j));
-
+        bool chk = !ag_memblock_eq(i, j);
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_03, "ag_memblock_eq() returns false for an int memory block with"
@@ -681,23 +662,24 @@ AG_TEST_INIT(eq_03, "ag_memblock_eq() returns false for an int memory block with
         *i = 6;
         *j = 5;
 
-        AG_TEST_ASSERT (!ag_memblock_eq(i, j));
-        
+        bool chk = !ag_memblock_eq(i, j); 
         ag_memblock_release((ag_memblock **)&i);
         ag_memblock_release((ag_memblock **)&j);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
+
 
 AG_TEST_INIT(resize_01, "ag_memblock_resize() resizes an existing memory block")
 {
         char *bfr = ag_memblock_new(10);
         ag_memblock_resize((ag_memblock **)&bfr, 15);
 
-        AG_TEST_ASSERT (ag_memblock_sz(bfr) == 15);
-
+        bool chk = (ag_memblock_sz(bfr) == 15);
         ag_memblock_release((ag_memblock **)&bfr);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(resize_02, "ag_memblock_resize() preserves data when resizing to a"
@@ -708,11 +690,11 @@ AG_TEST_INIT(resize_02, "ag_memblock_resize() preserves data when resizing to a"
         bfr[5] = '\0';
         ag_memblock_resize((ag_memblock **)&bfr, 10);
 
-        AG_TEST_ASSERT (!strcmp(bfr, "Hello"));
-
+        bool chk = !strcmp(bfr, "Hello");
         ag_memblock_release((ag_memblock **)&bfr);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(resize_align_01, "ag_memblock_resize_align() resizes an existing"
@@ -721,11 +703,11 @@ AG_TEST_INIT(resize_align_01, "ag_memblock_resize_align() resizes an existing"
         char *bfr = ag_memblock_new(10);
         ag_memblock_resize_align((ag_memblock **)&bfr, 15, 8);
 
-        AG_TEST_ASSERT (ag_memblock_sz(bfr) == 15);
-
+        bool chk = (ag_memblock_sz(bfr) == 15);
         ag_memblock_release((ag_memblock **)&bfr);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(resize_align_02, "ag_memblock_resize_align() preserves data when"
@@ -736,11 +718,11 @@ AG_TEST_INIT(resize_align_02, "ag_memblock_resize_align() preserves data when"
         bfr[5] = '\0';
         ag_memblock_resize_align((ag_memblock **)&bfr, 10, 8);
 
-        AG_TEST_ASSERT (!strcmp(bfr, "Hello"));
-
+        bool chk = !strcmp(bfr, "Hello");
         ag_memblock_release((ag_memblock **)&bfr);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(resize_align_03, "ag_memblock_resize_align() aligns to the requested"
@@ -751,11 +733,11 @@ AG_TEST_INIT(resize_align_03, "ag_memblock_resize_align() aligns to the requeste
         bfr[5] = '\0';
         ag_memblock_resize_align((ag_memblock **)&bfr, 10, 32);
 
-        AG_TEST_ASSERT (ag_memblock_aligned(bfr, 32));
-
+        bool chk = ag_memblock_aligned(bfr, 32);
         ag_memblock_release((ag_memblock **)&bfr);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(str_01, "ag_memblock_str() generates the string representation of a"
@@ -764,11 +746,11 @@ AG_TEST_INIT(str_01, "ag_memblock_str() generates the string representation of a
         int *i = ag_memblock_new(sizeof *i);
         AG_AUTO(ag_string) *s = ag_memblock_str(i);
 
-        AG_TEST_ASSERT (s && *s);
-
+        bool chk = s && *s;
         ag_memblock_release((ag_memblock **)&i);
+
+        AG_TEST (chk);
 }
-AG_TEST_EXIT();
 
 
 

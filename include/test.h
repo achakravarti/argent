@@ -86,9 +86,6 @@ typedef enum ag_test_status (ag_test)(void);
 
 #define AG_TEST_EXIT() return __ck__; }
 
-#define AG_TEST_ASSERT(p)                                               \
-        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL)
-
 #ifdef NDEBUG
 #       define AG_TEST_ASSERT_DEBUG(p)                                  \
                 __ck__ = AG_TEST_STATUS_SKIP
