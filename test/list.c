@@ -384,6 +384,18 @@ AG_TEST_CASE(str_02,
 }
 
 
+AG_TEST_CASE(get_01, "ag_list_get() gets the currently iterated value")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        ag_list_start(&l);
+        ag_list_next(&l);
+        ag_list_next(&l);
+        AG_AUTO(ag_value) *v = ag_list_get(l);
+
+        AG_TEST (ag_value_int(v) == 456);
+}
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -405,6 +417,7 @@ extern ag_test_suite *test_suite_list(void)
                 len_01,         len_02,
                 hash_01,        hash_02,
                 str_01,         str_02,
+                get_01,
         };
 
         const char *desc[] = {
@@ -428,6 +441,7 @@ extern ag_test_suite *test_suite_list(void)
                 len_01_desc,            len_02_desc,
                 hash_01_desc,           hash_02_desc,
                 str_01_desc,            str_02_desc,
+                get_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");

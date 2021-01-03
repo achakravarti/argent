@@ -165,7 +165,7 @@ ag_list_get(const ag_list *ctx)
         AG_ASSERT (!ag_list_empty(ctx));
 
         const struct payload *p = ag_object_payload(ctx);
-        return ag_object_copy(p->itr->val);
+        return ag_value_copy(p->itr->val);
 }
 
 
@@ -187,7 +187,7 @@ ag_list_get_at(const ag_list *ctx, size_t idx)
         for (register size_t i = 1; i < idx; i++)
                 n = n->nxt;
 
-        return ag_object_copy(n->val);
+        return ag_value_copy(n->val);
 }
 
 
