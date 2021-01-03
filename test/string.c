@@ -18,6 +18,7 @@ AG_TEST_CASE(new_01, "ag_string_new() can create an empty string")
 AG_TEST_CASE(new_02, "ag_string_new() can create an ASCII string") 
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+
         AG_TEST (s && *s && ag_string_eq(s, "Hello, world!"));
 }
 
@@ -25,6 +26,7 @@ AG_TEST_CASE(new_02, "ag_string_new() can create an ASCII string")
 AG_TEST_CASE(new_03, "ag_string_new() can create a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
+
         AG_TEST (s && *s && ag_string_eq(s, "नमस्ते दुनिया!"));
 }
 
@@ -33,6 +35,7 @@ AG_TEST_CASE(new_03, "ag_string_new() can create a Unicode string")
 AG_TEST_CASE(new_empty_01, "ag_string_new_empty() creates an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
+
         AG_TEST (s && !*s);
 }
 
