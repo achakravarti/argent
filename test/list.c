@@ -395,6 +395,28 @@ AG_TEST_INIT(hash_02,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(str_01,
+    "ag_list_str() generates a string representation for an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+        AG_AUTO(ag_string) *s = ag_list_str(l);
+
+        AG_TEST_ASSERT (!ag_string_empty(s));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(str_02,
+    "ag_list_str() generates a string representation of an int list")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_string) *s = ag_list_str(l);
+
+        AG_TEST_ASSERT (!ag_string_empty(s));
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -427,6 +449,8 @@ extern ag_test_suite *test_suite_list(void)
                 len_01, len_02,
 
                 hash_01, hash_02,
+
+                str_01, str_02,
         };
 
         const char *desc[] = {
@@ -462,6 +486,8 @@ extern ag_test_suite *test_suite_list(void)
                 len_01_desc, len_02_desc,
 
                 hash_01_desc, hash_02_desc,
+
+                str_01_desc, str_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
