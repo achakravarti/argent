@@ -335,6 +335,27 @@ AG_TEST_INIT(sz_02, "ag_list_sz() returns the cumulative size of an int list")
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(refc_01, "ag_list_refc() returns 1 for a single instance")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+
+        AG_TEST_ASSERT (ag_list_refc(l) == 1);
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(refc_02,
+    "ag_list_refc() returns the reference count of a shallow copy")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
+        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
+
+        AG_TEST_ASSERT (ag_list_refc(l) == 3);
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -361,6 +382,8 @@ extern ag_test_suite *test_suite_list(void)
                 valid_01, valid_02,
 
                 sz_01, sz_02,
+
+                refc_01, refc_02,
         };
 
         const char *desc[] = {
@@ -390,6 +413,8 @@ extern ag_test_suite *test_suite_list(void)
                 valid_01_desc, valid_02_desc,
 
                 sz_01_desc, sz_02_desc,
+
+                refc_01_desc, refc_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
