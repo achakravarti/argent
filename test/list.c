@@ -42,26 +42,24 @@ static ag_list *sample_int_2(void)
 AG_TEST_INIT(new_01, "ag_list_new() can create a new sample list")
 {
         AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST_ASSERT (l && ag_list_len(l) == 3);
+        AG_TEST (l && ag_list_len(l) == 3);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(new_02, "ag_list_new() can create a new empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST_ASSERT (l && ag_list_empty(l));
+        AG_TEST (l && ag_list_empty(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(copy_01, "ag_list_copy() creates a shallow copy of a sample list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_TEST_ASSERT (l2 == l);
+        
+        AG_TEST (l2 == l);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(copy_02, "ag_list_copy() increases the reference count by 1")
@@ -69,9 +67,8 @@ AG_TEST_INIT(copy_02, "ag_list_copy() increases the reference count by 1")
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
         
-        AG_TEST_ASSERT (ag_list_refc(l) == 2);
+        AG_TEST (ag_list_refc(l) == 2);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_01, "ag_list_clone() creates a clone of an empty list")
@@ -79,9 +76,8 @@ AG_TEST_INIT(clone_01, "ag_list_clone() creates a clone of an empty list")
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
 
-        AG_TEST_ASSERT (l2 && l != l2);
+        AG_TEST (l2 && l != l2);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_02, "ag_list_clone() creates a clone of a sample list")
@@ -89,9 +85,8 @@ AG_TEST_INIT(clone_02, "ag_list_clone() creates a clone of a sample list")
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
 
-        AG_TEST_ASSERT (l2 && l != l2);
+        AG_TEST (l2 && l != l2);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_03, "ag_list_clone() has the same items as its parent")
@@ -99,9 +94,8 @@ AG_TEST_INIT(clone_03, "ag_list_clone() has the same items as its parent")
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
 
-        AG_TEST_ASSERT (ag_list_eq(l, l2));
+        AG_TEST (ag_list_eq(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(clone_04, "ag_list_clone() does not change the reference count")
@@ -109,9 +103,8 @@ AG_TEST_INIT(clone_04, "ag_list_clone() does not change the reference count")
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
 
-        AG_TEST_ASSERT (ag_list_refc(l) == 1);
+        AG_TEST (ag_list_refc(l) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_04, "ag_list_dispose() reduces the reference count by 1")
@@ -121,17 +114,16 @@ AG_TEST_INIT(release_04, "ag_list_dispose() reduces the reference count by 1")
         AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
         ag_list_release(&l);
 
-        AG_TEST_ASSERT (!l && ag_list_refc(l2) == 2);
+        AG_TEST (!l && ag_list_refc(l2) == 2);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_01, "ag_list_release() performs a no-op if passed NULL")
 {
         ag_list_release(NULL);
-        AG_TEST_ASSERT (true);
+        
+        AG_TEST (true);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_02, 
@@ -139,9 +131,9 @@ AG_TEST_INIT(release_02,
 {
         ag_list *l = NULL;
         ag_list_release(&l);
-        AG_TEST_ASSERT (true);
+        
+        AG_TEST (true);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(release_03,
@@ -149,9 +141,9 @@ AG_TEST_INIT(release_03,
 {
         ag_list *l = sample_int();
         ag_list_release(&l);
-        AG_TEST_ASSERT (!l);
+        
+        AG_TEST (!l);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_01, 
@@ -161,9 +153,8 @@ AG_TEST_INIT(lt_01,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
 
-        AG_TEST_ASSERT (ag_list_lt(l, l2));
+        AG_TEST (ag_list_lt(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_02, 
@@ -173,9 +164,8 @@ AG_TEST_INIT(lt_02,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_lt(l, l2));
+        AG_TEST (!ag_list_lt(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(lt_03,
@@ -185,9 +175,8 @@ AG_TEST_INIT(lt_03,
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_lt(l, l2));
+        AG_TEST (!ag_list_lt(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_01, 
@@ -196,9 +185,8 @@ AG_TEST_INIT(eq_01,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (ag_list_eq(l, l2));
+        AG_TEST (ag_list_eq(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_02, 
@@ -208,9 +196,8 @@ AG_TEST_INIT(eq_02,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
 
-        AG_TEST_ASSERT (!ag_list_eq(l, l2));
+        AG_TEST (!ag_list_eq(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(eq_03,
@@ -220,9 +207,8 @@ AG_TEST_INIT(eq_03,
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_eq(l2, l));
+        AG_TEST (!ag_list_eq(l2, l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_01, 
@@ -232,9 +218,8 @@ AG_TEST_INIT(gt_01,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
 
-        AG_TEST_ASSERT (ag_list_gt(l2, l));
+        AG_TEST (ag_list_gt(l2, l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_02, 
@@ -244,9 +229,8 @@ AG_TEST_INIT(gt_02,
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_gt(l, l2));
+        AG_TEST (!ag_list_gt(l, l2));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(gt_03,
@@ -256,36 +240,32 @@ AG_TEST_INIT(gt_03,
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_gt(l2, l));
+        AG_TEST (!ag_list_gt(l2, l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(empty_01, "ag_list_empty() returns true for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
-        AG_TEST_ASSERT (ag_list_empty(l));
+        AG_TEST (ag_list_empty(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(empty_02, "ag_list_empty() returns false for a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
-        AG_TEST_ASSERT (!ag_list_empty(l));
+        AG_TEST (!ag_list_empty(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(typeid_01, "ag_list_typeid() returns AG_TYPEID_LIST")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
-        AG_TEST_ASSERT (ag_list_typeid(l) == AG_TYPEID_LIST);
+        AG_TEST (ag_list_typeid(l) == AG_TYPEID_LIST);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(uuid_01, "ag_list_uuid() returns the UUID of a list")
@@ -294,54 +274,48 @@ AG_TEST_INIT(uuid_01, "ag_list_uuid() returns the UUID of a list")
         AG_AUTO(ag_uuid) *u = ag_list_uuid(l);
         AG_AUTO(ag_string) *s = ag_uuid_str(u);
 
-        AG_TEST_ASSERT (!ag_string_empty(s));
+        AG_TEST (!ag_string_empty(s));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(valid_01, "ag_list_valid() returns false for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
-        AG_TEST_ASSERT (!ag_list_valid(l));
+        AG_TEST (!ag_list_valid(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(valid_02, "ag_list_valid() returns true for an int list")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
-        AG_TEST_ASSERT (ag_list_valid(l));
+        AG_TEST (ag_list_valid(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(sz_01, "ag_list_sz() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
-        AG_TEST_ASSERT (!ag_list_sz(l));
+        AG_TEST (!ag_list_sz(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(sz_02, "ag_list_sz() returns the cumulative size of an int list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
 
-        AG_TEST_ASSERT (ag_list_sz(l) == sizeof(ag_int) * 7);
+        AG_TEST (ag_list_sz(l) == sizeof(ag_int) * 7);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(refc_01, "ag_list_refc() returns 1 for a single instance")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
-        AG_TEST_ASSERT (ag_list_refc(l) == 1);
+        AG_TEST (ag_list_refc(l) == 1);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(refc_02,
@@ -351,18 +325,16 @@ AG_TEST_INIT(refc_02,
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
         AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
 
-        AG_TEST_ASSERT (ag_list_refc(l) == 3);
+        AG_TEST (ag_list_refc(l) == 3);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(len_01, "ag_list_len() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         
-        AG_TEST_ASSERT (!ag_list_len(l));
+        AG_TEST (!ag_list_len(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(len_02,
@@ -370,18 +342,16 @@ AG_TEST_INIT(len_02,
 {
         AG_AUTO(ag_list) *l = sample_int_2();
 
-        AG_TEST_ASSERT (ag_list_len(l) == 7);
+        AG_TEST (ag_list_len(l) == 7);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(hash_01, "ag_list_hash() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
-        AG_TEST_ASSERT (!ag_list_hash(l));
+        AG_TEST (!ag_list_hash(l));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(hash_02,
@@ -390,9 +360,8 @@ AG_TEST_INIT(hash_02,
         AG_AUTO(ag_list) *l = sample_int();
         ag_hash h = ag_hash_new(-123) + ag_hash_new(0) + ag_hash_new(456);
 
-        AG_TEST_ASSERT (ag_list_hash(l) == h);
+        AG_TEST (ag_list_hash(l) == h);
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(str_01,
@@ -401,9 +370,8 @@ AG_TEST_INIT(str_01,
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_AUTO(ag_string) *s = ag_list_str(l);
 
-        AG_TEST_ASSERT (!ag_string_empty(s));
+        AG_TEST (!ag_string_empty(s));
 }
-AG_TEST_EXIT();
 
 
 AG_TEST_INIT(str_02,
