@@ -97,6 +97,11 @@ typedef enum ag_test_status (ag_test)(void);
 #endif
 
 
+#define AG_TEST(p)                                                      \
+        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL);       \
+        } return __ck__;
+
+
 /*-
  * Interface: Test Suite
  */

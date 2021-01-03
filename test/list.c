@@ -412,9 +412,8 @@ AG_TEST_INIT(str_02,
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_string) *s = ag_list_str(l);
 
-        AG_TEST_ASSERT (!ag_string_empty(s));
+        AG_TEST (!ag_string_empty(s));
 }
-AG_TEST_EXIT();
 
 
 extern ag_test_suite *test_suite_list(void)
