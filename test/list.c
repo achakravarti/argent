@@ -375,6 +375,26 @@ AG_TEST_INIT(len_02,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(hash_01, "ag_list_hash() returns 0 for an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+
+        AG_TEST_ASSERT (!ag_list_hash(l));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(hash_02,
+    "ag_list_hash() returns the cumulative hash for an int list")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        ag_hash h = ag_hash_new(-123) + ag_hash_new(0) + ag_hash_new(456);
+
+        AG_TEST_ASSERT (ag_list_hash(l) == h);
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -405,6 +425,8 @@ extern ag_test_suite *test_suite_list(void)
                 refc_01, refc_02,
 
                 len_01, len_02,
+
+                hash_01, hash_02,
         };
 
         const char *desc[] = {
@@ -438,6 +460,8 @@ extern ag_test_suite *test_suite_list(void)
                 refc_01_desc, refc_02_desc,
 
                 len_01_desc, len_02_desc,
+
+                hash_01_desc, hash_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
