@@ -356,6 +356,25 @@ AG_TEST_INIT(refc_02,
 AG_TEST_EXIT();
 
 
+AG_TEST_INIT(len_01, "ag_list_len() returns 0 for an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+        
+        AG_TEST_ASSERT (!ag_list_len(l));
+}
+AG_TEST_EXIT();
+
+
+AG_TEST_INIT(len_02,
+    "ag_list_len() returns the number of values in a non empty list")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+
+        AG_TEST_ASSERT (ag_list_len(l) == 7);
+}
+AG_TEST_EXIT();
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -384,6 +403,8 @@ extern ag_test_suite *test_suite_list(void)
                 sz_01, sz_02,
 
                 refc_01, refc_02,
+
+                len_01, len_02,
         };
 
         const char *desc[] = {
@@ -415,6 +436,8 @@ extern ag_test_suite *test_suite_list(void)
                 sz_01_desc, sz_02_desc,
 
                 refc_01_desc, refc_02_desc,
+
+                len_01_desc, len_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
