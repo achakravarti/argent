@@ -123,14 +123,14 @@ extern void ag_exception_registry_set(ag_erno, const char *,
         } while (0)
         
 
-        #define AG_ASSERT_STR(s) do {                                        \
-                if (AG_UNLIKELY (!(s))) {                                    \
+        #define AG_ASSERT_STR(str) do {                                      \
+                if (AG_UNLIKELY (!(str && *str))) {                          \
                         printf("[!] assertion failed: string %s must not be" \
                             " null or empty [%s(), %s:%d]\n",                \
-                            #s, __func__, __FILE__,   __LINE__);             \                       \
+                            #str, __func__, __FILE__,   __LINE__);           \
                         ag_log_debug("assertion failed: string %s must not"  \
                             " be null or empty [%s(), %s:%d]\n",             \
-                            #s, __func__, __FILE__, __LINE__);               \
+                            #str, __func__, __FILE__, __LINE__);             \
                         abort();                                             \
                 }                                                            \
         } while (0)
