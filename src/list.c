@@ -154,7 +154,11 @@ ag_list_new(void)
 
 
 /*
- * Define the ag_list_get() interface function.
+ * Define the ag_list_get() interface function. We use this function to get the
+ * value at the currently iterated node, provided that the node exists. Note
+ * that it's **not** safe to call this function on an empty list.
+ *
+ * TODO: explore null values to make this function safer.
  */
 
 
@@ -170,7 +174,12 @@ ag_list_get(const ag_list *ctx)
 
 
 /*
- * Define the ag_list_get_at() interface function.
+ * Define the ag_list_get_at() interface function. This function gets the value
+ * at a given index, provided that a node exists at that index. Note that the
+ * index is 1-based, and that currently it's **not** safe to call this function
+ * on empty lists or with invalid index values.
+ *
+ * TODO: explore null values to make this function safer.
  */
 
 
@@ -215,7 +224,12 @@ ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
 
 
 /*
- * Define the ag_list_set() interface function.
+ * Define the ag_list_set() interface function. This function sets the value at
+ * the currently iterated node of the list, provided that a value already exists
+ * at the current node. Note that this function is **not** safe to call on empty
+ * lists.
+ *
+ * TODO: consider making this function safer.
  */
 
 
@@ -233,7 +247,13 @@ ag_list_set(ag_list **ctx, const ag_value *val)
 
 
 /*
- * Define the ag_list_set_at() interface function.
+ * Define the ag_list_set_at() interface function. This function sets the value
+ * at a given index in a list, assuming that there is already a value existing
+ * at that index. Note that the index is 1-based, and that the internal iterator
+ * is not affected by a call to this function. This function is **not** safe to
+ * call on empty lists or with invalid index values.
+ *
+ * TODO: consider making this function safer.
  */
 
 
@@ -281,7 +301,9 @@ ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
 
 
 /*
- * Define the ag_list_start() interface function.
+ * Define the ag_list_start() interface function. This function resets the
+ * internal iterator of a list to the beginning of the list. It's safe to call
+ * this function on an empty list.
  */
 
 
@@ -296,7 +318,11 @@ ag_list_start(ag_list **ctx)
 
 
 /*
- * Define the ag_list_next() interface function.
+ * Define the ag_list_next() interface function. This function moves the
+ * internal iterator of a list to the next node of the list, if possible. The
+ * Boolean value returned indicates whether or not further iteration is
+ * possible; in case the tail node has been reached, then false is returned.
+ * This function is safe to call even on empty lists.
  */
 
 
@@ -317,7 +343,9 @@ ag_list_next(ag_list **ctx)
 
 
 /*
- * Define the ag_list_push() interface function.
+ * Define the ag_list_push() interface function. This function is responsible
+ * for pushing a new value to the tail of a list. We use the payload_push()
+ * helper function to perform the actual push operation.
  */
 
 
