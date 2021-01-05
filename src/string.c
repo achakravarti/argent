@@ -106,6 +106,21 @@ ag_string_copy(const ag_string *ctx)
 
 
 /*
+ * Define the ag_string_clone() interface function. This function creates a deep
+ * copy of a string instance.
+ */
+
+
+extern ag_string *
+ag_string_clone(const ag_string *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return ag_memblock_clone(ctx);
+}
+
+
+/*
  * Define the ag_string_release() interface function. This function releases a
  * dynamic string. We don't cast ctx to (void **) when calling
  * ag_memblock_release() in order to avoid potential portability issues in case
