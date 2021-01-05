@@ -24,9 +24,8 @@
 #include "./test.h"
 
 
-/* 
- * The following unit tests test out ag_string_new() with statically allocated
- * empty, ASCII and Unicode strings.
+/*
+ * Define the test cases for ag_string_new().
  */
 
 
@@ -54,7 +53,11 @@ AG_TEST_CASE(new_03, "ag_string_new() can create a Unicode string")
 }
 
 
-/* This unit test checks whether ag_string_new_empty() behaves as expected. */
+/*
+ * Define the test case for ag_string_empty().
+ */
+
+
 AG_TEST_CASE(new_empty_01, "ag_string_new_empty() creates an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -63,10 +66,8 @@ AG_TEST_CASE(new_empty_01, "ag_string_new_empty() creates an empty string")
 }
 
 
-/* 
- * The following unit tests check whether ag_string_new_fmt() performs as
- * expected with in the case of statically allocated empty and formatted ASCII
- * and Unicode strings.
+/*
+ * Define the test cases for ag_string_new_fmt().
  */
 
 
@@ -97,8 +98,7 @@ AG_TEST_CASE(new_fmt_03,
 
 
 /*
- * The following unit tests check whether ag_string_copy() can create shallow
- * copies of empty, ASCII and Unicode string instances.
+ * Define the test cases for ag_string_copy().
  */
 
 
@@ -139,8 +139,7 @@ AG_TEST_CASE(copy_04, "ag_string_copy() increases the reference count by 1")
 
 
 /*
- * The following unit tests check whether ag_string_copy() can create deep
- * copies of empty, ASCII and Unicode string instances.
+ * Define the test cases for ag_astring_copy().
  */
 
 
@@ -182,8 +181,7 @@ AG_TEST_CASE(clone_04, "ag_string_clone() has no effect on the reference count")
 
 
 /*
- * The following unit tests check whether ag_string_release() releases a string
- * correctly, or perform a safe no-op if provided invalid strings.
+ * Define the test cases for ag_string_release().
  */
 
 
@@ -226,8 +224,7 @@ AG_TEST_CASE(release_04, "ag_string_release() reduces the reference count by 1")
 
 
 /*
- * The following test cases check whenter ag_string_cmp() behaves as expected with
- * different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_cmp().
  */
 
 
@@ -329,8 +326,7 @@ AG_TEST_CASE(cmp_09,
 
 
 /*
- * The following unit tests check whether ag_string_lt() works as expected with
- * different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_lt().
  */
 
 
@@ -432,8 +428,7 @@ AG_TEST_CASE(lt_09,
 
 
 /*
- * The following unit tests check whether ag_string_eq() works as expected with
- * different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_eq().
  */
 
 
@@ -534,8 +529,7 @@ AG_TEST_CASE(eq_09,
 
 
 /*
- * The following unit tests check whether ag_string_gt() works as expected with
- * different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_gt().
  */
 
 
@@ -637,8 +631,7 @@ AG_TEST_CASE(gt_09,
 
 
 /*
- * The followint tests check whether ag_string_empty() behaves as expected with
- * empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_empty().
  */
 
 
@@ -667,10 +660,9 @@ AG_TEST_CASE(empty_03, "ag_string_empty() returns false for a Unicode string")
 
 
 /*
- * The following unit tests check whether ag_string_len() returns the correct
- * lexicographical length for empty, ASCII and Unicode strings. The len_03 tests
- * seems to indicate that there may be a possible bug when considering combined
- * characters as in the Devenagari script.
+ * Define the test cases for ag_string_len().  The len_03 test seems to indicate
+ * that there may be a possible bug when considering combined characters as in
+ * the Devenagari script.
  *
  * TODO: Research more on Devanagari string lengths.
  */
@@ -701,8 +693,7 @@ AG_TEST_CASE(len_03, "ag_string_len() returns the length of a Unicode string")
 
 
 /*
- * The following tests check whether ag_string_sz() works as expected with empty,
- * ASCII and Unicode strings.
+ * Define the test cases for ag_string_sz().
  */
 
 
@@ -729,8 +720,7 @@ AG_TEST_CASE(sz_03, "ag_string_sz() determines the size of Unicode string")
 
 
 /*
- * The following unit tests check whether ag_string_refc() returns the correct
- * reference count depending on the current number of soft copies.
+ * Define the test cases for ag_string_refc().
  */
 
 
@@ -762,8 +752,7 @@ AG_TEST_CASE(refc_03, "ag_string_refc() detects decremented reference counts")
 
 
 /*
- * The following test cases check whether ag_string_has() performs as expected with
- * different combinations of empty, ASCII and Unicode needles and haystacks.
+ * Define the test cases for ag_string_has().
  */
 
 
@@ -843,12 +832,11 @@ AG_TEST_CASE(has_07,
 
 
 /*
- * The following test cases check whether the case transformation functions of
- * the string interface perform as expected. Note that these test cases are only
- * for empty and ASCII strings since the case transformation functions are not
- * yet Unicode friendly.
- * 
- * TODO: Add Unicode tests for string case transformation functions.
+ * Define the test cases for ag_string_lower(). Not that these test cases are
+ * only for empty and ASCII strings since ag_string_lower() doesn't support
+ * Unicode strings as yet.
+ *
+ * TODO: Add Unicode tests for ag_string_lower().
  */
 
 
@@ -871,6 +859,15 @@ AG_TEST_CASE(lower_02,
 }
 
 
+/*
+ * Define the test cases for ag_string_upper(). Again, as in the case of the
+ * test cases for ag_string_lower(), we don't currently have cases testing out
+ * Unicode strings.
+ *
+ * TODO: Add Unicode tests for ag_string_upper().
+ */
+
+
 AG_TEST_CASE(upper_01, "ag_string_upper() has no effect on an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -888,6 +885,15 @@ AG_TEST_CASE(upper_02,
 
         AG_TEST (ag_string_eq(s2, "HELLO, WORLD!"));
 }
+
+
+/*
+ * Define the test cases for ag_string_proper(). Just as in the case of the unit
+ * tests for ag_string_lower() and ag_string_upper(), we don't currently have
+ * any tests for Unicode strings.
+ *
+ * TODO: Add Unicode tests for ag_string_proper().
+ */
 
 
 AG_TEST_CASE(proper_01, "ag_string_proper() has no effect on an empty string")
@@ -910,8 +916,7 @@ AG_TEST_CASE(proper_02,
 
 
 /*
- * The following test cases check whether ag_string_split() behaves as expected
- * with different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_split().
  */
 
 
@@ -990,8 +995,7 @@ AG_TEST_CASE(split_07,
 
 
 /*
- * The following test cases check whether ag_string_split_right() behaves as
- * expected with different combinations of empty, ASCII and Unicode strings.
+ * Define the test cases for ag_string_split_right().
  */
 
 
@@ -1069,6 +1073,14 @@ AG_TEST_CASE(split_right_07,
 
         AG_TEST (ag_string_eq(s2, " दुनिया!"));
 }
+
+
+/*
+ * Define the test_suite_list() testing interface function. This function is
+ * responsible for creating a test suite from the test cases defined above.
+ *
+ * TODO: figure out how to get rid of this function.
+ */
 
 
 extern ag_test_suite *test_suite_string(void)
