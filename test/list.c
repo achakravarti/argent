@@ -1,61 +1,53 @@
+/*-
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Argent - infrastructure for building web services
+ * Copyright (C) 2020 Abhishek Chakravarti
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+ */
+
+
 #include "./test.h"
 
 
-static ag_list *sample_int(void)
-{
-        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
-        AG_AUTO(ag_value) *v2 = ag_value_new_int(0);
-        AG_AUTO(ag_value) *v3 = ag_value_new_int(456);
-
-        AG_AUTO(ag_list) *l = ag_list_new();
-        ag_list_push(&l, v1);
-        ag_list_push(&l, v2);
-        ag_list_push(&l, v3);
-
-        return ag_list_copy(l);
-}
+/* 
+ * Declare the prototypes for generating sample integer lists. Both functions
+ * generate sample integer lists, but with differing lengths.
+ */
 
 
-static ag_list *sample_int_2(void)
-{
-        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
-        AG_AUTO(ag_value) *v2 = ag_value_new_int(0);
-        AG_AUTO(ag_value) *v3 = ag_value_new_int(456);
-        AG_AUTO(ag_value) *v4 = ag_value_new_int(-666);
-        AG_AUTO(ag_value) *v5 = ag_value_new_int(0);
-        AG_AUTO(ag_value) *v6 = ag_value_new_int(555);
-        AG_AUTO(ag_value) *v7 = ag_value_new_int(734);
-
-        AG_AUTO(ag_list) *l = ag_list_new();
-        ag_list_push(&l, v1);
-        ag_list_push(&l, v2);
-        ag_list_push(&l, v3);
-        ag_list_push(&l, v4);
-        ag_list_push(&l, v5);
-        ag_list_push(&l, v6);
-        ag_list_push(&l, v7);
-
-        return ag_list_copy(l);
-}
+static ag_list *sample_int(void);
+static ag_list *sample_int_2(void);
 
 
-static void iterator(const ag_value *val, void *opt)
-{
-        ag_int *s = opt;
-        ag_int i = ag_value_int(val);
-        *s += i;
-
-}
+/*
+ * Declare the protoptypes for the iterator functions that are used to test out
+ * the map functions of lists. iterator() helps test out ag_list_map(), whereas
+ * iterator_mutable helps test ag_list_map_mutable().
+ */
 
 
-static void iterator_mutable(ag_value **val, void *opt)
-{
-        (void)opt;
-        
-        AG_AUTO(ag_value) *v = ag_value_new_int(5);
-        ag_value_release(val);
-        *val = ag_value_copy(v);
-}
+static void iterator(const ag_value *, void *);
+static void iterator_mutable(ag_value **, void *);
+
+
+/* 
+ * Define the test cases for ag_list_new(). 
+ */
 
 
 AG_TEST_CASE(new_01, "ag_list_new() can create a new sample list")
@@ -70,6 +62,11 @@ AG_TEST_CASE(new_02, "ag_list_new() can create a new empty list")
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_TEST (l && ag_list_empty(l));
 }
+
+
+/* 
+ * Define the test cases for ag_list_copy(). 
+ */
 
 
 AG_TEST_CASE(copy_01, "ag_list_copy() creates a shallow copy of a sample list")
@@ -88,6 +85,11 @@ AG_TEST_CASE(copy_02, "ag_list_copy() increases the reference count by 1")
         
         AG_TEST (ag_list_refc(l) == 2);
 }
+
+
+/*
+ * Define the test cases for ag_list_clone().
+ */
 
 
 AG_TEST_CASE(clone_01, "ag_list_clone() creates a clone of an empty list")
@@ -124,6 +126,11 @@ AG_TEST_CASE(clone_04, "ag_list_clone() does not change the reference count")
 
         AG_TEST (ag_list_refc(l) == 1);
 }
+
+
+/*
+ * Define the test cases for ag_list_release().
+ */
 
 
 AG_TEST_CASE(release_04, "ag_list_dispose() reduces the reference count by 1")
@@ -165,6 +172,12 @@ AG_TEST_CASE(release_03,
 }
 
 
+/*
+ * Define the the test cases for ag_list_lt(). Note that since ag_list_lt() is a
+ * specialised case of ag_list_cmp(), it helps to test test ag_list_cmp() too.
+ */
+
+
 AG_TEST_CASE(lt_01, 
     "ag_list_lt() returns true if a list is lexicographically smaller than"
     " another")
@@ -198,6 +211,13 @@ AG_TEST_CASE(lt_03,
 }
 
 
+/*
+ * Define the test cases for ag_list_eq(). Since ag_list_eq() is a specialised
+ * case of ag_list_cmp(), this these test cases also indirectly help test out
+ * ag_list_cmp().
+ */
+
+
 AG_TEST_CASE(eq_01, 
     "ag_list_eq() returns true if two lists are lexicographically equal")
 {
@@ -228,6 +248,13 @@ AG_TEST_CASE(eq_03,
 
         AG_TEST (!ag_list_eq(l2, l));
 }
+
+
+/*
+ * Define the test cases for ag_list_gt(). Together with the test cases for
+ * ag_list_lt() and ag_list_eq(), the test cases for ag_list_gt() help test out
+ * ag_list_cmp() in a reasonably complete manner.
+ */
 
 
 AG_TEST_CASE(gt_01, 
@@ -263,6 +290,11 @@ AG_TEST_CASE(gt_03,
 }
 
 
+/*
+ * Define the test cases for ag_list_empty().
+ */
+
+
 AG_TEST_CASE(empty_01, "ag_list_empty() returns true for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
@@ -279,12 +311,22 @@ AG_TEST_CASE(empty_02, "ag_list_empty() returns false for a non-empty list")
 }
 
 
+/*
+ * Define the test case for ag_list_typeid().
+ */
+
+
 AG_TEST_CASE(typeid_01, "ag_list_typeid() returns AG_TYPEID_LIST")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
         AG_TEST (ag_list_typeid(l) == AG_TYPEID_LIST);
 }
+
+
+/*
+ * Define the test case for ag_list_uuid().
+ */
 
 
 AG_TEST_CASE(uuid_01, "ag_list_uuid() returns the UUID of a list")
@@ -295,6 +337,11 @@ AG_TEST_CASE(uuid_01, "ag_list_uuid() returns the UUID of a list")
 
         AG_TEST (!ag_string_empty(s));
 }
+
+
+/*
+ * Define the test cases for ag_list_valid().
+ */
 
 
 AG_TEST_CASE(valid_01, "ag_list_valid() returns false for an empty list")
@@ -313,6 +360,11 @@ AG_TEST_CASE(valid_02, "ag_list_valid() returns true for an int list")
 }
 
 
+/*
+ * Define the test cases for ag_list_sz().
+ */
+
+
 AG_TEST_CASE(sz_01, "ag_list_sz() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
@@ -327,6 +379,11 @@ AG_TEST_CASE(sz_02, "ag_list_sz() returns the cumulative size of an int list")
 
         AG_TEST (ag_list_sz(l) == sizeof(ag_int) * 7);
 }
+
+
+/*
+ * Define the test cases for ag_list_refc().
+ */
 
 
 AG_TEST_CASE(refc_01, "ag_list_refc() returns 1 for a single instance")
@@ -348,6 +405,11 @@ AG_TEST_CASE(refc_02,
 }
 
 
+/*
+ * Define the test cases for ag_list_len().
+ */
+
+
 AG_TEST_CASE(len_01, "ag_list_len() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
@@ -363,6 +425,11 @@ AG_TEST_CASE(len_02,
 
         AG_TEST (ag_list_len(l) == 7);
 }
+
+
+/*
+ * Define the test cases for ag_list_hash().
+ */
 
 
 AG_TEST_CASE(hash_01, "ag_list_hash() returns 0 for an empty list")
@@ -381,6 +448,11 @@ AG_TEST_CASE(hash_02,
 
         AG_TEST (ag_list_hash(l) == h);
 }
+
+
+/*
+ * Define the test cases for ag_list_str().
+ */
 
 
 AG_TEST_CASE(str_01,
@@ -403,6 +475,11 @@ AG_TEST_CASE(str_02,
 }
 
 
+/*
+ * Define the test case for ag_list_get().
+ */
+
+
 AG_TEST_CASE(get_01, "ag_list_get() gets the currently iterated value")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -415,6 +492,11 @@ AG_TEST_CASE(get_01, "ag_list_get() gets the currently iterated value")
 }
 
 
+/*
+ * Define the test case for ag_list_get_at().
+ */
+
+
 AG_TEST_CASE(get_at_01, "ag_list_get_at() gets the value at a given index")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -422,6 +504,11 @@ AG_TEST_CASE(get_at_01, "ag_list_get_at() gets the value at a given index")
 
         AG_TEST (ag_value_int(v) == 734);
 }
+
+
+/*
+ * Define the test cases for ag_list_map().
+ */
 
 
 AG_TEST_CASE(map_01, "ag_list_map() has no effect on an empty list")
@@ -444,6 +531,11 @@ AG_TEST_CASE(map_02, "ag_list_map() iterates through a non-empty list")
 }
 
 
+/*
+ * Define the test case for ag_list_set().
+ */
+
+
 AG_TEST_CASE(set_01, "ag_list_set() sets the currently iterated value")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -460,6 +552,11 @@ AG_TEST_CASE(set_01, "ag_list_set() sets the currently iterated value")
 }
 
 
+/*
+ * Define the test case for ag_list_set_at().
+ */
+
+
 AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -470,6 +567,11 @@ AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
 
         AG_TEST (ag_value_int(v2) == 1234);
 }
+
+
+/*
+ * Define the test cases for ag_list_map_mutable().
+ */
 
 
 AG_TEST_CASE(map_mutable_01, 
@@ -496,6 +598,14 @@ AG_TEST_CASE(map_mutable_02,
 
         AG_TEST (sum == 15);
 }
+
+
+/*
+ * Define the test_suite_list() testing interface function. This function is
+ * responsible for creating a test suite from the test cases defined above.
+ *
+ * TODO: figure out how to get rid of this function.
+ */
 
 
 extern ag_test_suite *test_suite_list(void)
@@ -560,5 +670,88 @@ extern ag_test_suite *test_suite_list(void)
         ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
         return ctx;
+}
+
+
+/*
+ * Define the sample_int() helper function. This function is used by the test
+ * cases defined above to generate a new sample integer list with 3 values.
+ */
+
+
+static ag_list *sample_int(void)
+{
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(0);
+        AG_AUTO(ag_value) *v3 = ag_value_new_int(456);
+
+        AG_AUTO(ag_list) *l = ag_list_new();
+        ag_list_push(&l, v1);
+        ag_list_push(&l, v2);
+        ag_list_push(&l, v3);
+
+        return ag_list_copy(l);
+}
+
+
+/*
+ * Define the sample_int_2() helper function. This function is similar to the
+ * sample_int() helper function, generating a sample integer list with 7 values.
+ */
+
+
+static ag_list *sample_int_2(void)
+{
+        AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
+        AG_AUTO(ag_value) *v2 = ag_value_new_int(0);
+        AG_AUTO(ag_value) *v3 = ag_value_new_int(456);
+        AG_AUTO(ag_value) *v4 = ag_value_new_int(-666);
+        AG_AUTO(ag_value) *v5 = ag_value_new_int(0);
+        AG_AUTO(ag_value) *v6 = ag_value_new_int(555);
+        AG_AUTO(ag_value) *v7 = ag_value_new_int(734);
+
+        AG_AUTO(ag_list) *l = ag_list_new();
+        ag_list_push(&l, v1);
+        ag_list_push(&l, v2);
+        ag_list_push(&l, v3);
+        ag_list_push(&l, v4);
+        ag_list_push(&l, v5);
+        ag_list_push(&l, v6);
+        ag_list_push(&l, v7);
+
+        return ag_list_copy(l);
+}
+
+
+/*
+ * Define the iterator() helper function. This function is the callback function
+ * used to test out ag_list_map(). This function leads to summation of the
+ * integer values contained within a list.
+ */
+
+
+static void iterator(const ag_value *val, void *opt)
+{
+        ag_int *s = opt;
+        ag_int i = ag_value_int(val);
+        *s += i;
+
+}
+
+
+/*
+ * Define the iterator_mutable() helper function. This function is the iterator
+ * callback function used to test out ag_list_map_mutable(). This function
+ * modifies the value of the node it is applied on it, setting it to 5.
+ */
+
+
+static void iterator_mutable(ag_value **val, void *opt)
+{
+        (void)opt;
+        
+        AG_AUTO(ag_value) *v = ag_value_new_int(5);
+        ag_value_release(val);
+        *val = ag_value_copy(v);
 }
 

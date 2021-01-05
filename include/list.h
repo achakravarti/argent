@@ -243,7 +243,7 @@ extern void ag_list_map(const ag_list *, ag_list_iterator *, void *);
 
 
 /*
- * Decalre the mutator interface for ag_list. ag_list_set() and ag_list_set_at()
+ * Declare the mutator interface for ag_list. ag_list_set() and ag_list_set_at()
  * are used to set a value in a list, ag_list_push() is used to push a value to
  * the end of a list, ag_list_map_mutable() is used to iterate across a mutable
  * list, ag_list_start() and ag_list_next() are used to traverse across a list.
