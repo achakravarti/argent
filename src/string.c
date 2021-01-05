@@ -37,10 +37,10 @@
 
 
 extern inline ag_string *ag_string_new_empty(void);
-extern inline bool      ag_string_lt(const ag_string *, const char *);
-extern inline bool      ag_string_eq(const ag_string *, const char *);
-extern inline bool      ag_string_gt(const ag_string *, const char *);
-extern inline bool      ag_string_empty(const ag_string *);
+extern inline bool       ag_string_lt(const ag_string *, const char *);
+extern inline bool       ag_string_eq(const ag_string *, const char *);
+extern inline bool       ag_string_gt(const ag_string *, const char *);
+extern inline bool       ag_string_empty(const ag_string *);
 
 
 /*
