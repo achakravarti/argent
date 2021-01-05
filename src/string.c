@@ -31,7 +31,7 @@
 
 /*
  * Declare the public inline functions of the string interface.
- * */
+ */
 
 
 extern inline ag_string *ag_string_new_empty(void);
