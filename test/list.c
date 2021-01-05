@@ -48,6 +48,16 @@ static void iterator(const ag_value *val, void *opt)
 }
 
 
+static void iterator_mutable(ag_value **val, void *opt)
+{
+        (void)opt;
+        
+        AG_AUTO(ag_value) *v = ag_value_new_int(5);
+        ag_value_release(val);
+        *val = ag_value_copy(v);
+}
+
+
 AG_TEST_CASE(new_01, "ag_list_new() can create a new sample list")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -461,6 +471,33 @@ AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
         AG_TEST (ag_value_int(v2) == 1234);
 }
 
+
+AG_TEST_CASE(map_mutable_01, 
+    "ag_list_map_mutable() has no effect on an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+        ag_int sum = 0;
+
+        ag_list_map_mutable(&l, iterator_mutable, NULL);
+        ag_list_map(l, iterator, &sum);
+
+        AG_TEST (!sum);
+}
+
+
+AG_TEST_CASE(map_mutable_02, 
+    "ag_list_map_mutable() iterates through a non-empty list")
+{
+        AG_AUTO(ag_list) *l = sample_int();
+        ag_int sum = 0;
+
+        ag_list_map_mutable(&l, iterator_mutable, NULL);
+        ag_list_map(l, iterator, &sum);
+
+        AG_TEST (sum == 15);
+}
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -487,6 +524,7 @@ extern ag_test_suite *test_suite_list(void)
                 map_01,         map_02,
                 set_01,
                 set_at_01,
+                map_mutable_01, map_mutable_02,
         };
 
         const char *desc[] = {
@@ -515,6 +553,7 @@ extern ag_test_suite *test_suite_list(void)
                 map_01_desc,            map_02_desc,
                 set_01_desc,
                 set_at_01_desc,
+                map_mutable_01_desc,    map_mutable_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
