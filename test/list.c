@@ -39,6 +39,15 @@ static ag_list *sample_int_2(void)
 }
 
 
+static void iterator(const ag_value *val, void *opt)
+{
+        ag_int *s = opt;
+        ag_int i = ag_value_int(val);
+        *s += i;
+
+}
+
+
 AG_TEST_CASE(new_01, "ag_list_new() can create a new sample list")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -405,6 +414,28 @@ AG_TEST_CASE(get_at_01, "ag_list_get_at() gets the value at a given index")
 }
 
 
+AG_TEST_CASE(map_01, "ag_list_map() has no effect on an empty list")
+{
+        AG_AUTO(ag_list) *l = ag_list_new();
+        ag_int sum = 0;
+        ag_list_map(l, iterator, &sum);
+
+        AG_TEST (!sum);
+}
+
+
+AG_TEST_CASE(map_02, "ag_list_map() iterates through a non-empty list")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        ag_int sum = 0;
+        ag_list_map(l, iterator, &sum);
+
+        AG_TEST (sum == 956);
+}
+
+
+
+
 extern ag_test_suite *test_suite_list(void)
 {
         ag_test *test[] = {
@@ -428,6 +459,7 @@ extern ag_test_suite *test_suite_list(void)
                 str_01,         str_02,
                 get_01,
                 get_at_01,
+                map_01,         map_02,
         };
 
         const char *desc[] = {
@@ -453,6 +485,7 @@ extern ag_test_suite *test_suite_list(void)
                 str_01_desc,            str_02_desc,
                 get_01_desc,
                 get_at_01_desc,
+                map_01_desc,            map_02_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
