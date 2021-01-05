@@ -28,13 +28,14 @@
 #include <stdarg.h>
 
 
-/* is_string_not_empty() checks whether a string is not null and not empty. */
 #ifndef NDEBUG
 #       define is_string_not_empty(s) (s && *s)
 #endif
 
 
 /* Declare the public inline functions of the string interface. */
+
+
 extern inline ag_string *ag_string_new_empty(void);
 extern inline bool      ag_string_lt(const ag_string *, const char *);
 extern inline bool      ag_string_eq(const ag_string *, const char *);
@@ -42,10 +43,12 @@ extern inline bool      ag_string_gt(const ag_string *, const char *);
 extern inline bool      ag_string_empty(const ag_string *);
 
 
-/* 
- * ag_string_new() creates a new instance of a dynamic string from a statically
- * allocated string.
+/*
+ * Define the ag_string_new() interface function. This function creates a new
+ * instance of a dynamic string from a statically allocated string.
  */
+
+
 extern ag_string *
 ag_string_new(const char *src)
 {
@@ -61,11 +64,14 @@ ag_string_new(const char *src)
 
 
 /*
- * ag_string_new_fmt() creates a new instance of a dynamic string from a
- * statically allocated format string with variable arguments a la printf(). By
- * passing NULL and 0 as the first two arguments to vsnprintf() we determine the
- * size of the formatted string (excluding the terminating null character).
+ * Define the ag_string_new_fmt() interface function. This function creates a
+ * new instance of a dynamic string from a statically allocated format string
+ * with variable arguments a la printf(). By passing NULL and 0 as the first two
+ * arguments to vsnprintf() we determine the size of the formatted string
+ * (excluding the terminating null character).
  */
+
+
 extern ag_string *
 ag_string_new_fmt(const char *fmt, ...)
 {
@@ -86,7 +92,12 @@ ag_string_new_fmt(const char *fmt, ...)
 }
 
 
-/* ag_string_copy() creates a shallow copy of a dynamic string. */
+/* 
+ * Define the ag_string_copy() interface function. This function creates a
+ * shallow copy of a dynamic string.
+ */
+
+
 extern ag_string *
 ag_string_copy(const ag_string *ctx)
 {
@@ -96,12 +107,15 @@ ag_string_copy(const ag_string *ctx)
 }
 
 
-/* 
- * ag_string_release() releases a dynamic string. We don't cast ctx to (void **)
- * when calling ag_memblock_release() in order to avoid potential portability
- * issues in case the size of pointers differ. See the C-FAQ List question 4.9
- * at http://c-faq.com/ptrs/genericpp.html.
+/*
+ * Define the ag_string_release() interface function. This function releases a
+ * dynamic string. We don't cast ctx to (void **) when calling
+ * ag_memblock_release() in order to avoid potential portability issues in case
+ * the size of pointers differ. See the C-FAQ List question 4.9 at
+ * http://c-faq.com/ptrs/genericpp.html.
  */
+
+
 extern void
 ag_string_release(ag_string **ctx)
 {
@@ -114,13 +128,16 @@ ag_string_release(ag_string **ctx)
 }
 
 
-/* 
- * ag_string_cmp() compares two strings lexicographically. We have adapted the
- * code from the uf8cmp() function in Sheredom's UTF-8 header only library (see
+/*
+ * Define the ag_string_cmp() interface function. This function compares two
+ * strings lexicographically. We have adapted the code from the uf8cmp()
+ * function in Sheredom's UTF-8 header only library (see
  * https://github.com/sheredom/utf8.h/blob/master/utf8.h). We could have simply
  * used strcmp(), but there may be edge cases in Unicode strings which strcmp()
  * doesn't handle.
  */
+
+
 extern enum ag_cmp
 ag_string_cmp(const ag_string *ctx,  const char *cmp)
 {
@@ -150,7 +167,12 @@ ag_string_cmp(const ag_string *ctx,  const char *cmp)
 }
 
 
-/* ag_string_has() checks whether a string contains a particular substring. */
+/*
+ * Define the ag_string_has() interface function. This function checks whether a
+ * string contains a particular substring.
+ * */
+
+
 extern bool
 ag_string_has(const ag_string *ctx, const char *tgt)
 {
@@ -164,10 +186,13 @@ ag_string_has(const ag_string *ctx, const char *tgt)
 }
 
 
-/* 
- * ag_string_len() determines the lexicographcical length of a string, taking
- * into consideration that the string may contain non-ASCII UTF-8 characters.
+/*
+ * Define the ag_string_len() interface function. This function determines the
+ * lexicographcical length of a string, taking into consideration that the
+ * string may contain non-ASCII UTF-8 characters.
  */
+
+
 extern size_t
 ag_string_len(const ag_string *ctx)
 {
@@ -178,7 +203,7 @@ ag_string_len(const ag_string *ctx)
         while (ctx[i]) {
                 if ((ctx[i] & 0xC0) != 0x80)
                         len++;
-                
+
                 i++;
         }
 
@@ -187,10 +212,12 @@ ag_string_len(const ag_string *ctx)
 
 
 /*
- * ag_string_sz() gets the size in bytes of a dynamic string. Since dynamic
- * strings are allocated through memory blocks, we can retrieve their size by
- * querying ag_memblock_sz().
+ * Define the ag_string_sz() interface function. This function gets the size in
+ * bytes of a dynamic string. Since dynamic strings are allocated through memory
+ * blocks, we can retrieve their size by querying ag_memblock_sz().
  */
+
+
 extern size_t
 ag_string_sz(const ag_string *ctx)
 {
@@ -201,9 +228,12 @@ ag_string_sz(const ag_string *ctx)
 
 
 /*
- * ag_string_refc() gets the reference count of a dynamic string. Again, as in
- * the case of ag_string_sz(), we use the memory block interface to do so.
+ * Define the ag_string_refc() interface function. This function gets the
+ * reference count of a dynamic string. Again, as in the case of ag_string_sz(),
+ * we use the memory block interface to do so.
  */
+
+
 extern size_t
 ag_string_refc(const ag_string *ctx)
 {
@@ -214,13 +244,15 @@ ag_string_refc(const ag_string *ctx)
 
 
 /*
- * ag_string_lower() transforms a string to lowercase. Since we have chosen to
- * keep strings as immutable, we return a new string instance after processing.
- * Since we rely on tolower(), this function isn't guaranteed to work correctly
- * with Unicode strings.
+ * Define the ag_string_lower() interface function. This function transforms a
+ * string to lowercase. Since we have chosen to keep strings as immutable, we
+ * return a new string instance after processing.  Since we rely on tolower(),
+ * this function isn't guaranteed to work correctly with Unicode strings.
  *
  * TODO: make ag_string_lower() Unicode-safe.
  */
+
+
 extern ag_string *
 ag_string_lower(const ag_string *ctx)
 {
@@ -237,18 +269,20 @@ ag_string_lower(const ag_string *ctx)
 
 
 /*
- * ag_string_upper() transforms a string to uppercase. As in the case of
- * ag_string_lower(), we choose to return a new instance instead of modifying
- * the original string. Again, as in the case of ag_string_lower(), this
- * function isn't guaranteed to be Unicode-safe.
+ * Define the ag_string_upper() interface function. This function transforms a
+ * string to uppercase. As in the case of ag_string_lower(), we choose to return
+ * a new instance instead of modifying the original string. Again, as in the
+ * case of ag_string_lower(), this function isn't guaranteed to be Unicode-safe.
  *
  * TODO: make ag_string_upper() Unicode-safe.
  */
+
+
 extern ag_string *
 ag_string_upper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         ag_string *s = ag_memblock_clone(ctx);
         register size_t sz = ag_memblock_sz(ctx);
 
@@ -259,9 +293,9 @@ ag_string_upper(const ag_string *ctx)
 }
 
 
-/* 
- * ag_string_proper() transforms a string to proper case. In proper case, we
- * capitalise a character if:
+/*
+ * Define the ag_string_proper() interface function. This function transforms a
+ * string to proper case. In proper case, we capitalise a character if:
  *   - it is the first character,
  *   - it is preceded by a space, or
  *   - it is preceded by a period.
@@ -272,11 +306,13 @@ ag_string_upper(const ag_string *ctx)
  *
  * TODO: make ag_string_proper() Unicode-safe.
  */
+
+
 extern ag_string *
 ag_string_proper(const ag_string *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         ag_string *s = ag_memblock_clone(ctx);
         register size_t sz = ag_memblock_sz(s);
 
@@ -290,11 +326,14 @@ ag_string_proper(const ag_string *ctx)
 
 
 /*
- * ag_string_split() splits a string around a pivot, returning the left side of
- * the pivot. In case the pivot isn't found, then an empty string is returned.
- * In the unlikely case that an empty string is provided for a pivot, then we
- * return a copy of the original string.
+ * Define the ag_string_split() interface function. This function splits a
+ * string around a pivot, returning the left side of the pivot. In case the
+ * pivot isn't found, then an empty string is returned.  In the unlikely case
+ * that an empty string is provided for a pivot, then we return a copy of the
+ * original string.
  */
+
+
 extern ag_string *
 ag_string_split(const ag_string *ctx, const char *pvt)
 {
@@ -319,12 +358,14 @@ ag_string_split(const ag_string *ctx, const char *pvt)
 
 
 /*
- * ag_string_split_right() splits a string around a pivot and returns the
- * substring on the right side of the pivot. As in the case of
- * ag_string_split(), in case the pivot doesn't exist then an empty string is
- * returned, and if the pivot is an empty string then a copy of the original
- * string is returned.
+ * Define the ag_string_split_right() interface function. This function splits a
+ * string around a pivot and returns the substring on the right side of the
+ * pivot. As in the case of ag_string_split(), in case the pivot doesn't exist
+ * then an empty string is returned, and if the pivot is an empty string then a
+ * copy of the original string is returned.
  */
+
+
 extern ag_string *
 ag_string_split_right(const ag_string *ctx, const char *pvt)
 {
