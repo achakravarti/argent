@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 
-#include "./argent.h"
+#include <stddef.h>
 
 
 typedef size_t ag_hash;

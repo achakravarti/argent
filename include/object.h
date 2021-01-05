@@ -29,7 +29,10 @@ extern "C" {
 #endif
 
 
-#include "./argent.h"
+#include "./memblock.h"
+#include "./hash.h"
+#include "./typeid.h"
+#include "./uuid.h"
 
 
 typedef struct ag_object ag_object;

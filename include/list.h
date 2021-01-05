@@ -29,7 +29,8 @@ extern "C" {
 #endif
 
 
-#include "./argent.h"
+#include "./exception.h"
+#include "./value.h"
 
 
 /*

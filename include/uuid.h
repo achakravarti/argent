@@ -6,7 +6,9 @@ extern "C" {
 #endif
 
 
-#include "./argent.h"
+#include "./primitives.h"
+#include "./hash.h"
+#include "./string.h"
 
 
 typedef struct ag_uuid ag_uuid;
