@@ -32,6 +32,16 @@ extern "C" {
 #include "./argent.h"
 
 
+/*
+ * Declare the string type. The string type of the Argent Library is an alias
+ * for the standard char type in order to allow it to be passed to functions
+ * that expect standard C-style strings, such as printf(). In the Argent Library
+ * we maintain the semantic difference that ag_string instances are dynamically
+ * allocated on the heap whereas the standard C-style strings are statically
+ * allocated.
+ */
+
+
 typedef char ag_string;
 
 
