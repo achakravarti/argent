@@ -434,7 +434,7 @@ AG_TEST_CASE(map_02, "ag_list_map() iterates through a non-empty list")
 }
 
 
-AG_TEST_CASE(set_01, "ag_list_get() sets the currently iterated value")
+AG_TEST_CASE(set_01, "ag_list_set() sets the currently iterated value")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_value) *v = ag_value_new_int(1234);
@@ -450,7 +450,16 @@ AG_TEST_CASE(set_01, "ag_list_get() sets the currently iterated value")
 }
 
 
+AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
+{
+        AG_AUTO(ag_list) *l = sample_int_2();
+        AG_AUTO(ag_value) *v = ag_value_new_int(1234);
+        
+        ag_list_set_at(&l, v, 3);
+        AG_AUTO(ag_value) *v2 = ag_list_get_at(l, 3);
 
+        AG_TEST (ag_value_int(v2) == 1234);
+}
 
 extern ag_test_suite *test_suite_list(void)
 {
@@ -477,6 +486,7 @@ extern ag_test_suite *test_suite_list(void)
                 get_at_01,
                 map_01,         map_02,
                 set_01,
+                set_at_01,
         };
 
         const char *desc[] = {
@@ -504,6 +514,7 @@ extern ag_test_suite *test_suite_list(void)
                 get_at_01_desc,
                 map_01_desc,            map_02_desc,
                 set_01_desc,
+                set_at_01_desc,
         };
 
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");

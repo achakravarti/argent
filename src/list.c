@@ -238,7 +238,7 @@ ag_list_set(ag_list **ctx, const ag_value *val)
 
 
 extern void
-ag_list_set_at(ag_list **ctx, size_t idx, const ag_value *val)
+ag_list_set_at(ag_list **ctx, const ag_value *val, size_t idx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (val);
