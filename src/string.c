@@ -28,12 +28,10 @@
 #include <stdarg.h>
 
 
-#ifndef NDEBUG
-#       define is_string_not_empty(s) (s && *s)
-#endif
 
-
-/* Declare the public inline functions of the string interface. */
+/*
+ * Declare the public inline functions of the string interface.
+ * */
 
 
 extern inline ag_string *ag_string_new_empty(void);
@@ -75,7 +73,7 @@ ag_string_new(const char *src)
 extern ag_string *
 ag_string_new_fmt(const char *fmt, ...)
 {
-        AG_ASSERT (is_string_not_empty(fmt));
+        AG_ASSERT_STR (fmt);
 
         va_list args;
         va_start(args, fmt);
@@ -92,7 +90,7 @@ ag_string_new_fmt(const char *fmt, ...)
 }
 
 
-/* 
+/*
  * Define the ag_string_copy() interface function. This function creates a
  * shallow copy of a dynamic string.
  */
