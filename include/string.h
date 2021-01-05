@@ -66,6 +66,7 @@ typedef char    ag_string;
 extern ag_string        *ag_string_new(const char *);
 extern ag_string        *ag_string_new_fmt(const char *, ...);
 extern ag_string        *ag_string_copy(const ag_string *);
+extern ag_string        *ag_string_clone(const ag_string *);
 extern void              ag_string_release(ag_string **);
 
 

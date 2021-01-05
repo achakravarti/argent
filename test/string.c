@@ -116,6 +116,49 @@ AG_TEST_CASE(copy_04, "ag_string_copy() increases the reference count by 1")
 
 
 /*
+ * The following unit tests check whether ag_string_copy() can create deep
+ * copies of empty, ASCII and Unicode string instances.
+ */
+
+
+AG_TEST_CASE(clone_01, "ag_string_clone() can create a copy of an empty string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new_empty();
+        AG_AUTO(ag_string) *s2 = ag_string_clone(s);
+
+        AG_TEST (s2 && !*s2);
+}
+
+
+AG_TEST_CASE(clone_02, "ag_string_clone() can create a copy of an ASCII string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_AUTO(ag_string) *s2 = ag_string_clone(s);
+
+        AG_TEST (s2 && *s2 && ag_string_eq(s, s2));
+}
+
+
+AG_TEST_CASE(clone_03, 
+    "ag_string_clone() can create a copy of a Unicode string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
+        AG_AUTO(ag_string) *s2 = ag_string_clone(s);
+
+        AG_TEST (s2 && *s2 && ag_string_eq(s, s2));
+}
+
+
+AG_TEST_CASE(clone_04, "ag_string_clone() has no effect on the reference count")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_AUTO(ag_string) *s2 = ag_string_clone(s);
+
+        AG_TEST (ag_string_refc(s) == 1);
+}
+
+
+/*
  * The following unit tests check whether ag_string_release() releases a string
  * correctly, or perform a safe no-op if provided invalid strings.
  */
@@ -1013,6 +1056,8 @@ extern ag_test_suite *test_suite_string(void)
                 new_fmt_01,     new_fmt_02,     new_fmt_03,
                 copy_01,        copy_02,        copy_03, 
                 copy_04,
+                clone_01,       clone_02,       clone_03, 
+                clone_04,
                 release_01,     release_02,     release_03,
                 release_04,
                 cmp_01,         cmp_02,         cmp_03,
@@ -1053,6 +1098,8 @@ extern ag_test_suite *test_suite_string(void)
                 new_fmt_03_desc,        copy_01_desc,
                 copy_02_desc,           copy_03_desc,
                 copy_04_desc,
+                clone_01_desc,          clone_02_desc,
+                clone_03_desc,          clone_04_desc,
                 release_01_desc,        release_02_desc,
                 release_03_desc,        release_04_desc,
                 cmp_01_desc,            cmp_02_desc, 
