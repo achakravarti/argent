@@ -28,8 +28,7 @@ BIN_LIB = bld/libargent.so
 
 CCC = ccache $(CC)
 CFLAGS = -fPIC -g -Wall -Wextra -I $(shell pg_config --includedir)
-LDFLAGS = -shared -L $(shell pg_config --libdir) -lpq -luuid
-
+LDFLAGS = -shared -rdynamic -L $(shell pg_config --libdir) -lpq -luuid -ldl
 
 
 
@@ -49,10 +48,10 @@ BIN_TEST = $(DIR_BLD)/ag-tests
 
 
 $(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
-	$(LINK.c) $^ -o $@
+	$(LINK.c) -shared $^ -o $@
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_LIB) | $(DIR_BLD)
-	$(CCC) $(CFLAGS) $^ -lpq -luuid -o $@
+	$(CCC) -rdynamic $^ -lpq -luuid -ldl -o $@
 
 $(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
 	$(COMPILE.c) $^ -o $@

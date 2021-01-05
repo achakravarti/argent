@@ -29,7 +29,8 @@
 #endif
 
 
-#include "./argent.h"
+#include "./erno.h"
+#include "./log.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -94,6 +95,9 @@ extern void ag_exception_registry_set(ag_erno, const char *,
  * AG_ASSERT_PTR() is similar to AG_ASSERT(), except that it is specifically
  * used to assert whether a pointer is valid. AG_ASSERT_PTR() provides a more
  * focused failure message as compared to the generic one given by AG_ASSERT().
+ *
+ * AG_ASSERT_STR() asserts that a string is valid, i.e., it is a valid pointer
+ * and it is not an empty string.
  */
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do {                                             \
@@ -112,14 +116,28 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                                " [%s(), %s:%d]\n", #p, __func__, __FILE__,   \
                                __LINE__);                                    \
                         ag_log_debug("assertion failed: %s must not be null" \
-                                     " [%s(), %s:%d\\n", #p, __func__,       \
+                                     " [%s(), %s:%d]\n", #p, __func__,       \
                                      __FILE__, __LINE__);                    \
+                        abort();                                             \
+                }                                                            \
+        } while (0)
+        
+
+        #define AG_ASSERT_STR(str) do {                                      \
+                if (AG_UNLIKELY (!(str && *str))) {                          \
+                        printf("[!] assertion failed: string %s must not be" \
+                            " null or empty [%s(), %s:%d]\n",                \
+                            #str, __func__, __FILE__,   __LINE__);           \
+                        ag_log_debug("assertion failed: string %s must not"  \
+                            " be null or empty [%s(), %s:%d]\n",             \
+                            #str, __func__, __FILE__, __LINE__);             \
                         abort();                                             \
                 }                                                            \
         } while (0)
 #else
 #       define AG_ASSERT(p)
 #       define AG_ASSERT_PTR(p)
+#       define AG_ASSERT_STR(s)
 #endif
 
 /*
