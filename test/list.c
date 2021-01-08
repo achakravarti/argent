@@ -23,6 +23,8 @@
 
 #include "./test.h"
 
+#define __AG_TEST_SUITE_TAG__ 5
+
 
 /* 
  * Declare the prototypes for generating sample integer lists. Both functions
@@ -50,14 +52,14 @@ static void iterator_mutable(ag_value **, void *);
  */
 
 
-AG_TEST_CASE(new_01, "ag_list_new() can create a new sample list")
+__AG_TEST_CASE("ag_list_new() can create a new sample list")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_TEST (l && ag_list_len(l) == 3);
 }
 
 
-AG_TEST_CASE(new_02, "ag_list_new() can create a new empty list")
+__AG_TEST_CASE("ag_list_new() can create a new empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_TEST (l && ag_list_empty(l));
@@ -69,7 +71,7 @@ AG_TEST_CASE(new_02, "ag_list_new() can create a new empty list")
  */
 
 
-AG_TEST_CASE(copy_01, "ag_list_copy() creates a shallow copy of a sample list")
+__AG_TEST_CASE("ag_list_copy() creates a shallow copy of a sample list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
@@ -78,7 +80,7 @@ AG_TEST_CASE(copy_01, "ag_list_copy() creates a shallow copy of a sample list")
 }
 
 
-AG_TEST_CASE(copy_02, "ag_list_copy() increases the reference count by 1")
+__AG_TEST_CASE("ag_list_copy() increases the reference count by 1")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
@@ -92,7 +94,7 @@ AG_TEST_CASE(copy_02, "ag_list_copy() increases the reference count by 1")
  */
 
 
-AG_TEST_CASE(clone_01, "ag_list_clone() creates a clone of an empty list")
+__AG_TEST_CASE("ag_list_clone() creates a clone of an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
@@ -101,7 +103,7 @@ AG_TEST_CASE(clone_01, "ag_list_clone() creates a clone of an empty list")
 }
 
 
-AG_TEST_CASE(clone_02, "ag_list_clone() creates a clone of a sample list")
+__AG_TEST_CASE("ag_list_clone() creates a clone of a sample list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
@@ -110,7 +112,7 @@ AG_TEST_CASE(clone_02, "ag_list_clone() creates a clone of a sample list")
 }
 
 
-AG_TEST_CASE(clone_03, "ag_list_clone() has the same items as its parent")
+__AG_TEST_CASE("ag_list_clone() has the same items as its parent")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
@@ -119,7 +121,7 @@ AG_TEST_CASE(clone_03, "ag_list_clone() has the same items as its parent")
 }
 
 
-AG_TEST_CASE(clone_04, "ag_list_clone() does not change the reference count")
+__AG_TEST_CASE("ag_list_clone() does not change the reference count")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_clone(l);
@@ -133,7 +135,7 @@ AG_TEST_CASE(clone_04, "ag_list_clone() does not change the reference count")
  */
 
 
-AG_TEST_CASE(release_04, "ag_list_dispose() reduces the reference count by 1")
+__AG_TEST_CASE("ag_list_dispose() reduces the reference count by 1")
 {
         ag_list *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
@@ -144,7 +146,7 @@ AG_TEST_CASE(release_04, "ag_list_dispose() reduces the reference count by 1")
 }
 
 
-AG_TEST_CASE(release_01, "ag_list_release() performs a no-op if passed NULL")
+__AG_TEST_CASE("ag_list_release() performs a no-op if passed NULL")
 {
         ag_list_release(NULL);
         
@@ -152,7 +154,7 @@ AG_TEST_CASE(release_01, "ag_list_release() performs a no-op if passed NULL")
 }
 
 
-AG_TEST_CASE(release_02, 
+__AG_TEST_CASE(
     "ag_list_release() performs a no-op if passed a handle to NULL")
 {
         ag_list *l = NULL;
@@ -162,7 +164,7 @@ AG_TEST_CASE(release_02,
 }
 
 
-AG_TEST_CASE(release_03,
+__AG_TEST_CASE(
     "ag_list_reelease() disposes a single instance of a list")
 {
         ag_list *l = sample_int();
@@ -178,7 +180,7 @@ AG_TEST_CASE(release_03,
  */
 
 
-AG_TEST_CASE(lt_01, 
+__AG_TEST_CASE(
     "ag_list_lt() returns true if a list is lexicographically smaller than"
     " another")
 {
@@ -189,7 +191,7 @@ AG_TEST_CASE(lt_01,
 }
 
 
-AG_TEST_CASE(lt_02, 
+__AG_TEST_CASE(
     "ag_list_lt() returns false if a list is lexicographically equal to"
      " another")
 {
@@ -200,7 +202,7 @@ AG_TEST_CASE(lt_02,
 }
 
 
-AG_TEST_CASE(lt_03,
+__AG_TEST_CASE(
     "ag_list_lt() returns false if a list is lexicographically greater than"
     " another")
 {
@@ -218,7 +220,7 @@ AG_TEST_CASE(lt_03,
  */
 
 
-AG_TEST_CASE(eq_01, 
+__AG_TEST_CASE(
     "ag_list_eq() returns true if two lists are lexicographically equal")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -228,7 +230,7 @@ AG_TEST_CASE(eq_01,
 }
 
 
-AG_TEST_CASE(eq_02, 
+__AG_TEST_CASE(
     "ag_list_eq() returns false if a list is lexicographically less than"
      " another")
 {
@@ -239,7 +241,7 @@ AG_TEST_CASE(eq_02,
 }
 
 
-AG_TEST_CASE(eq_03,
+__AG_TEST_CASE(
     "ag_list_eq() returns false if a list is lexicographically greater than"
     " another")
 {
@@ -257,7 +259,7 @@ AG_TEST_CASE(eq_03,
  */
 
 
-AG_TEST_CASE(gt_01, 
+__AG_TEST_CASE(
     "ag_list_lt() returns true if a list is lexicographically greater than"
     " another")
 {
@@ -268,7 +270,7 @@ AG_TEST_CASE(gt_01,
 }
 
 
-AG_TEST_CASE(gt_02, 
+__AG_TEST_CASE(
     "ag_list_gt() returns false if a list is lexicographically equal to"
      " another")
 {
@@ -279,7 +281,7 @@ AG_TEST_CASE(gt_02,
 }
 
 
-AG_TEST_CASE(gt_03,
+__AG_TEST_CASE(
     "ag_list_gt() returns false if a list is lexicographically less than"
     " another")
 {
@@ -295,7 +297,7 @@ AG_TEST_CASE(gt_03,
  */
 
 
-AG_TEST_CASE(empty_01, "ag_list_empty() returns true for an empty list")
+__AG_TEST_CASE("ag_list_empty() returns true for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
@@ -303,7 +305,7 @@ AG_TEST_CASE(empty_01, "ag_list_empty() returns true for an empty list")
 }
 
 
-AG_TEST_CASE(empty_02, "ag_list_empty() returns false for a non-empty list")
+__AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
@@ -316,7 +318,7 @@ AG_TEST_CASE(empty_02, "ag_list_empty() returns false for a non-empty list")
  */
 
 
-AG_TEST_CASE(typeid_01, "ag_list_typeid() returns AG_TYPEID_LIST")
+__AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
@@ -329,7 +331,7 @@ AG_TEST_CASE(typeid_01, "ag_list_typeid() returns AG_TYPEID_LIST")
  */
 
 
-AG_TEST_CASE(uuid_01, "ag_list_uuid() returns the UUID of a list")
+__AG_TEST_CASE("ag_list_uuid() returns the UUID of a list")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_uuid) *u = ag_list_uuid(l);
@@ -344,7 +346,7 @@ AG_TEST_CASE(uuid_01, "ag_list_uuid() returns the UUID of a list")
  */
 
 
-AG_TEST_CASE(valid_01, "ag_list_valid() returns false for an empty list")
+__AG_TEST_CASE("ag_list_valid() returns false for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
@@ -352,7 +354,7 @@ AG_TEST_CASE(valid_01, "ag_list_valid() returns false for an empty list")
 }
 
 
-AG_TEST_CASE(valid_02, "ag_list_valid() returns true for an int list")
+__AG_TEST_CASE("ag_list_valid() returns true for an int list")
 {
         AG_AUTO(ag_list) *l = sample_int();
 
@@ -365,7 +367,7 @@ AG_TEST_CASE(valid_02, "ag_list_valid() returns true for an int list")
  */
 
 
-AG_TEST_CASE(sz_01, "ag_list_sz() returns 0 for an empty list")
+__AG_TEST_CASE("ag_list_sz() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
@@ -373,7 +375,7 @@ AG_TEST_CASE(sz_01, "ag_list_sz() returns 0 for an empty list")
 }
 
 
-AG_TEST_CASE(sz_02, "ag_list_sz() returns the cumulative size of an int list")
+__AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
 
@@ -386,7 +388,7 @@ AG_TEST_CASE(sz_02, "ag_list_sz() returns the cumulative size of an int list")
  */
 
 
-AG_TEST_CASE(refc_01, "ag_list_refc() returns 1 for a single instance")
+__AG_TEST_CASE("ag_list_refc() returns 1 for a single instance")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
@@ -394,7 +396,7 @@ AG_TEST_CASE(refc_01, "ag_list_refc() returns 1 for a single instance")
 }
 
 
-AG_TEST_CASE(refc_02,
+__AG_TEST_CASE(
     "ag_list_refc() returns the reference count of a shallow copy")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -410,7 +412,7 @@ AG_TEST_CASE(refc_02,
  */
 
 
-AG_TEST_CASE(len_01, "ag_list_len() returns 0 for an empty list")
+__AG_TEST_CASE("ag_list_len() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         
@@ -418,7 +420,7 @@ AG_TEST_CASE(len_01, "ag_list_len() returns 0 for an empty list")
 }
 
 
-AG_TEST_CASE(len_02,
+__AG_TEST_CASE(
     "ag_list_len() returns the number of values in a non empty list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -432,7 +434,7 @@ AG_TEST_CASE(len_02,
  */
 
 
-AG_TEST_CASE(hash_01, "ag_list_hash() returns 0 for an empty list")
+__AG_TEST_CASE("ag_list_hash() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
 
@@ -440,7 +442,7 @@ AG_TEST_CASE(hash_01, "ag_list_hash() returns 0 for an empty list")
 }
 
 
-AG_TEST_CASE(hash_02,
+__AG_TEST_CASE(
     "ag_list_hash() returns the cumulative hash for an int list")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -455,7 +457,7 @@ AG_TEST_CASE(hash_02,
  */
 
 
-AG_TEST_CASE(str_01,
+__AG_TEST_CASE(
     "ag_list_str() generates a string representation for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
@@ -465,7 +467,7 @@ AG_TEST_CASE(str_01,
 }
 
 
-AG_TEST_CASE(str_02,
+__AG_TEST_CASE(
     "ag_list_str() generates a string representation of an int list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
@@ -480,7 +482,7 @@ AG_TEST_CASE(str_02,
  */
 
 
-AG_TEST_CASE(get_01, "ag_list_get() gets the currently iterated value")
+__AG_TEST_CASE("ag_list_get() gets the currently iterated value")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         ag_list_start(&l);
@@ -497,7 +499,7 @@ AG_TEST_CASE(get_01, "ag_list_get() gets the currently iterated value")
  */
 
 
-AG_TEST_CASE(get_at_01, "ag_list_get_at() gets the value at a given index")
+__AG_TEST_CASE("ag_list_get_at() gets the value at a given index")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_value) *v = ag_list_get_at(l, 7);
@@ -511,7 +513,7 @@ AG_TEST_CASE(get_at_01, "ag_list_get_at() gets the value at a given index")
  */
 
 
-AG_TEST_CASE(map_01, "ag_list_map() has no effect on an empty list")
+__AG_TEST_CASE("ag_list_map() has no effect on an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
@@ -521,7 +523,7 @@ AG_TEST_CASE(map_01, "ag_list_map() has no effect on an empty list")
 }
 
 
-AG_TEST_CASE(map_02, "ag_list_map() iterates through a non-empty list")
+__AG_TEST_CASE("ag_list_map() iterates through a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         ag_int sum = 0;
@@ -536,7 +538,7 @@ AG_TEST_CASE(map_02, "ag_list_map() iterates through a non-empty list")
  */
 
 
-AG_TEST_CASE(set_01, "ag_list_set() sets the currently iterated value")
+__AG_TEST_CASE("ag_list_set() sets the currently iterated value")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_value) *v = ag_value_new_int(1234);
@@ -557,7 +559,7 @@ AG_TEST_CASE(set_01, "ag_list_set() sets the currently iterated value")
  */
 
 
-AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
+__AG_TEST_CASE("ag_list_set_at() sets the value at a given index")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_value) *v = ag_value_new_int(1234);
@@ -574,7 +576,7 @@ AG_TEST_CASE(set_at_01, "ag_list_set_at() sets the value at a given index")
  */
 
 
-AG_TEST_CASE(map_mutable_01, 
+__AG_TEST_CASE(
     "ag_list_map_mutable() has no effect on an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
@@ -587,7 +589,7 @@ AG_TEST_CASE(map_mutable_01,
 }
 
 
-AG_TEST_CASE(map_mutable_02, 
+__AG_TEST_CASE(
     "ag_list_map_mutable() iterates through a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int();
@@ -610,7 +612,7 @@ AG_TEST_CASE(map_mutable_02,
 
 extern ag_test_suite *test_suite_list(void)
 {
-        ag_test *test[] = {
+        /*ag_test *test[] = {
                 new_01,         new_02, 
                 copy_01,        copy_02, 
                 clone_01,       clone_02,       clone_03,
@@ -669,7 +671,9 @@ extern ag_test_suite *test_suite_list(void)
         ag_test_suite *ctx = ag_test_suite_new("ag_list interface");
         ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
-        return ctx;
+        return ctx;*/
+
+        return ag_test_suite_generate("ag_list_interface");
 }
 
 
