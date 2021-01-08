@@ -23,7 +23,7 @@
 
 #include "./test.h"
 
-#define __AG_TEST_SUITE_TAG__ 5
+#define __AG_TEST_SUITE_ID__ 5
 
 
 

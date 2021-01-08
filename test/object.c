@@ -1,6 +1,6 @@
 #include "./test.h"
 
-#define __AG_TEST_SUITE_TAG__ 3
+#define __AG_TEST_SUITE_ID__ 3
 
 #define TYPEID_BASE    ((ag_typeid) 1)
 #define TYPEID_DERIVED ((ag_typeid) 2)

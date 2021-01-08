@@ -113,7 +113,7 @@ typedef enum ag_test_status (ag_test)(void);
 
 
 #define __AG_TEST_CASE(desc) \
-        __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_TAG__, desc)
+        __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_ID__, desc)
 
 /*-
  * Interface: Test Suite
@@ -127,7 +127,7 @@ extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *__ag_test_suite_generate__(const char *, int, int);
 
 #define AG_TEST_SUITE_GENERATE(desc)                                    \
-        __ag_test_suite_generate__((desc), __COUNTER__, __AG_TEST_SUITE_TAG__)
+        __ag_test_suite_generate__((desc), __COUNTER__, __AG_TEST_SUITE_ID__)
 
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
 extern void ag_test_suite_release(ag_test_suite **);

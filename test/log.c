@@ -52,7 +52,7 @@
 
 
 
-#define __AG_TEST_SUITE_TAG__ 0
+#define __AG_TEST_SUITE_ID__ 0
 
 
 #if 0

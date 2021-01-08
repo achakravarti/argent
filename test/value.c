@@ -1,6 +1,6 @@
 #include "./test.h"
 
-#define __AG_TEST_SUITE_TAG__ 4
+#define __AG_TEST_SUITE_ID__ 4
 
 
 struct object_payload {

@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#define __AG_TEST_SUITE_TAG__ 1
+#define __AG_TEST_SUITE_ID__ 1
 
 struct test {
         int     *i;
