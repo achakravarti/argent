@@ -134,7 +134,7 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
 
         char *err;
         enum ag_test_status (*testf)(void);
-        const char *(*testd)(void);
+        const char *testd;
         ag_string *tsym;
         ag_string *dsym;
 
@@ -162,7 +162,7 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
                         exit(1);
                 }
 
-                ag_test_suite_push(ts, testf, testd());
+                ag_test_suite_push(ts, testf, testd);
 
                 ag_string_release(&tsym);
                 ag_string_release(&dsym);

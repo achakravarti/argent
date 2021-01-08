@@ -88,7 +88,7 @@ typedef enum ag_test_status (ag_test)(void);
 
 
 #define __AG_TEST_CASE_0__(id, num, desc)                               \
-        const char *__AG_TEST_DESC__(id, num)(void) { return desc; }    \
+        const char __AG_TEST_DESC__(id, num)[] = desc;                  \
         enum ag_test_status __AG_TEST_FUNC__(id, num)(void) {           \
                 enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
