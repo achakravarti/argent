@@ -24,8 +24,6 @@
 #include "../include/argent.h"
 #include "./test.h"
 
-#include <stdlib.h>
-
 
 /*
  * The following macros work in conjunction to help determine whether a log
@@ -52,6 +50,12 @@
  */
 
 
+
+
+#define __AG_TEST_SUITE_TAG__ 0
+
+
+#if 0
 AG_TEST_CASE(emerg_01, "ag_log_emerg() logs an emergency record") {
         ag_log_emerg("Testing ag_log_emerg()...");
         AG_TEST (log_check("emerg"));
@@ -98,6 +102,63 @@ AG_TEST_CASE(debug_01, "ag_log_debug() logs a debug record") {
         ag_log_debug("Testing ag_log_debug()...");
         AG_TEST (log_check("debug"));
 }
+#endif
+
+
+__AG_TEST_CASE("ag_log_emerg() logs an emergency record")
+{
+        ag_log_emerg("Testing ag_log_emerg()...");
+        AG_TEST (log_check("emerg"));
+}
+
+
+__AG_TEST_CASE("ag_log_alert() logs an alert record")
+{
+        ag_log_alert("Testing ag_log_alert()...");
+        AG_TEST (log_check("alert"));
+}
+
+
+__AG_TEST_CASE("ag_log_crit() logs a critical record") 
+{
+        ag_log_crit("Testing ag_log_crit()...");
+        AG_TEST (log_check("crit"));
+}
+
+
+__AG_TEST_CASE("ag_log_err() logs an error record") 
+{
+        ag_log_err("Testing ag_log_err()...");
+        AG_TEST (log_check("err"));
+}
+
+
+__AG_TEST_CASE("ag_log_warning() logs a warning record") 
+{
+        ag_log_warning("Testing ag_log_warning()...");
+        AG_TEST (log_check("warning"));
+}
+
+
+__AG_TEST_CASE("ag_log_notice() logs a notice record") 
+{
+        ag_log_notice("Testing ag_log_notice()...");
+        AG_TEST (log_check("notice"));
+}
+
+
+__AG_TEST_CASE("ag_log_info() logs an information record") 
+{
+        ag_log_info("Testing ag_log_info()...");
+        AG_TEST (log_check("info"));
+}
+
+
+__AG_TEST_CASE("ag_log_debug() logs a debug record") 
+{
+        ag_log_debug("Testing ag_log_debug()...");
+        AG_TEST (log_check("debug"));
+}
 
 
 /*
@@ -106,6 +167,7 @@ AG_TEST_CASE(debug_01, "ag_log_debug() logs a debug record") {
  */
 extern ag_test_suite *test_suite_log(void)
 {
+#if 0
         ag_test *test[] = {
                 emerg_01, alert_01, crit_01, err_01, warning_01, notice_01,
                 info_01, debug_01,
@@ -120,5 +182,7 @@ extern ag_test_suite *test_suite_log(void)
         ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
         return ctx;
+#endif
+        return ag_test_suite_generate("ag_log interface");
 }
 
