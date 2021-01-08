@@ -16,8 +16,6 @@ struct test2 {
 };
 
 
-
-
 AG_TEST_CASE("ag_memblock_new() allocates memory on the heap for an int")
 {
         AG_AUTO(ag_memblock) *m = ag_memblock_new(sizeof(int));
@@ -588,9 +586,8 @@ AG_TEST_CASE("ag_memblock_gt() returns true for an int memory block with a"
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_gt() returns false for an int memory block with the same value"
-    " as another")
+AG_TEST_CASE("ag_memblock_gt() returns false for an int memory block with the"
+    " same value as another")
 {
         int *i = ag_memblock_new(sizeof *i);
         int *j = ag_memblock_new(sizeof *j);
@@ -605,9 +602,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_gt() returns false for an int memory block with a lower value"
-    " than another")
+AG_TEST_CASE("ag_memblock_gt() returns false for an int memory block with a"
+    " lower value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
         int *j = ag_memblock_new(sizeof *j);
@@ -622,9 +618,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_eq() returns true for two int memory blocks with the same"
-    " value")
+AG_TEST_CASE("ag_memblock_eq() returns true for two int memory blocks with the"
+    " same value")
 {
         int *i = ag_memblock_new(sizeof *i);
         int *j = ag_memblock_new(sizeof *j);
@@ -639,9 +634,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_eq() returns false for an int memory block with a lower value"
-    " than another")
+AG_TEST_CASE("ag_memblock_eq() returns false for an int memory block with a"
+    " lower value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
         int *j = ag_memblock_new(sizeof *j);
@@ -656,9 +650,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_eq() returns false for an int memory block with a greater"
-    " value than another")
+AG_TEST_CASE("ag_memblock_eq() returns false for an int memory block with a"
+    " greater value than another")
 {
         int *i = ag_memblock_new(sizeof *i);
         int *j = ag_memblock_new(sizeof *j);
@@ -685,8 +678,8 @@ AG_TEST_CASE("ag_memblock_resize() resizes an existing memory block")
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_resize() preserves data when resizing to a larger size")
+AG_TEST_CASE("ag_memblock_resize() preserves data when resizing to a larger"
+    " size")
 {
         char *bfr = ag_memblock_new(6);
         strncpy(bfr, "Hello", 6);
@@ -700,8 +693,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_resize_align() resizes an existing memory block")
+AG_TEST_CASE("ag_memblock_resize_align() resizes an existing memory block")
 {
         char *bfr = ag_memblock_new(10);
         ag_memblock_resize_align((ag_memblock **)&bfr, 15, 8);
@@ -713,8 +705,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_resize_align() preserves data when resizing to a larger size")
+AG_TEST_CASE("ag_memblock_resize_align() preserves data when resizing to a"
+    " larger size")
 {
         char *bfr = ag_memblock_new(6);
         strncpy(bfr, "Hello", 6);
@@ -728,8 +720,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_resize_align() aligns to the requested boundary")
+AG_TEST_CASE("ag_memblock_resize_align() aligns to the requested boundary")
 {
         char *bfr = ag_memblock_new(6);
         strncpy(bfr, "Hello", 6);
@@ -743,8 +734,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_memblock_str() generates the string representation of a memory block")
+AG_TEST_CASE("ag_memblock_str() generates the string representation of a memory"
+    " block")
 {
         int *i = ag_memblock_new(sizeof *i);
         AG_AUTO(ag_string) *s = ag_memblock_str(i);
@@ -758,6 +749,6 @@ AG_TEST_CASE(
 
 extern ag_test_suite *test_suite_memblock(void)
 {
-        return AG_TEST_SUITE_GENERATE("ag_memblock interface");        
+        return AG_TEST_SUITE_GENERATE("ag_memblock interface");
 }
 
