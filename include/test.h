@@ -99,6 +99,24 @@ typedef enum ag_test_status (ag_test)(void);
         } return __ck__;
 
 
+#define __AG_TEST_FUNC_0__(num, suite) __ag_test_ ## suite ## num 
+#define __AG_TEST_FUNC_1__(num, suite) __AG_TEST_FUNC_0__(num, suite)
+
+#define __AG_TEST_DESC_0__(num, suite) __ag_desc_ ## suite ## num
+#define __AG_TEST_DESC_1__(num, suite) __AG_TEST_DESC_0__(num, suite)
+
+
+#define __AG_TEST_CASE_0__(num, suite, desc) \
+        const char *__AG_TEST_DESC_1__(num, suite)(void) { return desc; } \
+        enum ag_test_status __AG_TEST_FUNC_1__(num, suite)(void) { \
+                enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
+
+#define __AG_TEST_CASE(desc) \
+        __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_TAG__, desc)
+
+
+#define __AG_TEST_SUITE(tag) 
+
 /*-
  * Interface: Test Suite
  */
@@ -108,6 +126,10 @@ typedef enum ag_test_status (ag_test)(void);
 typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
+extern ag_test_suite *__ag_test_suite_generate__(const char *, int, int);
+#define ag_test_suite_generate(desc) \
+        __ag_test_suite_generate__((desc), __COUNTER__, __AG_TEST_SUITE_TAG__)
+
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
 extern void ag_test_suite_release(ag_test_suite **);
 

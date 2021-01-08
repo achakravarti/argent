@@ -1,5 +1,6 @@
 #include "../include/argent.h"
 
+#include <dlfcn.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -116,13 +117,58 @@ log_body(const ag_test_suite *ctx, FILE *log)
 extern ag_test_suite *
 ag_test_suite_new(const char *desc)
 {
-        AG_ASSERT (desc && *desc);
+        AG_ASSERT_STR (desc && *desc);
 
         ag_test_suite *ctx = ag_memblock_new(sizeof *ctx);
         ctx->desc = ag_string_new_fmt("%s", desc);
         ctx->head = NULL;
 
         return (ctx);
+}
+
+
+extern ag_test_suite *
+__ag_test_suite_generate__(const char *desc, int counter, int suite)
+{
+        AG_ASSERT_STR (desc);
+
+        char *err;
+        enum ag_test_status (*testf)(void);
+        const char *(*testd)(void);
+
+        void *hnd = dlopen(NULL, RTLD_NOW);
+        if (!hnd) {
+                fputs(dlerror(), stderr);
+                exit(1);
+        }
+
+        ag_test_suite *ts = ag_test_suite_new(desc);
+
+        for (register int i = 0; i < counter; i++) {
+                ag_string *tsym = ag_string_new_fmt("__ag_test_%d%d",
+                    suite, i);
+                ag_string *dsym = ag_string_new_fmt("__ag_desc_%d%d",
+                    suite, i);
+
+                testf = dlsym(hnd, tsym);
+                if ((err = dlerror())) {
+                        fputs(err, stderr);
+                        exit(1);
+                }
+
+                testd = dlsym(hnd, dsym);
+                if ((err = dlerror())) {
+                        fputs(err, stderr);
+                        exit(1);
+                }
+
+                ag_test_suite_push(ts, testf, testd());
+
+                ag_string_release(&tsym);
+                ag_string_release(&dsym);
+        }
+
+        return ts;
 }
 
 
