@@ -79,25 +79,6 @@ enum ag_test_status {
 
 typedef enum ag_test_status (ag_test)(void);
 
-#define AG_TEST_CASE(n, d)                                              \
-        static const char *n##_desc = d;                                \
-        static enum ag_test_status n(void) {                            \
-        enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
-
-#define AG_TEST_EXIT() return __ck__; }
-
-#ifdef NDEBUG
-#       define AG_TEST_ASSERT_DEBUG(p)                                  \
-                __ck__ = AG_TEST_STATUS_SKIP
-#else
-#       define AG_TEST_ASSERT_DEBUG(p) AG_TEST_ASSERT(p)
-#endif
-
-
-#define AG_TEST(p)                                                      \
-        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL);       \
-        } return __ck__;
-
 
 #define __AG_TEST_FUNC_0__(num, suite) __ag_test_ ## suite ## num 
 #define __AG_TEST_FUNC_1__(num, suite) __AG_TEST_FUNC_0__(num, suite)
@@ -112,8 +93,22 @@ typedef enum ag_test_status (ag_test)(void);
                 enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
 
-#define __AG_TEST_CASE(desc) \
+#define AG_TEST_CASE(desc) \
         __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_ID__, desc)
+
+
+#define AG_TEST(p)                                                      \
+        __ck__ = ((p) ? AG_TEST_STATUS_OK : AG_TEST_STATUS_FAIL);       \
+        } return __ck__;
+
+
+#ifdef NDEBUG
+#       define AG_TEST_ASSERT_DEBUG(p)                                  \
+                __ck__ = AG_TEST_STATUS_SKIP
+#else
+#       define AG_TEST_ASSERT_DEBUG(p) AG_TEST_ASSERT(p)
+#endif
+
 
 /*-
  * Interface: Test Suite

@@ -31,21 +31,21 @@
  */
 
 
-__AG_TEST_CASE("ag_string_new() can create an empty string")
+AG_TEST_CASE("ag_string_new() can create an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("");
         AG_TEST (s && !*s);
 }
 
 
-__AG_TEST_CASE("ag_string_new() can create an ASCII string") 
+AG_TEST_CASE("ag_string_new() can create an ASCII string") 
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (s && *s && ag_string_eq(s, "Hello, world!"));
 }
 
 
-__AG_TEST_CASE("ag_string_new() can create a Unicode string")
+AG_TEST_CASE("ag_string_new() can create a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_TEST (s && *s && ag_string_eq(s, "नमस्ते दुनिया!"));
@@ -57,7 +57,7 @@ __AG_TEST_CASE("ag_string_new() can create a Unicode string")
  */
 
 
-__AG_TEST_CASE("ag_string_new_empty() creates an empty string")
+AG_TEST_CASE("ag_string_new_empty() creates an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_TEST (s && !*s);
@@ -69,14 +69,14 @@ __AG_TEST_CASE("ag_string_new_empty() creates an empty string")
  */
 
 
-__AG_TEST_CASE("ag_string_new_fmt() can create an empty string")
+AG_TEST_CASE("ag_string_new_fmt() can create an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_fmt("%s", "");
         AG_TEST (s && !*s);
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_new_fmt() can create a formatted ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_fmt("%d. %s", 111,
@@ -86,7 +86,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_new_fmt() can create a formatted Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_fmt("%d. %s", -12, "नमस्ते दुनिया!");
@@ -99,7 +99,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE("ag_string_copy() can create a copy of an empty string")
+AG_TEST_CASE("ag_string_copy() can create a copy of an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -108,7 +108,7 @@ __AG_TEST_CASE("ag_string_copy() can create a copy of an empty string")
 }
 
 
-__AG_TEST_CASE("ag_string_copy() can create a copy of an ASCII string")
+AG_TEST_CASE("ag_string_copy() can create a copy of an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -117,7 +117,7 @@ __AG_TEST_CASE("ag_string_copy() can create a copy of an ASCII string")
 }
 
 
-__AG_TEST_CASE("ag_string_copy() can create a copy of a Unicode string")
+AG_TEST_CASE("ag_string_copy() can create a copy of a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -126,7 +126,7 @@ __AG_TEST_CASE("ag_string_copy() can create a copy of a Unicode string")
 }
 
 
-__AG_TEST_CASE("ag_string_copy() increases the reference count by 1")
+AG_TEST_CASE("ag_string_copy() increases the reference count by 1")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -140,7 +140,7 @@ __AG_TEST_CASE("ag_string_copy() increases the reference count by 1")
  */
 
 
-__AG_TEST_CASE("ag_string_clone() can create a copy of an empty string")
+AG_TEST_CASE("ag_string_clone() can create a copy of an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_clone(s);
@@ -149,7 +149,7 @@ __AG_TEST_CASE("ag_string_clone() can create a copy of an empty string")
 }
 
 
-__AG_TEST_CASE("ag_string_clone() can create a copy of an ASCII string")
+AG_TEST_CASE("ag_string_clone() can create a copy of an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_clone(s);
@@ -158,7 +158,7 @@ __AG_TEST_CASE("ag_string_clone() can create a copy of an ASCII string")
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_clone() can create a copy of a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
@@ -168,7 +168,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE("ag_string_clone() has no effect on the reference count")
+AG_TEST_CASE("ag_string_clone() has no effect on the reference count")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_clone(s);
@@ -182,7 +182,7 @@ __AG_TEST_CASE("ag_string_clone() has no effect on the reference count")
  */
 
 
-__AG_TEST_CASE("ag_string_release() performs a no-op if passed NULL")
+AG_TEST_CASE("ag_string_release() performs a no-op if passed NULL")
 {
         ag_string_release(NULL);
 
@@ -190,7 +190,7 @@ __AG_TEST_CASE("ag_string_release() performs a no-op if passed NULL")
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_release() performs a no-op if passed a handle to NULL")
 {
         ag_string *s = NULL;
@@ -200,7 +200,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE("ag_string_release() disposes a single instance of a"
+AG_TEST_CASE("ag_string_release() disposes a single instance of a"
                 " string") {
         ag_string *s = ag_string_new("Hello, world!");
         ag_string_release(&s);
@@ -209,7 +209,7 @@ __AG_TEST_CASE("ag_string_release() disposes a single instance of a"
 }
 
 
-__AG_TEST_CASE("ag_string_release() reduces the reference count by 1")
+AG_TEST_CASE("ag_string_release() reduces the reference count by 1")
 {
         ag_string *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -225,7 +225,7 @@ __AG_TEST_CASE("ag_string_release() reduces the reference count by 1")
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_EQ when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -235,7 +235,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() return AG_CMP_LT when comparing an empty string with"
     " another string")
 {
@@ -246,7 +246,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() return AG_CMP_EQ when comparing two equal ASCII strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
@@ -256,7 +256,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_LT when comparing an ASCII string that is"
     " lexicographically less than another")
 {
@@ -267,7 +267,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string that is"
     " lexicographically greater than another")
 {
@@ -278,7 +278,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string to an"
     " empty string")
 {
@@ -289,7 +289,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_EQ when comparing two equal Unicode"
     "strings")
 {
@@ -300,7 +300,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_LT when comparing a Unicode string that is"
     " lexicographically less than another")
 {
@@ -311,7 +311,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_cmp() returns AG_CMP_GT when comparing a Unicode string that is"
     " lexicographically greater than another")
 {
@@ -327,7 +327,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -337,7 +337,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns true when comparing an empty string with a"
     " non-empty string")
 {
@@ -348,7 +348,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing a string with an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -358,7 +358,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns true when comparing an ASCII string that is"
     " lexicographically less than another string")
 {
@@ -369,7 +369,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing an ASCII string that is"
     " lexicographically equal to another string")
 {
@@ -380,7 +380,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing an ASCII string that is"
     " lexicographically greater than another string")
 {
@@ -391,7 +391,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns true when comparing a Unicode string that is"
     " lexicographically less than another string")
 {
@@ -402,7 +402,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing a Unicode string that is"
     " lexicographically equal to another string")
 {
@@ -413,7 +413,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lt() returns false when comparing a Unicode string that is"
     " lexicographically greater than another string")
 {
@@ -429,7 +429,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns true when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -438,7 +438,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing an empty string with a"
     " non-empty string")
 {
@@ -449,7 +449,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing a string with an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -459,7 +459,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing an ASCII string that is"
     " lexicographically less than another string")
 {
@@ -470,7 +470,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns true when comparing an ASCII string that is"
     " lexicographically equal to another string")
 {
@@ -481,7 +481,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing an ASCII string that is"
     " lexicographically greater than another string")
 {
@@ -492,7 +492,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing a Unicode string that is"
     " lexicographically less than another string")
 {
@@ -503,7 +503,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns true when comparing a Unicode string that is"
     " lexicographically equal to another string")
 {
@@ -514,7 +514,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_eq() returns false when comparing a Unicode string that is"
     " lexicographically greater than another string")
 {
@@ -530,7 +530,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -540,7 +540,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing an empty string  with a"
     " non-empty string")
 {
@@ -551,7 +551,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns true when comparing a string with an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -561,7 +561,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing an ASCII string that is"
     " lexicographically less than another string")
 {
@@ -572,7 +572,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing an ASCII string that is"
     " lexicographically equal to another string")
 {
@@ -583,7 +583,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns true when comparing an ASCII string that is"
     " lexicographically greater than another string")
 {
@@ -594,7 +594,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing a Unicode string that is"
     " lexicographically less than another string") 
 {
@@ -605,7 +605,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns false when comparing a Unicode string that is"
     " lexicographically equal to another string")
 {
@@ -616,7 +616,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_gt() returns true when comparing a Unicode string that is"
     " lexicographically greater than another string")
 {
@@ -632,21 +632,21 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE("ag_string_empty() returns true for an empty string")
+AG_TEST_CASE("ag_string_empty() returns true for an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_TEST (ag_string_empty(s));
 }
 
 
-__AG_TEST_CASE("ag_string_empty() returns false for an ASCII string")
+AG_TEST_CASE("ag_string_empty() returns false for an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (!ag_string_empty(s));
 }
 
 
-__AG_TEST_CASE("ag_string_empty() returns false for a Unicode string")
+AG_TEST_CASE("ag_string_empty() returns false for a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_TEST (!ag_string_empty(s));
@@ -662,21 +662,21 @@ __AG_TEST_CASE("ag_string_empty() returns false for a Unicode string")
  */
 
 
-__AG_TEST_CASE("ag_string_len() returns 0 for an empty string")
+AG_TEST_CASE("ag_string_len() returns 0 for an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_TEST (!ag_string_len(s));
 }
 
 
-__AG_TEST_CASE("ag_string_len() returns the length of an ASCII string")
+AG_TEST_CASE("ag_string_len() returns the length of an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (ag_string_len(s) == 13);
 }
 
 
-__AG_TEST_CASE("ag_string_len() returns the length of a Unicode string")
+AG_TEST_CASE("ag_string_len() returns the length of a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_TEST (ag_string_len(s) == 14);
@@ -688,20 +688,20 @@ __AG_TEST_CASE("ag_string_len() returns the length of a Unicode string")
  */
 
 
-__AG_TEST_CASE("ag_string_sz() returns 1 for an empty string")
+AG_TEST_CASE("ag_string_sz() returns 1 for an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_TEST (ag_string_sz(s) == 1);
 }
 
 
-__AG_TEST_CASE("ag_string_sz() determines the size of an ASCII string") {
+AG_TEST_CASE("ag_string_sz() determines the size of an ASCII string") {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (ag_string_sz(s) == 14);
 }
 
 
-__AG_TEST_CASE("ag_string_sz() determines the size of Unicode string")
+AG_TEST_CASE("ag_string_sz() determines the size of Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_TEST (ag_string_sz(s) == 39);
@@ -713,14 +713,14 @@ __AG_TEST_CASE("ag_string_sz() determines the size of Unicode string")
  */
 
 
-__AG_TEST_CASE("ag_string_refc() returns 1 for a single instance")
+AG_TEST_CASE("ag_string_refc() returns 1 for a single instance")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (ag_string_refc(s) == 1);
 }
 
 
-__AG_TEST_CASE("ag_string_refc() detects incremented reference counts") {
+AG_TEST_CASE("ag_string_refc() detects incremented reference counts") {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
         AG_AUTO(ag_string) *s3 = ag_string_copy(s2);
@@ -729,7 +729,7 @@ __AG_TEST_CASE("ag_string_refc() detects incremented reference counts") {
 }
 
 
-__AG_TEST_CASE("ag_string_refc() detects decremented reference counts")
+AG_TEST_CASE("ag_string_refc() detects decremented reference counts")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         ag_string *s2 = ag_string_copy(s);
@@ -745,7 +745,7 @@ __AG_TEST_CASE("ag_string_refc() detects decremented reference counts")
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns true when both needle and haystack are empty"
     " strings")
 {
@@ -756,7 +756,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns false when haystack is empty and needle is not")
 {
         AG_AUTO(ag_string) *h = ag_string_new_empty(),
@@ -766,7 +766,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns false when haystack is not empty and needle is")
 {
         AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"), 
@@ -776,7 +776,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns true if it finds an ASCII needle in an ASCII"
     " haystack")
 {
@@ -787,7 +787,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns false if it doesn't find an ASCII needle in an"
     " ASCII haystack")
 {
@@ -798,7 +798,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns true if it finds a Unicode needle in a Unicode"
     " haystack")
 {
@@ -809,7 +809,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_has() returns false if it doesn't find a Unicode needle in a"
     " Unicode haystack")
 {
@@ -829,7 +829,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE("ag_string_lower() has no effect on an empty string")
+AG_TEST_CASE("ag_string_lower() has no effect on an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_lower(s);
@@ -838,7 +838,7 @@ __AG_TEST_CASE("ag_string_lower() has no effect on an empty string")
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_lower() converts an ASCII string to lowercase")
 {
         AG_AUTO(ag_string) *s = ag_string_new("HElLo, WOrlD!");
@@ -857,7 +857,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE("ag_string_upper() has no effect on an empty string")
+AG_TEST_CASE("ag_string_upper() has no effect on an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_upper(s);
@@ -866,7 +866,7 @@ __AG_TEST_CASE("ag_string_upper() has no effect on an empty string")
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_upper() converts an ASCII string to uppercase")
 {
         AG_AUTO(ag_string) *s = ag_string_new("heLlO, woRLd!");
@@ -885,7 +885,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE("ag_string_proper() has no effect on an empty string")
+AG_TEST_CASE("ag_string_proper() has no effect on an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_proper(s);
@@ -894,7 +894,7 @@ __AG_TEST_CASE("ag_string_proper() has no effect on an empty string")
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_proper() converts an ASCII string to proper case")
 {
         AG_AUTO(ag_string) *s = ag_string_new("tHIS isN'T.iN pRopER cASe.");
@@ -909,7 +909,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns an empty string if applied on an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -919,7 +919,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns the original string if the pivot is an empty"
     " string")
 {
@@ -929,7 +929,7 @@ __AG_TEST_CASE(
         AG_TEST (ag_string_eq(s, s2));
 }
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns an empty string if both the string and the pivot"
     " are empty") 
 {
@@ -940,7 +940,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns an empty string if the pivot is not found")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
@@ -950,7 +950,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns an empty string if both the string and pivot are"
     " the same") 
 {
@@ -961,7 +961,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns the left side of the pivot if it exists in an"
     " ASCII string")
 {
@@ -972,7 +972,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns the left side of the pivot if it exists in a"
     " Unicode string")
 {
@@ -988,7 +988,7 @@ __AG_TEST_CASE(
  */
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns an empty string if applied on an empty"
     " string")
 {
@@ -999,7 +999,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns the original string if the pivot is an"
     " empty string")
 {
@@ -1010,7 +1010,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns an empty string if both the string and the"
     " pivot are empty")
 {
@@ -1021,7 +1021,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns an empty string if the pivot is not found")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
@@ -1031,7 +1031,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns an empty string if both the string and"
     " pivot are the same")
 {
@@ -1042,7 +1042,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split_right() returns the right side of the pivot if it exists"
     " in an ASCII string")
 {
@@ -1053,7 +1053,7 @@ __AG_TEST_CASE(
 }
 
 
-__AG_TEST_CASE(
+AG_TEST_CASE(
     "ag_string_split() returns the right side of the pivot if it exists in a"
     " Unicode string")
 {

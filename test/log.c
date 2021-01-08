@@ -105,56 +105,56 @@ AG_TEST_CASE(debug_01, "ag_log_debug() logs a debug record") {
 #endif
 
 
-__AG_TEST_CASE("ag_log_emerg() logs an emergency record")
+AG_TEST_CASE("ag_log_emerg() logs an emergency record")
 {
         ag_log_emerg("Testing ag_log_emerg()...");
         AG_TEST (log_check("emerg"));
 }
 
 
-__AG_TEST_CASE("ag_log_alert() logs an alert record")
+AG_TEST_CASE("ag_log_alert() logs an alert record")
 {
         ag_log_alert("Testing ag_log_alert()...");
         AG_TEST (log_check("alert"));
 }
 
 
-__AG_TEST_CASE("ag_log_crit() logs a critical record") 
+AG_TEST_CASE("ag_log_crit() logs a critical record") 
 {
         ag_log_crit("Testing ag_log_crit()...");
         AG_TEST (log_check("crit"));
 }
 
 
-__AG_TEST_CASE("ag_log_err() logs an error record") 
+AG_TEST_CASE("ag_log_err() logs an error record") 
 {
         ag_log_err("Testing ag_log_err()...");
         AG_TEST (log_check("err"));
 }
 
 
-__AG_TEST_CASE("ag_log_warning() logs a warning record") 
+AG_TEST_CASE("ag_log_warning() logs a warning record") 
 {
         ag_log_warning("Testing ag_log_warning()...");
         AG_TEST (log_check("warning"));
 }
 
 
-__AG_TEST_CASE("ag_log_notice() logs a notice record") 
+AG_TEST_CASE("ag_log_notice() logs a notice record") 
 {
         ag_log_notice("Testing ag_log_notice()...");
         AG_TEST (log_check("notice"));
 }
 
 
-__AG_TEST_CASE("ag_log_info() logs an information record") 
+AG_TEST_CASE("ag_log_info() logs an information record") 
 {
         ag_log_info("Testing ag_log_info()...");
         AG_TEST (log_check("info"));
 }
 
 
-__AG_TEST_CASE("ag_log_debug() logs a debug record") 
+AG_TEST_CASE("ag_log_debug() logs a debug record") 
 {
         ag_log_debug("Testing ag_log_debug()...");
         AG_TEST (log_check("debug"));
