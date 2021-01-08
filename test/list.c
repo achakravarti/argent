@@ -34,7 +34,7 @@
 
 
 
-/* 
+/*
  * Declare the prototypes for generating sample integer lists. Both functions
  * generate sample integer lists, but with differing lengths.
  */
@@ -55,8 +55,8 @@ static void iterator(const ag_value *, void *);
 static void iterator_mutable(ag_value **, void *);
 
 
-/* 
- * Define the test cases for ag_list_new(). 
+/*
+ * Define the test cases for ag_list_new().
  */
 
 
@@ -74,8 +74,8 @@ AG_TEST_CASE("ag_list_new() can create a new empty list")
 }
 
 
-/* 
- * Define the test cases for ag_list_copy(). 
+/*
+ * Define the test cases for ag_list_copy().
  */
 
 
@@ -83,7 +83,7 @@ AG_TEST_CASE("ag_list_copy() creates a shallow copy of a sample list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        
+
         AG_TEST (l2 == l);
 }
 
@@ -92,7 +92,7 @@ AG_TEST_CASE("ag_list_copy() increases the reference count by 1")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        
+
         AG_TEST (ag_list_refc(l) == 2);
 }
 
@@ -157,27 +157,25 @@ AG_TEST_CASE("ag_list_dispose() reduces the reference count by 1")
 AG_TEST_CASE("ag_list_release() performs a no-op if passed NULL")
 {
         ag_list_release(NULL);
-        
+
         AG_TEST (true);
 }
 
 
-AG_TEST_CASE(
-    "ag_list_release() performs a no-op if passed a handle to NULL")
+AG_TEST_CASE("ag_list_release() performs a no-op if passed a handle to NULL")
 {
         ag_list *l = NULL;
         ag_list_release(&l);
-        
+
         AG_TEST (true);
 }
 
 
-AG_TEST_CASE(
-    "ag_list_reelease() disposes a single instance of a list")
+AG_TEST_CASE("ag_list_reelease() disposes a single instance of a list")
 {
         ag_list *l = sample_int();
         ag_list_release(&l);
-        
+
         AG_TEST (!l);
 }
 
@@ -188,9 +186,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_list_lt() returns true if a list is lexicographically smaller than"
-    " another")
+AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically smaller"
+    " than another")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
@@ -199,9 +196,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_lt() returns false if a list is lexicographically equal to"
-     " another")
+AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically equal"
+     " to another")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -210,9 +206,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_lt() returns false if a list is lexicographically greater than"
-    " another")
+AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically greater"
+    " than another")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -228,8 +223,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_list_eq() returns true if two lists are lexicographically equal")
+AG_TEST_CASE("ag_list_eq() returns true if two lists are lexicographically"
+    " equal")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -238,9 +233,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_eq() returns false if a list is lexicographically less than"
-     " another")
+AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically less"
+     " than another")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
@@ -249,9 +243,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_eq() returns false if a list is lexicographically greater than"
-    " another")
+AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically greater"
+    " than another")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -267,9 +260,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_list_lt() returns true if a list is lexicographically greater than"
-    " another")
+AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically greater"
+    " than another")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int_2();
@@ -278,9 +270,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_gt() returns false if a list is lexicographically equal to"
-     " another")
+AG_TEST_CASE("ag_list_gt() returns false if a list is lexicographically equal"
+     " to another")
 {
         AG_AUTO(ag_list) *l = sample_int();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -289,9 +280,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_gt() returns false if a list is lexicographically less than"
-    " another")
+AG_TEST_CASE("ag_list_gt() returns false if a list is lexicographically less"
+    " than another")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_list) *l2 = sample_int();
@@ -308,7 +298,6 @@ AG_TEST_CASE(
 AG_TEST_CASE("ag_list_empty() returns true for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-
         AG_TEST (ag_list_empty(l));
 }
 
@@ -316,7 +305,6 @@ AG_TEST_CASE("ag_list_empty() returns true for an empty list")
 AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int();
-
         AG_TEST (!ag_list_empty(l));
 }
 
@@ -329,7 +317,6 @@ AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
 AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
 {
         AG_AUTO(ag_list) *l = sample_int();
-
         AG_TEST (ag_list_typeid(l) == AG_TYPEID_LIST);
 }
 
@@ -357,7 +344,6 @@ AG_TEST_CASE("ag_list_uuid() returns the UUID of a list")
 AG_TEST_CASE("ag_list_valid() returns false for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-
         AG_TEST (!ag_list_valid(l));
 }
 
@@ -365,7 +351,6 @@ AG_TEST_CASE("ag_list_valid() returns false for an empty list")
 AG_TEST_CASE("ag_list_valid() returns true for an int list")
 {
         AG_AUTO(ag_list) *l = sample_int();
-
         AG_TEST (ag_list_valid(l));
 }
 
@@ -378,7 +363,6 @@ AG_TEST_CASE("ag_list_valid() returns true for an int list")
 AG_TEST_CASE("ag_list_sz() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-
         AG_TEST (!ag_list_sz(l));
 }
 
@@ -386,7 +370,6 @@ AG_TEST_CASE("ag_list_sz() returns 0 for an empty list")
 AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
-
         AG_TEST (ag_list_sz(l) == sizeof(ag_int) * 7);
 }
 
@@ -399,7 +382,6 @@ AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
 AG_TEST_CASE("ag_list_refc() returns 1 for a single instance")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-
         AG_TEST (ag_list_refc(l) == 1);
 }
 
@@ -423,16 +405,13 @@ AG_TEST_CASE(
 AG_TEST_CASE("ag_list_len() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-        
         AG_TEST (!ag_list_len(l));
 }
 
 
-AG_TEST_CASE(
-    "ag_list_len() returns the number of values in a non empty list")
+AG_TEST_CASE("ag_list_len() returns the number of values in a non empty list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
-
         AG_TEST (ag_list_len(l) == 7);
 }
 
@@ -445,13 +424,11 @@ AG_TEST_CASE(
 AG_TEST_CASE("ag_list_hash() returns 0 for an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
-
         AG_TEST (!ag_list_hash(l));
 }
 
 
-AG_TEST_CASE(
-    "ag_list_hash() returns the cumulative hash for an int list")
+AG_TEST_CASE("ag_list_hash() returns the cumulative hash for an int list")
 {
         AG_AUTO(ag_list) *l = sample_int();
         ag_hash h = ag_hash_new(-123) + ag_hash_new(0) + ag_hash_new(456);
@@ -465,8 +442,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_list_str() generates a string representation for an empty list")
+AG_TEST_CASE("ag_list_str() generates a string representation for an empty"
+    " list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         AG_AUTO(ag_string) *s = ag_list_str(l);
@@ -475,8 +452,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_str() generates a string representation of an int list")
+AG_TEST_CASE("ag_list_str() generates a string representation of an int list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_string) *s = ag_list_str(l);
@@ -571,7 +547,7 @@ AG_TEST_CASE("ag_list_set_at() sets the value at a given index")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         AG_AUTO(ag_value) *v = ag_value_new_int(1234);
-        
+
         ag_list_set_at(&l, v, 3);
         AG_AUTO(ag_value) *v2 = ag_list_get_at(l, 3);
 
@@ -584,8 +560,7 @@ AG_TEST_CASE("ag_list_set_at() sets the value at a given index")
  */
 
 
-AG_TEST_CASE(
-    "ag_list_map_mutable() has no effect on an empty list")
+AG_TEST_CASE("ag_list_map_mutable() has no effect on an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
@@ -597,8 +572,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_list_map_mutable() iterates through a non-empty list")
+AG_TEST_CASE("ag_list_map_mutable() iterates through a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int();
         ag_int sum = 0;
@@ -698,7 +672,7 @@ static void iterator(const ag_value *val, void *opt)
 static void iterator_mutable(ag_value **val, void *opt)
 {
         (void)opt;
-        
+
         AG_AUTO(ag_value) *v = ag_value_new_int(5);
         ag_value_release(val);
         *val = ag_value_copy(v);
