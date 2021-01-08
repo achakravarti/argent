@@ -128,13 +128,15 @@ ag_test_suite_new(const char *desc)
 
 
 extern ag_test_suite *
-__ag_test_suite_generate__(const char *desc, int counter, int suite)
+__ag_test_suite_generate__(const char *desc, int id, int counter)
 {
         AG_ASSERT_STR (desc);
 
         char *err;
         enum ag_test_status (*testf)(void);
         const char *(*testd)(void);
+        ag_string *tsym;
+        ag_string *dsym;
 
         void *hnd = dlopen(NULL, RTLD_NOW);
         if (!hnd) {
@@ -145,10 +147,8 @@ __ag_test_suite_generate__(const char *desc, int counter, int suite)
         ag_test_suite *ts = ag_test_suite_new(desc);
 
         for (register int i = 0; i < counter; i++) {
-                ag_string *tsym = ag_string_new_fmt("__ag_test_%d%d",
-                    suite, i);
-                ag_string *dsym = ag_string_new_fmt("__ag_desc_%d%d",
-                    suite, i);
+                tsym = ag_string_new_fmt("__ag_test_%d%d", id, i);
+                dsym = ag_string_new_fmt("__ag_desc_%d%d", id, i);
 
                 testf = dlsym(hnd, tsym);
                 if ((err = dlerror())) {

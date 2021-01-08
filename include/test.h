@@ -80,21 +80,21 @@ enum ag_test_status {
 typedef enum ag_test_status (ag_test)(void);
 
 
-#define __AG_TEST_FUNC_0__(num, suite) __ag_test_ ## suite ## num 
-#define __AG_TEST_FUNC_1__(num, suite) __AG_TEST_FUNC_0__(num, suite)
+#define __AG_TEST_FUNC_0__(id, num) __ag_test_ ## id ## num 
+#define __AG_TEST_FUNC__(id, num) __AG_TEST_FUNC_0__(id, num)
 
-#define __AG_TEST_DESC_0__(num, suite) __ag_desc_ ## suite ## num
-#define __AG_TEST_DESC_1__(num, suite) __AG_TEST_DESC_0__(num, suite)
+#define __AG_TEST_DESC_0__(id, num) __ag_desc_ ## id ## num
+#define __AG_TEST_DESC__(id, num) __AG_TEST_DESC_0__(id, num)
 
 
-#define __AG_TEST_CASE_0__(num, suite, desc) \
-        const char *__AG_TEST_DESC_1__(num, suite)(void) { return desc; } \
-        enum ag_test_status __AG_TEST_FUNC_1__(num, suite)(void) { \
+#define __AG_TEST_CASE_0__(id, num, desc)                               \
+        const char *__AG_TEST_DESC__(id, num)(void) { return desc; }    \
+        enum ag_test_status __AG_TEST_FUNC__(id, num)(void) {           \
                 enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
 
-#define AG_TEST_CASE(desc) \
-        __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_ID__, desc)
+#define AG_TEST_CASE(desc)                                              \
+        __AG_TEST_CASE_0__(__AG_TEST_SUITE_ID__, __COUNTER__, desc)
 
 
 #define AG_TEST(p)                                                      \
@@ -103,10 +103,10 @@ typedef enum ag_test_status (ag_test)(void);
 
 
 #ifdef NDEBUG
-#       define AG_TEST_ASSERT_DEBUG(p)                                  \
+#       define AG_TEST_DEBUG(p)                                         \
                 __ck__ = AG_TEST_STATUS_SKIP
 #else
-#       define AG_TEST_ASSERT_DEBUG(p) AG_TEST_ASSERT(p)
+#       define AG_TEST_DEBUG(p) AG_TEST (p)
 #endif
 
 
@@ -122,7 +122,7 @@ extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *__ag_test_suite_generate__(const char *, int, int);
 
 #define AG_TEST_SUITE_GENERATE(desc)                                    \
-        __ag_test_suite_generate__((desc), __COUNTER__, __AG_TEST_SUITE_ID__)
+        __ag_test_suite_generate__((desc), __AG_TEST_SUITE_ID__, __COUNTER__)
 
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);
 extern void ag_test_suite_release(ag_test_suite **);
