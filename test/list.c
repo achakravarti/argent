@@ -26,6 +26,7 @@
 #define __AG_TEST_SUITE_TAG__ 5
 
 
+
 /* 
  * Declare the prototypes for generating sample integer lists. Both functions
  * generate sample integer lists, but with differing lengths.
@@ -673,7 +674,8 @@ extern ag_test_suite *test_suite_list(void)
 
         return ctx;*/
 
-        return ag_test_suite_generate("ag_list_interface");
+        //return ag_test_suite_generate("ag_list_interface");
+        return AG_TEST_SUITE_GENERATE("ag_list interface");
 }
 
 

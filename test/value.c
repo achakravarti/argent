@@ -677,6 +677,6 @@ test_suite_value(void)
 
         return ctx;*/
 
-        return ag_test_suite_generate("ag_value interface");
+        return AG_TEST_SUITE_GENERATE("ag_value interface");
 }
 

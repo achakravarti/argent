@@ -111,11 +111,9 @@ typedef enum ag_test_status (ag_test)(void);
         enum ag_test_status __AG_TEST_FUNC_1__(num, suite)(void) { \
                 enum ag_test_status __ck__ = AG_TEST_STATUS_WAIT;
 
+
 #define __AG_TEST_CASE(desc) \
         __AG_TEST_CASE_0__(__COUNTER__, __AG_TEST_SUITE_TAG__, desc)
-
-
-#define __AG_TEST_SUITE(tag) 
 
 /*-
  * Interface: Test Suite
@@ -127,7 +125,8 @@ typedef struct ag_test_suite ag_test_suite;
 
 extern ag_test_suite *ag_test_suite_new(const char *);
 extern ag_test_suite *__ag_test_suite_generate__(const char *, int, int);
-#define ag_test_suite_generate(desc) \
+
+#define AG_TEST_SUITE_GENERATE(desc)                                    \
         __ag_test_suite_generate__((desc), __COUNTER__, __AG_TEST_SUITE_TAG__)
 
 extern ag_test_suite *ag_test_suite_copy(const ag_test_suite *);

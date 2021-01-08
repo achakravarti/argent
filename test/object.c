@@ -706,6 +706,6 @@ extern ag_test_suite *test_suite_object(void)
 
         return ctx;*/
 
-        return ag_test_suite_generate("ag_object interface");
+        return AG_TEST_SUITE_GENERATE("ag_object interface");
 }
 

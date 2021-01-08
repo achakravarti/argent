@@ -183,6 +183,6 @@ extern ag_test_suite *test_suite_log(void)
 
         return ctx;
 #endif
-        return ag_test_suite_generate("ag_log interface");
+        return AG_TEST_SUITE_GENERATE("ag_log interface");
 }
 
