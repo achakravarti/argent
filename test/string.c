@@ -1067,115 +1067,11 @@ AG_TEST_CASE(
 /*
  * Define the test_suite_list() testing interface function. This function is
  * responsible for creating a test suite from the test cases defined above.
- *
- * TODO: figure out how to get rid of this function.
  */
 
 
 extern ag_test_suite *test_suite_string(void)
 {
-        /*ag_test *test[] = {
-                new_01,         new_02,         new_03,
-                new_empty_01,
-                new_fmt_01,     new_fmt_02,     new_fmt_03,
-                copy_01,        copy_02,        copy_03, 
-                copy_04,
-                clone_01,       clone_02,       clone_03, 
-                clone_04,
-                release_01,     release_02,     release_03,
-                release_04,
-                cmp_01,         cmp_02,         cmp_03,
-                cmp_04,         cmp_05,         cmp_06,
-                cmp_07,         cmp_08,         cmp_09,
-                lt_01,          lt_02,          lt_03,
-                lt_04,          lt_05,          lt_06,
-                lt_07,          lt_08,          lt_09, 
-                eq_01,          eq_02,          eq_03,
-                eq_04,          eq_05,          eq_06,
-                eq_07,          eq_08,          eq_09,
-                gt_01,          gt_02,          gt_03,
-                gt_04,          gt_05,          gt_06,
-                gt_07,          gt_08,          gt_09,
-                empty_01,       empty_02,       empty_03, 
-                len_01,         len_02,         len_03, 
-                sz_01,          sz_02,          sz_03,
-                refc_01,        refc_02,        refc_03, 
-                has_01,         has_02,         has_03,
-                has_04,         has_05,         has_06, 
-                has_07,
-                lower_01,       lower_02,
-                upper_01,       upper_02,
-                proper_01,      proper_02,
-                split_01,       split_02,       split_03,
-                split_04,       split_05,       split_06, 
-                split_07,
-                split_right_01, split_right_02, split_right_03,
-                split_right_04, split_right_05, split_right_06,
-                split_right_07,
-        };
-
-        const char *desc[] = {
-                new_01_desc,            new_02_desc,
-                new_03_desc, 
-                new_empty_01_desc,
-                new_fmt_01_desc,        new_fmt_02_desc,
-                new_fmt_03_desc,        copy_01_desc,
-                copy_02_desc,           copy_03_desc,
-                copy_04_desc,
-                clone_01_desc,          clone_02_desc,
-                clone_03_desc,          clone_04_desc,
-                release_01_desc,        release_02_desc,
-                release_03_desc,        release_04_desc,
-                cmp_01_desc,            cmp_02_desc, 
-                cmp_03_desc,            cmp_04_desc, 
-                cmp_05_desc,            cmp_06_desc,
-                cmp_07_desc,            cmp_08_desc, 
-                cmp_09_desc, 
-                lt_01_desc,             lt_02_desc,
-                lt_03_desc,             lt_04_desc, 
-                lt_05_desc,             lt_06_desc, 
-                lt_07_desc,             lt_08_desc, 
-                lt_09_desc, 
-                eq_01_desc,             eq_02_desc, 
-                eq_03_desc,             eq_04_desc, 
-                eq_05_desc,             eq_06_desc, 
-                eq_07_desc,             eq_08_desc,
-                eq_09_desc, 
-                gt_01_desc,             gt_02_desc, 
-                gt_03_desc,             gt_04_desc,                
-                gt_05_desc,             gt_06_desc, 
-                gt_07_desc,             gt_08_desc, 
-                gt_09_desc,
-                empty_01_desc,          empty_02_desc, 
-                empty_03_desc, 
-                len_01_desc,            len_02_desc, 
-                len_03_desc, 
-                sz_01_desc,             sz_02_desc, 
-                sz_03_desc,
-                refc_01_desc,           refc_02_desc, 
-                refc_03_desc, 
-                has_01_desc,            has_02_desc, 
-                has_03_desc,            has_04_desc, 
-                has_05_desc,            has_06_desc,
-                has_07_desc, 
-                lower_01_desc,          lower_02_desc, 
-                upper_01_desc,          upper_02_desc, 
-                proper_01_desc,         proper_02_desc, 
-                split_01_desc,          split_02_desc, 
-                split_03_desc,          split_04_desc, 
-                split_05_desc,          split_06_desc, 
-                split_07_desc, 
-                split_right_01_desc,    split_right_02_desc, 
-                split_right_03_desc,    split_right_04_desc,
-                split_right_05_desc,    split_right_06_desc,
-                split_right_07_desc,
-        };
-
-        ag_test_suite *ctx = ag_test_suite_new("ag_string interface");
-        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
-
-        return ctx;*/
-
         return AG_TEST_SUITE_GENERATE("ag_string interface");
 }
 

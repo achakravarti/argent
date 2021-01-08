@@ -188,8 +188,6 @@ AG_TEST_CASE("ag_value_gt() returns false for -123 > 123")
 }
 
 
-
-
 AG_TEST_CASE("ag_value_new_uint() creates a new uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(123456);
@@ -316,8 +314,6 @@ AG_TEST_CASE("ag_value_gt() returns false for 123 > 124")
 
         AG_TEST (!ag_value_gt(v1, v2));
 }
-
-
 
 
 AG_TEST_CASE("ag_value_new_float() creates a new float value")
@@ -453,8 +449,6 @@ AG_TEST_CASE("ag_value_gt() returns false for 123.456 > 123.4567")
 }
 
 
-
-
 static inline ag_value *
 string_sample_ascii(void)
 {
@@ -535,9 +529,6 @@ AG_TEST_CASE(
 }
 
 
-
-
-
 AG_TEST_CASE("ag_value_new_object() creates a new object value")
 {
         AG_AUTO(ag_object) *o = object_sample();
@@ -601,81 +592,10 @@ AG_TEST_CASE(
 }
 
 
-
-
 extern ag_test_suite *
 test_suite_value(void)
 {
         object_register();
-
-        /*ag_test *test[] = {
-                int_new,         int_copy,       int_type_int,
-                int_type_uint,   int_type_float, int_type_string,
-                int_type_object, int_lt_1,       int_lt_2,
-                int_lt_3,        int_eq_1,       int_eq_2,
-                int_gt_1,        int_gt_2,       int_gt_3,
-
-                uint_new,         uint_copy,       uint_type_int,
-                uint_type_uint,   uint_type_float, uint_type_string,
-                uint_type_object, uint_lt_1,       uint_lt_2,
-                uint_lt_3,        uint_eq_1,       uint_eq_2,
-                uint_gt_1,        uint_gt_2,       uint_gt_3,
-
-                float_new,         float_copy,      float_type_int,
-                float_type_uint,   float_type_float,float_type_string,
-                float_type_object, float_lt_1,      float_lt_2,
-                float_lt_3,        float_eq_1,      float_eq_2,
-                float_gt_1,        float_gt_2,      float_gt_3,
-
-                string_new,         string_copy,       string_type_int,
-                string_type_uint,   string_type_float, string_type_string,
-                string_type_object,
-
-                object_new,         object_copy,       object_type_int,
-                object_type_uint,   object_type_float, object_type_string,
-                object_type_object,
-        };
-
-        const char *desc[] = {
-                int_new_desc,         int_copy_desc,       int_type_int_desc,
-                int_type_uint_desc,   int_type_float_desc, int_type_string_desc,
-                int_type_object_desc, int_lt_1_desc,       int_lt_2_desc,
-                int_lt_3_desc,        int_eq_1_desc,       int_eq_2_desc,
-                int_gt_1_desc,        int_gt_2_desc,       int_gt_3_desc,
-
-                uint_new_desc,         uint_copy_desc,
-                uint_type_int_desc,    uint_type_uint_desc,
-                uint_type_float_desc,  uint_type_string_desc,
-                uint_type_object_desc, uint_lt_1_desc,
-                uint_lt_2_desc,        uint_lt_3_desc,
-                uint_eq_1_desc,        uint_eq_2_desc,
-                uint_gt_1_desc,        uint_gt_2_desc,
-                uint_gt_3_desc,
-
-                float_new_desc,         float_copy_desc,
-                float_type_int_desc,    float_type_uint_desc,
-                float_type_float_desc,  float_type_string_desc,
-                float_type_object_desc, float_lt_1_desc,
-                float_lt_2_desc,        float_lt_3_desc,
-                float_eq_1_desc,        float_eq_2_desc,
-                float_gt_1_desc,        float_gt_2_desc,
-                float_gt_3_desc,
-
-                string_new_desc,         string_copy_desc,
-                string_type_int_desc,    string_type_uint_desc,
-                string_type_float_desc,  string_type_string_desc,
-                string_type_object_desc,
-
-                object_new_desc,         object_copy_desc,
-                object_type_int_desc,    object_type_uint_desc,
-                object_type_float_desc,  object_type_string_desc,
-                object_type_object_desc,
-        };
-
-        ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
-        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
-
-        return ctx;*/
 
         return AG_TEST_SUITE_GENERATE("ag_value interface");
 }

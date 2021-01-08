@@ -653,59 +653,6 @@ extern ag_test_suite *test_suite_object(void)
         register_base();
         register_derived();
 
-        /*ag_test *test[] = {
-                new_01,             new_02,             copy_01,
-                copy_02,            copy_03,            copy_04,
-                copy_05,            copy_06,            clone_01,
-                clone_02,           clone_03,           clone_04,
-                clone_05,           clone_06,           release_01,
-                release_02,         release_03,         release_04,
-                release_05,         release_06,         cmp_01,
-                cmp_02,             lt_01,              lt_02,
-                gt_01,              gt_02,              typeid_01,
-                typeid_02,          uuid_01,            uuid_02,
-                sz_01,              sz_02,              sz_03,
-                refc_01,            refc_02,            len_01,
-                len_02,             valid_01,           valid_02,
-                hash_01,            hash_02,            str_01,
-                str_02,             empty_01,           empty_02,
-                payload_01,         payload_mutable_01, payload_mutable_02,
-                payload_mutable_03, payload_mutable_04,
-        };
-
-        const char *desc[] = {
-                new_01_desc,             new_02_desc,
-                copy_01_desc,            copy_02_desc,
-                copy_03_desc,            copy_04_desc,
-                copy_05_desc,            copy_06_desc,
-                clone_01_desc,           clone_02_desc,
-                clone_03_desc,           clone_04_desc,
-                clone_05_desc,           clone_06_desc,
-                release_01_desc,         release_02_desc,
-                release_03_desc,         release_04_desc,
-                release_05_desc,         release_06_desc,
-                cmp_01_desc,             cmp_02_desc,
-                lt_01_desc,              lt_02_desc,
-                gt_01_desc,              gt_02_desc,
-                typeid_01_desc,          typeid_02_desc,
-                uuid_01_desc,            uuid_02_desc,
-                sz_01_desc,              sz_02_desc,
-                sz_03_desc,              refc_01_desc,
-                refc_02_desc,            len_01_desc,
-                len_02_desc,             valid_01_desc,
-                valid_02_desc,           hash_01_desc,
-                hash_02_desc,            str_01_desc,
-                str_02_desc,             empty_01_desc,
-                empty_02_desc,           payload_01_desc,
-                payload_mutable_01_desc, payload_mutable_02_desc,
-                payload_mutable_03_desc, payload_mutable_04_desc,
-        };
-
-        ag_test_suite *ctx = ag_test_suite_new("ag_object interface");
-        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
-
-        return ctx;*/
-
         return AG_TEST_SUITE_GENERATE("ag_object interface");
 }
 

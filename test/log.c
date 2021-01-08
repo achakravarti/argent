@@ -26,6 +26,15 @@
 
 
 /*
+ * Define the ID of the test suite for the log interface. We need this ID for
+ * the testing macros to correctly generate the boilerplate testing code.
+ */
+
+
+#define __AG_TEST_SUITE_ID__ 0
+
+
+/*
  * The following macros work in conjunction to help determine whether a log
  * entry of a given level has been written to the systemd log. We use the
  * journalctl and grep commands to do so, which are available in both GNU/Linux
@@ -48,61 +57,6 @@
  * through the log_check() macro. We know that lob_check() will evaluate to
  * non-zero if it is able to find the log entry of the given level.
  */
-
-
-
-
-#define __AG_TEST_SUITE_ID__ 0
-
-
-#if 0
-AG_TEST_CASE(emerg_01, "ag_log_emerg() logs an emergency record") {
-        ag_log_emerg("Testing ag_log_emerg()...");
-        AG_TEST (log_check("emerg"));
-}
-
-
-AG_TEST_CASE(alert_01, "ag_log_alert() logs an alert record") {
-        ag_log_alert("Testing ag_log_alert()...");
-        AG_TEST (log_check("alert"));
-}
-
-
-AG_TEST_CASE(crit_01, "ag_log_crit() logs a critical record") {
-        ag_log_crit("Testing ag_log_crit()...");
-        AG_TEST (log_check("crit"));
-}
-
-
-AG_TEST_CASE(err_01, "ag_log_err() logs an error record") {
-        ag_log_err("Testing ag_log_err()...");
-        AG_TEST (log_check("err"));
-}
-
-
-AG_TEST_CASE(warning_01, "ag_log_warning() logs a warning record") {
-        ag_log_warning("Testing ag_log_warning()...");
-        AG_TEST (log_check("warning"));
-}
-
-
-AG_TEST_CASE(notice_01, "ag_log_notice() logs a notice record") {
-        ag_log_notice("Testing ag_log_notice()...");
-        AG_TEST (log_check("notice"));
-}
-
-
-AG_TEST_CASE(info_01, "ag_log_info() logs an information record") {
-        ag_log_info("Testing ag_log_info()...");
-        AG_TEST (log_check("info"));
-}
-
-
-AG_TEST_CASE(debug_01, "ag_log_debug() logs a debug record") {
-        ag_log_debug("Testing ag_log_debug()...");
-        AG_TEST (log_check("debug"));
-}
-#endif
 
 
 AG_TEST_CASE("ag_log_emerg() logs an emergency record")
@@ -165,24 +119,10 @@ AG_TEST_CASE("ag_log_debug() logs a debug record")
  * Generate a test suite containing the above unit tests and return it so that
  * it can be excecuted by a test harness.
  */
+
+
 extern ag_test_suite *test_suite_log(void)
 {
-#if 0
-        ag_test *test[] = {
-                emerg_01, alert_01, crit_01, err_01, warning_01, notice_01,
-                info_01, debug_01,
-        };
-
-        const char *desc[] = {
-                emerg_01_desc, alert_01_desc, crit_01_desc, err_01_desc,
-                warning_01_desc, notice_01_desc, info_01_desc, debug_01_desc,
-        };
-
-        ag_test_suite *ctx = ag_test_suite_new("ag_log interface");
-        ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
-
-        return ctx;
-#endif
         return AG_TEST_SUITE_GENERATE("ag_log interface");
 }
 
