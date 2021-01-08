@@ -38,7 +38,7 @@ AG_TEST_CASE("ag_string_new() can create an empty string")
 }
 
 
-AG_TEST_CASE("ag_string_new() can create an ASCII string") 
+AG_TEST_CASE("ag_string_new() can create an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_TEST (s && *s && ag_string_eq(s, "Hello, world!"));
@@ -76,8 +76,7 @@ AG_TEST_CASE("ag_string_new_fmt() can create an empty string")
 }
 
 
-AG_TEST_CASE(
-    "ag_string_new_fmt() can create a formatted ASCII string")
+AG_TEST_CASE("ag_string_new_fmt() can create a formatted ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_fmt("%d. %s", 111,
             "Hello, world!");
@@ -86,8 +85,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_new_fmt() can create a formatted Unicode string")
+AG_TEST_CASE("ag_string_new_fmt() can create a formatted Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_fmt("%d. %s", -12, "नमस्ते दुनिया!");
         AG_TEST (s && *s && ag_string_eq(s, "-12. नमस्ते दुनिया!"));
@@ -185,13 +183,11 @@ AG_TEST_CASE("ag_string_clone() has no effect on the reference count")
 AG_TEST_CASE("ag_string_release() performs a no-op if passed NULL")
 {
         ag_string_release(NULL);
-
         AG_TEST (true);
 }
 
 
-AG_TEST_CASE(
-    "ag_string_release() performs a no-op if passed a handle to NULL")
+AG_TEST_CASE("ag_string_release() performs a no-op if passed a handle to NULL")
 {
         ag_string *s = NULL;
         ag_string_release(&s);
@@ -200,8 +196,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE("ag_string_release() disposes a single instance of a"
-                " string") {
+AG_TEST_CASE("ag_string_release() disposes a single instance of a string")
+{
         ag_string *s = ag_string_new("Hello, world!");
         ag_string_release(&s);
 
@@ -225,8 +221,8 @@ AG_TEST_CASE("ag_string_release() reduces the reference count by 1")
  */
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_EQ when comparing two empty strings")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_EQ when comparing two empty"
+    " strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new_empty();
@@ -235,9 +231,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() return AG_CMP_LT when comparing an empty string with"
-    " another string")
+AG_TEST_CASE("ag_string_cmp() return AG_CMP_LT when comparing an empty string"
+    " with another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -246,8 +241,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() return AG_CMP_EQ when comparing two equal ASCII strings")
+AG_TEST_CASE("ag_string_cmp() return AG_CMP_EQ when comparing two equal ASCII"
+    " strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -256,9 +251,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_LT when comparing an ASCII string that is"
-    " lexicographically less than another")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_LT when comparing an ASCII string"
+    " that is lexicographically less than another")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -267,9 +261,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string that is"
-    " lexicographically greater than another")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string"
+    " that is lexicographically greater than another")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -278,9 +271,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string to an"
-    " empty string")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_GT when comparing an ASCII string"
+    " to an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -289,9 +281,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_EQ when comparing two equal Unicode"
-    "strings")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_EQ when comparing two equal"
+    " Unicode strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -300,9 +291,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_LT when comparing a Unicode string that is"
-    " lexicographically less than another")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_LT when comparing a Unicode string"
+    " that is lexicographically less than another")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -311,9 +301,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_cmp() returns AG_CMP_GT when comparing a Unicode string that is"
-    " lexicographically greater than another")
+AG_TEST_CASE("ag_string_cmp() returns AG_CMP_GT when comparing a Unicode string"
+    " that is lexicographically greater than another")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -327,8 +316,7 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing two empty strings")
+AG_TEST_CASE("ag_string_lt() returns false when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new_empty();
@@ -337,8 +325,7 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns true when comparing an empty string with a"
+AG_TEST_CASE("ag_string_lt() returns true when comparing an empty string with a"
     " non-empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
@@ -348,8 +335,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing a string with an empty string")
+AG_TEST_CASE("ag_string_lt() returns false when comparing a string with an"
+    " empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -358,9 +345,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns true when comparing an ASCII string that is"
-    " lexicographically less than another string")
+AG_TEST_CASE("ag_string_lt() returns true when comparing an ASCII string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -369,9 +355,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing an ASCII string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_lt() returns false when comparing an ASCII string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -380,9 +365,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing an ASCII string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_lt() returns false when comparing an ASCII string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -391,9 +375,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns true when comparing a Unicode string that is"
-    " lexicographically less than another string")
+AG_TEST_CASE("ag_string_lt() returns true when comparing a Unicode string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -402,9 +385,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing a Unicode string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_lt() returns false when comparing a Unicode string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -413,9 +395,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lt() returns false when comparing a Unicode string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_lt() returns false when comparing a Unicode string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -429,8 +410,7 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns true when comparing two empty strings")
+AG_TEST_CASE("ag_string_eq() returns true when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new_empty();
@@ -438,9 +418,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing an empty string with a"
-    " non-empty string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing an empty string with"
+    " a non-empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -449,8 +428,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing a string with an empty string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing a string with an"
+    " empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -459,68 +438,62 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing an ASCII string that is"
-    " lexicographically less than another string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing an ASCII string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
-        
+
         AG_TEST (!ag_string_eq(s, s2));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns true when comparing an ASCII string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_eq() returns true when comparing an ASCII string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
-        
+
         AG_TEST (ag_string_eq(s, s2));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing an ASCII string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing an ASCII string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
-        
+
         AG_TEST (!ag_string_eq(s2, s));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing a Unicode string that is"
-    " lexicographically less than another string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing a Unicode string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
-        
+
         AG_TEST (!ag_string_eq(s2, s));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns true when comparing a Unicode string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_eq() returns true when comparing a Unicode string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
-        
+
         AG_TEST (ag_string_eq(s2, s));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_eq() returns false when comparing a Unicode string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_eq() returns false when comparing a Unicode string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
-        
+
         AG_TEST (!ag_string_eq(s, s2));
 }
 
@@ -530,8 +503,7 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing two empty strings")
+AG_TEST_CASE("ag_string_gt() returns false when comparing two empty strings")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new_empty();
@@ -540,19 +512,18 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing an empty string  with a"
-    " non-empty string")
+AG_TEST_CASE("ag_string_gt() returns false when comparing an empty string with"
+    " a non-empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
-        
+
         AG_TEST (!ag_string_gt(s, s2));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns true when comparing a string with an empty string")
+AG_TEST_CASE("ag_string_gt() returns true when comparing a string with an empty"
+    "  string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -561,9 +532,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing an ASCII string that is"
-    " lexicographically less than another string")
+AG_TEST_CASE("ag_string_gt() returns false when comparing an ASCII string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -572,9 +542,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing an ASCII string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_gt() returns false when comparing an ASCII string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -583,9 +552,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns true when comparing an ASCII string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_gt() returns true when comparing an ASCII string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Goodbye, world!");
         AG_AUTO(ag_string) *s2 = ag_string_new("Hello, world!");
@@ -594,9 +562,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing a Unicode string that is"
-    " lexicographically less than another string") 
+AG_TEST_CASE("ag_string_gt() returns false when comparing a Unicode string that"
+    " is lexicographically less than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -605,9 +572,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns false when comparing a Unicode string that is"
-    " lexicographically equal to another string")
+AG_TEST_CASE("ag_string_gt() returns false when comparing a Unicode string that"
+    " is lexicographically equal to another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_copy(s);
@@ -616,9 +582,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_gt() returns true when comparing a Unicode string that is"
-    " lexicographically greater than another string")
+AG_TEST_CASE("ag_string_gt() returns true when comparing a Unicode string that"
+    " is lexicographically greater than another string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_new("अभिषेक बहुत बुरा गाता है।");
@@ -745,19 +710,18 @@ AG_TEST_CASE("ag_string_refc() detects decremented reference counts")
  */
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns true when both needle and haystack are empty"
-    " strings")
+AG_TEST_CASE("ag_string_has() returns true when both needle and haystack are"
+    " empty strings")
 {
-        AG_AUTO(ag_string) *h = ag_string_new_empty(), 
+        AG_AUTO(ag_string) *h = ag_string_new_empty(),
             *n = ag_string_new_empty();
 
         AG_TEST (ag_string_has(h, n));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns false when haystack is empty and needle is not")
+AG_TEST_CASE("ag_string_has() returns false when haystack is empty and needle"
+    " is not")
 {
         AG_AUTO(ag_string) *h = ag_string_new_empty(),
             *n = ag_string_new("Hello, world!");
@@ -766,19 +730,18 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns false when haystack is not empty and needle is")
+AG_TEST_CASE("ag_string_has() returns false when haystack is not empty and"
+    " needle is")
 {
-        AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"), 
+        AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"),
             *n = ag_string_new_empty();
 
         AG_TEST (!ag_string_has(h, n));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns true if it finds an ASCII needle in an ASCII"
-    " haystack")
+AG_TEST_CASE("ag_string_has() returns true if it finds an ASCII needle in an"
+    " ASCII haystack")
 {
         AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"),
             *n = ag_string_new("o, wo");
@@ -787,20 +750,18 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns false if it doesn't find an ASCII needle in an"
-    " ASCII haystack")
+AG_TEST_CASE("ag_string_has() returns false if it doesn't find an ASCII needle"
+    " in an ASCII haystack")
 {
-        AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"), 
+        AG_AUTO(ag_string) *h = ag_string_new("Hello, world!"),
             *n = ag_string_new("o, w!");
 
         AG_TEST (!ag_string_has(h, n));
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns true if it finds a Unicode needle in a Unicode"
-    " haystack")
+AG_TEST_CASE("ag_string_has() returns true if it finds a Unicode needle in a"
+    " Unicode haystack")
 {
         AG_AUTO(ag_string) *h = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *n = ag_string_new("ते दुनि");
@@ -809,9 +770,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_has() returns false if it doesn't find a Unicode needle in a"
-    " Unicode haystack")
+AG_TEST_CASE("ag_string_has() returns false if it doesn't find a Unicode needle"
+    " in a Unicode haystack")
 {
         AG_AUTO(ag_string) *h = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *n = ag_string_new("तेदुनि");
@@ -838,8 +798,7 @@ AG_TEST_CASE("ag_string_lower() has no effect on an empty string")
 }
 
 
-AG_TEST_CASE(
-    "ag_string_lower() converts an ASCII string to lowercase")
+AG_TEST_CASE("ag_string_lower() converts an ASCII string to lowercase")
 {
         AG_AUTO(ag_string) *s = ag_string_new("HElLo, WOrlD!");
         AG_AUTO(ag_string) *s2 = ag_string_lower(s);
@@ -866,8 +825,7 @@ AG_TEST_CASE("ag_string_upper() has no effect on an empty string")
 }
 
 
-AG_TEST_CASE(
-    "ag_string_upper() converts an ASCII string to uppercase")
+AG_TEST_CASE("ag_string_upper() converts an ASCII string to uppercase")
 {
         AG_AUTO(ag_string) *s = ag_string_new("heLlO, woRLd!");
         AG_AUTO(ag_string) *s2 = ag_string_upper(s);
@@ -894,8 +852,7 @@ AG_TEST_CASE("ag_string_proper() has no effect on an empty string")
 }
 
 
-AG_TEST_CASE(
-    "ag_string_proper() converts an ASCII string to proper case")
+AG_TEST_CASE("ag_string_proper() converts an ASCII string to proper case")
 {
         AG_AUTO(ag_string) *s = ag_string_new("tHIS isN'T.iN pRopER cASe.");
         AG_AUTO(ag_string) *s2 = ag_string_proper(s);
@@ -909,8 +866,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns an empty string if applied on an empty string")
+AG_TEST_CASE("ag_string_split() returns an empty string if applied on an empty"
+    " string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_split(s, " wo");
@@ -919,9 +876,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns the original string if the pivot is an empty"
-    " string")
+AG_TEST_CASE("ag_string_split() returns the original string if the pivot is an"
+    " empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split(s, "");
@@ -929,9 +885,8 @@ AG_TEST_CASE(
         AG_TEST (ag_string_eq(s, s2));
 }
 
-AG_TEST_CASE(
-    "ag_string_split() returns an empty string if both the string and the pivot"
-    " are empty") 
+AG_TEST_CASE("ag_string_split() returns an empty string if both the string and"
+    " the pivot are empty")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_split(s, "");
@@ -940,8 +895,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns an empty string if the pivot is not found")
+AG_TEST_CASE("ag_string_split() returns an empty string if the pivot is not"
+    " found")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split(s, "xyz");
@@ -950,9 +905,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns an empty string if both the string and pivot are"
-    " the same") 
+AG_TEST_CASE("ag_string_split() returns an empty string if both the string and"
+    " pivot are the same")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split(s, s);
@@ -961,9 +915,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns the left side of the pivot if it exists in an"
-    " ASCII string")
+AG_TEST_CASE("ag_string_split() returns the left side of the pivot if it exists"
+    " in an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split(s, " wo");
@@ -972,9 +925,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns the left side of the pivot if it exists in a"
-    " Unicode string")
+AG_TEST_CASE("ag_string_split() returns the left side of the pivot if it exists"
+    " in a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_split(s, "या");
@@ -988,9 +940,8 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns an empty string if applied on an empty"
-    " string")
+AG_TEST_CASE("ag_string_split_right() returns an empty string if applied on an"
+    " empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, " wo");
@@ -999,9 +950,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns the original string if the pivot is an"
-    " empty string")
+AG_TEST_CASE("ag_string_split_right() returns the original string if the pivot"
+    " is an empty string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, "");
@@ -1010,9 +960,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns an empty string if both the string and the"
-    " pivot are empty")
+AG_TEST_CASE("ag_string_split_right() returns an empty string if both the"
+    " string and the pivot are empty")
 {
         AG_AUTO(ag_string) *s = ag_string_new_empty();
         AG_AUTO(ag_string) *s2 = ag_string_split(s, "");
@@ -1021,8 +970,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns an empty string if the pivot is not found")
+AG_TEST_CASE("ag_string_split_right() returns an empty string if the pivot is"
+    " not found")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, "xyz");
@@ -1031,9 +980,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns an empty string if both the string and"
-    " pivot are the same")
+AG_TEST_CASE("ag_string_split_right() returns an empty string if both the"
+    " string and pivot are the same")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, s);
@@ -1042,9 +990,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split_right() returns the right side of the pivot if it exists"
-    " in an ASCII string")
+AG_TEST_CASE("ag_string_split_right() returns the right side of the pivot if it"
+    " exists in an ASCII string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, " w");
@@ -1053,9 +1000,8 @@ AG_TEST_CASE(
 }
 
 
-AG_TEST_CASE(
-    "ag_string_split() returns the right side of the pivot if it exists in a"
-    " Unicode string")
+AG_TEST_CASE("ag_string_split() returns the right side of the pivot if it"
+    " exists in a Unicode string")
 {
         AG_AUTO(ag_string) *s = ag_string_new("नमस्ते दुनिया!");
         AG_AUTO(ag_string) *s2 = ag_string_split_right(s, "स्ते");
