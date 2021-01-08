@@ -1,5 +1,7 @@
 #include "./test.h"
 
+#define __AG_TEST_SUITE_TAG__ 4
+
 
 struct object_payload {
         int     x;
@@ -57,7 +59,7 @@ object_sample_value(void)
 }
 
 
-AG_TEST_CASE(int_new, "ag_value_new_int() creates a new int value")
+__AG_TEST_CASE("ag_value_new_int() creates a new int value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-123456);
 
@@ -65,7 +67,7 @@ AG_TEST_CASE(int_new, "ag_value_new_int() creates a new int value")
 }
 
 
-AG_TEST_CASE(int_copy, "ag_value_copy() copies an int value")
+__AG_TEST_CASE("ag_value_copy() copies an int value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-1029394);
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
@@ -74,7 +76,7 @@ AG_TEST_CASE(int_copy, "ag_value_copy() copies an int value")
 }
 
 
-AG_TEST_CASE(int_type_int, "ag_value_type_int() is true for an int value")
+__AG_TEST_CASE("ag_value_type_int() is true for an int value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(11111);
 
@@ -82,7 +84,7 @@ AG_TEST_CASE(int_type_int, "ag_value_type_int() is true for an int value")
 }
 
 
-AG_TEST_CASE(int_type_uint, "ag_value_type_uint() is false for a uint value")
+__AG_TEST_CASE("ag_value_type_uint() is false for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-1111);
 
@@ -90,7 +92,7 @@ AG_TEST_CASE(int_type_uint, "ag_value_type_uint() is false for a uint value")
 }
 
 
-AG_TEST_CASE(int_type_float,
+__AG_TEST_CASE(
     "ag_value_type_float() is false for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(1111);
@@ -99,7 +101,7 @@ AG_TEST_CASE(int_type_float,
 }
 
 
-AG_TEST_CASE(int_type_string,
+__AG_TEST_CASE(
     "ag_value_type_string() is false for a string value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-987654321);
@@ -108,7 +110,7 @@ AG_TEST_CASE(int_type_string,
 }
 
 
-AG_TEST_CASE(int_type_object,
+__AG_TEST_CASE(
     "ag_value_type_object() is false for an object value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(987654321);
@@ -117,7 +119,7 @@ AG_TEST_CASE(int_type_object,
 }
 
 
-AG_TEST_CASE(int_lt_1, "ag_value_lt() returns true for -123 < 123")
+__AG_TEST_CASE("ag_value_lt() returns true for -123 < 123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
         AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
@@ -126,7 +128,7 @@ AG_TEST_CASE(int_lt_1, "ag_value_lt() returns true for -123 < 123")
 }
 
 
-AG_TEST_CASE(int_lt_2, "ag_value_lt() returns false for -123 < -123")
+__AG_TEST_CASE("ag_value_lt() returns false for -123 < -123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-123);
 
@@ -134,7 +136,7 @@ AG_TEST_CASE(int_lt_2, "ag_value_lt() returns false for -123 < -123")
 }
 
 
-AG_TEST_CASE(int_lt_3, "ag_value_lt() returns false for 123 < -123")
+__AG_TEST_CASE("ag_value_lt() returns false for 123 < -123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_int(123);
         AG_AUTO(ag_value) *v2 = ag_value_new_int(-123);
@@ -143,7 +145,7 @@ AG_TEST_CASE(int_lt_3, "ag_value_lt() returns false for 123 < -123")
 }
 
 
-AG_TEST_CASE(int_eq_1, "ag_value_eq() returns true for -123 == -123")
+__AG_TEST_CASE("ag_value_eq() returns true for -123 == -123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-123);
 
@@ -151,7 +153,7 @@ AG_TEST_CASE(int_eq_1, "ag_value_eq() returns true for -123 == -123")
 }
 
 
-AG_TEST_CASE(int_eq_2, "ag_value_eq() returns false for -123 == 123")
+__AG_TEST_CASE("ag_value_eq() returns false for -123 == 123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
         AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
@@ -160,7 +162,7 @@ AG_TEST_CASE(int_eq_2, "ag_value_eq() returns false for -123 == 123")
 }
 
 
-AG_TEST_CASE(int_gt_1, "ag_value_gt() returns true for 123 > -123")
+__AG_TEST_CASE("ag_value_gt() returns true for 123 > -123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_int(123);
         AG_AUTO(ag_value) *v2 = ag_value_new_int(-123);
@@ -169,7 +171,7 @@ AG_TEST_CASE(int_gt_1, "ag_value_gt() returns true for 123 > -123")
 }
 
 
-AG_TEST_CASE(int_gt_2, "ag_value_gt() returns false for -123 > -123")
+__AG_TEST_CASE("ag_value_gt() returns false for -123 > -123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_int(-123);
 
@@ -177,7 +179,7 @@ AG_TEST_CASE(int_gt_2, "ag_value_gt() returns false for -123 > -123")
 }
 
 
-AG_TEST_CASE(int_gt_3, "ag_value_gt() returns false for -123 > 123")
+__AG_TEST_CASE("ag_value_gt() returns false for -123 > 123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_int(-123);
         AG_AUTO(ag_value) *v2 = ag_value_new_int(123);
@@ -188,7 +190,7 @@ AG_TEST_CASE(int_gt_3, "ag_value_gt() returns false for -123 > 123")
 
 
 
-AG_TEST_CASE(uint_new, "ag_value_new_uint() creates a new uint value")
+__AG_TEST_CASE("ag_value_new_uint() creates a new uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(123456);
 
@@ -196,7 +198,7 @@ AG_TEST_CASE(uint_new, "ag_value_new_uint() creates a new uint value")
 }
 
 
-AG_TEST_CASE(uint_copy, "ag_value_copy() copies a uint value")
+__AG_TEST_CASE("ag_value_copy() copies a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(1029394);
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
@@ -205,7 +207,7 @@ AG_TEST_CASE(uint_copy, "ag_value_copy() copies a uint value")
 }
 
 
-AG_TEST_CASE(uint_type_int, "ag_value_type_int() is false for a uint value")
+__AG_TEST_CASE("ag_value_type_int() is false for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(11111);
 
@@ -213,7 +215,7 @@ AG_TEST_CASE(uint_type_int, "ag_value_type_int() is false for a uint value")
 }
 
 
-AG_TEST_CASE(uint_type_uint, "ag_value_type_uint() is true for a uint value")
+__AG_TEST_CASE("ag_value_type_uint() is true for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(701115);
 
@@ -221,7 +223,7 @@ AG_TEST_CASE(uint_type_uint, "ag_value_type_uint() is true for a uint value")
 }
 
 
-AG_TEST_CASE(uint_type_float,
+__AG_TEST_CASE(
     "ag_value_type_float() is false for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(97324);
@@ -230,7 +232,7 @@ AG_TEST_CASE(uint_type_float,
 }
 
 
-AG_TEST_CASE(uint_type_string,
+__AG_TEST_CASE(
     "ag_value_type_string() is false for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(987654321);
@@ -239,7 +241,7 @@ AG_TEST_CASE(uint_type_string,
 }
 
 
-AG_TEST_CASE(uint_type_object,
+__AG_TEST_CASE(
     "ag_value_type_object() is false for a uint value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(108);
@@ -248,7 +250,7 @@ AG_TEST_CASE(uint_type_object,
 }
 
 
-AG_TEST_CASE(uint_lt_1, "ag_value_lt() returns true for 123 < 124")
+__AG_TEST_CASE("ag_value_lt() returns true for 123 < 124")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_uint(123);
         AG_AUTO(ag_value) *v2 = ag_value_new_uint(124);
@@ -257,7 +259,7 @@ AG_TEST_CASE(uint_lt_1, "ag_value_lt() returns true for 123 < 124")
 }
 
 
-AG_TEST_CASE(uint_lt_2, "ag_value_lt() returns false for 123 < 123")
+__AG_TEST_CASE("ag_value_lt() returns false for 123 < 123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(123);
 
@@ -265,7 +267,7 @@ AG_TEST_CASE(uint_lt_2, "ag_value_lt() returns false for 123 < 123")
 }
 
 
-AG_TEST_CASE(uint_lt_3, "ag_value_lt() returns false for 124 < 123")
+__AG_TEST_CASE("ag_value_lt() returns false for 124 < 123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_uint(124);
         AG_AUTO(ag_value) *v2 = ag_value_new_uint(123);
@@ -274,7 +276,7 @@ AG_TEST_CASE(uint_lt_3, "ag_value_lt() returns false for 124 < 123")
 }
 
 
-AG_TEST_CASE(uint_eq_1, "ag_value_eq() returns true for 123 == 123")
+__AG_TEST_CASE("ag_value_eq() returns true for 123 == 123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(123);
 
@@ -282,7 +284,7 @@ AG_TEST_CASE(uint_eq_1, "ag_value_eq() returns true for 123 == 123")
 }
 
 
-AG_TEST_CASE(uint_eq_2,"ag_value_eq() returns false for 123 == 124") {
+__AG_TEST_CASE("ag_value_eq() returns false for 123 == 124") {
         AG_AUTO(ag_value) *v1 = ag_value_new_uint(123);
         AG_AUTO(ag_value) *v2 = ag_value_new_uint(124);
 
@@ -290,7 +292,7 @@ AG_TEST_CASE(uint_eq_2,"ag_value_eq() returns false for 123 == 124") {
 }
 
 
-AG_TEST_CASE(uint_gt_1, "ag_value_gt() returns true for 124 > 123")
+__AG_TEST_CASE("ag_value_gt() returns true for 124 > 123")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_uint(124);
         AG_AUTO(ag_value) *v2 = ag_value_new_uint(123);
@@ -299,7 +301,7 @@ AG_TEST_CASE(uint_gt_1, "ag_value_gt() returns true for 124 > 123")
 }
 
 
-AG_TEST_CASE(uint_gt_2, "ag_value_gt() returns false for 123 > 123")
+__AG_TEST_CASE("ag_value_gt() returns false for 123 > 123")
 {
         AG_AUTO(ag_value) *v = ag_value_new_uint(123);
 
@@ -307,7 +309,7 @@ AG_TEST_CASE(uint_gt_2, "ag_value_gt() returns false for 123 > 123")
 }
 
 
-AG_TEST_CASE(uint_gt_3, "ag_value_gt() returns false for 123 > 124")
+__AG_TEST_CASE("ag_value_gt() returns false for 123 > 124")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_uint(123);
         AG_AUTO(ag_value) *v2 = ag_value_new_uint(124);
@@ -318,7 +320,7 @@ AG_TEST_CASE(uint_gt_3, "ag_value_gt() returns false for 123 > 124")
 
 
 
-AG_TEST_CASE(float_new, "ag_value_new_float() creates a new float value")
+__AG_TEST_CASE("ag_value_new_float() creates a new float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(-123.456);
 
@@ -326,7 +328,7 @@ AG_TEST_CASE(float_new, "ag_value_new_float() creates a new float value")
 }
 
 
-AG_TEST_CASE(float_copy, "ag_value_copy() copies a float value")
+__AG_TEST_CASE("ag_value_copy() copies a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
@@ -335,7 +337,7 @@ AG_TEST_CASE(float_copy, "ag_value_copy() copies a float value")
 }
 
 
-AG_TEST_CASE(float_type_int, "ag_value_type_int() is false for a float value")
+__AG_TEST_CASE("ag_value_type_int() is false for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(-123456.789);
 
@@ -343,7 +345,7 @@ AG_TEST_CASE(float_type_int, "ag_value_type_int() is false for a float value")
 }
 
 
-AG_TEST_CASE(float_type_uint,
+__AG_TEST_CASE(
     "ag_value_type_uint() is false for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(123456.789);
@@ -352,7 +354,7 @@ AG_TEST_CASE(float_type_uint,
 }
 
 
-AG_TEST_CASE(float_type_float,
+__AG_TEST_CASE(
     "ag_value_type_float() is true for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(-789.123456);
@@ -361,7 +363,7 @@ AG_TEST_CASE(float_type_float,
 }
 
 
-AG_TEST_CASE(float_type_string,
+__AG_TEST_CASE(
     "ag_value_type_string() is false for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(789.123456);
@@ -370,7 +372,7 @@ AG_TEST_CASE(float_type_string,
 }
 
 
-AG_TEST_CASE(float_type_object,
+__AG_TEST_CASE(
     "ag_value_type_object is false for a float value")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(-9876.5433);
@@ -379,7 +381,7 @@ AG_TEST_CASE(float_type_object,
 }
 
 
-AG_TEST_CASE(float_lt_1, "ag_value_lt() returns true for 123.456 < 123.4567")
+__AG_TEST_CASE("ag_value_lt() returns true for 123.456 < 123.4567")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
         AG_AUTO(ag_value) *v2 = ag_value_new_float(124.4567);
@@ -388,7 +390,7 @@ AG_TEST_CASE(float_lt_1, "ag_value_lt() returns true for 123.456 < 123.4567")
 }
 
 
-AG_TEST_CASE(float_lt_2, "ag_value_lt() returns false for 123.456 < 123.456")
+__AG_TEST_CASE("ag_value_lt() returns false for 123.456 < 123.456")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(123.456);
 
@@ -396,7 +398,7 @@ AG_TEST_CASE(float_lt_2, "ag_value_lt() returns false for 123.456 < 123.456")
 }
 
 
-AG_TEST_CASE(float_lt_3, "ag_value_lt() returns false for 123.4567 < 123.456")
+__AG_TEST_CASE("ag_value_lt() returns false for 123.4567 < 123.456")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
         AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
@@ -405,7 +407,7 @@ AG_TEST_CASE(float_lt_3, "ag_value_lt() returns false for 123.4567 < 123.456")
 }
 
 
-AG_TEST_CASE(float_eq_1,
+__AG_TEST_CASE(
     "ag_value_eq() returns true for -123.4567 == -123.4567")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(-123.4567);
@@ -414,7 +416,7 @@ AG_TEST_CASE(float_eq_1,
 }
 
 
-AG_TEST_CASE(float_eq_2,
+__AG_TEST_CASE(
     "ag_value_eq() returns false for -123.456 == -123.4567")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_float(-123);
@@ -424,7 +426,7 @@ AG_TEST_CASE(float_eq_2,
 }
 
 
-AG_TEST_CASE(float_gt_1, "ag_value_gt() returns true for 123.4567 > 123.456")
+__AG_TEST_CASE("ag_value_gt() returns true for 123.4567 > 123.456")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_float(123.4567);
         AG_AUTO(ag_value) *v2 = ag_value_new_float(123.456);
@@ -433,7 +435,7 @@ AG_TEST_CASE(float_gt_1, "ag_value_gt() returns true for 123.4567 > 123.456")
 }
 
 
-AG_TEST_CASE(float_gt_2,
+__AG_TEST_CASE(
     "ag_value_gt() returns false for 123.4567 > 123.4567")
 {
         AG_AUTO(ag_value) *v = ag_value_new_float(123.4567);
@@ -442,7 +444,7 @@ AG_TEST_CASE(float_gt_2,
 }
 
 
-AG_TEST_CASE(float_gt_3, "ag_value_gt() returns false for 123.456 > 123.4567")
+__AG_TEST_CASE("ag_value_gt() returns false for 123.456 > 123.4567")
 {
         AG_AUTO(ag_value) *v1 = ag_value_new_float(123.456);
         AG_AUTO(ag_value) *v2 = ag_value_new_float(123.4567);
@@ -470,7 +472,7 @@ string_sample_unicode(void)
 }
 
 
-AG_TEST_CASE(string_new, "ag_value_new_string() creates a new string value")
+__AG_TEST_CASE("ag_value_new_string() creates a new string value")
 {
         AG_AUTO(ag_value) *v = string_sample_ascii();
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
@@ -479,7 +481,7 @@ AG_TEST_CASE(string_new, "ag_value_new_string() creates a new string value")
 }
 
 
-AG_TEST_CASE(string_copy, "ag_value_copy() copies a string value")
+__AG_TEST_CASE("ag_value_copy() copies a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_unicode();
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
@@ -488,7 +490,7 @@ AG_TEST_CASE(string_copy, "ag_value_copy() copies a string value")
 }
 
 
-AG_TEST_CASE(string_type_int,
+__AG_TEST_CASE(
     "ag_value_type_int() is false for a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_ascii();
@@ -497,7 +499,7 @@ AG_TEST_CASE(string_type_int,
 }
 
 
-AG_TEST_CASE(string_type_uint,
+__AG_TEST_CASE(
     "ag_value_type_uint() is false for a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_unicode();
@@ -506,7 +508,7 @@ AG_TEST_CASE(string_type_uint,
 }
 
 
-AG_TEST_CASE(string_type_float,
+__AG_TEST_CASE(
     "ag_value_type_float() is false for a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_ascii();
@@ -515,7 +517,7 @@ AG_TEST_CASE(string_type_float,
 }
 
 
-AG_TEST_CASE(string_type_string,
+__AG_TEST_CASE(
     "ag_value_type_string() is true for a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_unicode();
@@ -524,7 +526,7 @@ AG_TEST_CASE(string_type_string,
 }
 
 
-AG_TEST_CASE(string_type_object,
+__AG_TEST_CASE(
     "ag_value_type_object() is false for a string value")
 {
         AG_AUTO(ag_value) *v = string_sample_ascii();
@@ -536,7 +538,7 @@ AG_TEST_CASE(string_type_object,
 
 
 
-AG_TEST_CASE(object_new, "ag_value_new_object() creates a new object value")
+__AG_TEST_CASE("ag_value_new_object() creates a new object value")
 {
         AG_AUTO(ag_object) *o = object_sample();
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -545,7 +547,7 @@ AG_TEST_CASE(object_new, "ag_value_new_object() creates a new object value")
 }
 
 
-AG_TEST_CASE(object_copy, "ag_value_copy() copies an object value")
+__AG_TEST_CASE("ag_value_copy() copies an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
@@ -554,7 +556,7 @@ AG_TEST_CASE(object_copy, "ag_value_copy() copies an object value")
 }
 
 
-AG_TEST_CASE(object_type_int,
+__AG_TEST_CASE(
     "ag_value_type_int() is false for an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -563,7 +565,7 @@ AG_TEST_CASE(object_type_int,
 }
 
 
-AG_TEST_CASE(object_type_uint,
+__AG_TEST_CASE(
     "ag_value_type_uint() is false for an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -572,7 +574,7 @@ AG_TEST_CASE(object_type_uint,
 }
 
 
-AG_TEST_CASE(object_type_float,
+__AG_TEST_CASE(
     "ag_value_type_float() is false for an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -581,7 +583,7 @@ AG_TEST_CASE(object_type_float,
 }
 
 
-AG_TEST_CASE(object_type_string,
+__AG_TEST_CASE(
     "ag_value_type_string() is false for an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -590,7 +592,7 @@ AG_TEST_CASE(object_type_string,
 }
 
 
-AG_TEST_CASE(object_type_object,
+__AG_TEST_CASE(
     "ag_value_type_object() is true for an object value")
 {
         AG_AUTO(ag_value) *v = object_sample_value();
@@ -606,7 +608,7 @@ test_suite_value(void)
 {
         object_register();
 
-        ag_test *test[] = {
+        /*ag_test *test[] = {
                 int_new,         int_copy,       int_type_int,
                 int_type_uint,   int_type_float, int_type_string,
                 int_type_object, int_lt_1,       int_lt_2,
@@ -673,6 +675,8 @@ test_suite_value(void)
         ag_test_suite *ctx = ag_test_suite_new("ag_value interface");
         ag_test_suite_push_array(ctx, test, desc, sizeof test / sizeof *test);
 
-        return ctx;
+        return ctx;*/
+
+        return ag_test_suite_generate("ag_value interface");
 }
 
