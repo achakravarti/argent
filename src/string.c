@@ -216,6 +216,7 @@ ag_string_match(const ag_string *ctx, const char *regex)
         rc = regexec(&r, ctx, 0, NULL, 0);
         AG_REQUIRE (!rc || rc == REG_NOMATCH, AG_ERNO_REGEX);
 
+        regfree(&r);
         return !rc;
 }
 
