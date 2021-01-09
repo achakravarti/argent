@@ -1,6 +1,11 @@
 #include "../include/argent.h"
 
-#include <uuid/uuid.h>
+#ifdef __FreeBSD__
+#       include <uuid.h>
+#else
+#       include <uuid/uuid.h>
+#endif
+
 
 struct ag_uuid {
         uuid_t  uuid;
