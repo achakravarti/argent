@@ -1,6 +1,8 @@
 #include "../include/argent.h"
 
-#ifdef __linux__
+#ifdef __FreeBSD__
+#       include <malloc_np.h>
+#else
 #       include <malloc.h>
 #endif
 #include <stdarg.h>
