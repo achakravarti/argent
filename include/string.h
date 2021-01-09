@@ -77,6 +77,19 @@ ag_string_new_empty(void)
 }
 
 
+/*
+ * Declare the prototypes for the string comparison interface. The most
+ * important comparison function is ag_string_cmp(), the other three simply
+ * being convenience wrappers around the former.
+ *
+ * All four comparison functions compare a dynamic string against another string
+ * which may either be dynamic or static. ag_string_cmp() returns an ag_cmp enum
+ * value indicating the result of the comparison; ag_string_lt(), ag_string_eq()
+ * and ag_string_gt() return a Boolean value indicating whether or not the
+ * contextual string is, respectively, less than, equal to, or greater than the
+ * comparison string.
+ */
+
 extern enum ag_cmp      ag_string_cmp(const ag_string *,  const char *);
 
 
@@ -105,6 +118,7 @@ extern size_t   ag_string_len(const ag_string *);
 extern size_t   ag_string_sz(const ag_string *);
 extern size_t   ag_string_refc(const ag_string *);
 extern bool     ag_string_has(const ag_string *, const char *);
+extern bool     ag_string_match(const ag_string *, const char *);
 
 
 
