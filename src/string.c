@@ -211,10 +211,12 @@ ag_string_match(const ag_string *ctx, const char *regex)
 
         regex_t r;
         int rc = regcomp(&r, regex, 0);
-        AG_REQUIRE (!rc, AG_ERNO_REGEX);
+
+        struct ag_exception_regex x = {.str = ctx, .regex = regex};
+        AG_REQUIRE_OPT (!rc, AG_ERNO_REGEX, &x);
 
         rc = regexec(&r, ctx, 0, NULL, 0);
-        AG_REQUIRE (!rc || rc == REG_NOMATCH, AG_ERNO_REGEX);
+        AG_REQUIRE_OPT (!rc || rc == REG_NOMATCH, AG_ERNO_REGEX, &x);
 
         regfree(&r);
         return !rc;
