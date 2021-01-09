@@ -24,6 +24,7 @@
 #include "../include/argent.h"
 
 #include <ctype.h>
+#include <regex.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -183,7 +184,7 @@ ag_string_cmp(const ag_string *ctx,  const char *cmp)
 /*
  * Define the ag_string_has() interface function. This function checks whether a
  * string contains a particular substring.
- * */
+ */
 
 
 extern bool
@@ -196,6 +197,26 @@ ag_string_has(const ag_string *ctx, const char *tgt)
                 return false;
 
         return strstr(ctx, tgt);
+}
+
+
+extern bool
+ag_string_match(const ag_string *ctx, const char *regex)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (regex);
+
+        if (AG_UNLIKELY (!(*ctx && *regex)))
+                return false;
+
+        regex_t r;
+        int rc = regcomp(&r, regex, 0);
+        AG_REQUIRE (!rc, AG_ERNO_REGEX);
+
+        rc = regexec(&r, ctx, 0, NULL, 0);
+        AG_REQUIRE (!rc || rc == REG_NOMATCH, AG_ERNO_REGEX);
+
+        return !rc;
 }
 
 
