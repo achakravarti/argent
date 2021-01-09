@@ -31,3 +31,10 @@ You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
 - `git clone https://github.com/achakravarti/argent.git`
 - `make`
 - `make check`
+
+
+## Supporters
+A warm thank you to all those who have shown interest in the Argent Library!
+
+[![Stargazers repo roster for @achakravarti/argent](https://reporoster.com/stars/achakravarti/argent)](https://github.com/achakravarti/argent/stargazers)
+
