@@ -19,6 +19,11 @@ ag_init(void)
                         .msg = AG_ERNO_MSG(AG_ERNO_MBLOCK),
                         .hnd = &ag_memblock_exception_handler
                 },
+                {
+                        .erno = AG_ERNO_REGEX, 
+                        .msg = AG_ERNO_MSG(AG_ERNO_REGEX),
+                        .hnd = &ag_exception_regex_hnd,
+                },
         };
 
         ag_exception_registry_init(32);
