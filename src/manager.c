@@ -17,7 +17,7 @@ ag_init(void)
                 {
                         .erno = AG_ERNO_MBLOCK, 
                         .msg = AG_ERNO_MSG(AG_ERNO_MBLOCK),
-                        .hnd = &ag_memblock_exception_handler
+                        .hnd = &ag_exception_memblock_hnd
                 },
                 {
                         .erno = AG_ERNO_REGEX, 

@@ -59,12 +59,18 @@ struct ag_exception {
 typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 
 
+struct ag_exception_memblock {
+        size_t  sz;
+        size_t  align;
+};
+
 struct ag_exception_regex {
         const char      *str;
         const char      *regex;
 };
 
 
+extern void     ag_exception_memblock_hnd(const struct ag_exception *, void *);
 extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
 
 
