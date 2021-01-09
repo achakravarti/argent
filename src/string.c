@@ -183,20 +183,23 @@ ag_string_cmp(const ag_string *ctx,  const char *cmp)
 
 /*
  * Define the ag_string_has() interface function. This function checks whether a
- * string contains a particular substring.
+ * string contains a particular substring. This function returns true if the
+ * substring is found in the contextual string, or false otherwise. False is
+ * always returned in the edge cases where either the contextual string or the
+ * substring to find are empty.
  */
 
 
 extern bool
-ag_string_has(const ag_string *ctx, const char *tgt)
+ag_string_has(const ag_string *ctx, const char *sub)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (tgt);
+        AG_ASSERT_PTR (sub);
 
-        if (AG_UNLIKELY (!*tgt && *ctx))
+        if (AG_UNLIKELY (!*sub && *ctx))
                 return false;
 
-        return strstr(ctx, tgt);
+        return strstr(ctx, sub);
 }
 
 
@@ -205,6 +208,10 @@ ag_string_has(const ag_string *ctx, const char *tgt)
  * a given dynamic string matches the mattern defineed by a POSIX-style regular
  * expression. In case there is an error in compiling and executing the regular
  * expression, the AG_ERNO_REGEX exception is signalled.
+ *
+ * This function returns true if the contextual string matches the regular
+ * expression, or false otherwise. In case either the contextual string or the
+ * regual expression are empty, then false is returned.
  *
  * See the selected answer on https://stackoverflow.com/questions/1085083/.
  */
