@@ -44,10 +44,10 @@
  * avoid relying on the heap.
  */
 struct ag_exception {
-        ag_erno     erno; /* Error code.                       */
-        const char *func; /* Function where error occurred.    */
-        const char *file; /* File where error occured.         */
-        size_t      line; /* Line number where error occurred. */
+        ag_erno          erno;  /* Error code.                       */
+        const char      *func;  /* Function where error occurred.    */
+        const char      *file;  /* File where error occured.         */
+        size_t           line;  /* Line number where error occurred. */
 };
 
 
@@ -74,16 +74,21 @@ extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
  * The following functions manage the instantiation and destruction of the
  * exception registry, and *must* be called at program startup and termination.
  */
-extern void ag_exception_registry_init(size_t);
-extern void ag_exception_registry_exit(void);
+
+
+extern void     ag_exception_registry_init(size_t);
+extern void     ag_exception_registry_exit(void);
 
 /*
  * The following functions are the accessors for the exception registry,
  * returning the exception message and handler associated with a given error
  * code.
  */
-extern const char *ag_exception_registry_msg(ag_erno);
-extern ag_exception_handler *ag_exception_registry_hnd(ag_erno);
+
+
+extern const char               *ag_exception_registry_msg(ag_erno);
+extern ag_exception_handler     *ag_exception_registry_hnd(ag_erno);
+
 
 /*
  * The `ag_exception_registry_set()` function is the only mutator for the
@@ -92,8 +97,10 @@ extern ag_exception_handler *ag_exception_registry_hnd(ag_erno);
  * previous values, and passing a NULL pointer for the handler causes the
  * default unhandled exception handler to be set.
  */
-extern void ag_exception_registry_set(ag_erno, const char *,
-                ag_exception_handler *);
+
+
+extern void     ag_exception_registry_set(ag_erno, const char *,
+                    ag_exception_handler *);
 
 
 /*
@@ -108,25 +115,28 @@ extern void ag_exception_registry_set(ag_erno, const char *,
  * AG_ASSERT_STR() asserts that a string is valid, i.e., it is a valid pointer
  * and it is not an empty string.
  */
+
+
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do {                                             \
                 if (AG_UNLIKELY (!(p))) {                                    \
                         printf("[!] assertion failed: %s [%s(), %s:%d]\n",   \
-                                        #p, __func__, __FILE__, __LINE__);   \
+                            #p, __func__, __FILE__, __LINE__);               \
                         ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \
-                                        #p, __func__, __FILE__, __LINE__);   \
+                            #p, __func__, __FILE__, __LINE__);               \
                         abort();                                             \
                 }                                                            \
         } while (0)
 
+
         #define AG_ASSERT_PTR(p) do {                                        \
                 if (AG_UNLIKELY (!(p))) {                                    \
                         printf("[!] assertion failed: %s must not be null"   \
-                               " [%s(), %s:%d]\n", #p, __func__, __FILE__,   \
-                               __LINE__);                                    \
+                            " [%s(), %s:%d]\n", #p,                          \
+                            __func__, __FILE__, __LINE__);                   \
                         ag_log_debug("assertion failed: %s must not be null" \
-                                     " [%s(), %s:%d]\n", #p, __func__,       \
-                                     __FILE__, __LINE__);                    \
+                            " [%s(), %s:%d]\n", #p,                          \
+                             __func__, __FILE__, __LINE__);                  \
                         abort();                                             \
                 }                                                            \
         } while (0)
@@ -163,6 +173,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
  * with the exception metadata.
  */
 
+
 #define AG_REQUIRE(p, e) do {                                   \
         if (AG_UNLIKELY (!(p))) {                               \
                 printf("[!] %d [%s(), %s:%d]: %s\n",            \
@@ -181,6 +192,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
         }                                                       \
 } while (0)
 
+
 #define AG_REQUIRE_OPT(p, e, o) do {                            \
         if (AG_UNLIKELY (!(p))) {                               \
                 printf("[!] %d [%s(), %s:%d]: %s\n",            \
@@ -198,7 +210,6 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                 ag_exception_registry_hnd((e))(&_x_, (o));      \
         }                                                       \
 } while (0)
-
 
 
 #ifdef __cplusplus
