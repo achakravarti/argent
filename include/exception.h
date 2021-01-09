@@ -59,6 +59,15 @@ struct ag_exception {
 typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 
 
+struct ag_exception_regex {
+        const char      *str;
+        const char      *regex;
+};
+
+
+extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
+                
+
 /*
  * The exception registry maintains a list of exception messages and handlers
  * associated with each error code of both the Argent Library and client code.
