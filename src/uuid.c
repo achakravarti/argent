@@ -113,7 +113,7 @@ ag_uuid_str(const ag_uuid *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        char bfr[37];
+        char bfr[UUID_STR_LEN];
         uuid_unparse_upper(ctx->uuid, bfr);
 
         return (ag_string_new(bfr));
