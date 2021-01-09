@@ -27,7 +27,7 @@ You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
 - [Building](#building)
 
 
-## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent)
+## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)
 - `git clone https://github.com/achakravarti/argent.git`
 - `make`
 - `make check`
