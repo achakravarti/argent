@@ -64,9 +64,11 @@ struct ag_exception_memblock {
         size_t  align;
 };
 
+
 struct ag_exception_regex {
-        const char      *str;
-        const char      *regex;
+        const char      *str;           /* String on which regex is applied */
+        const char      *regex;         /* Regex to apply                   */
+        int              ecode;         /* Regex interal error code         */
 };
 
 
