@@ -8,6 +8,12 @@ struct ag_uuid {
 };
 
 
+/* Required for FreeBSD */
+#ifndef UUID_STR_LEN
+#       define UUID_STR_LEN 37
+#endif
+
+
 extern inline bool      ag_uuid_lt(const ag_uuid *, const ag_uuid *);
 extern inline bool      ag_uuid_eq(const ag_uuid *, const ag_uuid *);
 extern inline bool      ag_uuid_gt(const ag_uuid *, const ag_uuid *);
