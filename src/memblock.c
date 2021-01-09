@@ -34,42 +34,13 @@ meta_refc(const ag_memblock *ctx)
 }
 
 
-extern void
-ag_memblock_exception_handler(const struct ag_exception *ex, void *opt)
-{
-        struct ag_memblock_exception *x = (struct ag_memblock_exception *) opt;
-
-        printf("[!] %d [%s(), %s:%lu]: %s\n", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
-        
-        ag_log_err("%d [%s(), %s:%lu]: %s", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
-
-        if (x->align) {
-                printf("[!] requested %lu bytes alignmed to %lu bytes\n",
-                    x->sz, x->align);
-                ag_log_err("requested %lu bytes aligned to %lu bytes", x->sz,
-                    x->align);
-        } else {
-                printf("[!] requested %lu bytes\n", x->sz);
-                ag_log_err("requested %lu bytes", x->sz);
-        }
-
-        ag_exit(EXIT_FAILURE);
-}
-
-
 extern ag_memblock *
 ag_memblock_new(size_t sz)
 {
         AG_ASSERT (is_size_valid(sz));
 
-        struct ag_memblock_exception x = {
-                .sz = sz,
-                .align = 0,
-        };
-
         size_t *ctx = malloc(sizeof(size_t) * 2 + sz);
+        struct ag_exception_memblock x = { .sz = sz, .align = 0i };
         AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
 
         memset(ctx, 0, sz);
@@ -86,13 +57,10 @@ ag_memblock_new_align(size_t sz, size_t align)
         AG_ASSERT (is_size_valid(sz));
         AG_ASSERT (is_alignment_valid(align));
         
-        struct ag_memblock_exception x = {
-                .sz = sz,
-                .align = align,
-        };
-
         size_t *ctx;
-        (void) posix_memalign((void **)&ctx, align, sizeof(size_t) * 2 + sz);
+        (void)posix_memalign((void **)&ctx, align, sizeof(size_t) * 2 + sz);
+
+        struct ag_exception_memblock x = { .sz = sz, .align = align };
         AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
         
         memset(ctx, 0, sz);

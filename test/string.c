@@ -781,7 +781,43 @@ AG_TEST_CASE("ag_string_has() returns false if it doesn't find a Unicode needle"
 
 
 /*
- * Define the test cases for ag_string_lower(). Not that these test cases are
+ * Define the test cases for ag_string_match(). Note that as of now the test
+ * cases are only provided for empty and ASCII strings.
+ *
+ * TODO: Explore Unicode tests
+ */
+
+
+AG_TEST_CASE("ag_string_match() returns false if applied on an empty string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new_empty();
+        AG_TEST (!ag_string_match(s, "^a[[:alnum:]]"));
+}
+
+
+AG_TEST_CASE("ag_string_match() returns false if the regex is an empty string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_TEST (!ag_string_match(s, ""));
+}
+
+
+AG_TEST_CASE("ag_string_match() returns true if a regex match is found")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("abc");
+        AG_TEST (ag_string_match(s, "^a[[:alnum:]]"));
+}
+
+
+AG_TEST_CASE("ag_string_match() returns false if a regex match is not found")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_TEST (!ag_string_match(s, "^a[[:alnum:]]"));
+}
+
+
+/*
+ * Define the test cases for ag_string_lower(). Note that these test cases are
  * only for empty and ASCII strings since ag_string_lower() doesn't support
  * Unicode strings as yet.
  *

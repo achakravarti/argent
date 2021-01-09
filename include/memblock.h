@@ -9,15 +9,6 @@
 #include "./string.h"
 
 
-
-struct ag_memblock_exception {
-        size_t sz;
-        size_t align;
-};
-
-
-extern void ag_memblock_exception_handler(const struct ag_exception *, void *);
-
 typedef void ag_memblock;
 
 extern ag_memblock *ag_memblock_new(size_t);

@@ -77,6 +77,19 @@ ag_string_new_empty(void)
 }
 
 
+/*
+ * Declare the prototypes for the string comparison interface. The most
+ * important comparison function is ag_string_cmp(), the other three simply
+ * being convenience wrappers around the former.
+ *
+ * All four comparison functions compare a dynamic string against another string
+ * which may either be dynamic or static. ag_string_cmp() returns an ag_cmp enum
+ * value indicating the result of the comparison; ag_string_lt(), ag_string_eq()
+ * and ag_string_gt() return a Boolean value indicating whether or not the
+ * contextual string is, respectively, less than, equal to, or greater than the
+ * comparison string.
+ */
+
 extern enum ag_cmp      ag_string_cmp(const ag_string *,  const char *);
 
 
@@ -101,11 +114,22 @@ ag_string_gt(const ag_string *ctx, const char *cmp)
 }
 
 
+/*
+ * Declare the prototypes for the string accessor functions. ag_string_len()
+ * determines the lexicograpchical length of a string, ag_string_sz() gets the
+ * size in bytes of a string, ag_string_refc() returns the current reference
+ * count of a string, ag_string_has() checks whether a string contains a given
+ * substring, and ag_string_match() checks whether a string matches a given
+ * POSIX-style regular expression. ag_string_empty() checks whether a string is
+ * empty, i.e., whether its length is zero.
+ */
+
+
 extern size_t   ag_string_len(const ag_string *);
 extern size_t   ag_string_sz(const ag_string *);
 extern size_t   ag_string_refc(const ag_string *);
 extern bool     ag_string_has(const ag_string *, const char *);
-
+extern bool     ag_string_match(const ag_string *, const char *);
 
 
 inline bool
@@ -113,6 +137,15 @@ ag_string_empty(const ag_string *ctx)
 {
         return ag_string_sz(ctx) == 1;
 }
+
+
+/*
+ * Declare the prototypes for the string mutator functionsx. ag_string_lower(),
+ * ag_string_upper() and ag_string_proper() return, respectively, the lowercase,
+ * uppercase and proper case forms of a given string. ag_string_split() and
+ * ag_string_split_right() split a string around a given pivot and return,
+ * respectively, the left hand and right sides.
+ */
 
 
 extern ag_string        *ag_string_lower(const ag_string *);
