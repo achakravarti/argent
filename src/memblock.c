@@ -1,6 +1,8 @@
 #include "../include/argent.h"
 
-#include <malloc.h>
+#ifdef __linux__
+#       include <malloc.h>
+#endif
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdlib.h>
