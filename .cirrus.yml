@@ -4,7 +4,6 @@ freebsd_instance:
 task:
   install_script:
     pkg update &&
-    pkg upgrade -y &&
     pkg install -y gmake postgresql12-server postgresql12-client valgrind-devel
-  script: gmake test
+  script: gmake check
 
