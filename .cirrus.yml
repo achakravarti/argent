@@ -1,0 +1,10 @@
+freebsd_instance:
+  image_family: freebsd-12-1
+
+task:
+  install_script:
+    pkg update &&
+    pkg install -y gmake ccache e2fsprogs-libuuid postgresql12-server
+    postgresql12-client postgresql-libpgeasy valgrind-devel
+  script: gmake check
+

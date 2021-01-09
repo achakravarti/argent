@@ -27,7 +27,14 @@ You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
 - [Building](#building)
 
 
-## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent)
+## Building [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)
 - `git clone https://github.com/achakravarti/argent.git`
 - `make`
 - `make check`
+
+
+## Supporters
+A warm thank you to all those who have shown interest in the Argent Library!
+
+[![Stargazers repo roster for @achakravarti/argent](https://reporoster.com/stars/achakravarti/argent)](https://github.com/achakravarti/argent/stargazers)
+

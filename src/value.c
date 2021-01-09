@@ -8,17 +8,11 @@
  */
 
 
-#define MASK_TAG ((uintptr_t)(8 - 1))
-#define MASK_PTR (~MASK_TAG)
+#define MASK_TAG        ((uintptr_t)(8 - 1))
+#define MASK_PTR        (~MASK_TAG)
 
-#define SHIFT_UINT ((uintptr_t)1)
-#define SHIFT_INT ((uintptr_t)3)
-
-
-static inline bool tag_check(const ag_value *ctx, uintptr_t tag)
-{
-    return ((uintptr_t)ctx & tag) == tag;
-}
+#define SHIFT_UINT      ((uintptr_t)1)
+#define SHIFT_INT       ((uintptr_t)3)
 
 
 extern inline bool      ag_value_lt(const ag_value *, const ag_value *);

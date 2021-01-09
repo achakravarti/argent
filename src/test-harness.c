@@ -67,24 +67,6 @@ node_new(const ag_test_suite *ts)
 
 
 /*
- * node_copy(): create deep copy of test suite list node.
- *
- * @ctx: contextual test suite list node.
- *
- * Return: copy of @ctx.
- */
-static inline struct node *
-node_copy(const struct node *ctx)
-{
-        struct node *n = ag_memblock_new(sizeof *n);
-        n->ts = ag_test_suite_copy(ctx->ts);
-        n->nxt = ctx->nxt;
-
-        return (n);
-}
-
-
-/*
  * node_free(): free test suite list node.
  *
  * @ctx: contextual test suite list node.

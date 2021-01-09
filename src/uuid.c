@@ -2,9 +2,16 @@
 
 #include <uuid/uuid.h>
 
+
 struct ag_uuid {
         uuid_t  uuid;
 };
+
+
+/* Required for FreeBSD */
+#ifndef UUID_STR_LEN
+#       define UUID_STR_LEN 37
+#endif
 
 
 extern inline bool      ag_uuid_lt(const ag_uuid *, const ag_uuid *);
@@ -108,7 +115,7 @@ ag_uuid_str(const ag_uuid *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        char bfr[37];
+        char bfr[UUID_STR_LEN];
         uuid_unparse_upper(ctx->uuid, bfr);
 
         return (ag_string_new(bfr));
