@@ -1,4 +1,4 @@
-freebsd_instace:
+freebsd_instance:
   image_family: freebsd-12-1
 
 task:
