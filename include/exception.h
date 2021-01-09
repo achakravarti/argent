@@ -66,7 +66,7 @@ struct ag_exception_regex {
 
 
 extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
-                
+
 
 /*
  * The exception registry maintains a list of exception messages and handlers
@@ -130,7 +130,7 @@ extern void ag_exception_registry_set(ag_erno, const char *,
                         abort();                                             \
                 }                                                            \
         } while (0)
-        
+
 
         #define AG_ASSERT_STR(str) do {                                      \
                 if (AG_UNLIKELY (!(str && *str))) {                          \
@@ -149,17 +149,28 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 #       define AG_ASSERT_STR(s)
 #endif
 
+
 /*
- * The `AG_REQUIRE()` and `AG_REQUIRE_OPT()` macros are used to check whether a
- * given predicate is true, and if not, signal an appropriate error code. The
- * exception handler associated with the error code is automatically invoked and
- * passed the exception metadata. `AG_REQUIRE_OPT()` allows optional exception
- * data to be passed along to the exception handler along with the exception
- * metadata.
+ * The AG_REQUIRE() and AG_REQUIRE_OPT() macros are used to check whether a
+ * given predicate is true, and if not, signal an appropriate error code.
+ *
+ * The exception handler associated with the error code is automatically invoked
+ * and passed the exception metadata. Before the exception handler is called, we
+ * print and log the exception location metadata.
+ *
+ * AG_REQUIRE_OPT() behaves identically to AG_REQUIRE(), except that it allows
+ * optional exception data to be passed along to the exception handler along
+ * with the exception metadata.
  */
 
 #define AG_REQUIRE(p, e) do {                                   \
         if (AG_UNLIKELY (!(p))) {                               \
+                printf("[!] %d [%s(), %s:%d]: %s\n",            \
+                    (e), __func__, __FILE__, __LINE__,          \
+                    ag_exception_registry_msg(e));              \
+                ag_log_err("%d [%s(), %s:%d]: %s",              \
+                    (e), __func__, __FILE__, __LINE__,          \
+                    ag_exception_registry_msg(e));              \
                 struct ag_exception _x_ = {                     \
                         .erno = (e),                            \
                         .func = __func__,                       \
@@ -172,6 +183,12 @@ extern void ag_exception_registry_set(ag_erno, const char *,
 
 #define AG_REQUIRE_OPT(p, e, o) do {                            \
         if (AG_UNLIKELY (!(p))) {                               \
+                printf("[!] %d [%s(), %s:%d]: %s\n",            \
+                    (e), __func__, __FILE__, __LINE__,          \
+                    ag_exception_registry_msg(e));              \
+                ag_log_err("%d [%s(), %s:%d]: %s",              \
+                    (e), __func__, __FILE__, __LINE__,          \
+                    ag_exception_registry_msg(e));              \
                 struct ag_exception _x_ = {                     \
                         .erno = (e),                            \
                         .func = __func__,                       \

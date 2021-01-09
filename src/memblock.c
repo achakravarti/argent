@@ -37,22 +37,17 @@ meta_refc(const ag_memblock *ctx)
 extern void
 ag_memblock_exception_handler(const struct ag_exception *ex, void *opt)
 {
-        struct ag_memblock_exception *x = (struct ag_memblock_exception *) opt;
+        (void)ex;
+        struct ag_memblock_exception *o = opt;
 
-        printf("[!] %d [%s(), %s:%lu]: %s\n", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
-        
-        ag_log_err("%d [%s(), %s:%lu]: %s", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
-
-        if (x->align) {
+        if (o->align) {
                 printf("[!] requested %lu bytes alignmed to %lu bytes\n",
-                    x->sz, x->align);
-                ag_log_err("requested %lu bytes aligned to %lu bytes", x->sz,
-                    x->align);
+                    o->sz, o->align);
+                ag_log_err("requested %lu bytes aligned to %lu bytes",
+                    o->sz, o->align);
         } else {
-                printf("[!] requested %lu bytes\n", x->sz);
-                ag_log_err("requested %lu bytes", x->sz);
+                printf("[!] requested %lu bytes\n", o->sz);
+                ag_log_err("requested %lu bytes", o->sz);
         }
 
         ag_exit(EXIT_FAILURE);

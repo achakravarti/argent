@@ -4,17 +4,14 @@
 extern void
 ag_exception_regex_hnd(const struct ag_exception *ex, void *opt)
 {
-        struct ag_exception_regex *x = opt;
-        
-        printf("[!] %d [%s(), %s:%lu]: %s\n", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
-        
-        ag_log_err("%d [%s(), %s:%lu]: %s", ex->erno, ex->func, ex->file,
-            ex->line, ag_exception_registry_msg(ex->erno));
+        (void)ex;
 
+        struct ag_exception_regex *o = opt;
         const char *msg = "[!] string = %s, regex = %s\n";
-        printf(msg, x->str, x->regex);
-        ag_log_err(msg, x->str, x->regex);
+
+        printf(msg, o->str, o->regex);
+        printf("\n");
+        ag_log_err(msg, o->str, o->regex);
 
         ag_exit(EXIT_FAILURE);
 }
