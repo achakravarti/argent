@@ -3,8 +3,8 @@ freebsd_instance:
 
 task:
   install_script:
-    pkg update
-    pkg upgrade
+    pkg update &&
+    pkg upgrade &&
     pkg install -y gmake postgresql12-server postgresql12-client
   script: gmake test
 
