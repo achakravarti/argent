@@ -200,6 +200,16 @@ ag_string_has(const ag_string *ctx, const char *tgt)
 }
 
 
+/*
+ * Define the ag_string_match() interface function. This function checks whether
+ * a given dynamic string matches the mattern defineed by a POSIX-style regular
+ * expression. In case there is an error in compiling and executing the regular
+ * expression, the AG_ERNO_REGEX exception is signalled.
+ *
+ * See the selected answer on https://stackoverflow.com/questions/1085083/.
+ */
+
+
 extern bool
 ag_string_match(const ag_string *ctx, const char *regex)
 {
