@@ -46,6 +46,37 @@ AG_TEST_CASE("ag_field_copy() increases the reference count by 1")
 }
 
 
+/*
+ * Define the test cases for ag_field_clone().
+ */
+
+
+AG_TEST_CASE("ag_field_clone() creates a clone of a field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_field) *cp = ag_field_clone(f);
+
+        AG_TEST (cp && (f != cp));
+}
+
+
+AG_TEST_CASE("ag_field_clone() is identical to its parent")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_field) *cp = ag_field_clone(f);
+
+        AG_TEST (ag_field_eq(f, cp));
+}
+
+
+AG_TEST_CASE("ag_field_clone() does not change the reference count")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_field) *cp = ag_field_clone(f);
+
+        AG_TEST (ag_field_eq(f, cp));
+}
+
 
 extern ag_test_suite *
 test_suite_field(void)
