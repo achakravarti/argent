@@ -7,6 +7,23 @@ static ag_field *sample_int_str_small(void);
 static ag_field *sample_int_str_large(void);
 
 
+/*
+ * Define the test cases for ag_field_new().
+ */
+
+
+AG_TEST_CASE("ag_field_new() can create a new sample field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_value) *k = ag_field_key(f);
+        AG_AUTO(ag_value) *v = ag_field_val(f);
+        const ag_string *s = ag_value_string(v);
+
+        AG_TEST (f && ag_value_int(k) == -1 && ag_string_eq(s, "small"));
+}
+
+
+
 extern ag_test_suite *
 test_suite_field(void)
 {
@@ -34,4 +51,5 @@ sample_int_str_large(void)
         
         return ag_field_new(k, v);
 }
+
 
