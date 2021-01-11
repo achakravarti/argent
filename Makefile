@@ -51,7 +51,7 @@ $(BIN_LIB): $(OBJ_LIB) | $(DIR_BLD)
 	$(LINK.c) -shared $^ -o $@
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_LIB) | $(DIR_BLD)
-	$(LINK.c) $^ -o $@
+	$(CCC) $^ $(LDFLAGS) -o $@
 
 $(DIR_BLD)/%.o: $(DIR_LIB)/%.c | $(DIR_BLD)
 	$(COMPILE.c) $^ -o $@
