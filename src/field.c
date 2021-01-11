@@ -17,27 +17,7 @@ static size_t       virt_len(const ag_object *);
 static ag_hash      virt_hash(const ag_object *);
 static ag_string   *virt_str(const ag_object *);
 
-extern inline ag_field          *ag_field_copy(const ag_field *);
-extern inline ag_field          *ag_field_clone(const ag_field *);
-extern inline void               ag_field_release(ag_field **);
-extern inline enum ag_cmp        ag_field_cmp(const ag_field *,
-                                    const ag_field *);
-extern inline bool               ag_field_lt(const ag_field *, const ag_field *);
-extern inline bool               ag_field_eq(const ag_field *, const ag_field *);
-extern inline bool               ag_field_gt(const ag_field *, const ag_field *);
-extern inline bool               ag_field_empty(const ag_field *);
-extern inline ag_typeid          ag_field_typeid(const ag_field *);
-extern inline ag_uuid           *ag_field_uuid(const ag_field *);
-extern inline bool               ag_field_valid(const ag_field *);
-extern inline size_t             ag_field_sz(const ag_field *);
-extern inline size_t             ag_field_refc(const ag_field *);
-extern inline size_t             ag_field_len(const ag_field *);
-extern inline ag_hash            ag_field_hash(const ag_field *);
-extern inline ag_string         *ag_field_str(const ag_field *);
-
-
-extern void
-__ag_field_register__(void)
+AG_OBJECT_DEFINE(ag_field)
 {
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,

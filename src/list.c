@@ -94,39 +94,13 @@ static ag_string   *virt_str(const ag_object *);
 
 
 /*
- * Declare the prototypes for the inline functions of the ag_list interface.
- * These inline functions are the aliases of their object counterparts.
+ * Define the ag_list object. The ag_list type is defined as an object by its
+ * dynamic dispatch callback functions that are registered with the object
+ * registry.
  */
 
 
-extern inline ag_list           *ag_list_copy(const ag_list *);
-extern inline ag_list           *ag_list_clone(const ag_list *);
-extern inline void               ag_list_release(ag_list **);
-extern inline enum ag_cmp        ag_list_cmp(const ag_list *, const ag_list *);
-extern inline bool               ag_list_lt(const ag_list *, const ag_list *);
-extern inline bool               ag_list_eq(const ag_list *, const ag_list *);
-extern inline bool               ag_list_gt(const ag_list *, const ag_list *);
-extern inline bool               ag_list_empty(const ag_list *);
-extern inline ag_typeid          ag_list_typeid(const ag_list *);
-extern inline ag_uuid           *ag_list_uuid(const ag_list *);
-extern inline bool               ag_list_valid(const ag_list *);
-extern inline size_t             ag_list_sz(const ag_list *);
-extern inline size_t             ag_list_refc(const ag_list *);
-extern inline size_t             ag_list_len(const ag_list *);
-extern inline ag_hash            ag_list_hash(const ag_list *);
-extern inline ag_string         *ag_list_str(const ag_list *);
-
-
-/*
- * Define the __ag_list_register__() utility function. This is a special
- * function that is *not* part of the public list interface. It is invoked by
- * the Argent manager to register the dynamic dispatch callback functions for
- * the list type with the object registry.
- */
-
-
-extern void
-__ag_list_register__(void)
+AG_OBJECT_DEFINE(ag_list)
 {
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
