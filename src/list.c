@@ -40,7 +40,7 @@ struct node {
  * Define the object payload of a list. We choose to keep a pointer to the last
  * node in order to speed up push operations. Again, in order to avoid having to
  * iterate through the entire list, we maintain the length, cumulative size, and
- * cumulative hash of the list. 
+ * cumulative hash of the list.
  */
 
 
@@ -62,7 +62,7 @@ struct payload {
 
 static inline struct node       *node_new(const ag_value *);
 static inline struct node       *node_release(struct node *);
-                                
+
 
 
 /*
@@ -331,12 +331,12 @@ ag_list_next(ag_list **ctx)
         AG_ASSERT_PTR (ctx && *ctx);
 
         struct payload *p = ag_object_payload_mutable(ctx);
-        
+
         if (AG_LIKELY (p->itr)) {
                 p->itr = p->itr->nxt;
                 return p->itr->nxt;
         }
-        
+
         return false;
 }
 
@@ -387,7 +387,7 @@ node_new(const ag_value *val)
  * returning a pointer to the next node, we make it easier to iterate through
  * the list with this function. Note that we're taking care to avoid casting to
  * (ag_memblock **) in the call to ag_memblock_release() in order to avoid
- * potential undefined behaviour. 
+ * potential undefined behaviour.
  *
  * We know that there will always be only one given instance of a particular
  * node, i.e., there will be no shallow copies of the node. Hence, we can safely
@@ -400,10 +400,10 @@ static inline struct node*
 node_release(struct node *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         struct node *nxt = ctx->nxt;
         void *ptr = ctx;
-        
+
         ag_value_release(&ctx->val);
         ag_memblock_release(&ptr);
 
@@ -419,7 +419,7 @@ node_release(struct node *ctx)
  */
 
 
-static struct payload*
+static struct payload *
 payload_new(const struct node *head)
 {
         struct payload *p = ag_memblock_new(sizeof *p);
@@ -476,7 +476,7 @@ payload_push(struct payload *ctx, const ag_value *val)
 
 /*
  * Define the virt_clone() dynamic dispatch callback function. This function is
- * called by ab_object_clone() when ag_list_clone() is invoked. We create a new
+ * called by ag_object_clone() when ag_list_clone() is invoked. We create a new
  * list using the contextual list as a reference.
  */
 
@@ -486,7 +486,7 @@ virt_clone(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        const struct payload *p = (const struct payload *)ctx;
+        const struct payload *p = ctx;
         return payload_new(p->head);
 }
 
@@ -509,7 +509,7 @@ virt_release(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        struct payload *p = (struct payload *)ctx;
+        struct payload *p = ctx;
         register struct node *n = p->head;
 
         while (n)
@@ -530,9 +530,9 @@ static enum ag_cmp
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
         AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-        //AG_ASSERT (ag_list_type(ctx) == ag_list_type(cmp));
 
         const struct payload *p = ag_object_payload(ctx);
         const struct payload *p2 = ag_object_payload(cmp);
@@ -639,7 +639,7 @@ virt_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        
+
         const struct payload *p = ag_object_payload(ctx);
         return p->hash;
 }
