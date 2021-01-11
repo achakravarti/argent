@@ -35,6 +35,7 @@
 #include "./uuid.h"
 #include "./object.h"
 #include "./value.h"
+#include "./field.h"
 #include "./list.h"
 #include "./alist.h"
 #include "./test.h"
