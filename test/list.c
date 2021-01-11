@@ -171,7 +171,7 @@ AG_TEST_CASE("ag_list_release() performs a no-op if passed a handle to NULL")
 }
 
 
-AG_TEST_CASE("ag_list_reelease() disposes a single instance of a list")
+AG_TEST_CASE("ag_list_release() disposes a single instance of a list")
 {
         ag_list *l = sample_int();
         ag_list_release(&l);
