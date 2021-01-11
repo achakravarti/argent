@@ -102,12 +102,12 @@ ag_value_release(ag_value **ctx)
 
         if (AG_LIKELY (v)) {
                 if (ag_value_type_object(v)) {
-                        ag_object *o = ag_value_object(v);
+                        ag_object *o = (ag_object *)ag_value_object(v);
                         ag_object_release(&o);
                 }
 
                 if (ag_value_type_string(v)) {
-                        ag_string *s = ag_value_string(v);
+                        ag_string *s = (ag_string *)ag_value_string(v);
                         ag_string_release(&s);
                 }
 
@@ -260,6 +260,48 @@ ag_value_sz(const ag_value *ctx)
 }
 
 
+extern size_t
+ag_value_len(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_string_len(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_len(ag_value_object(ctx));
+                break;
+        default:
+                return 1;
+        }
+}
+
+
+extern ag_string *
+ag_value_str(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_string_new(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_str(ag_value_object(ctx));
+                break;
+        case AG_VALUE_TYPE_FLOAT:
+                return ag_string_new_fmt("%.4f", ag_value_float(ctx));
+                break;
+        case AG_VALUE_TYPE_UINT:
+                return ag_string_new_fmt("%lu", ag_value_uint(ctx));
+                break;
+        default:
+                return ag_string_new_fmt("%ld", ag_value_int(ctx));
+        }
+}
+
+
 extern ag_int
 ag_value_int(const ag_value *ctx)
 {
@@ -290,22 +332,22 @@ ag_value_float(const ag_value *ctx)
 }
 
 
-extern ag_string *
+extern const ag_string *
 ag_value_string(const ag_value *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_string(ctx));
 
-        return ((ag_string *)((uintptr_t)ctx & MASK_PTR));
+        return ((const ag_string *)((uintptr_t)ctx & MASK_PTR));
 }
 
 
-extern ag_object *
+extern const ag_object *
 ag_value_object(const ag_value *ctx)
 {
         AG_ASSERT_PTR (ctx); 
         AG_ASSERT (ag_value_type_object(ctx));
 
-        return ((ag_object *)((uintptr_t)ctx & MASK_PTR));
+        return ((const ag_object *)((uintptr_t)ctx & MASK_PTR));
 }
 

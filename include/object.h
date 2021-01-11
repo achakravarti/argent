@@ -100,6 +100,135 @@ inline bool ag_object_empty(const ag_object *ctx)
 }
 
 
+#define AG_OBJECT_DECLARE(name, typeid)                                        \
+        typedef ag_object name;                                                \
+        inline name *name ## _copy(const name *ctx)                            \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_copy(ctx);                                    \
+        }                                                                      \
+        inline name *name ## _clone(const name *ctx)                           \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_clone(ctx);                                   \
+        }                                                                      \
+        inline void name ## _release(name **ctx)                               \
+        {                                                                      \
+                ag_object_release(ctx);                                        \
+        }                                                                      \
+        inline enum ag_cmp name ## _cmp(const name *ctx, const name *cmp)      \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT_PTR (cmp);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                AG_ASSERT (ag_object_typeid(cmp) == typeid);                   \
+                return ag_object_cmp(ctx, cmp);                                \
+        }                                                                      \
+        inline bool name ## _lt(const name *ctx, const name *cmp)              \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT_PTR (cmp);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                AG_ASSERT (ag_object_typeid(cmp) == typeid);                   \
+                return ag_object_lt(ctx, cmp);                                 \
+        }                                                                      \
+        inline bool name ## _eq(const name *ctx, const name *cmp)              \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT_PTR (cmp);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                AG_ASSERT (ag_object_typeid(cmp) == typeid);                   \
+                return ag_object_eq(ctx, cmp);                                 \
+        }                                                                      \
+        inline bool name ## _gt(const name *ctx, const name *cmp)              \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_gt(ctx, cmp);                                 \
+        }                                                                      \
+        inline bool name ## _empty(const name *ctx)                            \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_empty(ctx);                                   \
+        }                                                                      \
+        inline ag_typeid name ## _typeid(const name *ctx)                      \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_typeid(ctx);                                  \
+        }                                                                      \
+        inline ag_uuid *name ## _uuid(const name *ctx)                         \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_uuid(ctx);                                    \
+        }                                                                      \
+        inline bool name ## _valid(const name *ctx)                            \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_valid(ctx);                                   \
+        }                                                                      \
+        inline size_t name ## _sz(const name *ctx)                             \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_sz(ctx);                                      \
+        }                                                                      \
+        inline size_t name ## _refc(const name *ctx)                           \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_refc(ctx);                                    \
+        }                                                                      \
+        inline size_t name ## _len(const name *ctx)                            \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_len(ctx);                                     \
+        }                                                                      \
+        inline ag_hash name ## _hash(const name *ctx)                          \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_hash(ctx);                                    \
+        }                                                                      \
+        inline ag_string *name ## _str(const name *ctx)                        \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_str(ctx);                                     \
+        }                                                                      \
+        extern void __ ## name ## _register__(void)
+
+
+#define AG_OBJECT_DEFINE(name)                                                 \
+        extern inline name *name ## _copy(const name *);                       \
+        extern inline name *name ## _clone(const name *);                      \
+        extern inline void name ## _release(name **);                          \
+        extern inline enum ag_cmp name ## _cmp(const name *, const name *);    \
+        extern inline bool name ## _lt(const name *, const name *);            \
+        extern inline bool name ## _eq(const name *, const name *);            \
+        extern inline bool name ## _gt(const name *, const name *);            \
+        extern inline bool name ## _empty(const name *);                       \
+        extern inline ag_typeid name ## _typeid(const name *);                 \
+        extern inline ag_typeid name ## _typeid(const name *);                 \
+        extern inline ag_uuid *name ## _uuid(const name *);                    \
+        extern inline bool name ## _valid(const name *);                       \
+        extern inline size_t name ## _sz(const name *);                        \
+        extern inline size_t name ## _refc(const name *);                      \
+        extern inline size_t name ## _len(const name *);                       \
+        extern inline ag_hash name ## _hash(const name *);                     \
+        extern inline ag_string *name ## _str(const name *);                   \
+        extern void __ ## name ## _register__(void)
+
+
+#define AG_OBJECT_REGISTER(name) __ ## name ##_register__()
+
+
 extern void ag_object_registry_init(void);
 extern void ag_object_registry_exit(void);
 

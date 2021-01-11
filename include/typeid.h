@@ -9,8 +9,10 @@ extern "C" {
 typedef int ag_typeid;
 
 
-#define AG_TYPEID_OBJECT        ((ag_typeid) 0)
-#define AG_TYPEID_LIST          ((ag_typeid) -1)
+#define AG_TYPEID_OBJECT        ((ag_typeid)  0)
+#define AG_TYPEID_FIELD         ((ag_typeid) -1)
+#define AG_TYPEID_LIST          ((ag_typeid) -2)
+#define AG_TYPEID_ALIST         ((ag_typeid) -3)
 
 
 #ifdef __cplusplus

@@ -22,6 +22,7 @@
 
 
 #include "./test.h"
+#include "./object.h"
 
 
 /*
@@ -30,7 +31,7 @@
  */
 
 
-#define __AG_TEST_SUITE_ID__ 5
+#define __AG_TEST_SUITE_ID__ 6
 
 
 
@@ -51,8 +52,8 @@ static ag_list *sample_int_2(void);
  */
 
 
-static void iterator(const ag_value *, void *);
-static void iterator_mutable(ag_value **, void *);
+static bool     iterator(const ag_value *, void *, void *);
+static bool     iterator_mutable(ag_value **, void *, void *);
 
 
 /*
@@ -79,22 +80,8 @@ AG_TEST_CASE("ag_list_new() can create a new empty list")
  */
 
 
-AG_TEST_CASE("ag_list_copy() creates a shallow copy of a sample list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-
-        AG_TEST (l2 == l);
-}
-
-
-AG_TEST_CASE("ag_list_copy() increases the reference count by 1")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-
-        AG_TEST (ag_list_refc(l) == 2);
-}
+AG_METATEST_OBJECT_COPY(ag_list, sample_int());
+AG_METATEST_OBJECT_COPY(ag_list, sample_int_2());
 
 
 /*
@@ -102,40 +89,9 @@ AG_TEST_CASE("ag_list_copy() increases the reference count by 1")
  */
 
 
-AG_TEST_CASE("ag_list_clone() creates a clone of an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (l2 && l != l2);
-}
-
-
-AG_TEST_CASE("ag_list_clone() creates a clone of a sample list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (l2 && l != l2);
-}
-
-
-AG_TEST_CASE("ag_list_clone() has the same items as its parent")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_clone() does not change the reference count")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (ag_list_refc(l) == 1);
-}
+AG_METATEST_OBJECT_CLONE(ag_list, ag_list_new());
+AG_METATEST_OBJECT_CLONE(ag_list, sample_int());
+AG_METATEST_OBJECT_CLONE(ag_list, sample_int_2());
 
 
 /*
@@ -143,41 +99,9 @@ AG_TEST_CASE("ag_list_clone() does not change the reference count")
  */
 
 
-AG_TEST_CASE("ag_list_dispose() reduces the reference count by 1")
-{
-        ag_list *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
-        ag_list_release(&l);
-
-        AG_TEST (!l && ag_list_refc(l2) == 2);
-}
-
-
-AG_TEST_CASE("ag_list_release() performs a no-op if passed NULL")
-{
-        ag_list_release(NULL);
-
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_list_release() performs a no-op if passed a handle to NULL")
-{
-        ag_list *l = NULL;
-        ag_list_release(&l);
-
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_list_reelease() disposes a single instance of a list")
-{
-        ag_list *l = sample_int();
-        ag_list_release(&l);
-
-        AG_TEST (!l);
-}
+AG_METATEST_OBJECT_RELEASE(ag_list, ag_list_new());
+AG_METATEST_OBJECT_RELEASE(ag_list, sample_int());
+AG_METATEST_OBJECT_RELEASE(ag_list, sample_int_2());
 
 
 /*
@@ -186,108 +110,10 @@ AG_TEST_CASE("ag_list_reelease() disposes a single instance of a list")
  */
 
 
-AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically smaller"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int_2();
-
-        AG_TEST (ag_list_lt(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically equal"
-     " to another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_lt(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically greater"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_lt(l, l2));
-}
-
-
-/*
- * Define the test cases for ag_list_eq(). Since ag_list_eq() is a specialised
- * case of ag_list_cmp(), this these test cases also indirectly help test out
- * ag_list_cmp().
- */
-
-
-AG_TEST_CASE("ag_list_eq() returns true if two lists are lexicographically"
-    " equal")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically less"
-     " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int_2();
-
-        AG_TEST (!ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically greater"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_eq(l2, l));
-}
-
-
-/*
- * Define the test cases for ag_list_gt(). Together with the test cases for
- * ag_list_lt() and ag_list_eq(), the test cases for ag_list_gt() help test out
- * ag_list_cmp() in a reasonably complete manner.
- */
-
-
-AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically greater"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int_2();
-
-        AG_TEST (ag_list_gt(l2, l));
-}
-
-
-AG_TEST_CASE("ag_list_gt() returns false if a list is lexicographically equal"
-     " to another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_gt(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_gt() returns false if a list is lexicographically less"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_gt(l2, l));
-}
+AG_METATEST_OBJECT_CMP(ag_list, sample_int(), sample_int_2());
+AG_METATEST_OBJECT_LT(ag_list, sample_int(), sample_int_2());
+AG_METATEST_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
+AG_METATEST_OBJECT_GT(ag_list, sample_int(), sample_int_2());
 
 
 /*
@@ -295,30 +121,18 @@ AG_TEST_CASE("ag_list_gt() returns false if a list is lexicographically less"
  */
 
 
-AG_TEST_CASE("ag_list_empty() returns true for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (ag_list_empty(l));
-}
-
-
-AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (!ag_list_empty(l));
-}
-
+AG_METATEST_OBJECT_EMPTY(ag_list, ag_list_new());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int())
+AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
 
 /*
  * Define the test case for ag_list_typeid().
  */
 
 
-AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (ag_list_typeid(l) == AG_TYPEID_LIST);
-}
+AG_METATEST_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
+AG_METATEST_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
+AG_METATEST_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
 
 
 /*
@@ -326,14 +140,9 @@ AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
  */
 
 
-AG_TEST_CASE("ag_list_uuid() returns the UUID of a list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_uuid) *u = ag_list_uuid(l);
-        AG_AUTO(ag_string) *s = ag_uuid_str(u);
-
-        AG_TEST (!ag_string_empty(s));
-}
+AG_METATEST_OBJECT_UUID(ag_list, ag_list_new());
+AG_METATEST_OBJECT_UUID(ag_list, sample_int());
+AG_METATEST_OBJECT_UUID(ag_list, sample_int_2());
 
 
 /*
@@ -341,18 +150,9 @@ AG_TEST_CASE("ag_list_uuid() returns the UUID of a list")
  */
 
 
-AG_TEST_CASE("ag_list_valid() returns false for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_valid(l));
-}
-
-
-AG_TEST_CASE("ag_list_valid() returns true for an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (ag_list_valid(l));
-}
+AG_METATEST_OBJECT_VALID(ag_list, sample_int());
+AG_METATEST_OBJECT_VALID(ag_list, sample_int_2());
+AG_METATEST_OBJECT_VALID_NOT(ag_list, ag_list_new());
 
 
 /*
@@ -360,18 +160,9 @@ AG_TEST_CASE("ag_list_valid() returns true for an int list")
  */
 
 
-AG_TEST_CASE("ag_list_sz() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_sz(l));
-}
-
-
-AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_TEST (ag_list_sz(l) == sizeof(ag_int) * 7);
-}
+AG_METATEST_OBJECT_SZ(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_SZ(ag_list, sample_int(), 3 * sizeof(ag_int));
+AG_METATEST_OBJECT_SZ(ag_list, sample_int_2(), 7 * sizeof(ag_int));
 
 
 /*
@@ -379,22 +170,9 @@ AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
  */
 
 
-AG_TEST_CASE("ag_list_refc() returns 1 for a single instance")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (ag_list_refc(l) == 1);
-}
-
-
-AG_TEST_CASE(
-    "ag_list_refc() returns the reference count of a shallow copy")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
-
-        AG_TEST (ag_list_refc(l) == 3);
-}
+AG_METATEST_OBJECT_REFC(ag_list, ag_list_new());
+AG_METATEST_OBJECT_REFC(ag_list, sample_int());
+AG_METATEST_OBJECT_REFC(ag_list, sample_int_2());
 
 
 /*
@@ -402,18 +180,9 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE("ag_list_len() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_len(l));
-}
-
-
-AG_TEST_CASE("ag_list_len() returns the number of values in a non empty list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_TEST (ag_list_len(l) == 7);
-}
+AG_METATEST_OBJECT_LEN(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_LEN(ag_list, sample_int(), 3);
+AG_METATEST_OBJECT_LEN(ag_list, sample_int_2(), 7);
 
 
 /*
@@ -421,20 +190,12 @@ AG_TEST_CASE("ag_list_len() returns the number of values in a non empty list")
  */
 
 
-AG_TEST_CASE("ag_list_hash() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_hash(l));
-}
-
-
-AG_TEST_CASE("ag_list_hash() returns the cumulative hash for an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        ag_hash h = ag_hash_new(-123) + ag_hash_new(0) + ag_hash_new(456);
-
-        AG_TEST (ag_list_hash(l) == h);
-}
+AG_METATEST_OBJECT_HASH(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) + ag_hash_new(0) +
+    ag_hash_new(456));
+AG_METATEST_OBJECT_HASH(ag_list, sample_int_2(), ag_hash_new(-123) + 
+    ag_hash_new(0) + ag_hash_new(456) + ag_hash_new(-666) + ag_hash_new(0) +
+    ag_hash_new(555) + ag_hash_new(734));
 
 
 /*
@@ -442,23 +203,9 @@ AG_TEST_CASE("ag_list_hash() returns the cumulative hash for an int list")
  */
 
 
-AG_TEST_CASE("ag_list_str() generates a string representation for an empty"
-    " list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_AUTO(ag_string) *s = ag_list_str(l);
-
-        AG_TEST (!ag_string_empty(s));
-}
-
-
-AG_TEST_CASE("ag_list_str() generates a string representation of an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_string) *s = ag_list_str(l);
-
-        AG_TEST (!ag_string_empty(s));
-}
+AG_METATEST_OBJECT_STR_HAS(ag_list, ag_list_new(), "list");
+AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int(), "list");
+AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int_2(), "list");
 
 
 /*
@@ -501,7 +248,7 @@ AG_TEST_CASE("ag_list_map() has no effect on an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
-        ag_list_map(l, iterator, &sum);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (!sum);
 }
@@ -511,7 +258,7 @@ AG_TEST_CASE("ag_list_map() iterates through a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         ag_int sum = 0;
-        ag_list_map(l, iterator, &sum);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (sum == 956);
 }
@@ -565,8 +312,8 @@ AG_TEST_CASE("ag_list_map_mutable() has no effect on an empty list")
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
 
-        ag_list_map_mutable(&l, iterator_mutable, NULL);
-        ag_list_map(l, iterator, &sum);
+        ag_list_map_mutable(&l, iterator_mutable, NULL, NULL);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (!sum);
 }
@@ -577,8 +324,8 @@ AG_TEST_CASE("ag_list_map_mutable() iterates through a non-empty list")
         AG_AUTO(ag_list) *l = sample_int();
         ag_int sum = 0;
 
-        ag_list_map_mutable(&l, iterator_mutable, NULL);
-        ag_list_map(l, iterator, &sum);
+        ag_list_map_mutable(&l, iterator_mutable, NULL, NULL);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (sum == 15);
 }
@@ -653,12 +400,15 @@ static ag_list *sample_int_2(void)
  */
 
 
-static void iterator(const ag_value *val, void *opt)
+static bool iterator(const ag_value *val, void *in, void *out)
 {
-        ag_int *s = opt;
+        (void)in;
+
+        ag_int *s = out;
         ag_int i = ag_value_int(val);
         *s += i;
 
+        return true;
 }
 
 
@@ -669,12 +419,15 @@ static void iterator(const ag_value *val, void *opt)
  */
 
 
-static void iterator_mutable(ag_value **val, void *opt)
+static bool iterator_mutable(ag_value **val, void *in, void *out)
 {
-        (void)opt;
+        (void)in;
+        (void)out;
 
         AG_AUTO(ag_value) *v = ag_value_new_int(5);
         ag_value_release(val);
         *val = ag_value_copy(v);
+
+        return true;
 }
 

@@ -21,25 +21,35 @@
  */
 
 
-#ifndef __ARGENT_H__
-#define __ARGENT_H__
+#ifndef __ARGENT_FIELD_H__
+#define __ARGENT_FIELD_H__
 
-#include "./primitives.h"
-#include "./log.h"
-#include "./erno.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include "./exception.h"
-#include "./hash.h"
-#include "./string.h"
-#include "./memblock.h"
-#include "./typeid.h"
-#include "./uuid.h"
-#include "./object.h"
 #include "./value.h"
-#include "./field.h"
-#include "./list.h"
-#include "./alist.h"
-#include "./test.h"
-#include "./manager.h"
 
-#endif /* !__ARGENT_H__ */
+
+AG_OBJECT_DECLARE(ag_field, AG_TYPEID_FIELD);
+
+        
+extern ag_field *ag_field_new(const ag_value *, const ag_value *);
+                
+
+extern ag_value *ag_field_key(const ag_field *);
+extern ag_value *ag_field_val(const ag_field *);
+                
+
+extern void     ag_field_key_set(ag_field **, const ag_value *);
+extern void     ag_field_val_set(ag_field **, const ag_value *);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* !__ARGENT_FIELD_H__ */
 

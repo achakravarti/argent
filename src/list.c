@@ -21,7 +21,6 @@
  */
 
 
-
 #include "../include/argent.h"
 
 
@@ -41,7 +40,7 @@ struct node {
  * Define the object payload of a list. We choose to keep a pointer to the last
  * node in order to speed up push operations. Again, in order to avoid having to
  * iterate through the entire list, we maintain the length, cumulative size, and
- * cumulative hash of the list. 
+ * cumulative hash of the list.
  */
 
 
@@ -63,7 +62,7 @@ struct payload {
 
 static inline struct node       *node_new(const ag_value *);
 static inline struct node       *node_release(struct node *);
-                                
+
 
 
 /*
@@ -95,39 +94,13 @@ static ag_string   *virt_str(const ag_object *);
 
 
 /*
- * Declare the prototypes for the inline functions of the ag_list interface.
- * These inline functions are the aliases of their object counterparts.
+ * Define the ag_list object. The ag_list type is defined as an object by its
+ * dynamic dispatch callback functions that are registered with the object
+ * registry.
  */
 
 
-extern inline ag_list           *ag_list_copy(const ag_list *);
-extern inline ag_list           *ag_list_clone(const ag_list *);
-extern inline void               ag_list_release(ag_list **);
-extern inline enum ag_cmp        ag_list_cmp(const ag_list *, const ag_list *);
-extern inline bool               ag_list_lt(const ag_list *, const ag_list *);
-extern inline bool               ag_list_eq(const ag_list *, const ag_list *);
-extern inline bool               ag_list_gt(const ag_list *, const ag_list *);
-extern inline bool               ag_list_empty(const ag_list *);
-extern inline ag_typeid          ag_list_typeid(const ag_list *);
-extern inline ag_uuid           *ag_list_uuid(const ag_list *);
-extern inline bool               ag_list_valid(const ag_list *);
-extern inline size_t             ag_list_sz(const ag_list *);
-extern inline size_t             ag_list_refc(const ag_list *);
-extern inline size_t             ag_list_len(const ag_list *);
-extern inline ag_hash            ag_list_hash(const ag_list *);
-extern inline ag_string         *ag_list_str(const ag_list *);
-
-
-/*
- * Define the __ag_list_register__() utility function. This is a special
- * function that is *not* part of the public list interface. It is invoked by
- * the Argent manager to register the dynamic dispatch callback functions for
- * the list type with the object registry.
- */
-
-
-extern void
-__ag_list_register__(void)
+AG_OBJECT_DEFINE(ag_list)
 {
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
@@ -208,16 +181,17 @@ ag_list_get_at(const ag_list *ctx, size_t idx)
 
 
 extern void
-ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
+ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *in, void *out)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (itr);
 
         const struct payload *p = ag_object_payload(ctx);
         register const struct node *n = p->head;
+        register bool flag = true;
 
-        while (n) {
-                itr(ag_value_copy(n->val), opt);
+        while (n && flag) {
+                flag = itr(n->val, in, out);
                 n = n->nxt;
         }
 }
@@ -285,16 +259,18 @@ ag_list_set_at(ag_list **ctx, const ag_value *val, size_t idx)
 
 
 extern void
-ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
+ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *in,
+    void *out)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (itr);
 
         struct payload *p = ag_object_payload_mutable(ctx);
         register struct node *n = p->head;
+        register bool flag = true;
 
-        while (n) {
-                itr(&n->val, opt);
+        while (n && flag) {
+                flag = itr(&n->val, in, out);
                 n = n->nxt;
         }
 }
@@ -332,12 +308,12 @@ ag_list_next(ag_list **ctx)
         AG_ASSERT_PTR (ctx && *ctx);
 
         struct payload *p = ag_object_payload_mutable(ctx);
-        
+
         if (AG_LIKELY (p->itr)) {
                 p->itr = p->itr->nxt;
                 return p->itr->nxt;
         }
-        
+
         return false;
 }
 
@@ -388,7 +364,7 @@ node_new(const ag_value *val)
  * returning a pointer to the next node, we make it easier to iterate through
  * the list with this function. Note that we're taking care to avoid casting to
  * (ag_memblock **) in the call to ag_memblock_release() in order to avoid
- * potential undefined behaviour. 
+ * potential undefined behaviour.
  *
  * We know that there will always be only one given instance of a particular
  * node, i.e., there will be no shallow copies of the node. Hence, we can safely
@@ -401,10 +377,10 @@ static inline struct node*
 node_release(struct node *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         struct node *nxt = ctx->nxt;
         void *ptr = ctx;
-        
+
         ag_value_release(&ctx->val);
         ag_memblock_release(&ptr);
 
@@ -420,7 +396,7 @@ node_release(struct node *ctx)
  */
 
 
-static struct payload*
+static struct payload *
 payload_new(const struct node *head)
 {
         struct payload *p = ag_memblock_new(sizeof *p);
@@ -477,7 +453,7 @@ payload_push(struct payload *ctx, const ag_value *val)
 
 /*
  * Define the virt_clone() dynamic dispatch callback function. This function is
- * called by ab_object_clone() when ag_list_clone() is invoked. We create a new
+ * called by ag_object_clone() when ag_list_clone() is invoked. We create a new
  * list using the contextual list as a reference.
  */
 
@@ -487,7 +463,7 @@ virt_clone(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        const struct payload *p = (const struct payload *)ctx;
+        const struct payload *p = ctx;
         return payload_new(p->head);
 }
 
@@ -510,7 +486,7 @@ virt_release(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        struct payload *p = (struct payload *)ctx;
+        struct payload *p = ctx;
         register struct node *n = p->head;
 
         while (n)
@@ -521,9 +497,12 @@ virt_release(ag_memblock *ctx)
 /*
  * Define the virt_cmp() dynamic dispatch callback function. This function is
  * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
- * lexicographical comparison of the two lists. Although we're not considering
- * it now, it's important to keep in mind that sorting can affect the result of
- * this comparison. See also https://stackoverflow.com/questions/13052857/.
+ * lexicographical comparison of the two lists. Two empty lists are considered
+ * equal, and an empty list is considered smaller than a non-empty list.
+ *
+ * Although we're not considering it now, it's important to keep in mind that
+ * sorting can affect the result of this comparison. See also the question on
+ * https://stackoverflow.com/questions/13052857/.
  */
 
 
@@ -531,12 +510,18 @@ static enum ag_cmp
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
         AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-        //AG_ASSERT (ag_list_type(ctx) == ag_list_type(cmp));
 
         const struct payload *p = ag_object_payload(ctx);
         const struct payload *p2 = ag_object_payload(cmp);
+
+        if (AG_UNLIKELY (!p->len))
+                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
+
+        if (AG_UNLIKELY (!p2->len))
+                return !p->len ? AG_CMP_EQ : AG_CMP_GT;
 
         size_t lim = p->len < p2->len ? p->len : p2->len;
         register const struct node *n = p->head;
@@ -640,7 +625,7 @@ virt_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        
+
         const struct payload *p = ag_object_payload(ctx);
         return p->hash;
 }
