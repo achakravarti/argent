@@ -260,7 +260,7 @@ AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically greater"
  */
 
 
-AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically greater"
+AG_TEST_CASE("ag_list_gt() returns true if a list is lexicographically greater"
     " than another")
 {
         AG_AUTO(ag_list) *l = sample_int();
