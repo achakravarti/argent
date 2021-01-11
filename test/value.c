@@ -39,25 +39,16 @@ object_register(void)
 }
 
 
-static ag_object *
-object_sample(void)
-{
-    struct object_payload *p = ag_memblock_new(sizeof *p);
-    p->x = 555;
-    p->y = 666;
-
-    return ag_object_new(OBJECT_TYPEID, p);
-}
 
 
-static inline ag_value *
-object_sample_value(void)
-{
-    AG_AUTO(ag_object) *o = object_sample();
-
-    return ag_value_new_object(o);
-}
-
+static inline ag_value  *sample_value_int(void);
+static inline ag_value  *sample_value_uint(void);
+static inline ag_value  *sample_value_float(void);
+static inline ag_value  *sample_value_string_ascii(void);
+static inline ag_value  *sample_value_string_unicode(void);
+static inline ag_value  *sample_value_object(void);
+static inline ag_object *sample_object(void);
+                        
 
 AG_TEST_CASE("ag_value_new_int() creates a new int value")
 {
@@ -410,26 +401,9 @@ AG_TEST_CASE("ag_value_gt() returns false for 123.456 > 123.4567")
 }
 
 
-static inline ag_value *
-string_sample_ascii(void)
-{
-    AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
-
-    return ag_value_new_string(s);
-}
-
-static inline ag_value *
-string_sample_unicode(void)
-{
-    AG_AUTO(ag_string) *s = ag_string_new("Привет, мир!");
-
-    return ag_value_new_string(s);
-}
-
-
 AG_TEST_CASE("ag_value_new_string() creates a new string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_AUTO(ag_value) *v = sample_value_string_ascii();
         AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
 
         AG_TEST (v && ag_string_eq(ag_value_string(v), s));
@@ -438,7 +412,7 @@ AG_TEST_CASE("ag_value_new_string() creates a new string value")
 
 AG_TEST_CASE("ag_value_copy() copies a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_AUTO(ag_value) *v = sample_value_string_unicode();
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
 
         AG_TEST (ag_string_eq(ag_value_string(v), ag_value_string(cp)));
@@ -447,43 +421,43 @@ AG_TEST_CASE("ag_value_copy() copies a string value")
 
 AG_TEST_CASE("ag_value_type_int() is false for a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_AUTO(ag_value) *v = sample_value_string_ascii();
         AG_TEST (!ag_value_type_int(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_uint() is false for a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_AUTO(ag_value) *v = sample_value_string_unicode();
         AG_TEST (!ag_value_type_int(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_float() is false for a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_AUTO(ag_value) *v = sample_value_string_ascii();
         AG_TEST (!ag_value_type_float(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_string() is true for a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_unicode();
+        AG_AUTO(ag_value) *v = sample_value_string_unicode();
         AG_TEST (ag_value_type_string(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_object() is false for a string value")
 {
-        AG_AUTO(ag_value) *v = string_sample_ascii();
+        AG_AUTO(ag_value) *v = sample_value_string_ascii();
         AG_TEST (!ag_value_type_object(v));
 }
 
 
 AG_TEST_CASE("ag_value_new_object() creates a new object value")
 {
-        AG_AUTO(ag_object) *o = object_sample();
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_object) *o = sample_object();
+        AG_AUTO(ag_value) *v = sample_value_object();
 
         AG_TEST (v && ag_object_eq(ag_value_object(o), o));
 }
@@ -491,7 +465,7 @@ AG_TEST_CASE("ag_value_new_object() creates a new object value")
 
 AG_TEST_CASE("ag_value_copy() copies an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_AUTO(ag_value) *cp = ag_value_copy(v);
 
         AG_TEST (ag_object_eq(ag_value_object(v), ag_value_object(cp)));
@@ -500,36 +474,73 @@ AG_TEST_CASE("ag_value_copy() copies an object value")
 
 AG_TEST_CASE("ag_value_type_int() is false for an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_TEST (!ag_value_type_int(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_uint() is false for an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_TEST (!ag_value_type_uint(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_float() is false for an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_TEST (!ag_value_type_float(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_string() is false for an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_TEST (!ag_value_type_string(v));
 }
 
 
 AG_TEST_CASE("ag_value_type_object() is true for an object value")
 {
-        AG_AUTO(ag_value) *v = object_sample_value();
+        AG_AUTO(ag_value) *v = sample_value_object();
         AG_TEST (ag_value_type_object(v));
+}
+
+
+AG_TEST_CASE("ag_value_len() returns 1 for an int value")
+{
+        AG_AUTO(ag_value) *v = sample_value_int();
+        AG_TEST (ag_value_len(v) == 1);
+}
+
+
+AG_TEST_CASE("ag_value_len() returns 1 for a uint value")
+{
+        AG_AUTO(ag_value) *v = sample_value_uint();
+        AG_TEST (ag_value_len(v) == 1);
+}
+
+
+AG_TEST_CASE("ag_value_len() returns 1 for a float value")
+{
+        AG_AUTO(ag_value) *v = sample_value_float();
+        AG_TEST (ag_value_len(v) == 1);
+}
+
+
+AG_TEST_CASE("ag_value_len() returns the length of the string for a string "
+    "value")
+{
+        AG_AUTO(ag_value) *v = sample_value_string_ascii();
+        AG_TEST (ag_value_len(v) == ag_string_len(ag_value_string(v)));
+}
+
+
+AG_TEST_CASE("ag_value_len() returns the length of the object for an object "
+    "value")
+{
+        AG_AUTO(ag_value) *v = sample_value_object();
+        AG_TEST (ag_value_len(v) == ag_object_len(ag_value_object(v)));
 }
 
 
@@ -538,5 +549,60 @@ test_suite_value(void)
 {
         object_register();
         return AG_TEST_SUITE_GENERATE("ag_value interface");
+}
+
+
+static inline ag_value *
+sample_value_int(void)
+{
+        return ag_value_new_int(-123456);
+}
+
+
+static inline ag_value *
+sample_value_uint(void)
+{
+        return ag_value_new_uint(123456);
+}
+
+
+static inline ag_value *
+sample_value_float(void)
+{
+        return ag_value_new_float(-123.456);
+}
+
+        
+static inline ag_value *
+sample_value_string_ascii(void)
+{
+    AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+    return ag_value_new_string(s);
+}
+
+static inline ag_value *
+sample_value_string_unicode(void)
+{
+    AG_AUTO(ag_string) *s = ag_string_new("Привет, мир!");
+    return ag_value_new_string(s);
+}
+
+
+static ag_object *
+sample_object(void)
+{
+    struct object_payload *p = ag_memblock_new(sizeof *p);
+    p->x = 555;
+    p->y = 666;
+
+    return ag_object_new(OBJECT_TYPEID, p);
+}
+
+
+static inline ag_value *
+sample_value_object(void)
+{
+    AG_AUTO(ag_object) *o = sample_object();
+    return ag_value_new_object(o);
 }
 
