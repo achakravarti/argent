@@ -100,6 +100,27 @@ inline bool ag_object_empty(const ag_object *ctx)
 }
 
 
+#define AG_OBJECT_DEFINE(name)                                                 \
+        extern inline name *name ## _copy(const name *);                       \
+        extern inline name *name ## _clone(const name *);                      \
+        extern inline void name ## _release(name **);                          \
+        extern inline enum ag_cmp name ## _cmp(const name *, const name *);    \
+        extern inline bool name ## _lt(const name *, const name *);            \
+        extern inline bool name ## _eq(const name *, const name *);            \
+        extern inline bool name ## _gt(const name *, const name *);            \
+        extern inline bool name ## _empty(const name *);                       \
+        extern inline ag_typeid name ## _typeid(const name *);                 \
+        extern inline ag_typeid name ## _typeid(const name *);                 \
+        extern inline ag_uuid *name ## _uuid(const name *);                    \
+        extern inline bool name ## _valid(const name *);                       \
+        extern inline size_t name ## _sz(const name *);                        \
+        extern inline size_t name ## _refc(const name *);                      \
+        extern inline size_t name ## _len(const name *);                       \
+        extern inline ag_hash name ## _hash(const name *);                     \
+        extern inline ag_string *name ## _str(const name *);                   \
+        extern void __ ## name ## _register__(void)
+
+
 extern void ag_object_registry_init(void);
 extern void ag_object_registry_exit(void);
 
