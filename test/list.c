@@ -143,7 +143,7 @@ AG_TEST_CASE("ag_list_clone() does not change the reference count")
  */
 
 
-AG_TEST_CASE("ag_list_dispose() reduces the reference count by 1")
+AG_TEST_CASE("ag_list_release() reduces the reference count by 1")
 {
         ag_list *l = sample_int();
         AG_AUTO(ag_list) *l2 = ag_list_copy(l);
