@@ -121,6 +121,9 @@ inline bool ag_object_empty(const ag_object *ctx)
         extern void __ ## name ## _register__(void)
 
 
+#define AG_OBJECT_REGISTER(name) __ ## name ##_register__()
+
+
 extern void ag_object_registry_init(void);
 extern void ag_object_registry_exit(void);
 

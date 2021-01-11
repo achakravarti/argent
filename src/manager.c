@@ -37,8 +37,8 @@ ag_init(void)
                 ag_exception_registry_set(n.erno, n.msg, n.hnd);
         }
 
-        __ag_field_register__();
-        __ag_list_register__();
+        AG_OBJECT_REGISTER(ag_field);
+        AG_OBJECT_REGISTER(ag_list);
 }
 
 
