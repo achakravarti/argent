@@ -260,6 +260,24 @@ ag_value_sz(const ag_value *ctx)
 }
 
 
+extern size_t
+ag_value_len(const ag_value *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        switch (ag_value_type(ctx)) {
+        case AG_VALUE_TYPE_STRING:
+                return ag_string_len(ag_value_string(ctx));
+                break;
+        case AG_VALUE_TYPE_OBJECT:
+                return ag_object_len(ag_value_object(ctx));
+                break;
+        default:
+                return 1;
+        }
+}
+
+
 extern ag_int
 ag_value_int(const ag_value *ctx)
 {
