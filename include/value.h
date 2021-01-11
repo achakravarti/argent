@@ -58,8 +58,8 @@ extern size_t                    ag_value_len(const ag_value *);
 extern ag_int                    ag_value_int(const ag_value *);
 extern ag_uint                   ag_value_uint(const ag_value *);
 extern ag_float                  ag_value_float(const ag_value *);
-extern ag_string                *ag_value_string(const ag_value *);
-extern ag_object                *ag_value_object(const ag_value *);
+extern const ag_string          *ag_value_string(const ag_value *);
+extern const ag_object          *ag_value_object(const ag_value *);
 
 inline bool ag_value_type_int(const ag_value *ctx)
 {

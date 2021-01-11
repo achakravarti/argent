@@ -102,12 +102,12 @@ ag_value_release(ag_value **ctx)
 
         if (AG_LIKELY (v)) {
                 if (ag_value_type_object(v)) {
-                        ag_object *o = ag_value_object(v);
+                        ag_object *o = (ag_object *)ag_value_object(v);
                         ag_object_release(&o);
                 }
 
                 if (ag_value_type_string(v)) {
-                        ag_string *s = ag_value_string(v);
+                        ag_string *s = (ag_string *)ag_value_string(v);
                         ag_string_release(&s);
                 }
 
@@ -308,22 +308,22 @@ ag_value_float(const ag_value *ctx)
 }
 
 
-extern ag_string *
+extern const ag_string *
 ag_value_string(const ag_value *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_value_type_string(ctx));
 
-        return ((ag_string *)((uintptr_t)ctx & MASK_PTR));
+        return ((const ag_string *)((uintptr_t)ctx & MASK_PTR));
 }
 
 
-extern ag_object *
+extern const ag_object *
 ag_value_object(const ag_value *ctx)
 {
         AG_ASSERT_PTR (ctx); 
         AG_ASSERT (ag_value_type_object(ctx));
 
-        return ((ag_object *)((uintptr_t)ctx & MASK_PTR));
+        return ((const ag_object *)((uintptr_t)ctx & MASK_PTR));
 }
 
