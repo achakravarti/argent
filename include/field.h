@@ -27,8 +27,7 @@
 
 typedef ag_object       ag_field;
 
-
-extern void __ag_field_register__(void);
+extern void      __ag_field_register__(void);
 extern ag_field *ag_field_new(const ag_value *, const ag_value *);
 
 inline ag_field *
