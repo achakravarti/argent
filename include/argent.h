@@ -36,6 +36,7 @@
 #include "./object.h"
 #include "./value.h"
 #include "./list.h"
+#include "./alist.h"
 #include "./test.h"
 #include "./manager.h"
 
