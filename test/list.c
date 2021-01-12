@@ -80,8 +80,8 @@ AG_TEST_CASE("ag_list_new() can create a new empty list")
  */
 
 
-AG_TESTS_OBJECT_COPY(ag_list, sample_int());
-AG_TESTS_OBJECT_COPY(ag_list, sample_int_2());
+AG_TEST_OBJECT_COPY(ag_list, sample_int());
+AG_TEST_OBJECT_COPY(ag_list, sample_int_2());
 
 
 /*
@@ -89,9 +89,9 @@ AG_TESTS_OBJECT_COPY(ag_list, sample_int_2());
  */
 
 
-AG_TESTS_OBJECT_CLONE(ag_list, ag_list_new());
-AG_TESTS_OBJECT_CLONE(ag_list, sample_int());
-AG_TESTS_OBJECT_CLONE(ag_list, sample_int_2());
+AG_TEST_OBJECT_CLONE(ag_list, ag_list_new());
+AG_TEST_OBJECT_CLONE(ag_list, sample_int());
+AG_TEST_OBJECT_CLONE(ag_list, sample_int_2());
 
 
 /*
@@ -99,9 +99,9 @@ AG_TESTS_OBJECT_CLONE(ag_list, sample_int_2());
  */
 
 
-AG_TESTS_OBJECT_RELEASE(ag_list, ag_list_new());
-AG_TESTS_OBJECT_RELEASE(ag_list, sample_int());
-AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
+AG_TEST_OBJECT_RELEASE(ag_list, ag_list_new());
+AG_TEST_OBJECT_RELEASE(ag_list, sample_int());
+AG_TEST_OBJECT_RELEASE(ag_list, sample_int_2());
 
 
 /*
@@ -110,10 +110,10 @@ AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
  */
 
 
-AG_TESTS_OBJECT_CMP(ag_list, sample_int(), sample_int_2());
-AG_TESTS_OBJECT_LT(ag_list, sample_int(), sample_int_2());
-AG_TESTS_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
-AG_TESTS_OBJECT_GT(ag_list, sample_int(), sample_int_2());
+AG_TEST_OBJECT_CMP(ag_list, sample_int(), sample_int_2());
+AG_TEST_OBJECT_LT(ag_list, sample_int(), sample_int_2());
+AG_TEST_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
+AG_TEST_OBJECT_GT(ag_list, sample_int(), sample_int_2());
 
 
 /*
@@ -121,18 +121,18 @@ AG_TESTS_OBJECT_GT(ag_list, sample_int(), sample_int_2());
  */
 
 
-AG_TESTS_OBJECT_EMPTY(ag_list, ag_list_new());
-AG_TESTS_OBJECT_EMPTY_NOT(ag_list, sample_int())
-AG_TESTS_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
+AG_TEST_OBJECT_EMPTY(ag_list, ag_list_new());
+AG_TEST_OBJECT_EMPTY_NOT(ag_list, sample_int())
+AG_TEST_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
 
 /*
  * Define the test case for ag_list_typeid().
  */
 
 
-AG_TESTS_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
-AG_TESTS_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
-AG_TESTS_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
+AG_TEST_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
+AG_TEST_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
+AG_TEST_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
 
 
 /*
@@ -140,9 +140,9 @@ AG_TESTS_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
  */
 
 
-AG_TESTS_OBJECT_UUID(ag_list, ag_list_new());
-AG_TESTS_OBJECT_UUID(ag_list, sample_int());
-AG_TESTS_OBJECT_UUID(ag_list, sample_int_2());
+AG_TEST_OBJECT_UUID(ag_list, ag_list_new());
+AG_TEST_OBJECT_UUID(ag_list, sample_int());
+AG_TEST_OBJECT_UUID(ag_list, sample_int_2());
 
 
 /*
@@ -150,9 +150,9 @@ AG_TESTS_OBJECT_UUID(ag_list, sample_int_2());
  */
 
 
-AG_TESTS_OBJECT_VALID(ag_list, sample_int());
-AG_TESTS_OBJECT_VALID(ag_list, sample_int_2());
-AG_TESTS_OBJECT_VALID_NOT(ag_list, ag_list_new());
+AG_TEST_OBJECT_VALID(ag_list, sample_int());
+AG_TEST_OBJECT_VALID(ag_list, sample_int_2());
+AG_TEST_OBJECT_VALID_NOT(ag_list, ag_list_new());
 
 
 /*

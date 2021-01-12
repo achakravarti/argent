@@ -26,8 +26,8 @@ AG_TEST_CASE("ag_field_new() can create a new sample field")
 
 
 
-AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_small());
-AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_large());
+AG_TEST_OBJECT_COPY(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_COPY(ag_field, sample_int_str_large());
 
 
 /*
@@ -35,8 +35,8 @@ AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_large());
  */
 
 
-AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_small());
-AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_large());
+AG_TEST_OBJECT_CLONE(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_CLONE(ag_field, sample_int_str_large());
 
 
 /*
@@ -44,8 +44,8 @@ AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_large());
  */
 
 
-AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_small());
-AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_large());
+AG_TEST_OBJECT_RELEASE(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_RELEASE(ag_field, sample_int_str_large());
 
 
 /*
@@ -55,10 +55,10 @@ AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_large());
  */
 
 
-AG_TESTS_OBJECT_CMP(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_TESTS_OBJECT_LT(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_TESTS_OBJECT_EQ(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TEST_OBJECT_CMP(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TEST_OBJECT_LT(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TEST_OBJECT_EQ(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TEST_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
 
 
 /*
@@ -66,16 +66,16 @@ AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
  */
 
 
-AG_TESTS_OBJECT_EMPTY_NOT(ag_field, sample_int_str_small())
-AG_TESTS_OBJECT_EMPTY_NOT(ag_field, sample_int_str_large())
+AG_TEST_OBJECT_EMPTY_NOT(ag_field, sample_int_str_small())
+AG_TEST_OBJECT_EMPTY_NOT(ag_field, sample_int_str_large())
 
 /*
  * Define the test case for ag_field_typeid().
  */
 
 
-AG_TESTS_OBJECT_TYPEID(ag_field, sample_int_str_small(), AG_TYPEID_FIELD);
-AG_TESTS_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
+AG_TEST_OBJECT_TYPEID(ag_field, sample_int_str_small(), AG_TYPEID_FIELD);
+AG_TEST_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
 
 
 /*
@@ -83,8 +83,8 @@ AG_TESTS_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
  */
 
 
-AG_TESTS_OBJECT_UUID(ag_field, sample_int_str_small());
-AG_TESTS_OBJECT_UUID(ag_field, sample_int_str_large());
+AG_TEST_OBJECT_UUID(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_UUID(ag_field, sample_int_str_large());
 
 
 
@@ -93,8 +93,8 @@ AG_TESTS_OBJECT_UUID(ag_field, sample_int_str_large());
  */
 
 
-AG_TESTS_OBJECT_VALID(ag_field, sample_int_str_small());
-AG_TESTS_OBJECT_VALID(ag_field, sample_int_str_large());
+AG_TEST_OBJECT_VALID(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_VALID(ag_field, sample_int_str_large());
 
 
 /*

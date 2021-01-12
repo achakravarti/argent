@@ -164,16 +164,16 @@ AG_TEST_CASE("ag_object_new() creates a new derived object")
 }
 
 
-AG_TESTS_OBJECT_COPY(ag_object, sample_base());
-AG_TESTS_OBJECT_COPY(ag_object, sample_derived());
+AG_TEST_OBJECT_COPY(ag_object, sample_base());
+AG_TEST_OBJECT_COPY(ag_object, sample_derived());
 
 
-AG_TESTS_OBJECT_CLONE(ag_object, sample_base());
-//AG_TESTS_OBJECT_CLONE(ag_object, sample_derived());
+AG_TEST_OBJECT_CLONE(ag_object, sample_base());
+//AG_TEST_OBJECT_CLONE(ag_object, sample_derived());
 
 
-AG_TESTS_OBJECT_RELEASE(ag_object, sample_base());
-AG_TESTS_OBJECT_RELEASE(ag_object, sample_derived());
+AG_TEST_OBJECT_RELEASE(ag_object, sample_base());
+AG_TEST_OBJECT_RELEASE(ag_object, sample_derived());
 
 
 AG_TEST_CASE("ag_object_cmp() returns AG_CMP_EQ when comparing the same base"
@@ -236,12 +236,12 @@ AG_TEST_CASE("ag_object_gt() returns false when comparing the same derived"
 }
 
 
-AG_TESTS_OBJECT_TYPEID(ag_object, sample_base(), TYPEID_BASE);
-AG_TESTS_OBJECT_TYPEID(ag_object, sample_derived(), TYPEID_DERIVED);
+AG_TEST_OBJECT_TYPEID(ag_object, sample_base(), TYPEID_BASE);
+AG_TEST_OBJECT_TYPEID(ag_object, sample_derived(), TYPEID_DERIVED);
 
 
-AG_TESTS_OBJECT_UUID(ag_object, sample_base());
-AG_TESTS_OBJECT_UUID(ag_object, sample_derived());
+AG_TEST_OBJECT_UUID(ag_object, sample_base());
+AG_TEST_OBJECT_UUID(ag_object, sample_derived());
 
 
 AG_TEST_CASE("ag_object_sz() returns the size of a base object")
@@ -303,8 +303,8 @@ AG_TEST_CASE("ag_object_len() returns 0 for a derived object")
 }
 
 
-AG_TESTS_OBJECT_VALID(ag_object, sample_base());
-AG_TESTS_OBJECT_VALID(ag_object, sample_derived());
+AG_TEST_OBJECT_VALID(ag_object, sample_base());
+AG_TEST_OBJECT_VALID(ag_object, sample_derived());
 
 
 AG_TEST_CASE("ag_object_hash() executes its default callback if not overridden")
@@ -343,8 +343,8 @@ AG_TEST_CASE("ag_object_str() executes its provided callback if overridden")
 }
 
 
-AG_TESTS_OBJECT_EMPTY(ag_object, sample_derived());
-AG_TESTS_OBJECT_EMPTY_NOT(ag_object, sample_base())
+AG_TEST_OBJECT_EMPTY(ag_object, sample_derived());
+AG_TEST_OBJECT_EMPTY_NOT(ag_object, sample_base())
 
 
 AG_TEST_CASE("ag_object_payload() gets a handle to the object payload")
