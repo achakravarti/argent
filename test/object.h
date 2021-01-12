@@ -72,6 +72,27 @@
         }
 
 
+#define AG_TESTS_OBJECT_CMP(type, small, big)                           \
+        AG_TEST_CASE(#type "_cmp(): ctx < cmp => AG_CMP_LT")            \
+        {                                                               \
+                AG_AUTO(type) *s = small;                               \
+                AG_AUTO(type) *b = big;                                 \
+                AG_TEST (type ## _cmp(s, b) == AG_CMP_LT);              \
+        }                                                               \
+        AG_TEST_CASE(#type "_cmp(): ctx == cmp => AG_CMP_EQ")           \
+        {                                                               \
+                AG_AUTO(type) *s = big;                                 \
+                AG_AUTO(type) *b = big;                                 \
+                AG_TEST (type ## _cmp(s, b) == AG_CMP_EQ);              \
+        }                                                               \
+        AG_TEST_CASE(#type "_cmp(): ctx > cmp => AG_CMP_GT")            \
+        {                                                               \
+                AG_AUTO(type) *s = small;                               \
+                AG_AUTO(type) *b = big;                                 \
+                AG_TEST (type ## _cmp(b, s) == AG_CMP_GT);              \
+        }
+
+
 #define AG_TESTS_OBJECT_LT(type, small, big)                            \
         AG_TEST_CASE(#type "_lt(): ctx < cmp => true")                  \
         {                                                               \
