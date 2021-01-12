@@ -494,9 +494,12 @@ virt_release(ag_memblock *ctx)
 /*
  * Define the virt_cmp() dynamic dispatch callback function. This function is
  * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
- * lexicographical comparison of the two lists. Although we're not considering
- * it now, it's important to keep in mind that sorting can affect the result of
- * this comparison. See also https://stackoverflow.com/questions/13052857/.
+ * lexicographical comparison of the two lists. Two empty lists are considered
+ * equal, and an empty list is considered smaller than a non-empty list.
+ *
+ * Although we're not considering it now, it's important to keep in mind that
+ * sorting can affect the result of this comparison. See also the question on
+ * https://stackoverflow.com/questions/13052857/.
  */
 
 
@@ -510,6 +513,12 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
 
         const struct payload *p = ag_object_payload(ctx);
         const struct payload *p2 = ag_object_payload(cmp);
+
+        if (AG_UNLIKELY (!p->len))
+                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
+
+        if (AG_UNLIKELY (!p2->len))
+                return !p->len ? AG_CMP_EQ : AG_CMP_GT;
 
         size_t lim = p->len < p2->len ? p->len : p2->len;
         register const struct node *n = p->head;

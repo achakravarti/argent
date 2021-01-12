@@ -89,7 +89,7 @@ AG_TESTS_OBJECT_COPY(ag_list, sample_int_2());
  */
 
 
-//AG_TESTS_OBJECT_CLONE(ag_list, ag_list_new());
+AG_TESTS_OBJECT_CLONE(ag_list, ag_list_new());
 AG_TESTS_OBJECT_CLONE(ag_list, sample_int());
 AG_TESTS_OBJECT_CLONE(ag_list, sample_int_2());
 
