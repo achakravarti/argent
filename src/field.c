@@ -186,9 +186,9 @@ virt_str(const ag_object *ctx)
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
 
         const struct payload *p = ag_object_payload(ctx);
-        const ag_string *key = ag_value_string(p->key);
-        const ag_string *val = ag_value_string(p->val);
+        const ag_string *key = ag_value_str(p->key);
+        const ag_string *val = ag_value_str(p->val);
 
-        return ag_string_new_fmt("key = %s, val = %s", key, val);
+        return ag_string_new_fmt("%s:%s", key, val);
 }
 
