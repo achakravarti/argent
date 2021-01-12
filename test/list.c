@@ -99,41 +99,9 @@ AG_TESTS_OBJECT_CLONE(ag_list, sample_int_2());
  */
 
 
-AG_TEST_CASE("ag_list_release() reduces the reference count by 1")
-{
-        ag_list *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
-        ag_list_release(&l);
-
-        AG_TEST (!l && ag_list_refc(l2) == 2);
-}
-
-
-AG_TEST_CASE("ag_list_release() performs a no-op if passed NULL")
-{
-        ag_list_release(NULL);
-
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_list_release() performs a no-op if passed a handle to NULL")
-{
-        ag_list *l = NULL;
-        ag_list_release(&l);
-
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_list_release() disposes a single instance of a list")
-{
-        ag_list *l = sample_int();
-        ag_list_release(&l);
-
-        AG_TEST (!l);
-}
+AG_TESTS_OBJECT_RELEASE(ag_list, ag_list_new());
+AG_TESTS_OBJECT_RELEASE(ag_list, sample_int());
+AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
 
 
 /*

@@ -44,40 +44,8 @@ AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_large());
  */
 
 
-AG_TEST_CASE("ag_field_release() reduces the reference count by 1")
-{
-        ag_field *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_copy(f);
-        AG_AUTO(ag_field) *cp2 = ag_field_copy(cp);
-        ag_field_release(&f);
-
-        AG_TEST (!f && ag_field_refc(cp2) == 2);
-}
-
-
-AG_TEST_CASE("ag_field_release() performs a no-op if passed NULL")
-{
-        ag_field_release(NULL);
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_field_release() performs a no-op if passed a handle to NULL")
-{
-        ag_field *f = NULL;
-        ag_field_release(&f);
-
-        AG_TEST (true);
-}
-
-
-AG_TEST_CASE("ag_field_release() disposes a single instance of a field")
-{
-        ag_field *f = sample_int_str_small();
-        ag_field_release(&f);
-
-        AG_TEST (!f);
-}
+AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_small());
+AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_large());
 
 
 /*
