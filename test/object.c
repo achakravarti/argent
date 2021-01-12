@@ -1,6 +1,9 @@
 #include "./test.h"
+#include "./object.h"
+
 
 #define __AG_TEST_SUITE_ID__ 3
+
 
 #define TYPEID_BASE    ((ag_typeid) 1)
 #define TYPEID_DERIVED ((ag_typeid) 2)
@@ -161,7 +164,9 @@ AG_TEST_CASE("ag_object_new() creates a new derived object")
 }
 
 
-AG_TEST_CASE("ag_object_copy() makes a shallow copy of a base object")
+AG_TESTS_OBJECT_COPY(ag_object, sample_base());
+AG_TESTS_OBJECT_COPY(ag_object, sample_derived());
+/*AG_TEST_CASE("ag_object_copy() makes a shallow copy of a base object")
 {
         AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_object) *o2 = ag_object_copy(o);
@@ -222,7 +227,7 @@ AG_TEST_CASE("ag_object_copy() preserves the data of the shallow copy of a"
         const struct payload_derived *p2 = ag_object_payload(o2);
 
         AG_TEST (*p->x == *p2->x && *p->y == *p2->y);
-}
+}*/
 
 
 AG_TEST_CASE("ag_object_clone() makes a deep copy of a base object")

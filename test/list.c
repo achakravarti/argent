@@ -22,6 +22,7 @@
 
 
 #include "./test.h"
+#include "./object.h"
 
 
 /*
@@ -79,22 +80,8 @@ AG_TEST_CASE("ag_list_new() can create a new empty list")
  */
 
 
-AG_TEST_CASE("ag_list_copy() creates a shallow copy of a sample list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-
-        AG_TEST (l2 == l);
-}
-
-
-AG_TEST_CASE("ag_list_copy() increases the reference count by 1")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-
-        AG_TEST (ag_list_refc(l) == 2);
-}
+AG_TESTS_OBJECT_COPY(ag_list, sample_int());
+AG_TESTS_OBJECT_COPY(ag_list, sample_int_2());
 
 
 /*

@@ -1,4 +1,6 @@
 #include "./test.h"
+#include "./object.h"
+
 
 #define __AG_TEST_SUITE_ID__ 6
 
@@ -23,27 +25,9 @@ AG_TEST_CASE("ag_field_new() can create a new sample field")
 }
 
 
-/*
- * Define the test cases for ag_field_copy().
- */
 
-
-AG_TEST_CASE("ag_field_copy() creates a shallow copy a field")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_copy(f);
-
-        AG_TEST (cp == f);
-}
-
-
-AG_TEST_CASE("ag_field_copy() increases the reference count by 1")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_copy(f);
-
-        AG_TEST (ag_field_refc(f) == 2);
-}
+AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_small());
+AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_large());
 
 
 /*
