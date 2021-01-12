@@ -110,6 +110,7 @@ AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
  */
 
 
+AG_TESTS_OBJECT_CMP(ag_list, sample_int(), sample_int_2());
 AG_TESTS_OBJECT_LT(ag_list, sample_int(), sample_int_2());
 AG_TESTS_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
 AG_TESTS_OBJECT_GT(ag_list, sample_int(), sample_int_2());
