@@ -140,11 +140,9 @@ AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
  */
 
 
-AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (ag_list_typeid(l) == AG_TYPEID_LIST);
-}
+AG_TESTS_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
+AG_TESTS_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
+AG_TESTS_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
 
 
 /*

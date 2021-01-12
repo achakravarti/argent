@@ -236,20 +236,8 @@ AG_TEST_CASE("ag_object_gt() returns false when comparing the same derived"
 }
 
 
-AG_TEST_CASE("ag_object_typeid() returns the type ID of a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-
-        AG_TEST (ag_object_typeid(o) == TYPEID_BASE);
-}
-
-
-AG_TEST_CASE("ag_object_typeid() returns the type ID of a derived object")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-
-        AG_TEST (ag_object_typeid(o) == TYPEID_DERIVED);
-}
+AG_TESTS_OBJECT_TYPEID(ag_object, sample_base(), TYPEID_BASE);
+AG_TESTS_OBJECT_TYPEID(ag_object, sample_derived(), TYPEID_DERIVED);
 
 
 AG_TESTS_OBJECT_UUID(ag_object, sample_base());

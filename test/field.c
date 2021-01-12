@@ -78,11 +78,8 @@ AG_TEST_CASE("ag_field_empty() returns false")
  */
 
 
-AG_TEST_CASE("ag_field_typeid() returns AG_TYPEID_FIELD")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_TEST (ag_field_typeid(f) == AG_TYPEID_FIELD);
-}
+AG_TESTS_OBJECT_TYPEID(ag_field, sample_int_str_small(), AG_TYPEID_FIELD);
+AG_TESTS_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
 
 
 /*

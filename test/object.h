@@ -156,6 +156,14 @@
         }                                                               \
 
 
+#define AG_TESTS_OBJECT_TYPEID(type, sample, typeid)                    \
+        AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _typeid(o) == typeid)                  \
+        }                                                               \
+
+
 #define AG_TESTS_OBJECT_UUID(type, sample)                      \
         AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
         {                                                       \
