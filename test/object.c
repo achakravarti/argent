@@ -303,19 +303,8 @@ AG_TEST_CASE("ag_object_len() returns 0 for a derived object")
 }
 
 
-AG_TEST_CASE("ag_object_valid() executes its default callback if not"
-    " overridden")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST (ag_object_valid(o));
-}
-
-
-AG_TEST_CASE("ag_object_valid() executes its provided callback if overridden")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST (ag_object_valid(o));
-}
+AG_TESTS_OBJECT_VALID(ag_object, sample_base());
+AG_TESTS_OBJECT_VALID(ag_object, sample_derived());
 
 
 AG_TEST_CASE("ag_object_hash() executes its default callback if not overridden")

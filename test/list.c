@@ -150,18 +150,9 @@ AG_TESTS_OBJECT_UUID(ag_list, sample_int_2());
  */
 
 
-AG_TEST_CASE("ag_list_valid() returns false for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_valid(l));
-}
-
-
-AG_TEST_CASE("ag_list_valid() returns true for an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (ag_list_valid(l));
-}
+AG_TESTS_OBJECT_VALID(ag_list, sample_int());
+AG_TESTS_OBJECT_VALID(ag_list, sample_int_2());
+AG_TESTS_OBJECT_VALID_NOT(ag_list, ag_list_new());
 
 
 /*

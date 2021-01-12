@@ -190,6 +190,22 @@
         }
 
 
+#define AG_TESTS_OBJECT_VALID(type, sample)                     \
+        AG_TEST_CASE(#type "_valid(): " #sample " => true")     \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (type ## _valid(o))                     \
+        }
+
+
+#define AG_TESTS_OBJECT_VALID_NOT(type, sample)                 \
+        AG_TEST_CASE(#type "_valid(): " #sample " => false")    \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (!type ## _valid(o))                    \
+        }
+
+
 
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 
