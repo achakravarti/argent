@@ -170,22 +170,9 @@ AG_TEST_OBJECT_SZ(ag_list, sample_int_2(), 7 * sizeof(ag_int));
  */
 
 
-AG_TEST_CASE("ag_list_refc() returns 1 for a single instance")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (ag_list_refc(l) == 1);
-}
-
-
-AG_TEST_CASE(
-    "ag_list_refc() returns the reference count of a shallow copy")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = ag_list_copy(l);
-        AG_AUTO(ag_list) *l3 = ag_list_copy(l2);
-
-        AG_TEST (ag_list_refc(l) == 3);
-}
+AG_TEST_OBJECT_REFC(ag_list, ag_list_new());
+AG_TEST_OBJECT_REFC(ag_list, sample_int());
+AG_TEST_OBJECT_REFC(ag_list, sample_int_2());
 
 
 /*

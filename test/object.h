@@ -222,5 +222,27 @@
         }
 
 
+#define AG_TEST_OBJECT_REFC(type, sample)                               \
+        AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _refc(o) == 1);                        \
+        }                                                               \
+        AG_TEST_CASE(#type "_refc(): shallow copy => refc > 1")         \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_AUTO(type) *cp = type ## _copy(o);                   \
+                AG_AUTO(type) *cp2 = type ## _copy(cp);                 \
+                AG_TEST (type ## _refc(o) == 3);                        \
+        }                                                               \
+        AG_TEST_CASE(#type "_refc(): deep copy => refc == 1")           \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_AUTO(type) *cp = type ## _clone(o);                  \
+                AG_AUTO(type) *cp2 = type ## _clone(cp);                \
+                AG_TEST (type ## _refc(o) == 1);                        \
+        }
+
+
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 

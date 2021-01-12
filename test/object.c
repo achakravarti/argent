@@ -260,52 +260,12 @@ AG_TEST_OBJECT_UUID(ag_object, sample_base());
 AG_TEST_OBJECT_UUID(ag_object, sample_derived());
 
 
-AG_TEST_CASE("ag_object_sz() returns the size of a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-
-        AG_TEST (ag_object_sz(o));
-}
-
-
-AG_TEST_CASE("ag_object_sz() returns the size of a derived object")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-
-        AG_TEST (ag_object_sz(o));
-}
-
-
-AG_TEST_CASE("ag_object_sz() returns a greater size for a derived object than"
-    " that of a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_AUTO(ag_object) *o2 = sample_derived();
-
-        AG_TEST (ag_object_sz(o2) > ag_object_sz(o));
-}
-
-
 AG_TEST_OBJECT_SZ(ag_object, sample_base(), sample_base_sz());
 AG_TEST_OBJECT_SZ(ag_object, sample_derived(), sample_derived_sz());
 
 
-AG_TEST_CASE("ag_object_refc() returns the reference count of a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-
-        AG_TEST (ag_object_refc(o) == 2);
-}
-
-
-AG_TEST_CASE("ag_object_refc() returns the reference count of a derived object")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        AG_AUTO(ag_object) *o2 = ag_object_copy(o);
-
-        AG_TEST (ag_object_refc(o) == 2);
-}
+AG_TEST_OBJECT_REFC(ag_object, sample_base());
+AG_TEST_OBJECT_REFC(ag_object, sample_derived());
 
 
 AG_TEST_OBJECT_LEN(ag_object, sample_base(), 1);

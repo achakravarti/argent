@@ -111,21 +111,8 @@ AG_TEST_OBJECT_SZ(ag_field, sample_int_str_large(), 6 + sizeof(int64_t));
  */
 
 
-AG_TEST_CASE("ag_field_refc() returns 1 for a single instance")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_TEST (ag_field_refc(f) == 1);
-}
-
-
-AG_TEST_CASE("ag_field_refc() returns the reference count of a shallow copy")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_copy(f);
-        AG_AUTO(ag_field) *cp2 = ag_field_copy(cp);
-
-        AG_TEST (ag_field_refc(f) == 3);
-}
+AG_TEST_OBJECT_REFC(ag_field, sample_int_str_small());
+AG_TEST_OBJECT_REFC(ag_field, sample_int_str_large());
 
 
 /*
