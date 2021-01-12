@@ -56,6 +56,7 @@ AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_large());
 
 
 AG_TESTS_OBJECT_LT(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TESTS_OBJECT_EQ(ag_field, sample_int_str_small(), sample_int_str_large());
 AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
 
 
@@ -66,7 +67,7 @@ AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
  */
 
 
-AG_TEST_CASE("ag_field_eq() returns true if two fields are equal")
+/*AG_TEST_CASE("ag_field_eq() returns true if two fields are equal")
 {
         AG_AUTO(ag_field) *f = sample_int_str_small();
         AG_AUTO(ag_field) *f2 = sample_int_str_small();
@@ -90,7 +91,7 @@ AG_TEST_CASE("ag_field_eq() returns false if a field is greater than another")
         AG_AUTO(ag_field) *f2 = sample_int_str_small();
 
         AG_TEST (!ag_field_eq(f2, f));
-}
+}*/
 
 
 /*

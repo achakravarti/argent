@@ -111,44 +111,8 @@ AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
 
 
 AG_TESTS_OBJECT_LT(ag_list, sample_int(), sample_int_2());
+AG_TESTS_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
 AG_TESTS_OBJECT_GT(ag_list, sample_int(), sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_eq(). Since ag_list_eq() is a specialised
- * case of ag_list_cmp(), this these test cases also indirectly help test out
- * ag_list_cmp().
- */
-
-
-AG_TEST_CASE("ag_list_eq() returns true if two lists are lexicographically"
-    " equal")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically less"
-     " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int_2();
-
-        AG_TEST (!ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_eq() returns false if a list is lexicographically greater"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_eq(l2, l));
-}
 
 
 /*
