@@ -46,7 +46,15 @@ sample_derived(void)
         return ag_object_new(TYPEID_DERIVED, p);
 }
 
+        
+static size_t
+sample_base_sz(void)
+{
+        AG_AUTO(ag_object) *o = sample_base();
+        return ag_memblock_sz(o) + sizeof(struct payload_base);
+}
 
+        
 static ag_memblock *
 virt_clone(const ag_memblock *payload)
 {
@@ -97,6 +105,14 @@ virt_sz(const ag_object *ctx)
 
         return ag_memblock_sz(ctx) + ag_memblock_sz(p) + ag_memblock_sz(p->x)
                + ag_memblock_sz(p->y);
+}
+
+        
+static size_t
+sample_derived_sz(void)
+{
+        AG_AUTO(ag_object) *o = sample_derived();
+        return virt_sz(o);
 }
 
 
@@ -268,6 +284,10 @@ AG_TEST_CASE("ag_object_sz() returns a greater size for a derived object than"
 
         AG_TEST (ag_object_sz(o2) > ag_object_sz(o));
 }
+
+
+AG_TEST_OBJECT_SZ(ag_object, sample_base(), sample_base_sz());
+AG_TEST_OBJECT_SZ(ag_object, sample_derived(), sample_derived_sz());
 
 
 AG_TEST_CASE("ag_object_refc() returns the reference count of a base object")

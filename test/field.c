@@ -102,14 +102,8 @@ AG_TEST_OBJECT_VALID(ag_field, sample_int_str_large());
  */
 
 
-AG_TEST_CASE("ag_field_sz() returns the cumulative size of a field")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_value) *v = ag_field_val(f);
-        const ag_string *s = ag_value_string(v);
-
-        AG_TEST (ag_field_sz(f) == sizeof(int64_t) + ag_string_sz(s));
-}
+AG_TEST_OBJECT_SZ(ag_field, sample_int_str_small(), 6 + sizeof(int64_t));
+AG_TEST_OBJECT_SZ(ag_field, sample_int_str_large(), 6 + sizeof(int64_t));
 
 
 /*

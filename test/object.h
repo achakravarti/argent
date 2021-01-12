@@ -214,5 +214,13 @@
         }
 
 
+#define AG_TEST_OBJECT_SZ(type, sample, sz)                     \
+        AG_TEST_CASE(#type "_sz(): " #sample " => " #sz)        \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (type ## _sz(o) == sz)                  \
+        }
+
+
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 

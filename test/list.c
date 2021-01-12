@@ -160,18 +160,9 @@ AG_TEST_OBJECT_VALID_NOT(ag_list, ag_list_new());
  */
 
 
-AG_TEST_CASE("ag_list_sz() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_sz(l));
-}
-
-
-AG_TEST_CASE("ag_list_sz() returns the cumulative size of an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_TEST (ag_list_sz(l) == sizeof(ag_int) * 7);
-}
+AG_TEST_OBJECT_SZ(ag_list, ag_list_new(), 0);
+AG_TEST_OBJECT_SZ(ag_list, sample_int(), 3 * sizeof(ag_int));
+AG_TEST_OBJECT_SZ(ag_list, sample_int_2(), 7 * sizeof(ag_int));
 
 
 /*
