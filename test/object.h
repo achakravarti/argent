@@ -156,5 +156,15 @@
         }                                                               \
 
 
+#define AG_TESTS_OBJECT_UUID(type, sample)                      \
+        AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_AUTO(ag_uuid) *u = type ## _uuid(o);         \
+                AG_AUTO(ag_string) *s = ag_uuid_str(u);         \
+                AG_TEST (!ag_string_empty(s));                  \
+        }                                                       \
+
+
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 

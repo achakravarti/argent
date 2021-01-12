@@ -90,14 +90,9 @@ AG_TEST_CASE("ag_field_typeid() returns AG_TYPEID_FIELD")
  */
 
 
-AG_TEST_CASE("ag_field_uuid() returns the UUID of a field")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_uuid) *u = ag_field_uuid(f);
-        AG_AUTO(ag_string) *s = ag_uuid_str(u);
+AG_TESTS_OBJECT_UUID(ag_field, sample_int_str_small());
+AG_TESTS_OBJECT_UUID(ag_field, sample_int_str_large());
 
-        AG_TEST (!ag_string_empty(s));
-}
 
 
 /*

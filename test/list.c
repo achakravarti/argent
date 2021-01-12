@@ -152,14 +152,9 @@ AG_TEST_CASE("ag_list_typeid() returns AG_TYPEID_LIST")
  */
 
 
-AG_TEST_CASE("ag_list_uuid() returns the UUID of a list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_uuid) *u = ag_list_uuid(l);
-        AG_AUTO(ag_string) *s = ag_uuid_str(u);
-
-        AG_TEST (!ag_string_empty(s));
-}
+AG_TESTS_OBJECT_UUID(ag_list, ag_list_new());
+AG_TESTS_OBJECT_UUID(ag_list, sample_int());
+AG_TESTS_OBJECT_UUID(ag_list, sample_int_2());
 
 
 /*

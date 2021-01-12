@@ -252,22 +252,8 @@ AG_TEST_CASE("ag_object_typeid() returns the type ID of a derived object")
 }
 
 
-AG_TEST_CASE("ag_object_uuid() returns the UUID of a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
-
-        AG_TEST (!ag_uuid_empty(u));
-}
-
-
-AG_TEST_CASE("ag_object_uuid() returns the UUID of a derived object")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
-
-        AG_TEST (!ag_uuid_empty(u));
-}
+AG_TESTS_OBJECT_UUID(ag_object, sample_base());
+AG_TESTS_OBJECT_UUID(ag_object, sample_derived());
 
 
 AG_TEST_CASE("ag_object_sz() returns the size of a base object")
