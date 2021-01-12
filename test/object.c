@@ -288,22 +288,9 @@ AG_TEST_CASE("ag_object_hash() executes its default callback if not overridden")
 }
 
 
-AG_TEST_CASE("ag_object_str() executes its default callback if not overridden")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_AUTO(ag_string) *s = ag_object_str(o);
-
-        AG_TEST (ag_string_has(s, "uuid"));
-}
-
-
-AG_TEST_CASE("ag_object_str() executes its provided callback if overridden")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        AG_AUTO(ag_string) *s = ag_object_str(o);
-
-        AG_TEST (ag_string_eq(s, "This is a sample derived object"));
-}
+AG_TEST_OBJECT_STR_HAS(ag_object, sample_base(), "uuid");
+AG_TEST_OBJECT_STR(ag_object, sample_derived(),
+    "This is a sample derived object");
 
 
 AG_TEST_OBJECT_EMPTY(ag_object, sample_derived());

@@ -203,23 +203,9 @@ AG_TEST_OBJECT_HASH(ag_list, sample_int_2(), ag_hash_new(-123) +
  */
 
 
-AG_TEST_CASE("ag_list_str() generates a string representation for an empty"
-    " list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_AUTO(ag_string) *s = ag_list_str(l);
-
-        AG_TEST (!ag_string_empty(s));
-}
-
-
-AG_TEST_CASE("ag_list_str() generates a string representation of an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_string) *s = ag_list_str(l);
-
-        AG_TEST (!ag_string_empty(s));
-}
+AG_TEST_OBJECT_STR_HAS(ag_list, ag_list_new(), "list");
+AG_TEST_OBJECT_STR_HAS(ag_list, sample_int(), "list");
+AG_TEST_OBJECT_STR_HAS(ag_list, sample_int_2(), "list");
 
 
 /*

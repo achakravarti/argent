@@ -230,6 +230,24 @@
         }
 
 
+#define AG_TEST_OBJECT_STR(type, sample, str)                   \
+        AG_TEST_CASE(#type "_str(): " #sample " => " #str)      \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_AUTO(ag_string) *s = type ## _str(o);        \
+                AG_TEST (ag_string_eq(s, str));                 \
+        }
+
+
+#define AG_TEST_OBJECT_STR_HAS(type, sample, str)               \
+        AG_TEST_CASE(#type "_str(): " #sample " => has " #str)  \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_AUTO(ag_string) *s = type ## _str(o);        \
+                AG_TEST (ag_string_has(s, str));                \
+        }
+
+
 #define AG_TEST_OBJECT_REFC(type, sample)                               \
         AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
         {                                                               \

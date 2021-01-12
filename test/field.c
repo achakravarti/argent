@@ -137,13 +137,9 @@ AG_TEST_OBJECT_HASH(ag_field, sample_int_str_large(), ag_hash_new(2));
  * Define the test case for ag_field_str().
  */
 
-AG_TEST_CASE("ag_field_str() generates a string representation of a field")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_string) *s = ag_field_str(f);
 
-        AG_TEST (!ag_string_empty(s));
-}
+AG_TEST_OBJECT_STR(ag_field, sample_int_str_small(), "-1:small");
+AG_TEST_OBJECT_STR(ag_field, sample_int_str_large(), "2:large");
 
 
 extern ag_test_suite *
