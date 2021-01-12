@@ -88,8 +88,29 @@
         AG_TEST_CASE(#type "_lt(): ctx > cmp => false")                 \
         {                                                               \
                 AG_AUTO(type) *s = small;                               \
-                AG_AUTO(type) *b = small;                               \
+                AG_AUTO(type) *b = big;                                 \
                 AG_TEST (!type ## _lt(b, s));                           \
+        }                                                               \
+
+
+#define AG_TESTS_OBJECT_GT(type, small, big)                            \
+        AG_TEST_CASE(#type "_gt(): ctx < cmp => false")                 \
+        {                                                               \
+                AG_AUTO(type) *s = small;                               \
+                AG_AUTO(type) *b = big;                                 \
+                AG_TEST (!type ## _gt(s, b));                           \
+        }                                                               \
+        AG_TEST_CASE(#type "_gt(): ctx == cmp => false")                \
+        {                                                               \
+                AG_AUTO(type) *s = small;                               \
+                AG_AUTO(type) *b = small;                               \
+                AG_TEST (!type ## _gt(s, b));                           \
+        }                                                               \
+        AG_TEST_CASE(#type "_gt(): ctx > cmp => true")                  \
+        {                                                               \
+                AG_AUTO(type) *s = small;                               \
+                AG_AUTO(type) *b = big;                                 \
+                AG_TEST (type ## _gt(b, s));                            \
         }                                                               \
 
 
