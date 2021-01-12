@@ -174,5 +174,22 @@
         }                                                       \
 
 
+#define AG_TESTS_OBJECT_EMPTY(type, sample)                     \
+        AG_TEST_CASE(#type "_empty(): " #sample " => true")     \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (type ## _empty(o))                     \
+        }
+
+
+#define AG_TESTS_OBJECT_EMPTY_NOT(type, sample)                 \
+        AG_TEST_CASE(#type "_empty(): " #sample " => false")    \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (!type ## _empty(o))                    \
+        }
+
+
+
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 

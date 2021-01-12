@@ -121,19 +121,9 @@ AG_TESTS_OBJECT_GT(ag_list, sample_int(), sample_int_2());
  */
 
 
-AG_TEST_CASE("ag_list_empty() returns true for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (ag_list_empty(l));
-}
-
-
-AG_TEST_CASE("ag_list_empty() returns false for a non-empty list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_TEST (!ag_list_empty(l));
-}
-
+AG_TESTS_OBJECT_EMPTY(ag_list, ag_list_new());
+AG_TESTS_OBJECT_EMPTY_NOT(ag_list, sample_int())
+AG_TESTS_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
 
 /*
  * Define the test case for ag_list_typeid().

@@ -354,20 +354,8 @@ AG_TEST_CASE("ag_object_str() executes its provided callback if overridden")
 }
 
 
-AG_TEST_CASE("ag_object_empty() returns false if the object length is greater"
-    " than zero")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-        AG_TEST (!ag_object_empty(o));
-}
-
-
-AG_TEST_CASE("ag_object_empty() returns true if the object length is zero")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-
-        AG_TEST (ag_object_empty(o));
-}
+AG_TESTS_OBJECT_EMPTY(ag_object, sample_derived());
+AG_TESTS_OBJECT_EMPTY_NOT(ag_object, sample_base())
 
 
 AG_TEST_CASE("ag_object_payload() gets a handle to the object payload")

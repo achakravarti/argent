@@ -66,12 +66,8 @@ AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
  */
 
 
-AG_TEST_CASE("ag_field_empty() returns false")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_TEST (!ag_field_empty(f));
-}
-
+AG_TESTS_OBJECT_EMPTY_NOT(ag_field, sample_int_str_small())
+AG_TESTS_OBJECT_EMPTY_NOT(ag_field, sample_int_str_large())
 
 /*
  * Define the test case for ag_field_typeid().
