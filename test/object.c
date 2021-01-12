@@ -288,19 +288,8 @@ AG_TEST_CASE("ag_object_refc() returns the reference count of a derived object")
 }
 
 
-AG_TEST_CASE("ag_object_len() returns 1 for a base object")
-{
-        AG_AUTO(ag_object) *o = sample_base();
-
-        AG_TEST (ag_object_len(o) == 1);
-}
-
-
-AG_TEST_CASE("ag_object_len() returns 0 for a derived object")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        AG_TEST (ag_object_len(o) == 0);
-}
+AG_TEST_OBJECT_LEN(ag_object, sample_base(), 1);
+AG_TEST_OBJECT_LEN(ag_object, sample_derived(), 0);
 
 
 AG_TEST_OBJECT_VALID(ag_object, sample_base());

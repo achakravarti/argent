@@ -206,5 +206,13 @@
         }
 
 
+#define AG_TEST_OBJECT_LEN(type, sample, len)                   \
+        AG_TEST_CASE(#type "_len(): " #sample " => " #len)      \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (type ## _len(o) == len)                \
+        }
+
+
 #endif /* !__ARGENT_TESTS_OBJECT_H__ */
 

@@ -139,14 +139,8 @@ AG_TEST_CASE("ag_field_refc() returns the reference count of a shallow copy")
  */
 
 
-AG_TEST_CASE("ag_field_len() returns the length of the value")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_value) *v = ag_field_val(f);
-        const ag_string *s = ag_value_string(v);
-
-        AG_TEST (ag_field_len(f) == ag_string_len(s));
-}
+AG_TEST_OBJECT_LEN(ag_field, sample_int_str_small(), 5);
+AG_TEST_OBJECT_LEN(ag_field, sample_int_str_large(), 5);
 
 
 /*

@@ -202,18 +202,9 @@ AG_TEST_CASE(
  */
 
 
-AG_TEST_CASE("ag_list_len() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_len(l));
-}
-
-
-AG_TEST_CASE("ag_list_len() returns the number of values in a non empty list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_TEST (ag_list_len(l) == 7);
-}
+AG_TEST_OBJECT_LEN(ag_list, ag_list_new(), 0);
+AG_TEST_OBJECT_LEN(ag_list, sample_int(), 3);
+AG_TEST_OBJECT_LEN(ag_list, sample_int_2(), 7);
 
 
 /*
