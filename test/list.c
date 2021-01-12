@@ -110,34 +110,7 @@ AG_TESTS_OBJECT_RELEASE(ag_list, sample_int_2());
  */
 
 
-AG_TEST_CASE("ag_list_lt() returns true if a list is lexicographically smaller"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int_2();
-
-        AG_TEST (ag_list_lt(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically equal"
-     " to another")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_lt(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_lt() returns false if a list is lexicographically greater"
-    " than another")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = sample_int();
-
-        AG_TEST (!ag_list_lt(l, l2));
-}
+AG_TESTS_OBJECT_LT(ag_list, sample_int(), sample_int_2());
 
 
 /*
