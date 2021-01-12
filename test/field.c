@@ -221,6 +221,136 @@ AG_TEST_CASE("ag_field_gt() returns false if a field is less than another")
 }
 
 
+/*
+ * Define the test case for ag_field_empty().
+ */
+
+
+AG_TEST_CASE("ag_field_empty() returns false")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_TEST (!ag_field_empty(f));
+}
+
+
+/*
+ * Define the test case for ag_field_typeid().
+ */
+
+
+AG_TEST_CASE("ag_field_typeid() returns AG_TYPEID_FIELD")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_TEST (ag_field_typeid(f) == AG_TYPEID_FIELD);
+}
+
+
+/*
+ * Define the test case for ag_field_uuid()
+ */
+
+
+AG_TEST_CASE("ag_field_uuid() returns the UUID of a field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_uuid) *u = ag_field_uuid(f);
+        AG_AUTO(ag_string) *s = ag_uuid_str(u);
+
+        AG_TEST (!ag_string_empty(s));
+}
+
+
+/*
+ * Define the test case for ag_field_valid().
+ */
+
+
+AG_TEST_CASE("ag_field_valid() returns true for a field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_TEST (ag_field_valid(f));
+}
+
+
+/*
+ * Define the test case for ag_field_sz(),
+ */
+
+
+AG_TEST_CASE("ag_field_sz() returns the cumulative size of a field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_value) *v = ag_field_val(f);
+        const ag_string *s = ag_value_string(v);
+
+        AG_TEST (ag_field_sz(f) == sizeof(int64_t) + ag_string_sz(s));
+}
+
+
+/*
+ * Define the test cases for ag_field_refc().
+ */
+
+
+AG_TEST_CASE("ag_field_refc() returns 1 for a single instance")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_TEST (ag_field_refc(f) == 1);
+}
+
+
+AG_TEST_CASE("ag_field_refc() returns the reference count of a shallow copy")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_field) *cp = ag_field_copy(f);
+        AG_AUTO(ag_field) *cp2 = ag_field_copy(cp);
+
+        AG_TEST (ag_field_refc(f) == 3);
+}
+
+
+/*
+ * Define the test case for ag_field_len()
+ */
+
+
+AG_TEST_CASE("ag_field_len() returns the length of the value")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_value) *v = ag_field_val(f);
+        const ag_string *s = ag_value_string(v);
+
+        AG_TEST (ag_field_len(f) == ag_string_len(s));
+}
+
+
+/*
+ * Define the test case for ag_field_hash()
+ */
+
+
+AG_TEST_CASE("ag_field_hash() gets the hash of the key")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_value) *v = ag_field_key(f);
+        ag_int i = ag_value_int(v);
+
+        AG_TEST (ag_field_hash(f) == ag_hash_new(i));
+}
+
+
+/*
+ * Define the test case for ag_field_str().
+ */
+
+AG_TEST_CASE("ag_field_str() generates a string representation of a field")
+{
+        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_string) *s = ag_field_str(f);
+
+        AG_TEST (!ag_string_empty(s));
+}
+
 
 extern ag_test_suite *
 test_suite_field(void)
