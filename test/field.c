@@ -56,6 +56,7 @@ AG_TESTS_OBJECT_RELEASE(ag_field, sample_int_str_large());
 
 
 AG_TESTS_OBJECT_LT(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_TESTS_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
 
 
 /*
@@ -89,40 +90,6 @@ AG_TEST_CASE("ag_field_eq() returns false if a field is greater than another")
         AG_AUTO(ag_field) *f2 = sample_int_str_small();
 
         AG_TEST (!ag_field_eq(f2, f));
-}
-
-
-/*
- * Define the test cases for ag_field_gt(). Together with the test cases for *
- * ag_field_lt() and ag_field_eq(), the test cases for ag_field_gt() help test
- * out ag_field_cmp() in a reasonably complete manner.
- */
-
-
-AG_TEST_CASE("ag_field_gt() returns true if a field is greater than another")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *f2 = sample_int_str_large();
-
-        AG_TEST (ag_field_gt(f2, f));
-}
-
-
-AG_TEST_CASE("ag_field_gt() returns false if a field is equal to another")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *f2 = sample_int_str_small();
-
-        AG_TEST (!ag_field_gt(f, f2));
-}
-
-
-AG_TEST_CASE("ag_field_gt() returns false if a field is less than another")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_large();
-        AG_AUTO(ag_field) *f2 = sample_int_str_small();
-
-        AG_TEST (!ag_field_gt(f2, f));
 }
 
 
