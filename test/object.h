@@ -222,6 +222,14 @@
         }
 
 
+#define AG_TEST_OBJECT_HASH(type, sample, hash)                 \
+        AG_TEST_CASE(#type "_hash(): " #sample " => " #hash)    \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_TEST (type ## _hash(o) == hash)              \
+        }
+
+
 #define AG_TEST_OBJECT_REFC(type, sample)                               \
         AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
         {                                                               \

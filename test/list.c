@@ -190,20 +190,12 @@ AG_TEST_OBJECT_LEN(ag_list, sample_int_2(), 7);
  */
 
 
-AG_TEST_CASE("ag_list_hash() returns 0 for an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_TEST (!ag_list_hash(l));
-}
-
-
-AG_TEST_CASE("ag_list_hash() returns the cumulative hash for an int list")
-{
-        AG_AUTO(ag_list) *l = sample_int();
-        ag_hash h = ag_hash_new(-123) + ag_hash_new(0) + ag_hash_new(456);
-
-        AG_TEST (ag_list_hash(l) == h);
-}
+AG_TEST_OBJECT_HASH(ag_list, ag_list_new(), 0);
+AG_TEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) + ag_hash_new(0) +
+    ag_hash_new(456));
+AG_TEST_OBJECT_HASH(ag_list, sample_int_2(), ag_hash_new(-123) + 
+    ag_hash_new(0) + ag_hash_new(456) + ag_hash_new(-666) + ag_hash_new(0) +
+    ag_hash_new(555) + ag_hash_new(734));
 
 
 /*

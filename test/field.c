@@ -129,14 +129,8 @@ AG_TEST_OBJECT_LEN(ag_field, sample_int_str_large(), 5);
  */
 
 
-AG_TEST_CASE("ag_field_hash() gets the hash of the key")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_value) *v = ag_field_key(f);
-        ag_int i = ag_value_int(v);
-
-        AG_TEST (ag_field_hash(f) == ag_hash_new(i));
-}
+AG_TEST_OBJECT_HASH(ag_field, sample_int_str_small(), ag_hash_new(-1));
+AG_TEST_OBJECT_HASH(ag_field, sample_int_str_large(), ag_hash_new(2));
 
 
 /*

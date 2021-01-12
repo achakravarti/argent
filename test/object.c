@@ -276,21 +276,15 @@ AG_TEST_OBJECT_VALID(ag_object, sample_base());
 AG_TEST_OBJECT_VALID(ag_object, sample_derived());
 
 
+AG_TEST_OBJECT_HASH(ag_object, sample_derived(), ag_hash_new(555));
+
+
 AG_TEST_CASE("ag_object_hash() executes its default callback if not overridden")
 {
         AG_AUTO(ag_object) *o = sample_base();
         AG_AUTO(ag_uuid) *u = ag_object_uuid(o);
 
         AG_TEST (ag_object_hash(o) == ag_uuid_hash(u));
-}
-
-
-AG_TEST_CASE("ag_object_hash() executes its provided callback if overridden")
-{
-        AG_AUTO(ag_object) *o = sample_derived();
-        const struct payload_derived *p = ag_object_payload(o);
-
-        AG_TEST (ag_object_hash(o) == ag_hash_new(*p->x));
 }
 
 
