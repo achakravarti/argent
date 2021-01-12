@@ -89,40 +89,9 @@ AG_TESTS_OBJECT_COPY(ag_list, sample_int_2());
  */
 
 
-AG_TEST_CASE("ag_list_clone() creates a clone of an empty list")
-{
-        AG_AUTO(ag_list) *l = ag_list_new();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (l2 && l != l2);
-}
-
-
-AG_TEST_CASE("ag_list_clone() creates a clone of a sample list")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (l2 && l != l2);
-}
-
-
-AG_TEST_CASE("ag_list_clone() has the same items as its parent")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (ag_list_eq(l, l2));
-}
-
-
-AG_TEST_CASE("ag_list_clone() does not change the reference count")
-{
-        AG_AUTO(ag_list) *l = sample_int_2();
-        AG_AUTO(ag_list) *l2 = ag_list_clone(l);
-
-        AG_TEST (ag_list_refc(l) == 1);
-}
+//AG_TESTS_OBJECT_CLONE(ag_list, ag_list_new());
+AG_TESTS_OBJECT_CLONE(ag_list, sample_int());
+AG_TESTS_OBJECT_CLONE(ag_list, sample_int_2());
 
 
 /*

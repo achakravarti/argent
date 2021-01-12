@@ -35,31 +35,8 @@ AG_TESTS_OBJECT_COPY(ag_field, sample_int_str_large());
  */
 
 
-AG_TEST_CASE("ag_field_clone() creates a clone of a field")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_clone(f);
-
-        AG_TEST (cp && (f != cp));
-}
-
-
-AG_TEST_CASE("ag_field_clone() is identical to its parent")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_clone(f);
-
-        AG_TEST (ag_field_eq(f, cp));
-}
-
-
-AG_TEST_CASE("ag_field_clone() does not change the reference count")
-{
-        AG_AUTO(ag_field) *f = sample_int_str_small();
-        AG_AUTO(ag_field) *cp = ag_field_clone(f);
-
-        AG_TEST (ag_field_eq(f, cp));
-}
+AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_small());
+AG_TESTS_OBJECT_CLONE(ag_field, sample_int_str_large());
 
 
 /*
