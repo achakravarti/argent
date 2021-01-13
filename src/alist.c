@@ -279,6 +279,23 @@ ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
 extern void
 ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (key);
+
+        ag_value *k;
+        struct payload *p = ag_object_payload_mutable(ctx);
+        register struct node *n = p->head;
+
+        while (n) {
+                k = ag_field_key(n->attr);
+                if (ag_value_eq(k, key)) {
+                        ag_value_release(&k);
+                        return ag_field_val_set(&n->attr, val);
+                }
+
+                ag_value_release(&k);
+                n = n->nxt;
+        }
 }
 
 
