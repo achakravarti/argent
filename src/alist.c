@@ -23,16 +23,28 @@
 #include "../include/argent.h"
 
 
-struct map_iterator {
-        ag_alist_iterator *map;
-        void *opt;
+struct node {
+        ag_field        *fld; /* node field */
+        struct node     *nxt; /* next node  */
 };
 
 
-struct map_iterator_mutable {
-        ag_alist_iterator_mutable *map;
-        void *opt;
+struct payload {
+        struct node     *head; /* start of list             */
+        struct node     *tail; /* end of list               */
+        struct node     *itr;  /* current iterator position */
+        size_t           len;  /* number of items           */
+        size_t           sz;   /* cumulative size           */
+        ag_hash          hash; /* cumulative hash           */
 };
+
+
+static inline struct node       *node_new(const ag_field *);
+static inline struct node       *node_release(struct node *);
+
+
+static struct payload   *payload_new(const struct node *);
+static void              payload_push(struct payload *, const ag_field *);
 
 
 static ag_memblock *virt_clone(const ag_memblock *);
@@ -45,15 +57,6 @@ static ag_hash      virt_hash(const ag_object *);
 static ag_string   *virt_str(const ag_object *);
 
 
-static bool     map_has(const ag_value *, void *, void *);
-static bool     map_has_key(const ag_value *, void *, void *);
-static bool     map_has_val(const ag_value *, void *, void *);
-static bool     map_val(const ag_value *, void *, void *);
-static bool     map_map(const ag_value *, void *, void *);
-static bool     map_map_mutable(ag_value **, void *, void *);
-static bool     map_val_set(ag_value **, void *, void *);
-
-
 AG_OBJECT_DEFINE(ag_alist)
 {
         struct ag_object_vtable vt = {
@@ -62,7 +65,7 @@ AG_OBJECT_DEFINE(ag_alist)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_LIST, &vt);
+        ag_object_registry_set(AG_TYPEID_ALIST, &vt);
 }
 
 
@@ -71,11 +74,10 @@ ag_alist_new(const ag_field *attr)
 {
         AG_ASSERT_PTR (attr);
 
-        AG_AUTO(ag_value) *v = ag_value_new_object(attr);
-        ag_list *l = ag_list_new();
-        ag_list_push(&l, v);
+        struct payload *p = payload_new(NULL);
+        payload_push(p, attr);
 
-        return ag_object_new(AG_TYPEID_ALIST, l);
+        return ag_object_new(AG_TYPEID_ALIST, p);
 }
 
 
@@ -85,65 +87,37 @@ ag_alist_new_array(const ag_field **attr, size_t len)
         AG_ASSERT_PTR (attr);
         AG_ASSERT (len);
 
-        ag_value *v;
-        ag_list *l = ag_list_new();
+        struct payload *p = payload_new(NULL);
 
-        for (size_t i = 0; i < len; i++) {
-                v = ag_value_new_object(attr[i]);
-                ag_list_push(&l, v);
-                ag_value_release(&v);
-        }
-
-        return ag_object_new(AG_TYPEID_ALIST, l);
+        for (register size_t i = 0; i < len; i++)
+                payload_push(p, attr[i]);
+        
+        return ag_object_new(AG_TYPEID_ALIST, p);
 }
 
 
 extern ag_alist *
 ag_alist_new_empty(void)
 {
-        return ag_object_new(AG_TYPEID_ALIST, ag_list_new());
+        return ag_object_new(AG_TYPEID_ALIST, payload_new(NULL));
 }
 
 
 extern bool
 ag_alist_has(const ag_alist *ctx, const ag_field *attr)
 {
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (attr);
-
-        bool chk;
-        const ag_list *p = ag_object_payload(ctx);
-        ag_list_map(p, map_has, (void *)attr, &chk);
-
-        return chk;
 }
 
 
 extern bool
 ag_alist_has_key(const ag_alist *ctx, const ag_value *key)
 {
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (key);
-
-        bool chk;
-        const ag_list *p = ag_object_payload(ctx);
-        ag_list_map(p, map_has_key, (void *)key, &chk);
-
-        return chk;
 }
 
 
 extern bool
 ag_alist_has_val(const ag_alist *ctx, const ag_value *val)
 {
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (val);
-
-        bool chk;
-        const ag_list *p = ag_object_payload(ctx);
-        ag_list_map(p, map_has_val, (void *)val, &chk);
-
-        return chk;
 }
 
 
@@ -151,12 +125,10 @@ extern ag_field *
 ag_alist_get(const ag_alist *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (!ag_list_empty(ctx));
 
-        const ag_list *p = ag_object_payload(ctx);
-        AG_AUTO(ag_value) *v = ag_list_get(p);
-        const ag_field *f = ag_value_object(v);
-
-        return ag_field_copy(f);
+        const struct payload *p = ag_object_payload(ctx);
+        return ag_field_copy(p->itr->fld);
 }
 
 
@@ -164,27 +136,22 @@ extern ag_field *
 ag_alist_get_at(const ag_alist *ctx, size_t idx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (idx);
+        AG_ASSERT (!ag_alist_empty(ctx));
+        AG_ASSERT (idx >= 1 && idx <= ag_list_len(ctx));
 
-        const ag_list *p = ag_object_payload(ctx);
-        AG_AUTO(ag_value) *v = ag_list_get_at(p, idx);
-        const ag_field *f = ag_value_object(v);
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
 
-        return ag_field_copy(f);
+        for (register size_t i = 1; i < idx; i++)
+                n = n->nxt;
+
+        return ag_field_copy(n->fld);
 }
 
 
 extern ag_value *
 ag_alist_val(const ag_alist *ctx, const ag_value *key)
 {
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (key);
-
-        ag_value *val;
-        const ag_list *p = ag_object_payload(ctx);
-        ag_list_map(p, map_val, (void *)key, &val);
-
-        return val;
 }
 
 
@@ -194,9 +161,14 @@ ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *in, void *out)
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (map);
 
-        struct map_iterator m = {.map = map, .opt = in};
-        const ag_list *p = ag_object_payload(ctx);
-        ag_list_map(p, map_map, &m, out);
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
+        register bool flag = true;
+
+        while (n && flag) {
+                flag = map(ag_field_copy(n->fld), in, out);
+                n = n->nxt;
+        }
 }
 
 
@@ -205,10 +177,11 @@ ag_alist_set(ag_alist **ctx, const ag_field *attr)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (attr);
-       
-        AG_AUTO(ag_value) *v = ag_value_new_object(attr); 
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_set(&p, v);
+        AG_ASSERT (!ag_alist_empty(*ctx));
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        ag_field_release(&p->itr->fld);
+        p->itr->fld = ag_value_copy(attr);
 }
 
 
@@ -217,23 +190,23 @@ ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (attr);
-        AG_ASSERT (idx);
-        
-        AG_AUTO(ag_value) *v = ag_value_new_object(attr); 
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_set_at(&p, v, idx);
+        AG_ASSERT (!ag_alist_empty(*ctx));
+        AG_ASSERT (idx >= 1 && idx <= ag_list_len(*ctx));
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        register struct node *n = p->head;
+
+        for (register size_t i = 1; i < idx; i++)
+                n = n->nxt;
+
+        ag_field_release(&n->fld);
+        n->fld = ag_value_copy(attr);
 }
 
 
 extern void
 ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
 {
-        AG_ASSERT_PTR (ctx && *ctx);
-        AG_ASSERT_PTR (key);
-        AG_ASSERT_PTR (val);
-        
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_map_mutable(&p, map_val_set, (void *)key, &val);
 }
 
 
@@ -243,10 +216,15 @@ ag_alist_map_mutable(ag_alist **ctx, ag_alist_iterator_mutable *map, void *in,
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (map);
-        
-        struct map_iterator_mutable m = {.map = map, .opt = in};
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_map_mutable(&p, map_map_mutable, &m, out);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        register struct node *n = p->head;
+        register bool flag = true;
+
+        while (n && flag) {
+                flag = map(&n->fld, in, out);
+                n = n->nxt;
+        }
 }
 
 
@@ -254,9 +232,9 @@ extern void
 ag_alist_start(ag_alist **ctx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
-        
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_start(&p);
+
+        struct payload *p = ag_object_payload_mutable(ctx);
+        p->itr = p->head;
 }
 
 
@@ -265,8 +243,14 @@ ag_alist_next(ag_alist **ctx)
 {
         AG_ASSERT_PTR (ctx && *ctx);
 
-        ag_list *p = ag_object_payload_mutable(ctx);
-        return ag_list_next(&p);
+        struct payload *p = ag_object_payload_mutable(ctx);
+
+        if (AG_LIKELY (p->itr)) {
+                p->itr = p->itr->nxt;
+                return p->itr->nxt;
+        }
+
+        return false;
 }
 
 
@@ -276,136 +260,202 @@ ag_alist_push(ag_alist **ctx, const ag_field *attr)
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (attr);
 
-        AG_AUTO(ag_value) *v = ag_value_new_object(attr);
-        ag_list *p = ag_object_payload_mutable(ctx);
-        ag_list_push(&p, v);
+        struct payload *p = ag_object_payload_mutable(ctx);
+        payload_push(p, attr);
 }
 
         
-static bool
-map_has(const ag_value *itr, void *in, void *out)
+static inline struct node*
+node_new(const ag_field *val)
 {
-        AG_ASSERT_PTR (itr);
-        AG_ASSERT_PTR (in);
-        AG_ASSERT_PTR (out);
+        AG_ASSERT_PTR (val);
 
-        const ag_field *ctx = ag_value_object(itr);
-        const ag_field *cmp = in;
-        bool *chk = out;
+        struct node *n = ag_memblock_new(sizeof *n);
+        n->fld = ag_field_copy(val);
+        n->nxt = NULL;
 
-        *chk = ag_field_eq(ctx, cmp);
-        return !*chk;
+        return n;
 }
 
-
-static bool
-map_has_key(const ag_value *itr, void *in, void *out)
+        
+static inline struct node*
+node_release(struct node *ctx)
 {
-        AG_ASSERT_PTR (itr);
-        AG_ASSERT_PTR (in);
-        AG_ASSERT_PTR (out);
+        AG_ASSERT_PTR (ctx);
 
-        const ag_field *ctx = ag_value_object(itr);
-        const ag_value *key = in;
-        bool *chk = out;
+        struct node *nxt = ctx->nxt;
+        void *ptr = ctx;
 
-        AG_AUTO(ag_value) *k = ag_field_key(ctx);
-        *chk = ag_value_eq(key, k);
+        ag_field_release(&ctx->fld);
+        ag_memblock_release(&ptr);
 
-        return !*chk;
+        return nxt;
 }
 
-
-static bool
-map_has_val(const ag_value *itr, void *in, void *out)
+        
+static struct payload *
+payload_new(const struct node *head)
 {
-        AG_ASSERT_PTR (itr);
-        AG_ASSERT_PTR (in);
-        AG_ASSERT_PTR (out);
+        struct payload *p = ag_memblock_new(sizeof *p);
+        p->len = p->sz = p->hash = 0;
+        p->itr = NULL;
 
-        const ag_field *ctx = ag_value_object(itr);
-        const ag_value *val = in;
-        bool *chk = out;
-
-        AG_AUTO(ag_value) *v = ag_field_val(ctx);
-        *chk = ag_value_eq(val, v);
-
-        return !*chk;
-}
-
-
-static bool
-map_val(const ag_value *itr, void *in, void *out)
-{
-        AG_ASSERT_PTR (itr);
-        AG_ASSERT_PTR (in);
-        AG_ASSERT_PTR (out);
-
-        const ag_field *ctx = ag_value_object(itr);
-        const ag_value *key = in;
-        ag_value **val = out;
-
-        AG_AUTO(ag_value) *k = ag_field_key(ctx);
-
-        if (ag_value_eq(key, k)) {
-                *val = ag_field_val(ctx);
-                return false;
+        if (!head) {
+                p->head = p->tail = NULL;
+                return p;
         }
 
-        return true;
-}
-
-
-static bool
-map_val_set(ag_value **itr, void *in, void *out)
-{
-        AG_ASSERT_PTR (itr && *itr);
-        AG_ASSERT_PTR (in);
-        AG_ASSERT_PTR (out);
-
-        const ag_value *key = in;
-        AG_AUTO(ag_field) *ctx = ag_field_copy(ag_value_object(*itr));
-        AG_AUTO(ag_value) *k = ag_field_key(ctx);
-
-        if (ag_value_eq(key, k)) {
-                ag_value *v = ag_value_new_object(ctx);
-                ag_value_release(itr);
-                *itr = v;
-
-                return false;
+        register const struct node *n = head;
+        while (n) {
+                payload_push(p, n->fld);
+                n = n->nxt;
         }
 
-        return true;
+        return p;
+}
+
+        
+static void
+payload_push(struct payload *ctx, const ag_field *attr)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (attr);
+
+        struct node *n = node_new(attr);
+
+        if (AG_LIKELY (ctx->tail))
+                ctx->tail->nxt = n;
+        else
+                ctx->head = n;
+
+        ctx->tail = n;
+        ctx->len++;
+        ctx->sz += ag_field_sz(attr);
+        ctx->hash += ag_field_hash(attr);
+}
+
+
+        
+static ag_memblock *
+virt_clone(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        const struct payload *p = ctx;
+        return payload_new(p->head);
+}
+
+
+static void
+virt_release(ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        struct payload *p = ctx;
+        register struct node *n = p->head;
+
+        while (n)
+                n = node_release(n);
+}
+
+
+static enum ag_cmp
+virt_cmp(const ag_object *ctx, const ag_object *cmp)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
+        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_ALIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        const struct payload *p2 = ag_object_payload(cmp);
+
+        if (AG_UNLIKELY (!p->len))
+                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
+
+        if (AG_UNLIKELY (!p2->len))
+                return !p->len ? AG_CMP_EQ : AG_CMP_GT;
+
+        size_t lim = p->len < p2->len ? p->len : p2->len;
+        register const struct node *n = p->head;
+        register const struct node *n2 = p2->head;
+        register enum ag_cmp chk;
+
+        for (register size_t i = 0; i < lim; i++) {
+                if ((chk = ag_field_cmp(n->fld, n2->fld)))
+                        return chk;
+
+                n = n->nxt;
+                n2 = n2->nxt;
+        }
+
+        if (p->len == p2->len)
+                return AG_CMP_EQ;
+        else
+                return p->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
 }
 
 
 static bool
-map_map(const ag_value *itr, void *in, void *out)
+virt_valid(const ag_object *ctx)
 {
-        AG_ASSERT_PTR (itr);
-        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
 
-        const ag_field *ctx = ag_value_object(itr);
-        struct map_iterator *inp = in;
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
 
-        return inp->map(ctx, inp->opt, out);
+        if (AG_UNLIKELY (!n))
+                return false;
+
+        while (n && ag_field_valid(n->fld))
+                n = n->nxt;
+
+        return !n;
 }
 
 
-static bool
-map_map_mutable(ag_value **itr, void *in, void *out)
+static size_t
+virt_sz(const ag_object *ctx)
 {
-        AG_ASSERT_PTR (itr && *itr);
-        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
 
-        AG_AUTO(ag_field) *ctx = ag_field_copy(ag_value_object(*itr));
-        struct map_iterator_mutable *inp = in;
-        bool flag = inp->map(&ctx, inp->opt, out);
-
-        ag_value_release(itr);
-        ag_value *v = ag_value_new_object(ctx);
-        *itr = v;
-
-        return flag;
+        const struct payload *p = ag_object_payload(ctx);
+        return p->sz;
 }
 
+
+static size_t
+virt_len(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return p->len;
+}
+
+
+static ag_hash
+virt_hash(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return p->hash;
+}
+
+
+static ag_string
+*virt_str(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+
+        return ag_string_new_fmt("list len = %lu", ag_object_len(ctx));
+}
+
+
+        
