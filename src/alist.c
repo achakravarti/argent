@@ -20,7 +20,6 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  */
 
-
 #include "../include/argent.h"
 
 
@@ -34,7 +33,12 @@ static ag_hash      virt_hash(const ag_object *);
 static ag_string   *virt_str(const ag_object *);
 
 
-AG_OBJECT_DEFINE(ag_list)
+static bool     map_has(const ag_value *, void *, void *);
+static bool     map_has_key(const ag_value *, void *, void *);
+static bool     map_has_val(const ag_value *, void *, void *);
+
+
+AG_OBJECT_DEFINE(ag_alist)
 {
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
@@ -88,21 +92,43 @@ ag_alist_new_empty(void)
 extern bool
 ag_alist_has(const ag_alist *ctx, const ag_field *attr)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (attr);
+
+        bool chk;
+        ag_list_map(ctx, map_has, (void *)attr, &chk);
+
+        return chk;
 }
 
 
 extern bool
 ag_alist_has_key(const ag_alist *ctx, const ag_value *key)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (key);
+
+        bool chk;
+        ag_list_map(ctx, map_has_key, (void *)key, &chk);
+
+        return chk;
 }
 
 
 extern bool
 ag_alist_has_val(const ag_alist *ctx, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (val);
+
+        bool chk;
+        ag_list_map(ctx, map_has_val, (void *)val, &chk);
+
+        return chk;
 }
 
 
+#if 0
 extern ag_field *
 ag_alist_get(const ag_alist *ctx)
 {
@@ -139,7 +165,7 @@ ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
 }
 
 
-extern void     
+extern void
 ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
 {
 }
@@ -166,5 +192,58 @@ ag_alist_next(ag_alist **ctx)
 extern void
 ag_alist_push(ag_alist **ctx, const ag_field *attr)
 {
+}
+#endif
+
+        
+static bool
+map_has(const ag_value *itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr);
+        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (out);
+
+        const ag_field *ctx = ag_value_object(itr);
+        const ag_field *cmp = in;
+        bool *chk = out;
+
+        *chk = ag_field_eq(ctx, cmp);
+        return !*chk;
+}
+
+
+static bool
+map_has_key(const ag_value *itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr);
+        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (out);
+
+        const ag_field *ctx = ag_value_object(itr);
+        const ag_value *key = in;
+        bool *chk = out;
+
+        AG_AUTO(ag_value) *k = ag_field_key(ctx);
+        *chk = ag_value_eq(key, k);
+
+        return !*chk;
+}
+
+
+static bool
+map_has_val(const ag_value *itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr);
+        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (out);
+
+        const ag_field *ctx = ag_value_object(itr);
+        const ag_value *val = in;
+        bool *chk = out;
+
+        AG_AUTO(ag_value) *v = ag_field_val(ctx);
+        *chk = ag_value_eq(val, v);
+
+        return !*chk;
 }
 
