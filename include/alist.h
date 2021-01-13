@@ -36,7 +36,7 @@ extern "C" {
         
 AG_OBJECT_DECLARE(ag_alist, AG_TYPEID_ALIST);
 typedef bool    (ag_alist_iterator)(const ag_field *, void *, void *);
-typedef void    (ag_alist_iterator_mutable)(ag_field **, void *);
+typedef bool    (ag_alist_iterator_mutable)(ag_field **, void *, void *);
 
 
 extern ag_alist *ag_alist_new(const ag_field *);
@@ -59,7 +59,7 @@ extern void     ag_alist_set_at(ag_alist **, const ag_field *, size_t);
 extern void     ag_alist_val_set(ag_alist **, const ag_value *,
                     const ag_value *);
 extern void     ag_alist_map_mutable(ag_alist **, ag_alist_iterator_mutable *,
-                    void *);
+                    void *, void *);
 extern void     ag_alist_start(ag_alist **);
 extern bool     ag_alist_next(ag_alist **);
 extern void     ag_alist_push(ag_alist **, const ag_field *);

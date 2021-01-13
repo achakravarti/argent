@@ -28,6 +28,13 @@ struct map_iterator {
         void *opt;
 };
 
+
+struct map_iterator_mutable {
+        ag_alist_iterator_mutable *map;
+        void *opt;
+};
+
+
 static ag_memblock *virt_clone(const ag_memblock *);
 static void         virt_release(ag_memblock *);
 static enum ag_cmp  virt_cmp(const ag_object *, const ag_object *);
@@ -43,6 +50,8 @@ static bool     map_has_key(const ag_value *, void *, void *);
 static bool     map_has_val(const ag_value *, void *, void *);
 static bool     map_val(const ag_value *, void *, void *);
 static bool     map_map(const ag_value *, void *, void *);
+static bool     map_map_mutable(ag_value **, void *, void *);
+static bool     map_val_set(ag_value **, void *, void *);
 
 
 AG_OBJECT_DEFINE(ag_alist)
@@ -194,24 +203,50 @@ ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *in, void *out)
 extern void
 ag_alist_set(ag_alist **ctx, const ag_field *attr)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (attr);
+       
+        AG_AUTO(ag_value) *v = ag_value_new_object(attr); 
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_set(&p, v);
 }
 
 
 extern void
 ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (attr);
+        AG_ASSERT (idx);
+        
+        AG_AUTO(ag_value) *v = ag_value_new_object(attr); 
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_set_at(&p, v, idx);
 }
 
 
 extern void
 ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (key);
+        AG_ASSERT_PTR (val);
+        
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_map_mutable(&p, map_val_set, (void *)key, &val);
 }
 
 
 extern void
-ag_alist_map_mutable(ag_alist **ctx, ag_alist_iterator_mutable *map, void *opt)
+ag_alist_map_mutable(ag_alist **ctx, ag_alist_iterator_mutable *map, void *in,
+    void *out)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (map);
+        
+        struct map_iterator_mutable m = {.map = map, .opt = in};
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_map_mutable(&p, map_map_mutable, &m, out);
 }
 
 
@@ -322,6 +357,29 @@ map_val(const ag_value *itr, void *in, void *out)
 
 
 static bool
+map_val_set(ag_value **itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr && *itr);
+        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (out);
+
+        const ag_value *key = in;
+        AG_AUTO(ag_field) *ctx = ag_field_copy(ag_value_object(*itr));
+        AG_AUTO(ag_value) *k = ag_field_key(ctx);
+
+        if (ag_value_eq(key, k)) {
+                ag_value *v = ag_value_new_object(ctx);
+                ag_value_release(itr);
+                *itr = v;
+
+                return false;
+        }
+
+        return true;
+}
+
+
+static bool
 map_map(const ag_value *itr, void *in, void *out)
 {
         AG_ASSERT_PTR (itr);
@@ -331,5 +389,23 @@ map_map(const ag_value *itr, void *in, void *out)
         struct map_iterator *inp = in;
 
         return inp->map(ctx, inp->opt, out);
+}
+
+
+static bool
+map_map_mutable(ag_value **itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr && *itr);
+        AG_ASSERT_PTR (in);
+
+        AG_AUTO(ag_field) *ctx = ag_field_copy(ag_value_object(*itr));
+        struct map_iterator_mutable *inp = in;
+        bool flag = inp->map(&ctx, inp->opt, out);
+
+        ag_value_release(itr);
+        ag_value *v = ag_value_new_object(ctx);
+        *itr = v;
+
+        return flag;
 }
 

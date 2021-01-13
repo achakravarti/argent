@@ -39,6 +39,7 @@ ag_init(void)
 
         AG_OBJECT_REGISTER(ag_field);
         AG_OBJECT_REGISTER(ag_list);
+        AG_OBJECT_REGISTER(ag_alist);
 }
 
 
