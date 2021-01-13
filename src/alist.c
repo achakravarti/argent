@@ -238,6 +238,12 @@ ag_alist_next(ag_alist **ctx)
 extern void
 ag_alist_push(ag_alist **ctx, const ag_field *attr)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        AG_ASSERT_PTR (attr);
+
+        AG_AUTO(ag_value) *v = ag_value_new_object(attr);
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_push(&p, v);
 }
 
         
