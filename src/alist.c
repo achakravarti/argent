@@ -23,6 +23,11 @@
 #include "../include/argent.h"
 
 
+struct map_iterator {
+        ag_alist_iterator *map;
+        void *opt;
+};
+
 static ag_memblock *virt_clone(const ag_memblock *);
 static void         virt_release(ag_memblock *);
 static enum ag_cmp  virt_cmp(const ag_object *, const ag_object *);
@@ -37,6 +42,7 @@ static bool     map_has(const ag_value *, void *, void *);
 static bool     map_has_key(const ag_value *, void *, void *);
 static bool     map_has_val(const ag_value *, void *, void *);
 static bool     map_val(const ag_value *, void *, void *);
+static bool     map_map(const ag_value *, void *, void *);
 
 
 AG_OBJECT_DEFINE(ag_alist)
@@ -174,8 +180,14 @@ ag_alist_val(const ag_alist *ctx, const ag_value *key)
 
 
 extern void
-ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *opt)
+ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *in, void *out)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (map);
+
+        struct map_iterator m = {.map = map, .opt = in};
+        const ag_list *p = ag_object_payload(ctx);
+        ag_list_map(p, map_map, &m, out);
 }
 
 
@@ -219,7 +231,6 @@ extern void
 ag_alist_push(ag_alist **ctx, const ag_field *attr)
 {
 }
-#endif
 
         
 static bool
@@ -293,5 +304,18 @@ map_val(const ag_value *itr, void *in, void *out)
         }
 
         return true;
+}
+
+
+static bool
+map_map(const ag_value *itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr);
+        AG_ASSERT_PTR (in);
+
+        const ag_field *ctx = ag_value_object(itr);
+        struct map_iterator *inp = in;
+
+        return inp->map(ctx, inp->opt, out);
 }
 
