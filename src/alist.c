@@ -24,3 +24,126 @@
 #include "../include/argent.h"
 
 
+static ag_memblock *virt_clone(const ag_memblock *);
+static void         virt_release(ag_memblock *);
+static enum ag_cmp  virt_cmp(const ag_object *, const ag_object *);
+static bool         virt_valid(const ag_object *);
+static size_t       virt_sz(const ag_object *);
+static size_t       virt_len(const ag_object *);
+static ag_hash      virt_hash(const ag_object *);
+static ag_string   *virt_str(const ag_object *);
+
+
+AG_OBJECT_DEFINE(ag_list)
+{
+        struct ag_object_vtable vt = {
+                .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
+                .valid = virt_valid, .sz = virt_sz,           .len = virt_len,
+                .hash = virt_hash,   .str = virt_str,
+        };
+
+        ag_object_registry_set(AG_TYPEID_LIST, &vt);
+}
+
+
+extern ag_alist *
+ag_alist_new(const ag_field *attr)
+{
+}
+
+
+extern ag_alist *
+ag_alist_new_array(const ag_field **attr, size_t len)
+{
+}
+
+
+extern ag_alist *
+ag_alist_new_empty(void)
+{
+}
+
+
+extern bool
+ag_alist_has(const ag_alist *ctx, const ag_field *attr)
+{
+}
+
+
+extern bool
+ag_alist_has_key(const ag_alist *ctx, const ag_value *key)
+{
+}
+
+
+extern bool
+ag_alist_has_val(const ag_alist *ctx, const ag_value *val)
+{
+}
+
+
+extern ag_field *
+ag_alist_get(const ag_alist *ctx)
+{
+}
+
+
+extern ag_field *
+ag_alist_get_at(const ag_alist *ctx, size_t idx)
+{
+}
+
+
+extern ag_value *
+ag_alist_val(const ag_alist *ctx, const ag_value *idx)
+{
+}
+
+
+extern void
+ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *opt)
+{
+}
+
+
+extern void
+ag_alist_set(ag_alist **ctx, const ag_field *attr)
+{
+}
+
+
+extern void
+ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
+{
+}
+
+
+extern void     
+ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
+{
+}
+
+
+extern void
+ag_alist_map_mutable(ag_alist **ctx, ag_alist_iterator_mutable *map, void *opt)
+{
+}
+
+
+extern void
+ag_alist_start(ag_alist **ctx)
+{
+}
+
+
+extern bool
+ag_alist_next(ag_alist **ctx)
+{
+}
+
+
+extern void
+ag_alist_push(ag_alist **ctx, const ag_field *attr)
+{
+}
+

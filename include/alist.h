@@ -53,8 +53,10 @@ extern ag_value *ag_alist_val(const ag_alist *, const ag_value *);
 extern void      ag_alist_map(const ag_alist *, ag_alist_iterator *, void *);
 
 
-extern void     ag_alist_set(ag_alist **, const ag_value *);
-extern void     ag_alist_set_at(ag_alist **, const ag_value *, size_t);
+extern void     ag_alist_set(ag_alist **, const ag_field *);
+extern void     ag_alist_set_at(ag_alist **, const ag_field *, size_t);
+extern void     ag_alist_val_set(ag_alist **, const ag_value *,
+                    const ag_value *);
 extern void     ag_alist_map_mutable(ag_alist **, ag_alist_iterator_mutable *,
                     void *);
 extern void     ag_alist_start(ag_alist **);
