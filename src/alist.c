@@ -204,6 +204,26 @@ ag_alist_get_at(const ag_alist *ctx, size_t idx)
 extern ag_value *
 ag_alist_val(const ag_alist *ctx, const ag_value *key)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (key);
+
+        ag_value *k;
+        const struct payload *p = ag_object_payload(ctx);
+        register const struct node *n = p->head;
+
+        while (n) {
+                k = ag_field_key(n->attr);
+                if (ag_value_eq(k, key)) {
+                        ag_value_release(&k);
+                        return ag_field_val(n->attr);
+                }
+
+                ag_value_release(&k);
+                n = n->nxt;
+        }
+
+        AG_ASSERT (false);
+        return NULL;
 }
 
 
