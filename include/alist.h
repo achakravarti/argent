@@ -30,185 +30,21 @@ extern "C" {
 
 
 #include "./exception.h"
+#include "./field.h"
 #include "./value.h"
 
         
-typedef ag_object       ag_alist;
-typedef void            (ag_alist_iterator)(const ag_value *, const ag_value *,
-                            void *);
-typedef void            (ag_alist_iterator_mutable)(ag_value **, ag_value **,
-                            void *);
+AG_OBJECT_DECLARE(ag_alist, AG_TYPEID_ALIST);
+typedef void    (ag_alist_iterator)(const ag_field *, void *);
+typedef void    (ag_alist_iterator_mutable)(ag_field **, void *);
 
 
-extern void      __ag_alist_register__(void);
-extern ag_alist  *ag_alist_new(void);
-
-
-inline ag_alist *
-ag_alist_copy(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_copy(ctx);
-}
-
-
-inline ag_alist *
-ag_alist_clone(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_clone(ctx);
-}
-
-
-inline void
-ag_alist_release(ag_alist **ctx)
-{
-        ag_object_release(ctx);
-}
-
-        
-inline enum ag_cmp
-ag_alist_cmp(const ag_alist *ctx, const ag_alist *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-
-        return ag_object_cmp(ctx, cmp);
-}
-
-
-inline bool
-ag_alist_lt(const ag_alist *ctx, const ag_alist *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-
-        return ag_object_lt(ctx, cmp);
-}
-
-
-inline bool
-ag_alist_eq(const ag_alist *ctx, const ag_alist *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-
-        return ag_object_eq(ctx, cmp);
-}
-
-
-inline bool
-ag_alist_gt(const ag_alist *ctx, const ag_alist *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_gt(ctx, cmp);
-}
-
-        
-inline bool
-ag_alist_empty(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_empty(ctx);
-}
-
-
-inline ag_typeid
-ag_alist_typeid(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_typeid(ctx);
-}
-
-
-inline ag_uuid *
-ag_alist_uuid(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_uuid(ctx);
-}
-
-
-inline bool
-ag_alist_valid(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_valid(ctx);
-}
-
-
-inline size_t
-ag_alist_sz(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_sz(ctx);
-}
-
-
-inline size_t
-ag_alist_refc(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_refc(ctx);
-}
-
-
-inline size_t
-ag_alist_len(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_len(ctx);
-}
-
-
-inline ag_hash
-ag_alist_hash(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_hash(ctx);
-}
-
-
-inline ag_string *
-ag_alist_str(const ag_alist *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_object_str(ctx);
-}
-
-
-extern ag_value *ag_alist_get(const ag_alist *);
-extern ag_value *ag_alist_get_at(const ag_alist *, size_t);
+extern bool      ag_alist_has(const ag_alist *, const ag_field *);
+extern bool      ag_alist_has_key(const ag_alist *, const ag_value *);
+extern bool      ag_alist_has_val(const ag_alist *, const ag_value *);
+extern ag_field *ag_alist_get(const ag_alist *);
+extern ag_field *ag_alist_get_at(const ag_alist *, size_t);
+extern ag_value *ag_alist_val(const ag_alist *, const ag_value *);
 extern void      ag_alist_map(const ag_alist *, ag_alist_iterator *, void *);
 
 
@@ -218,7 +54,7 @@ extern void     ag_alist_map_mutable(ag_alist **, ag_alist_iterator_mutable *,
                     void *);
 extern void     ag_alist_start(ag_alist **);
 extern bool     ag_alist_next(ag_alist **);
-extern void     ag_alist_push(ag_alist **, const ag_value *);
+extern void     ag_alist_push(ag_alist **, const ag_field *);
 
 
 #ifdef __cplusplus
