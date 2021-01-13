@@ -36,6 +36,7 @@ static ag_string   *virt_str(const ag_object *);
 static bool     map_has(const ag_value *, void *, void *);
 static bool     map_has_key(const ag_value *, void *, void *);
 static bool     map_has_val(const ag_value *, void *, void *);
+static bool     map_val(const ag_value *, void *, void *);
 
 
 AG_OBJECT_DEFINE(ag_alist)
@@ -158,10 +159,17 @@ ag_alist_get_at(const ag_alist *ctx, size_t idx)
 }
 
 
-#if 0
 extern ag_value *
-ag_alist_val(const ag_alist *ctx, const ag_value *idx)
+ag_alist_val(const ag_alist *ctx, const ag_value *key)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (key);
+
+        ag_value *val;
+        const ag_list *p = ag_object_payload(ctx);
+        ag_list_map(p, map_val, (void *)key, &val);
+
+        return val;
 }
 
 
@@ -263,5 +271,27 @@ map_has_val(const ag_value *itr, void *in, void *out)
         *chk = ag_value_eq(val, v);
 
         return !*chk;
+}
+
+
+static bool
+map_val(const ag_value *itr, void *in, void *out)
+{
+        AG_ASSERT_PTR (itr);
+        AG_ASSERT_PTR (in);
+        AG_ASSERT_PTR (out);
+
+        const ag_field *ctx = ag_value_object(itr);
+        const ag_value *key = in;
+        ag_value **val = out;
+
+        AG_AUTO(ag_value) *k = ag_field_key(ctx);
+
+        if (ag_value_eq(key, k)) {
+                *val = ag_field_val(ctx);
+                return false;
+        }
+
+        return true;
 }
 
