@@ -96,7 +96,8 @@ ag_alist_has(const ag_alist *ctx, const ag_field *attr)
         AG_ASSERT_PTR (attr);
 
         bool chk;
-        ag_list_map(ctx, map_has, (void *)attr, &chk);
+        const ag_list *p = ag_object_payload(ctx);
+        ag_list_map(p, map_has, (void *)attr, &chk);
 
         return chk;
 }
@@ -109,7 +110,8 @@ ag_alist_has_key(const ag_alist *ctx, const ag_value *key)
         AG_ASSERT_PTR (key);
 
         bool chk;
-        ag_list_map(ctx, map_has_key, (void *)key, &chk);
+        const ag_list *p = ag_object_payload(ctx);
+        ag_list_map(p, map_has_key, (void *)key, &chk);
 
         return chk;
 }
@@ -122,25 +124,41 @@ ag_alist_has_val(const ag_alist *ctx, const ag_value *val)
         AG_ASSERT_PTR (val);
 
         bool chk;
-        ag_list_map(ctx, map_has_val, (void *)val, &chk);
+        const ag_list *p = ag_object_payload(ctx);
+        ag_list_map(p, map_has_val, (void *)val, &chk);
 
         return chk;
 }
 
 
-#if 0
 extern ag_field *
 ag_alist_get(const ag_alist *ctx)
 {
+        AG_ASSERT_PTR (ctx);
+
+        const ag_list *p = ag_object_payload(ctx);
+        AG_AUTO(ag_value) *v = ag_list_get(p);
+        const ag_field *f = ag_value_object(v);
+
+        return ag_field_copy(f);
 }
 
 
 extern ag_field *
 ag_alist_get_at(const ag_alist *ctx, size_t idx)
 {
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (idx);
+
+        const ag_list *p = ag_object_payload(ctx);
+        AG_AUTO(ag_value) *v = ag_list_get_at(p, idx);
+        const ag_field *f = ag_value_object(v);
+
+        return ag_field_copy(f);
 }
 
 
+#if 0
 extern ag_value *
 ag_alist_val(const ag_alist *ctx, const ag_value *idx)
 {
