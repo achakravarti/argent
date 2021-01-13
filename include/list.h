@@ -43,8 +43,8 @@ extern "C" {
 
 
 AG_OBJECT_DECLARE(ag_list, AG_TYPEID_LIST);
-typedef void    (ag_list_iterator)(const ag_value *, void *);
-typedef void    (ag_list_iterator_mutable)(ag_value **, void *);
+typedef bool    (ag_list_iterator)(const ag_value *, void *, void *);
+typedef bool    (ag_list_iterator_mutable)(ag_value **, void *, void *);
 
 
 /*
@@ -66,7 +66,8 @@ extern ag_list  *ag_list_new(void);
 
 extern ag_value *ag_list_get(const ag_list *);
 extern ag_value *ag_list_get_at(const ag_list *, size_t);
-extern void      ag_list_map(const ag_list *, ag_list_iterator *, void *);
+extern void      ag_list_map(const ag_list *, ag_list_iterator *, void *,
+                    void *);
 
 
 /*
@@ -80,7 +81,7 @@ extern void      ag_list_map(const ag_list *, ag_list_iterator *, void *);
 extern void     ag_list_set(ag_list **, const ag_value *);
 extern void     ag_list_set_at(ag_list **, const ag_value *, size_t);
 extern void     ag_list_map_mutable(ag_list **, ag_list_iterator_mutable *,
-                    void *);
+                    void *, void *);
 extern void     ag_list_start(ag_list **);
 extern bool     ag_list_next(ag_list **);
 extern void     ag_list_push(ag_list **, const ag_value *);

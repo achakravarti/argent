@@ -52,8 +52,8 @@ static ag_list *sample_int_2(void);
  */
 
 
-static void iterator(const ag_value *, void *);
-static void iterator_mutable(ag_value **, void *);
+static bool     iterator(const ag_value *, void *, void *);
+static bool     iterator_mutable(ag_value **, void *, void *);
 
 
 /*
@@ -248,7 +248,7 @@ AG_TEST_CASE("ag_list_map() has no effect on an empty list")
 {
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
-        ag_list_map(l, iterator, &sum);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (!sum);
 }
@@ -258,7 +258,7 @@ AG_TEST_CASE("ag_list_map() iterates through a non-empty list")
 {
         AG_AUTO(ag_list) *l = sample_int_2();
         ag_int sum = 0;
-        ag_list_map(l, iterator, &sum);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (sum == 956);
 }
@@ -312,8 +312,8 @@ AG_TEST_CASE("ag_list_map_mutable() has no effect on an empty list")
         AG_AUTO(ag_list) *l = ag_list_new();
         ag_int sum = 0;
 
-        ag_list_map_mutable(&l, iterator_mutable, NULL);
-        ag_list_map(l, iterator, &sum);
+        ag_list_map_mutable(&l, iterator_mutable, NULL, NULL);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (!sum);
 }
@@ -324,8 +324,8 @@ AG_TEST_CASE("ag_list_map_mutable() iterates through a non-empty list")
         AG_AUTO(ag_list) *l = sample_int();
         ag_int sum = 0;
 
-        ag_list_map_mutable(&l, iterator_mutable, NULL);
-        ag_list_map(l, iterator, &sum);
+        ag_list_map_mutable(&l, iterator_mutable, NULL, NULL);
+        ag_list_map(l, iterator, NULL, &sum);
 
         AG_TEST (sum == 15);
 }
@@ -400,12 +400,15 @@ static ag_list *sample_int_2(void)
  */
 
 
-static void iterator(const ag_value *val, void *opt)
+static bool iterator(const ag_value *val, void *in, void *out)
 {
-        ag_int *s = opt;
+        (void)in;
+
+        ag_int *s = out;
         ag_int i = ag_value_int(val);
         *s += i;
 
+        return true;
 }
 
 
@@ -416,12 +419,15 @@ static void iterator(const ag_value *val, void *opt)
  */
 
 
-static void iterator_mutable(ag_value **val, void *opt)
+static bool iterator_mutable(ag_value **val, void *in, void *out)
 {
-        (void)opt;
+        (void)in;
+        (void)out;
 
         AG_AUTO(ag_value) *v = ag_value_new_int(5);
         ag_value_release(val);
         *val = ag_value_copy(v);
+
+        return true;
 }
 

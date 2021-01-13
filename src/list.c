@@ -181,16 +181,17 @@ ag_list_get_at(const ag_list *ctx, size_t idx)
 
 
 extern void
-ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *opt)
+ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *in, void *out)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (itr);
 
         const struct payload *p = ag_object_payload(ctx);
         register const struct node *n = p->head;
+        register bool flag = true;
 
-        while (n) {
-                itr(ag_value_copy(n->val), opt);
+        while (n && flag) {
+                flag = itr(ag_value_copy(n->val), in, out);
                 n = n->nxt;
         }
 }
@@ -258,16 +259,18 @@ ag_list_set_at(ag_list **ctx, const ag_value *val, size_t idx)
 
 
 extern void
-ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *opt)
+ag_list_map_mutable(ag_list **ctx, ag_list_iterator_mutable *itr, void *in,
+    void *out)
 {
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (itr);
 
         struct payload *p = ag_object_payload_mutable(ctx);
         register struct node *n = p->head;
+        register bool flag = true;
 
-        while (n) {
-                itr(&n->val, opt);
+        while (n && flag) {
+                flag = itr(&n->val, in, out);
                 n = n->nxt;
         }
 }
