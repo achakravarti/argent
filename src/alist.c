@@ -49,18 +49,39 @@ AG_OBJECT_DEFINE(ag_list)
 extern ag_alist *
 ag_alist_new(const ag_field *attr)
 {
+        AG_ASSERT_PTR (attr);
+
+        AG_AUTO(ag_value) *v = ag_value_new_object(attr);
+        ag_list *l = ag_list_new();
+        ag_list_push(&l, v);
+
+        return ag_object_new(AG_TYPEID_ALIST, l);
 }
 
 
 extern ag_alist *
 ag_alist_new_array(const ag_field **attr, size_t len)
 {
+        AG_ASSERT_PTR (attr);
+        AG_ASSERT (len);
+
+        ag_value *v;
+        ag_list *l = ag_list_new();
+
+        for (size_t i = 0; i < len; i++) {
+                v = ag_value_new_object(attr[i]);
+                ag_list_push(&l, v);
+                ag_value_release(&v);
+        }
+
+        return ag_object_new(AG_TYPEID_ALIST, l);
 }
 
 
 extern ag_alist *
 ag_alist_new_empty(void)
 {
+        return ag_object_new(AG_TYPEID_ALIST, ag_list_new());
 }
 
 
