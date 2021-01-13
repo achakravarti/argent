@@ -21,6 +21,14 @@
  */
 
 
+#ifndef __ARGENT_FIELD_H__
+#define __ARGENT_FIELD_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include "./exception.h"
 #include "./value.h"
 
@@ -37,4 +45,11 @@ extern ag_value *ag_field_val(const ag_field *);
 
 extern void     ag_field_key_set(ag_field **, const ag_value *);
 extern void     ag_field_val_set(ag_field **, const ag_value *);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* !__ARGENT_FIELD_H__ */
 
