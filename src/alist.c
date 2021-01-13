@@ -218,12 +218,20 @@ ag_alist_map_mutable(ag_alist **ctx, ag_alist_iterator_mutable *map, void *opt)
 extern void
 ag_alist_start(ag_alist **ctx)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+        
+        ag_list *p = ag_object_payload_mutable(ctx);
+        ag_list_start(&p);
 }
 
 
 extern bool
 ag_alist_next(ag_alist **ctx)
 {
+        AG_ASSERT_PTR (ctx && *ctx);
+
+        ag_list *p = ag_object_payload_mutable(ctx);
+        return ag_list_next(&p);
 }
 
 
