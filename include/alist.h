@@ -39,6 +39,11 @@ typedef void    (ag_alist_iterator)(const ag_field *, void *);
 typedef void    (ag_alist_iterator_mutable)(ag_field **, void *);
 
 
+extern ag_alist *ag_alist_new(const ag_field *);
+extern ag_alist *ag_alist_new_array(const ag_field **, size_t);
+extern ag_alist *ag_alist_new_empty(void);
+
+
 extern bool      ag_alist_has(const ag_alist *, const ag_field *);
 extern bool      ag_alist_has_key(const ag_alist *, const ag_value *);
 extern bool      ag_alist_has_val(const ag_alist *, const ag_value *);
