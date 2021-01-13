@@ -2,7 +2,7 @@
 #include "./object.h"
 
 
-#define __AG_TEST_SUITE_ID__ 6
+#define __AG_TEST_SUITE_ID__ 5
 
 
 static ag_field *sample_int_str_small(void);
