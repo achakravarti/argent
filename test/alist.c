@@ -60,6 +60,10 @@ static ag_alist *sample_list(void);
 static ag_alist *sample_list_2(void);
 
 
+static bool     iterator(const ag_field *, void *, void *);
+static bool     iterator_mutable(ag_field **, void *, void *);
+
+
 AG_TEST_OBJECT_COPY(ag_alist, sample_empty());
 AG_TEST_OBJECT_COPY(ag_alist, sample_single());
 AG_TEST_OBJECT_COPY(ag_alist, sample_list());
@@ -397,12 +401,56 @@ AG_METATEST_ALIST_VAL_SET(sample_list_2(), VALUE_INT_4(), VALUE_INT_3());
 AG_METATEST_ALIST_VAL_SET(sample_list_2(), VALUE_INT_4(), VALUE_INT_4());
 
 
+AG_TEST_CASE("ag_alist_map(): sample_empty() => no effect")
+{
+        AG_AUTO(ag_alist) *a = sample_empty();
+        ag_int sum = 0;
+        ag_alist_map(a, iterator, NULL, &sum);
+
+        AG_TEST (!sum);
+}
+
+
+AG_TEST_CASE("ag_alist_map(): sample_list() => sum")
+{
+        AG_AUTO(ag_alist) *a = sample_list();
+        ag_int sum = 0;
+        ag_alist_map(a, iterator, NULL, &sum);
+
+        AG_TEST (sum == 6);
+}
+
+
+AG_TEST_CASE("ag_alist_map_mutable(): sample_empty() => no effect")
+{
+        AG_AUTO(ag_alist) *a = sample_empty();
+        ag_int sum = 0;
+
+        ag_alist_map_mutable(&a, iterator_mutable, NULL, NULL);
+        ag_alist_map(a, iterator, NULL, &sum);
+
+        AG_TEST (!sum);
+}
+
+
+AG_TEST_CASE("ag_alist_map_mutable(): sample_list() => sum")
+{
+        AG_AUTO(ag_alist) *a = sample_list();
+        ag_int sum = 0;
+
+        ag_alist_map_mutable(&a, iterator_mutable, NULL, NULL);
+        ag_alist_map(a, iterator, NULL, &sum);
+
+        AG_TEST (sum = 99);
+}
+
+
 extern ag_test_suite *test_suite_alist(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_alist interface");
 }
 
-        
+
 static ag_alist *
 sample_empty(void)
 {
@@ -418,8 +466,6 @@ sample_single(void)
 }
 
 
-
-
 static ag_alist *
 sample_list(void)
 {
@@ -431,7 +477,7 @@ sample_list(void)
         return ag_alist_new_array(f, 3);
 }
 
-        
+
 static ag_alist *
 sample_list_2(void)
 {
@@ -449,5 +495,33 @@ sample_list_2(void)
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);
+}
+
+
+static bool
+iterator(const ag_field *attr, void *in, void *out)
+{
+        (void)in;
+        AG_AUTO(ag_field) *a = (ag_field *)attr;
+        ag_int *s = out;
+
+        AG_AUTO(ag_value) *k = ag_field_key(a);
+        ag_int i = ag_value_int(k);
+        *s += i;
+
+        return true;
+}
+
+
+static bool
+iterator_mutable(ag_field **attr, void *in, void *out)
+{
+        (void)in;
+        (void)out;
+
+        AG_AUTO(ag_value) *v = ag_value_new_int(5);
+        ag_field_val_set(attr, v);
+
+        return true;
 }
 
