@@ -79,10 +79,17 @@ check: $(BIN_TEST)
 		$(BIN_TEST)
 	tail $(BIN_TEST).vglog
 
+coverage:
+	gcovr -r .
+
+
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)
 	rm *.gcno *.gcda
 
+tidy:
+	rm *.gcno *.gcda
 
-.PHONY: all doc clean
+
+.PHONY: all doc clean tidy coverage
 
