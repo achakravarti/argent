@@ -216,6 +216,19 @@ AG_METATEST_ALIST_GET(sample_list_2(), 1, FIELD_3_BAR());
 AG_METATEST_ALIST_GET(sample_list_2(), 2, FIELD_4_FOOBAR());
 
 
+AG_METATEST_ALIST_GET_AT(sample_single(), 1, FIELD_KEY_VAL());
+
+
+AG_METATEST_ALIST_GET_AT(sample_list(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_GET_AT(sample_list(), 2, FIELD_2_BAR());
+AG_METATEST_ALIST_GET_AT(sample_list(), 3, FIELD_3_FOOBAR());
+
+
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 3, FIELD_4_FOOBAR());
+
+
 AG_METATEST_ALIST_VAL(sample_single(), VALUE_STR_KEY(), VALUE_STR_VAL());
 
 
