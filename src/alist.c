@@ -189,7 +189,7 @@ ag_alist_get_at(const ag_alist *ctx, size_t idx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (!ag_alist_empty(ctx));
-        AG_ASSERT (idx >= 1 && idx <= ag_list_len(ctx));
+        AG_ASSERT (idx >= 1 && idx <= ag_alist_len(ctx));
 
         const struct payload *p = ag_object_payload(ctx);
         register const struct node *n = p->head;
