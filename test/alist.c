@@ -232,6 +232,49 @@ AG_METATEST_ALIST_GET_AT(sample_list_2(), 3, FIELD_4_FOOBAR());
 AG_METATEST_ALIST_VAL(sample_single(), VALUE_STR_KEY(), VALUE_STR_VAL());
 
 
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_KEY_VAL());
+
+
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_KEY_VAL());
+
+
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_KEY_VAL());
+
+
+
+
 AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_1(), VALUE_STR_FOO());
 AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_2(), VALUE_STR_BAR());
 AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_3(), VALUE_STR_FOOBAR());
