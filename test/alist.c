@@ -48,7 +48,10 @@ VALUE_INT(4, 4);
 FIELD(KEY_VAL, VALUE_STR_KEY(), VALUE_STR_VAL());
 FIELD(1_FOO, VALUE_INT_1(), VALUE_STR_FOO());
 FIELD(2_BAR, VALUE_INT_2(), VALUE_STR_BAR());
+FIELD(2_FOO, VALUE_INT_2(), VALUE_STR_FOO());
 FIELD(3_FOOBAR, VALUE_INT_3(), VALUE_STR_FOOBAR());
+FIELD(3_BAR, VALUE_INT_3(), VALUE_STR_BAR());
+FIELD(4_FOOBAR, VALUE_INT_4(), VALUE_STR_FOOBAR());
 
 
 static ag_alist *sample_empty(void);
@@ -104,14 +107,28 @@ AG_TEST_OBJECT_REFC(ag_alist, sample_list());
 
 
 AG_TEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
-AG_TEST_OBJECT_LEN(ag_alist, sample_single(), 1);
-AG_TEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+AG_TEST_OBJECT_LEN(ag_alist, sample_single(), 1); AG_TEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 
 
 AG_TEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
 
 
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_1_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_2_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_2_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_FOOBAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_4_FOOBAR());
+
+AG_METATEST_ALIST_HAS(sample_single(), FIELD_KEY_VAL());
+
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_1_FOO());
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_2_BAR());
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_3_FOOBAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_2_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_3_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_4_FOOBAR());
 
 
 extern ag_test_suite *test_suite_alist(void)
@@ -160,9 +177,9 @@ sample_list_2(void)
         AG_AUTO(ag_value) *kv2 = VALUE_INT_3();
         AG_AUTO(ag_value) *kv3 = VALUE_INT_4();
 
-        AG_AUTO(ag_field) *f1 = ag_field_new(kv1, vv1);
-        AG_AUTO(ag_field) *f2 = ag_field_new(kv2, vv2);
-        AG_AUTO(ag_field) *f3 = ag_field_new(kv3, vv3);
+        AG_AUTO(ag_field) *f1 = FIELD_2_FOO();
+        AG_AUTO(ag_field) *f2 = FIELD_3_BAR();
+        AG_AUTO(ag_field) *f3 = FIELD_4_FOOBAR();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);
