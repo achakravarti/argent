@@ -489,7 +489,7 @@ static bool
 virt_valid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
         const struct payload *p = ag_object_payload(ctx);
         register const struct node *n = p->head;
@@ -508,7 +508,7 @@ static size_t
 virt_sz(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
         const struct payload *p = ag_object_payload(ctx);
         return p->sz;
@@ -519,7 +519,7 @@ static size_t
 virt_len(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
         const struct payload *p = ag_object_payload(ctx);
         return p->len;
@@ -530,7 +530,7 @@ static ag_hash
 virt_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
         const struct payload *p = ag_object_payload(ctx);
         return p->hash;
@@ -541,7 +541,7 @@ static ag_string
 *virt_str(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
         return ag_string_new_fmt("list len = %lu", ag_object_len(ctx));
 }

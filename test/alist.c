@@ -14,6 +14,55 @@ AG_TEST_OBJECT_COPY(ag_alist, sample_empty());
 AG_TEST_OBJECT_COPY(ag_alist, sample_single());
 AG_TEST_OBJECT_COPY(ag_alist, sample_list());
 
+AG_TEST_OBJECT_CLONE(ag_alist, sample_empty());
+AG_TEST_OBJECT_CLONE(ag_alist, sample_single());
+AG_TEST_OBJECT_CLONE(ag_alist, sample_list());
+
+AG_TEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_TEST_OBJECT_RELEASE(ag_alist, sample_single());
+AG_TEST_OBJECT_RELEASE(ag_alist, sample_list());
+
+AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
+AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
+//AG_TEST_OBJECT_CMP(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
+AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
+//AG_TEST_OBJECT_LT(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
+AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
+//AG_TEST_OBJECT_EQ(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
+AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
+//AG_TEST_OBJECT_GT(ag_alist, sample_single(), sample_list());
+
+
+AG_TEST_OBJECT_EMPTY(ag_alist, sample_empty());
+AG_TEST_OBJECT_EMPTY_NOT(ag_alist, sample_single())
+AG_TEST_OBJECT_EMPTY_NOT(ag_alist, sample_list())
+
+
+AG_TEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
+AG_TEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
+AG_TEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
+
+
+AG_TEST_OBJECT_UUID(ag_alist, sample_empty());
+AG_TEST_OBJECT_UUID(ag_alist, sample_single());
+AG_TEST_OBJECT_UUID(ag_alist, sample_list());
+
+
+AG_TEST_OBJECT_REFC(ag_alist, sample_empty());
+AG_TEST_OBJECT_REFC(ag_alist, sample_single());
+AG_TEST_OBJECT_REFC(ag_alist, sample_list());
+
+
+AG_TEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
+AG_TEST_OBJECT_LEN(ag_alist, sample_single(), 1);
+AG_TEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+
+
+AG_TEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
+
 
 extern ag_test_suite *test_suite_alist(void)
 {
