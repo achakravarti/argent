@@ -25,7 +25,7 @@
         {                                                               \
                 AG_AUTO(ag_alist) *a = sample;                          \
                 AG_AUTO(ag_value) *k = key;                             \
-                AG_TEST (ag_alist_has(a, k));                           \
+                AG_TEST (ag_alist_has_key(a, k));                       \
         }
 
 
@@ -34,7 +34,7 @@
         {                                                               \
                 AG_AUTO(ag_alist) *a = sample;                          \
                 AG_AUTO(ag_value) *k = key;                             \
-                AG_TEST (!ag_alist_has(a, k));                          \
+                AG_TEST (!ag_alist_has_key(a, k));                      \
         }
 
 
