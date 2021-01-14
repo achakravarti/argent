@@ -69,6 +69,10 @@ dkms.conf
 *.toc
 *.xml
 
+# Code coverage
+*.gcda
+*.gcno
+
 # Development environment
 /bld
 tags
