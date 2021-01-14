@@ -238,7 +238,7 @@ ag_alist_map(const ag_alist *ctx, ag_alist_iterator *map, void *in, void *out)
         register bool flag = true;
 
         while (n && flag) {
-                flag = map(ag_field_copy(n->attr), in, out);
+                flag = map(n->attr, in, out);
                 n = n->nxt;
         }
 }

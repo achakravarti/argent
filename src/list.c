@@ -191,7 +191,7 @@ ag_list_map(const ag_list *ctx, ag_list_iterator *itr, void *in, void *out)
         register bool flag = true;
 
         while (n && flag) {
-                flag = itr(ag_value_copy(n->val), in, out);
+                flag = itr(n->val, in, out);
                 n = n->nxt;
         }
 }

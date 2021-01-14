@@ -502,10 +502,9 @@ static bool
 iterator(const ag_field *attr, void *in, void *out)
 {
         (void)in;
-        AG_AUTO(ag_field) *a = (ag_field *)attr;
         ag_int *s = out;
 
-        AG_AUTO(ag_value) *k = ag_field_key(a);
+        AG_AUTO(ag_value) *k = ag_field_key(attr);
         ag_int i = ag_value_int(k);
         *s += i;
 
