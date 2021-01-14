@@ -279,8 +279,9 @@ ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
 extern void
 ag_alist_val_set(ag_alist **ctx, const ag_value *key, const ag_value *val)
 {
-        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (key);
+        AG_ASSERT_PTR (val);
 
         ag_value *k;
         struct payload *p = ag_object_payload_mutable(ctx);
