@@ -104,6 +104,20 @@
         }
 
 
+#define AG_METATEST_ALIST_SET_AT(sample, idx, attr)                     \
+        AG_TEST_CASE("ag_list_set(): index #" #idx " => " #attr)        \
+        {                                                               \
+                AG_AUTO(ag_alist) *a = sample;                          \
+                AG_AUTO(ag_field) *f = attr;                            \
+                ag_alist_set_at(&a, f, idx);                            \
+                ag_alist_start(&a);                                     \
+                for (register size_t i = 0; i < idx - 1; i++)           \
+                        ag_list_next(&a);                               \
+                AG_AUTO(ag_field) *f2 = ag_alist_get(a);                \
+                AG_TEST (ag_field_eq(f, f2));                           \
+        }
+
+
 #define AG_METATEST_ALIST_VAL_SET(sample, key, val)             \
         AG_TEST_CASE("ag_alist_val_set(): " #key " => " #val)   \
         {                                                       \
