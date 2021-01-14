@@ -14,7 +14,7 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
-  -  ./configure --enable-gcov make check
+  -  make check
 
 after_success:
   - coveralls --gcov-options '\lp'
