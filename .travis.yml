@@ -11,7 +11,7 @@ before_install:
   - sudo apt update
   - sudo apt install uuid-dev
   - sudo apt install valgrind
-  - sudo apt install gcov
+  - sudo apt install gcovr
 
 script:
   - make check
