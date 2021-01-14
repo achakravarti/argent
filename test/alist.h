@@ -67,4 +67,16 @@
         }
 
 
+#define AG_METATEST_ALIST_VAL_SET(sample, key, val)             \
+        AG_TEST_CASE("ag_alist_val_set(): " #key " => " #val)   \
+        {                                                       \
+                AG_AUTO(ag_alist) *a = sample;                  \
+                AG_AUTO(ag_value) *k = key;                     \
+                AG_AUTO(ag_value) *v = val;                     \
+                ag_alist_val_set(&a, k, v);                     \
+                AG_AUTO(ag_value) *v2 = ag_alist_val(a, k);     \
+                AG_TEST (ag_value_eq(v, v2));                   \
+        }
+
+
 #endif /* !__AG_ARGENT_METATESTS_ALIST_H__ */
