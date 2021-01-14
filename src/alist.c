@@ -263,7 +263,7 @@ ag_alist_set_at(ag_alist **ctx, const ag_field *attr, size_t idx)
         AG_ASSERT_PTR (ctx && *ctx);
         AG_ASSERT_PTR (attr);
         AG_ASSERT (!ag_alist_empty(*ctx));
-        AG_ASSERT (idx >= 1 && idx <= ag_list_len(*ctx));
+        AG_ASSERT (idx >= 1 && idx <= ag_alist_len(*ctx));
 
         struct payload *p = ag_object_payload_mutable(ctx);
         register struct node *n = p->head;
