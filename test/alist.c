@@ -8,6 +8,7 @@
 static ag_alist *sample_empty(void);
 static ag_alist *sample_single(void);
 static ag_alist *sample_list(void);
+static ag_alist *sample_list_2(void);
 
 
 AG_TEST_OBJECT_COPY(ag_alist, sample_empty());
@@ -24,16 +25,16 @@ AG_TEST_OBJECT_RELEASE(ag_alist, sample_list());
 
 AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
 AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
-//AG_TEST_OBJECT_CMP(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
 AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
 AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
-//AG_TEST_OBJECT_LT(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
 AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
 AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
-//AG_TEST_OBJECT_EQ(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
 AG_TEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
-AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
-//AG_TEST_OBJECT_GT(ag_alist, sample_single(), sample_list());
+AG_TEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
+AG_TEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
 
 
 AG_TEST_OBJECT_EMPTY(ag_alist, sample_empty());
@@ -105,6 +106,30 @@ sample_list(void)
         AG_AUTO(ag_value) *kv1 = ag_value_new_int(1);
         AG_AUTO(ag_value) *kv2 = ag_value_new_int(2);
         AG_AUTO(ag_value) *kv3 = ag_value_new_int(3);
+
+        AG_AUTO(ag_field) *f1 = ag_field_new(kv1, vv1);
+        AG_AUTO(ag_field) *f2 = ag_field_new(kv2, vv2);
+        AG_AUTO(ag_field) *f3 = ag_field_new(kv3, vv3);
+
+        const ag_field *f[] = {f1, f2, f3};
+        return ag_alist_new_array(f, 3);
+}
+
+        
+static ag_alist *
+sample_list_2(void)
+{
+        AG_AUTO(ag_string) *v1 = ag_string_new("foo");
+        AG_AUTO(ag_string) *v2 = ag_string_new("bar");
+        AG_AUTO(ag_string) *v3 = ag_string_new("foobar");
+
+        AG_AUTO(ag_value) *vv1 = ag_value_new_string(v1);
+        AG_AUTO(ag_value) *vv2 = ag_value_new_string(v2);
+        AG_AUTO(ag_value) *vv3 = ag_value_new_string(v3);
+
+        AG_AUTO(ag_value) *kv1 = ag_value_new_int(2);
+        AG_AUTO(ag_value) *kv2 = ag_value_new_int(3);
+        AG_AUTO(ag_value) *kv3 = ag_value_new_int(4);
 
         AG_AUTO(ag_field) *f1 = ag_field_new(kv1, vv1);
         AG_AUTO(ag_field) *f2 = ag_field_new(kv2, vv2);
