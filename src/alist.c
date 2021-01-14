@@ -177,7 +177,7 @@ extern ag_field *
 ag_alist_get(const ag_alist *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (!ag_list_empty(ctx));
+        AG_ASSERT (!ag_alist_empty(ctx));
 
         const struct payload *p = ag_object_payload(ctx);
         return ag_field_copy(p->itr->attr);
