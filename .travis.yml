@@ -11,11 +11,11 @@ before_install:
   - sudo apt update
   - sudo apt install uuid-dev
   - sudo apt install valgrind
-  - sudo apt install gcovr
+  - pip install --user cpp-coveralls
 
 script:
-  - make check
+  -  ./configure --enable-gcov make check
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - coveralls --gcov-options '\lp'
 
