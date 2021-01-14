@@ -64,57 +64,57 @@ static bool     iterator(const ag_field *, void *, void *);
 static bool     iterator_mutable(ag_field **, void *, void *);
 
 
-AG_TEST_OBJECT_COPY(ag_alist, sample_empty());
-AG_TEST_OBJECT_COPY(ag_alist, sample_single());
-AG_TEST_OBJECT_COPY(ag_alist, sample_list());
+AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
+AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
+AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
 
-AG_TEST_OBJECT_CLONE(ag_alist, sample_empty());
-AG_TEST_OBJECT_CLONE(ag_alist, sample_single());
-AG_TEST_OBJECT_CLONE(ag_alist, sample_list());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
 
-AG_TEST_OBJECT_RELEASE(ag_alist, sample_empty());
-AG_TEST_OBJECT_RELEASE(ag_alist, sample_single());
-AG_TEST_OBJECT_RELEASE(ag_alist, sample_list());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_single());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_list());
 
-AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
-AG_TEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
-AG_TEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
-AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
-AG_TEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
-AG_TEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
-AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
-AG_TEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
-AG_TEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
-AG_TEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
-AG_TEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
-AG_TEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
-
-
-AG_TEST_OBJECT_EMPTY(ag_alist, sample_empty());
-AG_TEST_OBJECT_EMPTY_NOT(ag_alist, sample_single())
-AG_TEST_OBJECT_EMPTY_NOT(ag_alist, sample_list())
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
 
 
-AG_TEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
-AG_TEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
-AG_TEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single())
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list())
 
 
-AG_TEST_OBJECT_UUID(ag_alist, sample_empty());
-AG_TEST_OBJECT_UUID(ag_alist, sample_single());
-AG_TEST_OBJECT_UUID(ag_alist, sample_list());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
 
 
-AG_TEST_OBJECT_REFC(ag_alist, sample_empty());
-AG_TEST_OBJECT_REFC(ag_alist, sample_single());
-AG_TEST_OBJECT_REFC(ag_alist, sample_list());
+AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
+AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
+AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
 
 
-AG_TEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
-AG_TEST_OBJECT_LEN(ag_alist, sample_single(), 1); AG_TEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
 
 
-AG_TEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
+AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
+AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+
+
+AG_METATEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
 
 
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());

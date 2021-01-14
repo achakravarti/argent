@@ -2,7 +2,7 @@
 #define __ARGENT_TESTS_OBJECT_H__
 
 
-#define AG_TEST_OBJECT_COPY(type, sample)                               \
+#define AG_METATEST_OBJECT_COPY(type, sample)                           \
         AG_TEST_CASE(#type "_copy(): " #sample " => shallow copy")      \
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
@@ -23,7 +23,7 @@
         }
 
 
-#define AG_TEST_OBJECT_CLONE(type, sample)                              \
+#define AG_METATEST_OBJECT_CLONE(type, sample)                          \
         AG_TEST_CASE(#type "_clone(): " #sample " => deep copy")        \
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
@@ -44,7 +44,7 @@
         }
 
 
-#define AG_TEST_OBJECT_RELEASE(type, sample)                            \
+#define AG_METATEST_OBJECT_RELEASE(type, sample)                        \
         AG_TEST_CASE(#type "_release(): pptr NULL => no-op")            \
         {                                                               \
                 type ## _release(NULL);                                 \
@@ -72,7 +72,7 @@
         }
 
 
-#define AG_TEST_OBJECT_CMP(type, small, big)                            \
+#define AG_METATEST_OBJECT_CMP(type, small, big)                        \
         AG_TEST_CASE(#type "_cmp(): ctx < cmp => AG_CMP_LT")            \
         {                                                               \
                 AG_AUTO(type) *s = small;                               \
@@ -93,7 +93,7 @@
         }
 
 
-#define AG_TEST_OBJECT_LT(type, small, big)                             \
+#define AG_METATEST_OBJECT_LT(type, small, big)                         \
         AG_TEST_CASE(#type "_lt(): ctx < cmp => true")                  \
         {                                                               \
                 AG_AUTO(type) *s = small;                               \
@@ -114,7 +114,7 @@
         }                                                               \
 
 
-#define AG_TEST_OBJECT_EQ(type, small, big)                             \
+#define AG_METATEST_OBJECT_EQ(type, small, big)                         \
         AG_TEST_CASE(#type "_eq(): ctx < cmp => false")                 \
         {                                                               \
                 AG_AUTO(type) *s = small;                               \
@@ -135,7 +135,7 @@
         }                                                               \
 
 
-#define AG_TEST_OBJECT_GT(type, small, big)                             \
+#define AG_METATEST_OBJECT_GT(type, small, big)                         \
         AG_TEST_CASE(#type "_gt(): ctx < cmp => false")                 \
         {                                                               \
                 AG_AUTO(type) *s = small;                               \
@@ -156,7 +156,7 @@
         }                                                               \
 
 
-#define AG_TEST_OBJECT_TYPEID(type, sample, typeid)                     \
+#define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
         AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
@@ -164,7 +164,7 @@
         }                                                               \
 
 
-#define AG_TEST_OBJECT_UUID(type, sample)                       \
+#define AG_METATEST_OBJECT_UUID(type, sample)                   \
         AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -174,7 +174,7 @@
         }                                                       \
 
 
-#define AG_TEST_OBJECT_EMPTY(type, sample)                      \
+#define AG_METATEST_OBJECT_EMPTY(type, sample)                  \
         AG_TEST_CASE(#type "_empty(): " #sample " => true")     \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -182,7 +182,7 @@
         }
 
 
-#define AG_TEST_OBJECT_EMPTY_NOT(type, sample)                  \
+#define AG_METATEST_OBJECT_EMPTY_NOT(type, sample)              \
         AG_TEST_CASE(#type "_empty(): " #sample " => false")    \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -190,7 +190,7 @@
         }
 
 
-#define AG_TEST_OBJECT_VALID(type, sample)                      \
+#define AG_METATEST_OBJECT_VALID(type, sample)                  \
         AG_TEST_CASE(#type "_valid(): " #sample " => true")     \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -198,7 +198,7 @@
         }
 
 
-#define AG_TEST_OBJECT_VALID_NOT(type, sample)                  \
+#define AG_METATEST_OBJECT_VALID_NOT(type, sample)              \
         AG_TEST_CASE(#type "_valid(): " #sample " => false")    \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -206,7 +206,7 @@
         }
 
 
-#define AG_TEST_OBJECT_LEN(type, sample, len)                   \
+#define AG_METATEST_OBJECT_LEN(type, sample, len)               \
         AG_TEST_CASE(#type "_len(): " #sample " => " #len)      \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -214,7 +214,7 @@
         }
 
 
-#define AG_TEST_OBJECT_SZ(type, sample, sz)                     \
+#define AG_METATEST_OBJECT_SZ(type, sample, sz)                 \
         AG_TEST_CASE(#type "_sz(): " #sample " => " #sz)        \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -222,7 +222,7 @@
         }
 
 
-#define AG_TEST_OBJECT_HASH(type, sample, hash)                 \
+#define AG_METATEST_OBJECT_HASH(type, sample, hash)             \
         AG_TEST_CASE(#type "_hash(): " #sample " => " #hash)    \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -230,7 +230,7 @@
         }
 
 
-#define AG_TEST_OBJECT_STR(type, sample, str)                   \
+#define AG_METATEST_OBJECT_STR(type, sample, str)               \
         AG_TEST_CASE(#type "_str(): " #sample " => " #str)      \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -239,7 +239,7 @@
         }
 
 
-#define AG_TEST_OBJECT_STR_HAS(type, sample, str)               \
+#define AG_METATEST_OBJECT_STR_HAS(type, sample, str)           \
         AG_TEST_CASE(#type "_str(): " #sample " => has " #str)  \
         {                                                       \
                 AG_AUTO(type) *o = sample;                      \
@@ -248,7 +248,7 @@
         }
 
 
-#define AG_TEST_OBJECT_REFC(type, sample)                               \
+#define AG_METATEST_OBJECT_REFC(type, sample)                           \
         AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
