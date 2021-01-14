@@ -81,6 +81,7 @@ check: $(BIN_TEST)
 
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)
+	rm *.gcno *.gcda
 
 
 .PHONY: all doc clean
