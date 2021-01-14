@@ -203,6 +203,17 @@ AG_METATEST_ALIST_HAS_VAL_NOT(sample_list_2(), VALUE_STR_KEY());
 AG_METATEST_ALIST_HAS_VAL_NOT(sample_list_2(), VALUE_STR_VAL());
 
 
+AG_METATEST_ALIST_VAL(sample_single(), VALUE_STR_KEY(), VALUE_STR_VAL());
+
+AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_1(), VALUE_STR_FOO());
+AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_2(), VALUE_STR_BAR());
+AG_METATEST_ALIST_VAL(sample_list(), VALUE_INT_3(), VALUE_STR_FOOBAR());
+
+AG_METATEST_ALIST_VAL(sample_list_2(), VALUE_INT_2(), VALUE_STR_FOO());
+AG_METATEST_ALIST_VAL(sample_list_2(), VALUE_INT_3(), VALUE_STR_BAR());
+AG_METATEST_ALIST_VAL(sample_list_2(), VALUE_INT_4(), VALUE_STR_FOOBAR());
+
+
 extern ag_test_suite *test_suite_alist(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_alist interface");
