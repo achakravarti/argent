@@ -1,4 +1,8 @@
-# Argent Library
+# Argent Library  
+[![GitHub forks](https://img.shields.io/github/forks/achakravarti/argent.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/achakravarti/argent/network/)
+[![GitHub stars](https://img.shields.io/github/stars/achakravarti/argent.svg?style=social&label=Star&maxAge=2592000)](https://github.com/achakravarti/argent/stargazers/)
+[![GitHub watchers](https://img.shields.io/github/watchers/achakravarti/argent.svg?style=social&label=Watch&maxAge=2592000)](https://github.com/achakravarti/argent/watchers/)
+
 > Infrastructure for building web services
 
 
