@@ -8,14 +8,13 @@
   - [Runing the tests](#running-the-tests)
   - [Deployment](#deployment)
   - [Built With](#built-with)
-  - [Contributing](#contributing)
   - [Versioning](#versioning)
-  - [Authors](#authors)
+  - [Contributors](#contributors)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
 
 
-## Getting Started[![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent?branch=master) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)  
+## Getting Started [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent?branch=master) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)  
 
 
 ### Prerequisites
@@ -47,19 +46,19 @@
   - Travis-CI
   - Cirrus CI
   - Coveralls
-
-## Contributing
-Contributions are welcome!
+  - Make
 
 
 ## Versioning
 The Argent Library uses Semantic Versioning. The following tagged versions are
 available:
-  - v0.1.0
   - v0.2.0
+  - v0.1.0
 
 
-## Authors
+## Contributors  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](http://makeapullrequest.com) [![GitHub contributors](https://img.shields.io/github/contributors/achakravarti/argent.svg)](https://github.com/achakravarti/argent/graphs/contributors/)
+Contributions are welcome!
+
   - Abhishek Chakravarti <abhishek@taranjali.org>
 
 
