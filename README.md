@@ -56,7 +56,9 @@
   - Make
 
 
-## Versioning
+## Versioning  
+[![GitHub tag](https://img.shields.io/github/tag/achakravarti/argent.svg)](https://github.com/achakravarti/argent/tags/)
+
 The Argent Library uses Semantic Versioning. The following tagged versions are
 available:
   - v0.2.0
