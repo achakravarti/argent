@@ -22,8 +22,8 @@
 
 
 ### Installing
-    - `git clone https://github.com/achakravarti/argent.git`
-    - `make`
+  - `git clone https://github.com/achakravarti/argent.git`
+  - `make`
 
 
 ## Running the Tests  
