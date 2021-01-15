@@ -14,7 +14,8 @@
   - [Acknowledgments](#acknowledgments)
 
 
-## Getting Started [![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent?branch=master) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)  
+## Getting Started  
+[![Build Status](https://travis-ci.com/achakravarti/argent.svg?branch=master)](https://travis-ci.com/achakravarti/argent?branch=master) ![Cirrus CI - Base Branch Build Status](https://img.shields.io/cirrus/github/achakravarti/argent?style=plastic)  
 
 
 ### Prerequisites
@@ -25,7 +26,9 @@
     - `make`
 
 
-## Running the Tests [![Coverage Status](https://coveralls.io/repos/github/achakravarti/argent/badge.svg?branch=master)](https://coveralls.io/github/achakravarti/argent?branch=master)
+## Running the Tests  
+[![Coverage Status](https://coveralls.io/repos/github/achakravarti/argent/badge.svg?branch=master)](https://coveralls.io/github/achakravarti/argent?branch=master)
+
   - `make test`
   - `make check`
   - `make coverage`
@@ -56,13 +59,16 @@ available:
   - v0.1.0
 
 
-## Contributors  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](http://makeapullrequest.com) [![GitHub contributors](https://img.shields.io/github/contributors/achakravarti/argent.svg)](https://github.com/achakravarti/argent/graphs/contributors/)
+## Contributors  
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](http://makeapullrequest.com) [![GitHub contributors](https://img.shields.io/github/contributors/achakravarti/argent.svg)](https://github.com/achakravarti/argent/graphs/contributors/)
+
 Contributions are welcome!
 
   - Abhishek Chakravarti <abhishek@taranjali.org>
 
 
-## License [![GitHub license](https://img.shields.io/github/license/achakravarti/argent.svg)](https://github.com/achakravarti/argent/blob/master/LICENSE)
+## License 
+[![GitHub license](https://img.shields.io/github/license/achakravarti/argent.svg)](https://github.com/achakravarti/argent/blob/master/LICENSE)
 
 Copyright (C) 2020 Abhishek Chakravarti  
 <abhishek@taranjali.org>
