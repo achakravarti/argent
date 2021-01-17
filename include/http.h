@@ -21,26 +21,31 @@
  */
 
 
-#ifndef __ARGENT_H__
-#define __ARGENT_H__
+#ifndef __ARGENT_HTTP_H__
+#define __ARGENT_HTTP_H__
 
-#include "./primitives.h"
-#include "./log.h"
-#include "./erno.h"
-#include "./exception.h"
-#include "./hash.h"
-#include "./string.h"
-#include "./memblock.h"
-#include "./typeid.h"
-#include "./uuid.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include "./object.h"
-#include "./value.h"
-#include "./field.h"
-#include "./list.h"
-#include "./alist.h"
-#include "./test.h"
-#include "./http.h"
-#include "./manager.h"
 
-#endif /* !__ARGENT_H__ */
+
+AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
+extern ag_http_url      *ag_http_url_new(bool, const char *, const char *,
+                            const char *);
+
+
+extern bool              ag_http_url_secure(const ag_http_url *ctx);
+extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
+extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
+extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* !__ARGENT_HTTP_H__ */
 
