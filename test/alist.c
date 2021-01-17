@@ -91,8 +91,8 @@ AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
 
 
 AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single())
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list())
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
 
 
 AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);

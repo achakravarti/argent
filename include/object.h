@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 
+#include "./exception.h"
 #include "./memblock.h"
 #include "./hash.h"
 #include "./typeid.h"
@@ -214,7 +215,6 @@ inline bool ag_object_empty(const ag_object *ctx)
         extern inline bool name ## _eq(const name *, const name *);            \
         extern inline bool name ## _gt(const name *, const name *);            \
         extern inline bool name ## _empty(const name *);                       \
-        extern inline ag_typeid name ## _typeid(const name *);                 \
         extern inline ag_typeid name ## _typeid(const name *);                 \
         extern inline ag_uuid *name ## _uuid(const name *);                    \
         extern inline bool name ## _valid(const name *);                       \

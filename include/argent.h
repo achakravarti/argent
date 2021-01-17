@@ -39,6 +39,7 @@
 #include "./list.h"
 #include "./alist.h"
 #include "./test.h"
+#include "./http.h"
 #include "./manager.h"
 
 #endif /* !__ARGENT_H__ */
