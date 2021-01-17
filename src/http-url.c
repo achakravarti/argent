@@ -32,7 +32,7 @@ AG_OBJECT_DEFINE(ag_http_url)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_ALIST, &vt);
+        ag_object_registry_set(AG_TYPEID_HTTP_URL, &vt);
 }
 
 
