@@ -82,7 +82,7 @@ extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
 
 
 /*
- * Declare the non-inherited accessore interface for the ag_http_url object.
+ * Declare the non-inherited accessor interface for the ag_http_url object.
  * ag_http_url_secure() determines if a given URL object is secure, i.e.,
  * whether it is using the HTTPS protocol. ag_http_url_host() gets the hostname
  * component of a URL object, ag_http_url_port() gets the port number (0 if not
