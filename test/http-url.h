@@ -12,10 +12,18 @@
 
 
 #define AG_METATEST_HTTP_URL_SECURE(sample, expect)                     \
-        AG_TEST_CASE("ag_http_url_host(): " #sample " => " #expect)     \
+        AG_TEST_CASE("ag_http_url_secure(): " #sample " => " #expect)   \
         {                                                               \
                 AG_AUTO(ag_http_url) *u = sample;                       \
                 AG_TEST (ag_http_url_secure(u) == expect);              \
+        }
+
+
+#define AG_METATEST_HTTP_URL_PORT(sample, expect)                       \
+        AG_TEST_CASE("ag_http_url_port(): " #sample " => " #expect)     \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = sample;                       \
+                AG_TEST (ag_http_url_port(u) == expect);                \
         }
 
 
