@@ -21,6 +21,12 @@
                 AG_AUTO(ag_http_url) *u = tag();                        \
                 AG_AUTO(ag_string) *s = ag_http_url_str(u);             \
                 return ag_string_sz(s);                                 \
+        }                                                               \
+        static inline size_t tag ## _HASH(void)                         \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = tag();                        \
+                AG_AUTO(ag_string) *s = ag_http_url_str(u);             \
+                return ag_hash_new_str(s);                              \
         }
 
 
@@ -137,6 +143,20 @@ AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
 AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_SZ());
 AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
     HTTPS_DOMAIN_FOO_BAR_SZ());
+
+
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
+    HTTP_LOCALHOST_8080_NOPATH_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
+    HTTPS_LOCALHOST_8080_NOPATH_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    HTTP_LOCALHOST_8080_FOO_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    HTTPS_LOCALHOST_8080_FOO_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO(),
+    HTTPS_DOMAIN_FOO_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    HTTPS_DOMAIN_FOO_BAR_HASH());
 
 
 extern ag_test_suite *
