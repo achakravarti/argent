@@ -1,8 +1,5 @@
 #include "../include/argent.h"
 
-#include <inttypes.h>
-
-
 struct payload {
         bool             secure;
         ag_uint          port;
@@ -37,18 +34,15 @@ AG_OBJECT_DEFINE(ag_http_url)
 
 
 extern ag_http_url *
-ag_http_url_new(bool secure, const char *host, const char *port,
+ag_http_url_new(bool secure, const char *host, ag_uint port,
     const char *path)
 {
         AG_ASSERT_STR (host);
-        AG_ASSERT_PTR (port);
         AG_ASSERT_PTR (path);
-
-        ag_uint p = *port ? strtoumax(port, NULL, 10) : 0;
-        AG_ASSERT (p < 65535);
+        AG_ASSERT (port && port < 65535);
 
         return ag_object_new(AG_TYPEID_HTTP_URL,
-            payload_new(secure, host, p, path));
+            payload_new(secure, host, port, path));
 }
 
 
