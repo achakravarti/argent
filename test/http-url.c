@@ -159,6 +159,20 @@ AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
     HTTPS_DOMAIN_FOO_BAR_HASH());
 
 
+AG_METATEST_OBJECT_STR(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
+    "http://127.0.0.1:8080/");
+AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
+    "https://127.0.0.1:8080/");
+AG_METATEST_OBJECT_STR(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    "http://localhost:8080/foo");
+AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    "https://localhost:8080/foo");
+AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO(),
+    "https://www.domain.com/foo");
+AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    "https://www.domain.com/foo/bar");
+
+
 extern ag_test_suite *
 test_suite_http_url(void)
 {
