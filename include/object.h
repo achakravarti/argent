@@ -216,7 +216,6 @@ inline bool ag_object_empty(const ag_object *ctx)
         extern inline bool name ## _gt(const name *, const name *);            \
         extern inline bool name ## _empty(const name *);                       \
         extern inline ag_typeid name ## _typeid(const name *);                 \
-        extern inline ag_typeid name ## _typeid(const name *);                 \
         extern inline ag_uuid *name ## _uuid(const name *);                    \
         extern inline bool name ## _valid(const name *);                       \
         extern inline size_t name ## _sz(const name *);                        \
