@@ -39,7 +39,7 @@ ag_http_url_new(bool secure, const char *host, ag_uint port,
 {
         AG_ASSERT_STR (host);
         AG_ASSERT_PTR (path);
-        AG_ASSERT (port && port < 65535);
+        AG_ASSERT (port < 65535);
 
         return ag_object_new(AG_TYPEID_HTTP_URL,
             payload_new(secure, host, port, path));
