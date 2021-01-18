@@ -1,4 +1,5 @@
 #include "./object.h"
+#include "./http-url.h"
 #include "./test.h"
 
 
@@ -181,6 +182,12 @@ AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
     "https://www.domain.com/foo/bar");
 
 
+AG_METATEST_HTTP_URL_HOST(HTTP_LOCALHOST_8080_NOPATH(), "127.0.0.1");
+AG_METATEST_HTTP_URL_HOST(HTTPS_LOCALHOST_8080_NOPATH(), "127.0.0.1");
+AG_METATEST_HTTP_URL_HOST(HTTP_LOCALHOST_8080_FOO(), "localhost");
+AG_METATEST_HTTP_URL_HOST(HTTPS_LOCALHOST_8080_FOO(), "localhost");
+AG_METATEST_HTTP_URL_HOST(HTTPS_DOMAIN_FOO(), "www.domain.com");
+AG_METATEST_HTTP_URL_HOST(HTTPS_DOMAIN_FOO_BAR(), "www.domain.com");
 
 
 extern ag_test_suite *
