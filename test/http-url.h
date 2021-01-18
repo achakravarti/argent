@@ -27,5 +27,14 @@
         }
 
 
+#define AG_METATEST_HTTP_URL_PATH(sample, expect)                       \
+        AG_TEST_CASE("ag_http_url_path(): " #sample " => " expect)      \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = sample;                       \
+                AG_AUTO(ag_string) *p = ag_http_url_path(u);            \
+                AG_TEST (ag_string_eq(p, expect));                      \
+        }
+
+
 #endif /* !__AG_HTTP_URL_METATESTS_H__ */
 
