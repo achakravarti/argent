@@ -134,6 +134,12 @@ payload_new(bool secure, const char *host, ag_uint port, const char *path)
 }
 
 
+/*
+ * Define the virt_clone() dynamic dispatch callback function. This function
+ * is called by ag_object_clone() when ag_http_url_clone() is invoked.
+ */
+
+
 static ag_memblock *
 virt_clone(const ag_memblock *ctx)
 {
@@ -142,6 +148,12 @@ virt_clone(const ag_memblock *ctx)
         const struct payload *p = ctx;
         return payload_new(p->secure, p->host, p->port, p->path);
 }
+
+
+/*
+ * Define the virt_release() dynamic dispatch callback function. This function
+ * is called by ag_object_release() when ag_http_url_release() is invoked.
+ */
 
 
 static void
@@ -153,6 +165,12 @@ virt_release(ag_memblock *ctx)
         ag_string_release(&p->host);
         ag_string_release(&p->path);
 }
+
+
+/*
+ * Define the virt_cmp() dynamic dispatch callback function. This function is
+ * called by ag_object_cmp() when ag_http_url_cmp() is invoked.
+ */
 
 
 static enum ag_cmp
@@ -168,6 +186,11 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
 }
 
 
+/*
+ * Define the virt_valid() dynamic dispatch callback function. This function is
+ * called by ag_object_valid() when ag_http_url_valid() is invoked.
+ */
+
 static bool
 virt_valid(const ag_object *ctx)
 {
@@ -178,6 +201,11 @@ virt_valid(const ag_object *ctx)
 }
 
 
+/*
+ * Define the virt_sz() dynamic dispatch callback function. This function is
+ * called by ag_object_sz() when ag_http_url_sz() is invoked.
+ */
+
 static size_t
 virt_sz(const ag_object *ctx)
 {
@@ -186,6 +214,12 @@ virt_sz(const ag_object *ctx)
         AG_AUTO(ag_string) *s = virt_str(ctx);
         return ag_string_sz(s);
 }
+
+
+/*
+ * Define the virt_len() dynamic dispatch callback function. This function is
+ * called by ag_object_len() when ag_http_url_len() is invoked.
+ */
 
 
 static size_t
@@ -198,6 +232,12 @@ virt_len(const ag_object *ctx)
 }
 
 
+/*
+ * Define the virt_hash() dynamic dispatch callback function. This function is
+ * called by ag_object_hash() when ag_http_url_hash() is invoked.
+ */
+
+
 static ag_hash
 virt_hash(const ag_object *ctx)
 {
@@ -206,6 +246,12 @@ virt_hash(const ag_object *ctx)
         AG_AUTO(ag_string) *s = virt_str(ctx);
         return ag_hash_new_str(s);
 }
+
+
+/*
+ * Define the virt_str() dynamic dispatch callback function. This function is
+ * called by ag_object_str() when ag_http_url_str() is invoked.
+ */
 
 
 static ag_string *

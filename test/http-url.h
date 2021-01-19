@@ -25,6 +25,16 @@
 #define __AG_HTTP_URL_METATESTS_H__
 
 
+/*
+ * Define the AG_METATEST_HTTP_URL_HOST() macro. This macro defines the metatest
+ * that is used to metaprogrammatically generate a test case for the
+ * ag_http_url_host() interface function. The first parameter is a pointer to
+ * the sample HTTP URL object, and the second parameter is a statically
+ * allocated string representing the result that is expected to be returned by
+ * ag_http_url_host().
+ */
+
+
 #define AG_METATEST_HTTP_URL_HOST(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_host(): " #sample " => " expect)      \
         {                                                               \
@@ -32,6 +42,15 @@
                 AG_AUTO(ag_string) *h = ag_http_url_host(u);            \
                 AG_TEST (ag_string_eq(h, expect));                      \
         }
+
+
+/*
+ * Define the AG_METATEST_HTTP_URL_SECURE() macro. This macro defines the
+ * metatest that is used to metaprogrammatically generate a test case for the
+ * ag_http_url_secure() interface function. The first parameter is a pointer to
+ * the sample HTTP URL object, and second parameter is the Boolean value that is
+ * expected to be returned by ag_http_url_secure().
+ */
 
 
 #define AG_METATEST_HTTP_URL_SECURE(sample, expect)                     \
@@ -42,12 +61,31 @@
         }
 
 
+/*
+ * Define the AG_METATEST_HTTP_URL_PORT() macro. This macro defines the metatest
+ * that is used to metaprogrammatically generate a test case for the
+ * ag_http_url_port() interface function. The first parameter is a pointer to
+ * the sample HTTP URL object, and the second parameter represents the integer
+ * result that is expected to be returned by ag_http_url_port().
+ */
+
+
 #define AG_METATEST_HTTP_URL_PORT(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_port(): " #sample " => " #expect)     \
         {                                                               \
                 AG_AUTO(ag_http_url) *u = sample;                       \
                 AG_TEST (ag_http_url_port(u) == expect);                \
         }
+
+
+/*
+ * Define the AG_METATEST_HTTP_URL_PATH() macro. This macro defines the metatest
+ * that is used to metaprogrammatically generate a test case for the
+ * ag_http_url_path() interface function. The first parameter is a pointer to
+ * the sample HTTP URL object, and the second parameter is a statically
+ * allocated string which represents the return value that is expected from
+ * ag_http_url_path().
+ */
 
 
 #define AG_METATEST_HTTP_URL_PATH(sample, expect)                       \
