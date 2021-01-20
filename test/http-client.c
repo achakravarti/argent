@@ -58,6 +58,44 @@ AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT2());
 AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT2());
 
 
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_TYPEID(ag_http_client, CLIENT1(), AG_TYPEID_HTTP_CLIENT);
+AG_METATEST_OBJECT_TYPEID(ag_http_client, CLIENT2(), AG_TYPEID_HTTP_CLIENT);
+
+
+AG_METATEST_OBJECT_UUID(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_UUID(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_REFC(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_REFC(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT1(), CLIENT1_LEN());
+AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT2(), CLIENT2_LEN());
+
+
+AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT1(), CLIENT1_SZ());
+AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT2(), CLIENT2_SZ());
+
+
+AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT1(), CLIENT1_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT2(), CLIENT2_HASH());
+
+
+AG_METATEST_OBJECT_STR(ag_http_client, CLIENT1(),
+    "[192.168.0.1] host=host.com, agent=mozilla, referer=google.com");
+AG_METATEST_OBJECT_STR(ag_http_client, CLIENT2(),
+    "[192.168.1.1:40] host=domain.com, agent=webkit, referer=");
+
+
 extern ag_test_suite *
 test_suite_http_client(void)
 {

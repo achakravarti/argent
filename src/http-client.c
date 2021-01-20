@@ -207,10 +207,11 @@ virt_str(const ag_object *ctx)
         const struct payload *p = ag_object_payload(ctx);
 
         if (p->port)
-                return ag_string_new_fmt("[%s:%lu] agent=%s, referer=%s",
-                    p->ip, p->port, p->agent, p->referer);
+                return ag_string_new_fmt(
+                   "[%s:%lu] host=%s, agent=%s, referer=%s",
+                    p->ip, p->port, p->host, p->agent, p->referer);
         else
-                return ag_string_new_fmt("[%s] agent=%s, referer=%s",
-                    p->ip, p->agent, p->referer);
+                return ag_string_new_fmt("[%s] host=%s, agent=%s, referer=%s",
+                    p->ip, p->host, p->agent, p->referer);
 }
 
