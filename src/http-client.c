@@ -62,7 +62,7 @@ ag_http_client_ip(const ag_http_client *ctx)
 
 
 extern ag_uint
-ag_http_port(const ag_http_client *ctx)
+ag_http_client_port(const ag_http_client *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -72,7 +72,7 @@ ag_http_port(const ag_http_client *ctx)
 
 
 extern ag_string *
-ag_http_host(const ag_http_client *ctx)
+ag_http_client_host(const ag_http_client *ctx)
 {
         AG_ASSERT_PTR (ctx);
 

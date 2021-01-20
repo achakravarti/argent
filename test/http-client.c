@@ -1,6 +1,7 @@
 #define __AG_TEST_SUITE_ID__ 9
 
 
+#include "./http-client.h"
 #include "./object.h"
 #include "./test.h"
 
@@ -94,6 +95,26 @@ AG_METATEST_OBJECT_STR(ag_http_client, CLIENT1(),
     "[192.168.0.1] host=host.com, agent=mozilla, referer=google.com");
 AG_METATEST_OBJECT_STR(ag_http_client, CLIENT2(),
     "[192.168.1.1:40] host=domain.com, agent=webkit, referer=");
+
+
+AG_METATEST_HTTP_CLIENT_IP(CLIENT1(), "192.168.0.1");
+AG_METATEST_HTTP_CLIENT_IP(CLIENT2(), "192.168.1.1");
+
+
+AG_METATEST_HTTP_CLIENT_PORT(CLIENT1(), 0);
+AG_METATEST_HTTP_CLIENT_PORT(CLIENT2(), 40);
+
+
+AG_METATEST_HTTP_CLIENT_HOST(CLIENT1(), "host.com");
+AG_METATEST_HTTP_CLIENT_HOST(CLIENT2(), "domain.com");
+
+
+AG_METATEST_HTTP_CLIENT_AGENT(CLIENT1(), "mozilla");
+AG_METATEST_HTTP_CLIENT_AGENT(CLIENT2(), "webkit");
+
+
+AG_METATEST_HTTP_CLIENT_REFERER(CLIENT1(), "google.com");
+AG_METATEST_HTTP_CLIENT_REFERER(CLIENT2(), "");
 
 
 extern ag_test_suite *

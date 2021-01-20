@@ -104,8 +104,8 @@ extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
 
 
 extern ag_string        *ag_http_client_ip(const ag_http_client *);
-extern ag_uint           ag_http_port(const ag_http_client *);
-extern ag_string        *ag_http_host(const ag_http_client *);
+extern ag_uint           ag_http_client_port(const ag_http_client *);
+extern ag_string        *ag_http_client_host(const ag_http_client *);
 extern ag_string        *ag_http_client_agent(const ag_http_client *);
 extern ag_string        *ag_http_client_referer(const ag_http_client *);
 
