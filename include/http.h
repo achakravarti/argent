@@ -96,6 +96,20 @@ extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
 
 
+AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
+
+
+extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
+                            const char *, const char *);
+
+
+ag_string       *ag_http_client_ip(const ag_http_client *);
+ag_uint          ag_http_port(const ag_http_client *);
+ag_string       *ag_http_host(const ag_http_client *);
+ag_string       *ag_http_client_agent(const ag_http_client *);
+ag_string       *ag_http_client_referer(const ag_http_client *);
+
+
 #ifdef __cplusplus
 }
 #endif
