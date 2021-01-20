@@ -30,7 +30,20 @@
         }
 
 
-SAMPLE(CLIENT, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
+SAMPLE(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
+SAMPLE(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
+
+
+AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT2());
+
+
+AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT2());
 
 
 extern ag_test_suite *
