@@ -33,8 +33,6 @@
  * allocated string representing the result that is expected to be returned by
  * ag_http_url_host().
  */
-
-
 #define AG_METATEST_HTTP_URL_HOST(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_host(): " #sample " => " expect)      \
         {                                                               \
@@ -51,8 +49,6 @@
  * the sample HTTP URL object, and second parameter is the Boolean value that is
  * expected to be returned by ag_http_url_secure().
  */
-
-
 #define AG_METATEST_HTTP_URL_SECURE(sample, expect)                     \
         AG_TEST_CASE("ag_http_url_secure(): " #sample " => " #expect)   \
         {                                                               \
@@ -68,8 +64,6 @@
  * the sample HTTP URL object, and the second parameter represents the integer
  * result that is expected to be returned by ag_http_url_port().
  */
-
-
 #define AG_METATEST_HTTP_URL_PORT(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_port(): " #sample " => " #expect)     \
         {                                                               \
@@ -86,8 +80,6 @@
  * allocated string which represents the return value that is expected from
  * ag_http_url_path().
  */
-
-
 #define AG_METATEST_HTTP_URL_PATH(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_path(): " #sample " => " expect)      \
         {                                                               \

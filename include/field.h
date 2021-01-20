@@ -62,8 +62,6 @@ extern "C" {
  *   - ag_field_hash()
  *   - ag_field_str()
  */
-
-
 AG_OBJECT_DECLARE(ag_field, AG_TYPEID_FIELD);
 
 
@@ -72,8 +70,6 @@ AG_OBJECT_DECLARE(ag_field, AG_TYPEID_FIELD);
  * only one such function, ag_field_new(), which is responsible for creating a
  * field object with a given key and value.
  */
-
-
 extern ag_field *ag_field_new(const ag_value *, const ag_value *);
                 
 
@@ -82,8 +78,6 @@ extern ag_field *ag_field_new(const ag_value *, const ag_value *);
  * are only two accessor functions, ag_field_key() and ag_field_val(), returning
  * the key and value of a field object respectively.
  */
-
-
 extern ag_value *ag_field_key(const ag_field *);
 extern ag_value *ag_field_val(const ag_field *);
                 
@@ -93,8 +87,6 @@ extern ag_value *ag_field_val(const ag_field *);
  * to the accessor functions, ag_field_key_set() and ag_field_val_set() set the
  * key and value of a field object respectively.
  */
-
-
 extern void     ag_field_key_set(ag_field **, const ag_value *);
 extern void     ag_field_val_set(ag_field **, const ag_value *);
 

@@ -24,6 +24,19 @@
 
 ### Prerequisites
 
+#### Debian/Ubuntu
+  - `uuid-dev`
+  - `valgrind`
+
+#### FreeBSD
+  - `gmake`
+  - `ccache`
+  - `e2fsprogs-libuuid`
+  - `postgresql12-server`
+  - `postgresql12-client`
+  - `postgresql-libpgeasy`
+  - `valgrind-devel`
+
 
 ### Installing
   - `git clone https://github.com/achakravarti/argent.git`

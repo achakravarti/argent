@@ -29,8 +29,6 @@
  * individual components of an HTTP URL, of which only the port number is
  * optional.
  */
-
-
 struct payload {
         bool             secure;        /* HTTPS used?              */
         ag_uint          port;          /* Port number, 0 if none   */
@@ -43,8 +41,6 @@ struct payload {
  * Declare the prototype for the payload_new() helper function. This function
  * creates a new payload instance for an ag_http_url object.
  */
-
-
 static struct payload   *payload_new(bool, const char *, ag_uint, const char *);
 
 
@@ -53,8 +49,6 @@ static struct payload   *payload_new(bool, const char *, ag_uint, const char *);
  * ag_http_url object. We are providing callback functions for all polymorphic
  * object functions.
  */
-
-
 static ag_memblock      *virt_clone(const ag_memblock *);
 static void              virt_release(ag_memblock *);
 static enum ag_cmp       virt_cmp(const ag_object *, const ag_object *);
@@ -70,8 +64,6 @@ static ag_string        *virt_str(const ag_object *);
  * by its dynamic dispatch callback functions that are registered with the
  * object registry.
  */
-
-
 AG_OBJECT_DEFINE(ag_http_url)
 {
         struct ag_object_vtable vt = {
@@ -92,8 +84,6 @@ AG_OBJECT_DEFINE(ag_http_url)
  * number, and the fourth parameter indicates the resource path. Setting the
  * third parameter to 0 indicates that the default port is to be used.
  */
-
-
 extern ag_http_url *
 ag_http_url_new(bool secure, const char *host, ag_uint port,
     const char *path)
@@ -112,8 +102,6 @@ ag_http_url_new(bool secure, const char *host, ag_uint port,
  * true if an HTTP URL object is using the HTTPS protocol, and false if it is
  * using the HTTP protocol.
  */
-
-
 extern bool              
 ag_http_url_secure(const ag_http_url *ctx)
 {
@@ -128,8 +116,6 @@ ag_http_url_secure(const ag_http_url *ctx)
  * Define the ag_http_url_host() interface function. We return the host name
  * component of an HTTP URL object.
  */
-
-
 extern ag_string *
 ag_http_url_host(const ag_http_url *ctx)
 {
@@ -144,8 +130,6 @@ ag_http_url_host(const ag_http_url *ctx)
  * Define the ag_http_url_port() interface function. We return the port number
  * component of an HTTP URL object.
  */
-
-
 extern ag_uint           
 ag_http_url_port(const ag_http_url *ctx)
 {
@@ -160,8 +144,6 @@ ag_http_url_port(const ag_http_url *ctx)
  * Define the ag_http_url_path() interface function. We return the path
  * component of an HTTP URL object.
  */
-
-
 extern ag_string *
 ag_http_url_path(const ag_http_url *ctx)
 {
@@ -180,8 +162,6 @@ ag_http_url_path(const ag_http_url *ctx)
  * name starts at the root (/), even if that is not specified in the argument to
  * the path parameter.
  */
-
-
 static struct payload *
 payload_new(bool secure, const char *host, ag_uint port, const char *path)
 {
@@ -212,8 +192,6 @@ payload_new(bool secure, const char *host, ag_uint port, const char *path)
  * return a payload instance with the same fields as that of the contextual
  * payload.
  */
-
-
 static ag_memblock *
 virt_clone(const ag_memblock *ctx)
 {
@@ -229,8 +207,6 @@ virt_clone(const ag_memblock *ctx)
  * is called by ag_object_release() when ag_http_url_release() is invoked. We
  * release the dynamically allocated string components of the payload.
  */
-
-
 static void
 virt_release(ag_memblock *ctx)
 {
@@ -248,8 +224,6 @@ virt_release(ag_memblock *ctx)
  * lexicographical comparison of the string representations of the HTTP URL
  * objects.
  */
-
-
 static enum ag_cmp
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
@@ -268,8 +242,6 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
  * called by ag_object_valid() when ag_http_url_valid() is invoked. An HTTP URL
  * is guaranteed to be valid when constructed through ag_http_url_new().
  */
-
-
 static bool
 virt_valid(const ag_object *ctx)
 {
@@ -285,8 +257,6 @@ virt_valid(const ag_object *ctx)
  * called by ag_object_sz() when ag_http_url_sz() is invoked. The size of an
  * HTTP URL is the size of its string representation.
  */
-
-
 static size_t
 virt_sz(const ag_object *ctx)
 {
@@ -302,8 +272,6 @@ virt_sz(const ag_object *ctx)
  * called by ag_object_len() when ag_http_url_len() is invoked. The length of an
  * HTTP URL is the length of its string representation.
  */
-
-
 static size_t
 virt_len(const ag_object *ctx)
 {
@@ -319,8 +287,6 @@ virt_len(const ag_object *ctx)
  * called by ag_object_hash() when ag_http_url_hash() is invoked. The hash of an
  * HTTP URL object is the hash of its string representation.
  */
-
-
 static ag_hash
 virt_hash(const ag_object *ctx)
 {
@@ -335,8 +301,6 @@ virt_hash(const ag_object *ctx)
  * Define the virt_str() dynamic dispatch callback function. This function is
  * called by ag_object_str() when ag_http_url_str() is invoked.
  */
-
-
 static ag_string *
 virt_str(const ag_object *ctx)
 {
@@ -345,7 +309,7 @@ virt_str(const ag_object *ctx)
         const struct payload *p = ag_object_payload(ctx);
 
         if (p->port) {
-                return ag_string_new_fmt("http%s://%s:%u%s",
+                return ag_string_new_fmt("http%s://%s:%lu%s",
                     p->secure ? "s" : "", p->host, p->port, p->path);
         } else {
                 return ag_string_new_fmt("http%s://%s%s",

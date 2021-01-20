@@ -31,8 +31,6 @@
  * unique ID for the HTTP URL interface test suite, and is used by the testing
  * macros to metaprogrammatically generate the relevant testing functions.
  */
-
-
 #define __AG_TEST_SUITE_ID__ 8
 
 
@@ -49,8 +47,6 @@
  *   - TAG_SZ() : returns the size of the sample URL.
  *   - TAG_HASH : returns the hash of the sample URL.
  */
-
-
 #define SAMPLE(tag, secure, host, port, path)                           \
         static inline ag_http_url *tag(void)                            \
         {                                                               \
@@ -89,8 +85,6 @@
  * We use the SAMPLE() macro defined above to generate the sample HTTP URL
  * objects along with their supporting functions.
  */
-
-
 SAMPLE(HTTP_LOCALHOST_8080_NOPATH, false, "127.0.0.1", 8080, "");
 SAMPLE(HTTPS_LOCALHOST_8080_NOPATH, true, "127.0.0.1", 8080, "");
 SAMPLE(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
@@ -103,8 +97,6 @@ SAMPLE(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
  * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -117,8 +109,6 @@ AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * Run the ag_object_clone() metatest for ag_http_url_clone() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -131,8 +121,6 @@ AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -146,8 +134,6 @@ AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * HTTP URL objects. The first argument is lexicographically less than the
  * second.
  */
-
-
 AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
@@ -160,8 +146,6 @@ AG_METATEST_OBJECT_CMP(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
  * HTTP URL objects. The first argument is lexicographically less than the
  * second.
  */
-
-
 AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
@@ -174,8 +158,6 @@ AG_METATEST_OBJECT_LT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
  * HTTP URL objects. The first argument is lexicographically less than the
  * second.
  */
-
-
 AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
@@ -188,8 +170,6 @@ AG_METATEST_OBJECT_EQ(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
  * HTTP URL objects. The first argument is lexicographically less than the
  * second.
  */
-
-
 AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
@@ -202,8 +182,6 @@ AG_METATEST_OBJECT_GT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
  * sample HTTP URL objects. Since URL objects can never be empty, we only
  * perform the AG_METATEST_OBJECT_EMPTY_NOT() metatest.
  */
-
-
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -217,8 +195,6 @@ AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * sample HTTP URL objects. Since URL objects can never be invalid if created
  * successfully, we're skipping the AG_METATEST_OBJECT_VALID_NOT() metatest.
  */
-
-
 AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -231,8 +207,6 @@ AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * Run the ag_object_typeid() metatest for ag_http_url_typeid() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     AG_TYPEID_HTTP_URL);
 AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
@@ -250,8 +224,6 @@ AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
  * Run the ag_object_uuid() metatest for ag_http_url_uuid() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_UUID(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_UUID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -264,8 +236,6 @@ AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * Run the ag_object_refc() metatest for ag_http_url_refc() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_REFC(ag_http_url, HTTP_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH());
 AG_METATEST_OBJECT_REFC(ag_http_url, HTTP_LOCALHOST_8080_FOO());
@@ -278,8 +248,6 @@ AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
  * Run the ag_object_len() metatest for ag_http_url_len() with the above sample
  * HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_LEN(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTP_LOCALHOST_8080_NOPATH_LEN());
 AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
@@ -297,8 +265,6 @@ AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
  * Run the ag_object_url() metatest for ag_http_url_url() with the above sample
  * HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_SZ(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTP_LOCALHOST_8080_NOPATH_SZ());
 AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
@@ -316,8 +282,6 @@ AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
  * Run the ag_object_hash() metatest for ag_http_url_hash() with the above
  * sample HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     HTTP_LOCALHOST_8080_NOPATH_HASH());
 AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
@@ -336,8 +300,6 @@ AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
  * Run the ag_object_str() metatest for ag_http_url_str() with the above sample
  * HTTP URL objects.
  */
-
-
 AG_METATEST_OBJECT_STR(ag_http_url, HTTP_LOCALHOST_8080_NOPATH(),
     "http://127.0.0.1:8080/");
 AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_LOCALHOST_8080_NOPATH(),
@@ -357,8 +319,6 @@ AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
  * above. The first parameter to AG_METATEST_HTTP_URL_HOST() is the sample URL,
  * and the second parameter specifies the expected string result.
  */
-
-
 AG_METATEST_HTTP_URL_HOST(HTTP_LOCALHOST_8080_NOPATH(), "127.0.0.1");
 AG_METATEST_HTTP_URL_HOST(HTTPS_LOCALHOST_8080_NOPATH(), "127.0.0.1");
 AG_METATEST_HTTP_URL_HOST(HTTP_LOCALHOST_8080_FOO(), "localhost");
@@ -372,8 +332,6 @@ AG_METATEST_HTTP_URL_HOST(HTTPS_DOMAIN_FOO_BAR(), "www.domain.com");
  * above. The first parameter to the AG_METATEST_HTTP_URL_SECURE() is the sample
  * URL object, and the second parameter is the expected Boolean result.
  */
-
-
 AG_METATEST_HTTP_URL_SECURE(HTTP_LOCALHOST_8080_NOPATH(), false);
 AG_METATEST_HTTP_URL_SECURE(HTTPS_LOCALHOST_8080_NOPATH(), true);
 AG_METATEST_HTTP_URL_SECURE(HTTP_LOCALHOST_8080_FOO(), false);
@@ -387,8 +345,6 @@ AG_METATEST_HTTP_URL_SECURE(HTTPS_DOMAIN_FOO_BAR(), true);
  * above. The first parameter to the AG_METATEST_HTTP_URL_PORT() macro is the
  * sample URL object, and the second parameter is the expected integer result.
  */
-
-
 AG_METATEST_HTTP_URL_PORT(HTTP_LOCALHOST_8080_NOPATH(), 8080);
 AG_METATEST_HTTP_URL_PORT(HTTPS_LOCALHOST_8080_NOPATH(), 8080);
 AG_METATEST_HTTP_URL_PORT(HTTP_LOCALHOST_8080_FOO(), 8080);
@@ -402,8 +358,6 @@ AG_METATEST_HTTP_URL_PORT(HTTPS_DOMAIN_FOO_BAR(), 0);
  * above. The first parameter to the AG_METATEST_HTTP_URL_PATH() macro is the
  * sample URL object, and the second parameter is the expected string result.
  */
-
-
 AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_NOPATH(), "/");
 AG_METATEST_HTTP_URL_PATH(HTTPS_LOCALHOST_8080_NOPATH(), "/");
 AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_FOO(), "/foo");
@@ -416,8 +370,6 @@ AG_METATEST_HTTP_URL_PATH(HTTPS_DOMAIN_FOO_BAR(), "/foo/bar");
  * Define the test_suite_http_url() function. We generate the test cases from
  * the above metatest definitions through a call to AG_TEST_SUITE_GENERATE().
  */
-
-
 extern ag_test_suite *
 test_suite_http_url(void)
 {

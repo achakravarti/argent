@@ -65,8 +65,6 @@ extern "C" {
  *   - ag_http_url_hash()
  *   - ag_http_url_str()
  */
-
-
 AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
 
 
@@ -75,8 +73,6 @@ AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
  * ag_http_url_new() creates a new URL object, and ag_http_url_new_noport()
  * creates a URL object without a port number.
  */
-
-
 extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
                             const char *);
 
@@ -88,12 +84,65 @@ extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
  * component of a URL object, ag_http_url_port() gets the port number (0 if not
  * applicable), and ag_http_url_path() gets the path component of the URL.
  */
-
-
 extern bool              ag_http_url_secure(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
 extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
+
+
+/*
+ * Declare the ag_http_client object with the typeid AG_TYPEID_HTTP_CLIENT. This
+ * object represents a client (human or otherwise) making an HTTP request. The
+ * client is represented by five properties: the IP address, the port number,
+ * the hostname, the user agent, and the URL from where the request originated.
+ *
+ * Since we're using the AG_OBJECT_DECLARE() macro to declare the client object,
+ * the following inherited functions are also metaprogrammatically declared as 
+ * part of the ag_http_client interface:
+ *   - ag_http_client_copy()
+ *   - ag_http_client_clone()
+ *   - ag_http_client_release()
+ *   - ag_http_client_cmp()
+ *   - ag_http_client_lt()
+ *   - ag_http_client_eq()
+ *   - ag_http_client_gt()
+ *   - ag_http_client_empty()
+ *   - ag_http_client_typeid()
+ *   - ag_http_client_uuid()
+ *   - ag_http_client_valid()
+ *   - ag_http_client_sz()
+ *   - ag_http_client_refc()
+ *   - ag_http_client_len()
+ *   - ag_http_client_hash()
+ *   - ag_http_client_str()
+ */
+AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
+
+
+/*
+ * Declare the non-inherited manager interface for the ag_http_client object.
+ * There is only one function in this interface, ag_http_client_new(), which is
+ * responsible for creating a new client object.
+ */
+extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
+                            const char *, const char *);
+
+
+/*
+ * Declare the non-inherited accessor interface for the ag_http_client object.
+ * Each of the five functions that make up this interface get a relevant
+ * property of the contextual client object.
+ *
+ * ag_http_client_ip() gets the IP address of a client, ag_http_client_port()
+ * the port number, ag_http_client_host() the hostname, ag_http_client_agent()
+ * the user agent, and ag_http_client_referer() the referring URL from where the
+ * client made the HTTP request.
+ */
+extern ag_string        *ag_http_client_ip(const ag_http_client *);
+extern ag_uint           ag_http_client_port(const ag_http_client *);
+extern ag_string        *ag_http_client_host(const ag_http_client *);
+extern ag_string        *ag_http_client_agent(const ag_http_client *);
+extern ag_string        *ag_http_client_referer(const ag_http_client *);
 
 
 #ifdef __cplusplus

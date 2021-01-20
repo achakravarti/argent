@@ -41,6 +41,7 @@ ag_init(void)
         AG_OBJECT_REGISTER(ag_list);
         AG_OBJECT_REGISTER(ag_alist);
         AG_OBJECT_REGISTER(ag_http_url);
+        AG_OBJECT_REGISTER(ag_http_client);
 }
 
 
