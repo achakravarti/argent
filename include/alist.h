@@ -36,9 +36,10 @@ extern "C" {
 
 /*
  * Declare the types relevant to the association list interface. ag_alist is an
- * object with a type ID of AG_TYPEID_ALIST, and is declared through the
- * AG_OBJECT_DECLARE() macro, which metaprogrammatically declares the following
- * inherited functions:
+ * object with a type ID of AG_TYPEID_ALIST, and reifies an association list,
+ * which is a simple singly linked list of key-value pairs (represented through
+ * the ag_field type). It is declared through the AG_OBJECT_DECLARE() macro,
+ * which metaprogrammatically declares the following inherited functions:
  *   - ag_alist_copy()
  *   - ag_alist_clone()
  *   - ag_alist_release()
@@ -76,7 +77,7 @@ typedef bool    (ag_alist_iterator_mutable)(ag_field **, void *, void *);
 
 /*
  * Declare the non-inherited manager interface for the ag_alist object. The
- * manager interface consists of three releated fuctions, each of which helps
+ * manager interface consists of three related fucntions, each of which helps
  * create a new association list instance.
  *
  * ag_alist_new() creates an association list with a single field, whereas
