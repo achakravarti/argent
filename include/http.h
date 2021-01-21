@@ -65,8 +65,6 @@ extern "C" {
  *   - ag_http_url_hash()
  *   - ag_http_url_str()
  */
-
-
 AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
 
 
@@ -75,8 +73,6 @@ AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
  * ag_http_url_new() creates a new URL object, and ag_http_url_new_noport()
  * creates a URL object without a port number.
  */
-
-
 extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
                             const char *);
 
@@ -88,8 +84,6 @@ extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
  * component of a URL object, ag_http_url_port() gets the port number (0 if not
  * applicable), and ag_http_url_path() gets the path component of the URL.
  */
-
-
 extern bool              ag_http_url_secure(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
 extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
@@ -122,8 +116,6 @@ extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
  *   - ag_http_client_hash()
  *   - ag_http_client_str()
  */
-
-
 AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
 
 
@@ -132,8 +124,6 @@ AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
  * There is only one function in this interface, ag_http_client_new(), which is
  * responsible for creating a new client object.
  */
-
-
 extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
                             const char *, const char *);
 
@@ -148,8 +138,6 @@ extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
  * the user agent, and ag_http_client_referer() the referring URL from where the
  * client made the HTTP request.
  */
-
-
 extern ag_string        *ag_http_client_ip(const ag_http_client *);
 extern ag_uint           ag_http_client_port(const ag_http_client *);
 extern ag_string        *ag_http_client_host(const ag_http_client *);
