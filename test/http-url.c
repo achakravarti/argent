@@ -31,8 +31,6 @@
  * unique ID for the HTTP URL interface test suite, and is used by the testing
  * macros to metaprogrammatically generate the relevant testing functions.
  */
-
-
 #define __AG_TEST_SUITE_ID__ 8
 
 
