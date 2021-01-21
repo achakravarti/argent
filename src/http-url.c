@@ -309,7 +309,7 @@ virt_str(const ag_object *ctx)
         const struct payload *p = ag_object_payload(ctx);
 
         if (p->port) {
-                return ag_string_new_fmt("http%s://%s:%u%s",
+                return ag_string_new_fmt("http%s://%s:%lu%s",
                     p->secure ? "s" : "", p->host, p->port, p->path);
         } else {
                 return ag_string_new_fmt("http%s://%s%s",
