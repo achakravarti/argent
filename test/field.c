@@ -25,6 +25,18 @@ AG_TEST_CASE("ag_field_new() can create a new sample field")
 }
 
 
+AG_TEST_CASE("ag_field_parse() can parse a string representing a field")
+{
+        AG_AUTO(ag_field) *f = ag_field_parse("foo=bar", "=");
+        AG_AUTO(ag_value) *k = ag_field_key(f);
+        AG_AUTO(ag_value) *v = ag_field_val(f);
+
+        const ag_string *ks = ag_value_string(k);
+        const ag_string *vs = ag_value_string(v);
+
+        AG_TEST (f && ag_string_eq(ks, "foo") && ag_string_eq(vs, "bar"));
+}
+
 
 AG_METATEST_OBJECT_COPY(ag_field, sample_int_str_small());
 AG_METATEST_OBJECT_COPY(ag_field, sample_int_str_large());
