@@ -66,11 +66,16 @@ AG_OBJECT_DECLARE(ag_field, AG_TYPEID_FIELD);
 
 
 /*
- * Declare the non-inherited manager interface for the ag_field object. There is
- * only one such function, ag_field_new(), which is responsible for creating a
- * field object with a given key and value.
+ * Declare the non-inherited manager interface for the ag_field object.  There
+ * are two functions as part of this interface, both of which are responsible
+ * for creating a new field object instance. ag_field_new() creates a new field
+ * from a given key and value, and ag_field_parse() parses a string to create a
+ * new field instance. The former function allows flexibility in the value type
+ * of the key and value, whereas the latter function sets both key and value as
+ * a string type.
  */
 extern ag_field *ag_field_new(const ag_value *, const ag_value *);
+extern ag_field *ag_field_parse(const char *, const char *);
                 
 
 /*

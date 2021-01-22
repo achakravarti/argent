@@ -39,6 +39,25 @@ ag_field_new(const ag_value *key, const ag_value *val)
 }
 
 
+extern ag_field *
+ag_field_parse(const char *src, const char *sep)
+{
+        AG_ASSERT_STR (src);
+        AG_ASSERT_STR (sep);
+
+        AG_AUTO(ag_string) *s = ag_string_new(src);
+        AG_ASSERT (ag_string_has(s, sep));
+
+        AG_AUTO(ag_string) *k = ag_string_split(s, sep);
+        AG_AUTO(ag_string) *v = ag_string_split_right(s, sep);
+
+        AG_AUTO(ag_value) *kv = ag_value_new_string(s);
+        AG_AUTO(ag_value) *vv = ag_value_new_string(v);
+
+        return ag_object_new(AG_TYPEID_FIELD, payload_new(kv, vv));
+}
+
+
 
 extern ag_value *ag_field_key(const ag_field *ctx)
 {
