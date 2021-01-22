@@ -33,6 +33,66 @@ extern "C" {
 
 
 /*
+ * Define the HTTP method enumeration. This enumeration defines the common HTTP
+ * methods used to make HTTP requests.
+ */
+enum ag_http_method {
+        AG_HTTP_METHOD_GET,     /* GET    */
+        AG_HTTP_METHOD_POST,    /* POST   */
+        AG_HTTP_METHOD_PUT,     /* PUT    */
+        AG_HTTP_METHOD_PATCH,   /* PATCH  */
+        AG_HTTP_METHOD_DELETE,  /* DELETE */
+};
+
+
+/*
+ * Declare the function prototypes of the HTTP method enumeration. There are
+ * only two functions in this interface, which are used to convert to and from
+ * the string representation of this enumeration. ag_http_method_parse() parses
+ * a string to determine the HTTP method enumerator, and ag_http_method_str()
+ * does the converse, generating the string representation of an HTTP method
+ * enumerator.
+ */
+extern enum ag_http_method       ag_http_method_parse(const char *);
+extern ag_string                *ag_http_method_str(enum ag_http_method);
+
+
+/*
+ * Define the HTTP MIME type enumeration. This enumeration defines the common
+ * HTTP MIME types that are used most often. This enumeration is only a subset
+ * of all possible MIME types, and may be expanded in future if required. See
+ * the following URLs for a more complete list:
+ *   - https://github.com/cujojs/rest/blob/master/docs/mime.md
+ *   - https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/
+ *     MIME_typesCommon_types
+ */
+enum ag_http_mime {
+        AG_HTTP_MIME_APPLICATION_FORM,  /* application/x-www-form-urlencoded */
+        AG_HTTP_MIME_APPLICATION_JSON,  /* application/json                  */
+        AG_HTTP_MIME_APPLICATION_OCTET, /* application/octet-stream          */
+        AG_HTTP_MIME_APPLICATION_XML,   /* application/xml                   */
+        AG_HTTP_MIME_MULTIPART_FORM,    /* multipart/form-data               */
+        AG_HTTP_MIME_TEXT_CSS,          /* text/css                          */
+        AG_HTTP_MIME_TEXT_CSV,          /* text/csv                          */
+        AG_HTTP_MIME_TEXT_HTML,         /* text/html                         */
+        AG_HTTP_MIME_TEXT_JS,           /* text/javascript                   */
+        AG_HTTP_MIME_TEXT_PLAIN,        /* text/plain                        */
+        AG_HTTP_MIME_TEXT_XML,          /* text/xml                          */
+};
+
+
+/*
+ * Declare the function prototypes of the MIME enumeration. There are only two
+ * functions in this interface, which are used to convert to and from string
+ * representations. ag_http_mime_parse() parses a string to get the MIME enum it
+ * represents, and ag_http_mime_str() does the opposite, converting a MIME enum
+ * to its string representation.
+ */
+extern enum ag_http_mime         ag_http_mime_parse(const char *);
+extern ag_string                *ag_http_mime_str(enum ag_http_mime);
+
+
+/*
  * Declare the ag_http_url type. The ag_http_url type is an object with the
  * type ID of AG_TYPEID_HTTP_URL, and reifies an HTTP URL. An HTTP URL comprises
  * of four parts:
@@ -97,7 +157,7 @@ extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
  * the hostname, the user agent, and the URL from where the request originated.
  *
  * Since we're using the AG_OBJECT_DECLARE() macro to declare the client object,
- * the following inherited functions are also metaprogrammatically declared as 
+ * the following inherited functions are also metaprogrammatically declared as
  * part of the ag_http_client interface:
  *   - ag_http_client_copy()
  *   - ag_http_client_clone()
