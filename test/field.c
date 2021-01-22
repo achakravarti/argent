@@ -1,12 +1,43 @@
+/*-
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Argent---infrastructure for building web services
+ * Copyright (C) 2020 Abhishek Chakravarti
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+ */
+
+
+#include "./field.h"
 #include "./test.h"
 #include "./object.h"
+#include "./value.h"
 
 
 #define __AG_TEST_SUITE_ID__ 5
 
 
-static ag_field *sample_int_str_small(void);
-static ag_field *sample_int_str_large(void);
+AG_SAMPLE_VALUE_INT(NEGATIVE, -1);
+AG_SAMPLE_VALUE_INT(POSITIVE, 2);
+AG_SAMPLE_VALUE_STRING(SMALL, "small");
+AG_SAMPLE_VALUE_STRING(LARGE, "large");
+
+
+AG_SAMPLE_FIELD(SMALL, NEGATIVE(), SMALL());
+AG_SAMPLE_FIELD(LARGE, POSITIVE(), LARGE());
 
 
 /*
@@ -16,7 +47,7 @@ static ag_field *sample_int_str_large(void);
 
 AG_TEST_CASE("ag_field_new() can create a new sample field")
 {
-        AG_AUTO(ag_field) *f = sample_int_str_small();
+        AG_AUTO(ag_field) *f = SAMPLE_FIELD_SMALL();
         AG_AUTO(ag_value) *k = ag_field_key(f);
         AG_AUTO(ag_value) *v = ag_field_val(f);
         const ag_string *s = ag_value_string(v);
@@ -25,9 +56,21 @@ AG_TEST_CASE("ag_field_new() can create a new sample field")
 }
 
 
+AG_TEST_CASE("ag_field_parse() can parse a string representing a field")
+{
+        AG_AUTO(ag_field) *f = ag_field_parse("foo=bar", "=");
+        AG_AUTO(ag_value) *k = ag_field_key(f);
+        AG_AUTO(ag_value) *v = ag_field_val(f);
 
-AG_METATEST_OBJECT_COPY(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_COPY(ag_field, sample_int_str_large());
+        const ag_string *ks = ag_value_string(k);
+        const ag_string *vs = ag_value_string(v);
+
+        AG_TEST (f && ag_string_eq(ks, "foo") && ag_string_eq(vs, "bar"));
+}
+
+
+AG_METATEST_OBJECT_COPY(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_COPY(ag_field, SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -35,8 +78,8 @@ AG_METATEST_OBJECT_COPY(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_CLONE(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_CLONE(ag_field, sample_int_str_large());
+AG_METATEST_OBJECT_CLONE(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_CLONE(ag_field, SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -44,8 +87,8 @@ AG_METATEST_OBJECT_CLONE(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_RELEASE(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_RELEASE(ag_field, sample_int_str_large());
+AG_METATEST_OBJECT_RELEASE(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_RELEASE(ag_field, SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -55,10 +98,10 @@ AG_METATEST_OBJECT_RELEASE(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_CMP(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_METATEST_OBJECT_LT(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_METATEST_OBJECT_EQ(ag_field, sample_int_str_small(), sample_int_str_large());
-AG_METATEST_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
+AG_METATEST_OBJECT_CMP(ag_field, SAMPLE_FIELD_SMALL(), SAMPLE_FIELD_LARGE());
+AG_METATEST_OBJECT_LT(ag_field, SAMPLE_FIELD_SMALL(), SAMPLE_FIELD_LARGE());
+AG_METATEST_OBJECT_EQ(ag_field, SAMPLE_FIELD_SMALL(), SAMPLE_FIELD_LARGE());
+AG_METATEST_OBJECT_GT(ag_field, SAMPLE_FIELD_SMALL(), SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -66,16 +109,16 @@ AG_METATEST_OBJECT_GT(ag_field, sample_int_str_small(), sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_EMPTY_NOT(ag_field, sample_int_str_small())
-AG_METATEST_OBJECT_EMPTY_NOT(ag_field, sample_int_str_large())
+AG_METATEST_OBJECT_EMPTY_NOT(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_field, SAMPLE_FIELD_LARGE());
 
 /*
  * Define the test case for ag_field_typeid().
  */
 
 
-AG_METATEST_OBJECT_TYPEID(ag_field, sample_int_str_small(), AG_TYPEID_FIELD);
-AG_METATEST_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
+AG_METATEST_OBJECT_TYPEID(ag_field, SAMPLE_FIELD_SMALL(), AG_TYPEID_FIELD);
+AG_METATEST_OBJECT_TYPEID(ag_field, SAMPLE_FIELD_LARGE(), AG_TYPEID_FIELD);
 
 
 /*
@@ -83,8 +126,8 @@ AG_METATEST_OBJECT_TYPEID(ag_field, sample_int_str_large(), AG_TYPEID_FIELD);
  */
 
 
-AG_METATEST_OBJECT_UUID(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_UUID(ag_field, sample_int_str_large());
+AG_METATEST_OBJECT_UUID(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_UUID(ag_field, SAMPLE_FIELD_LARGE());
 
 
 
@@ -93,8 +136,8 @@ AG_METATEST_OBJECT_UUID(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_VALID(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_VALID(ag_field, sample_int_str_large());
+AG_METATEST_OBJECT_VALID(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_VALID(ag_field, SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -102,8 +145,8 @@ AG_METATEST_OBJECT_VALID(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_SZ(ag_field, sample_int_str_small(), 6 + sizeof(int64_t));
-AG_METATEST_OBJECT_SZ(ag_field, sample_int_str_large(), 6 + sizeof(int64_t));
+AG_METATEST_OBJECT_SZ(ag_field, SAMPLE_FIELD_SMALL(), 6 + sizeof(int64_t));
+AG_METATEST_OBJECT_SZ(ag_field, SAMPLE_FIELD_LARGE(), 6 + sizeof(int64_t));
 
 
 /*
@@ -111,8 +154,8 @@ AG_METATEST_OBJECT_SZ(ag_field, sample_int_str_large(), 6 + sizeof(int64_t));
  */
 
 
-AG_METATEST_OBJECT_REFC(ag_field, sample_int_str_small());
-AG_METATEST_OBJECT_REFC(ag_field, sample_int_str_large());
+AG_METATEST_OBJECT_REFC(ag_field, SAMPLE_FIELD_SMALL());
+AG_METATEST_OBJECT_REFC(ag_field, SAMPLE_FIELD_LARGE());
 
 
 /*
@@ -120,8 +163,8 @@ AG_METATEST_OBJECT_REFC(ag_field, sample_int_str_large());
  */
 
 
-AG_METATEST_OBJECT_LEN(ag_field, sample_int_str_small(), 5);
-AG_METATEST_OBJECT_LEN(ag_field, sample_int_str_large(), 5);
+AG_METATEST_OBJECT_LEN(ag_field, SAMPLE_FIELD_SMALL(), 5);
+AG_METATEST_OBJECT_LEN(ag_field, SAMPLE_FIELD_LARGE(), 5);
 
 
 /*
@@ -129,8 +172,8 @@ AG_METATEST_OBJECT_LEN(ag_field, sample_int_str_large(), 5);
  */
 
 
-AG_METATEST_OBJECT_HASH(ag_field, sample_int_str_small(), ag_hash_new(-1));
-AG_METATEST_OBJECT_HASH(ag_field, sample_int_str_large(), ag_hash_new(2));
+AG_METATEST_OBJECT_HASH(ag_field, SAMPLE_FIELD_SMALL(), ag_hash_new(-1));
+AG_METATEST_OBJECT_HASH(ag_field, SAMPLE_FIELD_LARGE(), ag_hash_new(2));
 
 
 /*
@@ -138,8 +181,8 @@ AG_METATEST_OBJECT_HASH(ag_field, sample_int_str_large(), ag_hash_new(2));
  */
 
 
-AG_METATEST_OBJECT_STR(ag_field, sample_int_str_small(), "-1:small");
-AG_METATEST_OBJECT_STR(ag_field, sample_int_str_large(), "2:large");
+AG_METATEST_OBJECT_STR(ag_field, SAMPLE_FIELD_SMALL(), "-1:small");
+AG_METATEST_OBJECT_STR(ag_field, SAMPLE_FIELD_LARGE(), "2:large");
 
 
 extern ag_test_suite *
@@ -147,27 +190,4 @@ test_suite_field(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_field interface");
 }
-
-
-static ag_field *
-sample_int_str_small(void)
-{
-        AG_AUTO(ag_string) *s = ag_string_new("small");
-        AG_AUTO(ag_value) *k = ag_value_new_int(-1);
-        AG_AUTO(ag_value) *v = ag_value_new_string(s);
-
-        return ag_field_new(k, v);
-}
-
-
-static ag_field *
-sample_int_str_large(void)
-{
-        AG_AUTO(ag_string) *s = ag_string_new("large");
-        AG_AUTO(ag_value) *k = ag_value_new_int(2);
-        AG_AUTO(ag_value) *v = ag_value_new_string(s);
-        
-        return ag_field_new(k, v);
-}
-
 

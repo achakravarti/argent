@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_H__
-#define __ARGENT_H__
+#ifndef __ARGENT_INCLUDE_ARGENT_H__
+#define __ARGENT_INCLUDE_ARGENT_H__
 
 #include "./primitives.h"
 #include "./log.h"
@@ -42,5 +42,5 @@
 #include "./http.h"
 #include "./manager.h"
 
-#endif /* !__ARGENT_H__ */
+#endif /* !__ARGENT_INCLUDE_ARGENT_H__ */
 

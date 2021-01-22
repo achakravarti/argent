@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_OBJECT_H__
-#define __ARGENT_OBJECT_H__
+#ifndef __ARGENT_INCLUDE_OBJECT_H__
+#define __ARGENT_INCLUDE_OBJECT_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -240,5 +240,5 @@ extern void ag_object_registry_set(ag_typeid, const struct ag_object_vtable *);
 }
 #endif
 
-#endif /* !__ARGENT_OBJECT_H__ */
+#endif /* !__ARGENT_INCLUDE_OBJECT_H__ */
 

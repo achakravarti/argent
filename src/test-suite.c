@@ -1,3 +1,26 @@
+/*-
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Argent---infrastructure for building web services
+ * Copyright (C) 2020 Abhishek Chakravarti
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+ */
+
+
 #include "../include/argent.h"
 
 #include <dlfcn.h>
@@ -147,8 +170,8 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
         ag_test_suite *ts = ag_test_suite_new(desc);
 
         for (register int i = 0; i < counter; i++) {
-                tsym = ag_string_new_fmt("__ag_test_%d%d", id, i);
-                dsym = ag_string_new_fmt("__ag_desc_%d%d", id, i);
+                tsym = ag_string_new_fmt("__ag_test_%d_%d", id, i);
+                dsym = ag_string_new_fmt("__ag_desc_%d_%d", id, i);
 
                 testf = dlsym(hnd, tsym);
                 if ((err = dlerror())) {

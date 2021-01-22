@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -33,8 +33,6 @@
 /*
  * Declare the public inline functions of the string interface.
  */
-
-
 extern inline ag_string *ag_string_new_empty(void);
 extern inline bool       ag_string_lt(const ag_string *, const char *);
 extern inline bool       ag_string_eq(const ag_string *, const char *);
@@ -46,8 +44,6 @@ extern inline bool       ag_string_empty(const ag_string *);
  * Define the ag_string_new() interface function. This function creates a new
  * instance of a dynamic string from a statically allocated string.
  */
-
-
 extern ag_string *
 ag_string_new(const char *src)
 {
@@ -69,8 +65,6 @@ ag_string_new(const char *src)
  * arguments to vsnprintf() we determine the size of the formatted string
  * (excluding the terminating null character).
  */
-
-
 extern ag_string *
 ag_string_new_fmt(const char *fmt, ...)
 {
@@ -95,8 +89,6 @@ ag_string_new_fmt(const char *fmt, ...)
  * Define the ag_string_copy() interface function. This function creates a
  * shallow copy of a dynamic string.
  */
-
-
 extern ag_string *
 ag_string_copy(const ag_string *ctx)
 {
@@ -110,8 +102,6 @@ ag_string_copy(const ag_string *ctx)
  * Define the ag_string_clone() interface function. This function creates a deep
  * copy of a string instance.
  */
-
-
 extern ag_string *
 ag_string_clone(const ag_string *ctx)
 {
@@ -128,8 +118,6 @@ ag_string_clone(const ag_string *ctx)
  * the size of pointers differ. See the C-FAQ List question 4.9 at
  * http://c-faq.com/ptrs/genericpp.html.
  */
-
-
 extern void
 ag_string_release(ag_string **ctx)
 {
@@ -150,8 +138,6 @@ ag_string_release(ag_string **ctx)
  * used strcmp(), but there may be edge cases in Unicode strings which strcmp()
  * doesn't handle.
  */
-
-
 extern enum ag_cmp
 ag_string_cmp(const ag_string *ctx,  const char *cmp)
 {
@@ -188,8 +174,6 @@ ag_string_cmp(const ag_string *ctx,  const char *cmp)
  * always returned in the edge cases where either the contextual string or the
  * substring to find are empty.
  */
-
-
 extern bool
 ag_string_has(const ag_string *ctx, const char *sub)
 {
@@ -246,8 +230,6 @@ ag_string_match(const ag_string *ctx, const char *regex)
  * lexicographcical length of a string, taking into consideration that the
  * string may contain non-ASCII UTF-8 characters.
  */
-
-
 extern size_t
 ag_string_len(const ag_string *ctx)
 {
@@ -271,8 +253,6 @@ ag_string_len(const ag_string *ctx)
  * bytes of a dynamic string. Since dynamic strings are allocated through memory
  * blocks, we can retrieve their size by querying ag_memblock_sz().
  */
-
-
 extern size_t
 ag_string_sz(const ag_string *ctx)
 {
@@ -287,8 +267,6 @@ ag_string_sz(const ag_string *ctx)
  * reference count of a dynamic string. Again, as in the case of ag_string_sz(),
  * we use the memory block interface to do so.
  */
-
-
 extern size_t
 ag_string_refc(const ag_string *ctx)
 {
@@ -306,8 +284,6 @@ ag_string_refc(const ag_string *ctx)
  *
  * TODO: make ag_string_lower() Unicode-safe.
  */
-
-
 extern ag_string *
 ag_string_lower(const ag_string *ctx)
 {
@@ -331,8 +307,6 @@ ag_string_lower(const ag_string *ctx)
  *
  * TODO: make ag_string_upper() Unicode-safe.
  */
-
-
 extern ag_string *
 ag_string_upper(const ag_string *ctx)
 {
@@ -361,8 +335,6 @@ ag_string_upper(const ag_string *ctx)
  *
  * TODO: make ag_string_proper() Unicode-safe.
  */
-
-
 extern ag_string *
 ag_string_proper(const ag_string *ctx)
 {
@@ -387,8 +359,6 @@ ag_string_proper(const ag_string *ctx)
  * that an empty string is provided for a pivot, then we return a copy of the
  * original string.
  */
-
-
 extern ag_string *
 ag_string_split(const ag_string *ctx, const char *pvt)
 {
@@ -419,8 +389,6 @@ ag_string_split(const ag_string *ctx, const char *pvt)
  * then an empty string is returned, and if the pivot is an empty string then a
  * copy of the original string is returned.
  */
-
-
 extern ag_string *
 ag_string_split_right(const ag_string *ctx, const char *pvt)
 {

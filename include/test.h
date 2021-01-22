@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -46,8 +46,8 @@
  */
 
 
-#ifndef __ARGENT_TEST_H__
-#define __ARGENT_TEST_H__
+#ifndef __ARGENT_INCLUDE_TEST_H__
+#define __ARGENT_INCLUDE_TEST_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -80,10 +80,10 @@ enum ag_test_status {
 typedef enum ag_test_status (ag_test)(void);
 
 
-#define __AG_TEST_FUNC_0__(id, num) __ag_test_ ## id ## num 
+#define __AG_TEST_FUNC_0__(id, num) __ag_test_ ## id ## _ ## num 
 #define __AG_TEST_FUNC__(id, num) __AG_TEST_FUNC_0__(id, num)
 
-#define __AG_TEST_DESC_0__(id, num) __ag_desc_ ## id ## num
+#define __AG_TEST_DESC_0__(id, num) __ag_desc_ ## id ## _ ## num
 #define __AG_TEST_DESC__(id, num) __AG_TEST_DESC_0__(id, num)
 
 
@@ -160,5 +160,5 @@ extern void ag_test_harness_log(const ag_test_harness *, FILE *);
         }
 #endif
 
-#endif /* !__ARGENT_TEST_H__ */
+#endif /* !__ARGENT_INCLUDE_TEST_H__ */
 

@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -81,8 +81,8 @@ AG_OBJECT_DEFINE(ag_http_url)
  * HTTP URL instance defined by ihe parameters. The first parameter indicates
  * whether or not the HTTP URL instance uses the HTTPS protocol, the second
  * instance indicates the hostname, the third parameter indicates the port
- * number, and the fourth parameter indicates the resource path. Setting the
- * third parameter to 0 indicates that the default port is to be used.
+ * number, and the fourth parameter indicates the resource path. The port number
+ * must be valid, and the path may be an empty string.
  */
 extern ag_http_url *
 ag_http_url_new(bool secure, const char *host, ag_uint port,
@@ -90,10 +90,90 @@ ag_http_url_new(bool secure, const char *host, ag_uint port,
 {
         AG_ASSERT_STR (host);
         AG_ASSERT_PTR (path);
-        AG_ASSERT (port < 65535);
+        AG_ASSERT (port && port < 65535);
 
         return ag_object_new(AG_TYPEID_HTTP_URL,
             payload_new(secure, host, port, path));
+}
+
+
+/*
+ * Define the ag_http_url_new_noport() function. This function is similar to the
+ * ag_http_url_new() function, except that it allows for the creation a new URL
+ * object without specifying a port number.
+ */
+extern ag_http_url *
+ag_http_url_new_noport(bool secure, const char *host, const char *path)
+{
+        AG_ASSERT_STR (host);
+        AG_ASSERT_PTR (path);
+
+        return ag_object_new(AG_TYPEID_HTTP_URL,
+            payload_new(secure, host, 0, path));
+}
+
+
+/*
+ * Define the ag_http_url_parse() interface function. This function parses a
+ * given string passed as the argument to the parameter of this function, and
+ * returns the ag_http_url object instance represented by that string. In case
+ * the string does not represent a parsable URL object, then an exception is
+ * thrown.
+ *
+ * We use the sscanf() function to parse the string, taking into account that
+ * there are eight different valid string forms:
+ *   1. HTTPS, host/IP, port, path
+ *   2. HTTP, host/IP, port, path
+ *   3. HTTPS, host/IP, path
+ *   4. HTTP, host/IP, path
+ *   5. HTTPS, host/IP, port
+ *   6. HTTP, host/IP, port
+ *   7. HTTPS, host/IP
+ *   8. HTTP, host/IP.
+ *
+ * The const format string variables reflect these forms, with their names
+ * identifying whether they are (s)ecure, whether they have a (po)rt, and
+ * whether they have a (pa)th. In all cases, the hostname/IP is present.
+ */
+extern ag_http_url *
+ag_http_url_parse(const char *src)
+{
+        AG_ASSERT_STR (src);
+
+        const char *fmt = "http://%263[^\n]";
+        const char *fmt_s = "https://%263[^\n]";
+        const char *fmt_po = "http://%263[^:]:%lu[^\n]";
+        const char *fmt_spo = "https://%263[^:]:%lu[^\n]";
+        const char *fmt_pa = "http://%263[^/]/%2047[^\n]";
+        const char *fmt_spa = "https://%263[^/]/%2047[^\n]";
+        const char *fmt_popa = "http://%263[^:]:%lu/%2047[^\n]";
+        const char *fmt_spopa = "https://%263[^:]:%lu/%2047[^\n]";
+
+        AG_AUTO(ag_string) *s = ag_string_new(src);
+        char host[264];
+        char path[2048];
+        ag_uint port;
+
+        if (sscanf(s, fmt_spopa, host, &port, path) == 3)
+                return ag_http_url_new(true, host, port, path);
+        else if (sscanf(s, fmt_popa, host, &port, path) == 3)
+                return ag_http_url_new(false, host, port, path);
+        else if (sscanf(s, fmt_spa, host, path) == 2)
+                return ag_http_url_new_noport(true, host, path);
+        else if (sscanf(s, fmt_pa, host, path) == 2)
+                return ag_http_url_new_noport(false, host, path);
+        else if (sscanf(s, fmt_spo, host, &port) == 2)
+                return ag_http_url_new(true, host, port, "/");
+        else if (sscanf(s, fmt_po, host, &port) == 2)
+                return ag_http_url_new(false, host, port, "/");
+        else if (sscanf(s, fmt_s, host) == 1)
+                return ag_http_url_new_noport(true, host, "/");
+        else if (sscanf(s, fmt, host) == 1)
+                return ag_http_url_new_noport(false, host, "/");
+
+        struct ag_exception_parse x = {.str = src, .ctx = "ag_http_url"};
+        AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
+        return NULL;
 }
 
 
@@ -102,7 +182,7 @@ ag_http_url_new(bool secure, const char *host, ag_uint port,
  * true if an HTTP URL object is using the HTTPS protocol, and false if it is
  * using the HTTP protocol.
  */
-extern bool              
+extern bool
 ag_http_url_secure(const ag_http_url *ctx)
 {
         AG_ASSERT_PTR (ctx);
@@ -120,7 +200,7 @@ extern ag_string *
 ag_http_url_host(const ag_http_url *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         const struct payload *p = ag_object_payload(ctx);
         return ag_string_copy(p->host);
 }
@@ -130,11 +210,11 @@ ag_http_url_host(const ag_http_url *ctx)
  * Define the ag_http_url_port() interface function. We return the port number
  * component of an HTTP URL object.
  */
-extern ag_uint           
+extern ag_uint
 ag_http_url_port(const ag_http_url *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         const struct payload *p = ag_object_payload(ctx);
         return p->port;
 }
@@ -148,7 +228,7 @@ extern ag_string *
 ag_http_url_path(const ag_http_url *ctx)
 {
         AG_ASSERT_PTR (ctx);
-        
+
         const struct payload *p = ag_object_payload(ctx);
         return ag_string_copy(p->path);
 }
@@ -248,7 +328,7 @@ virt_valid(const ag_object *ctx)
         AG_ASSERT_PTR (ctx);
 
         (void) ctx;
-        return true;        
+        return true;
 }
 
 

@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_EXCEPTION_H__
-#define __ARGENT_EXCEPTION_H__
+#ifndef __ARGENT_INCLUDE_EXCEPTION_H__
+#define __ARGENT_INCLUDE_EXCEPTION_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -62,8 +62,9 @@ typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 /*
  * The following structures are used to pass exception-related data to their
  * corresponding exception handlers. The ag_exception_memblock struct holds the
- * exception data related to AG_ERNO_MEMBLOCK, and the ag_exception_regex struct
- * holds exception data related to AG_ERNO_REGEX.
+ * exception data related to AG_ERNO_MEMBLOCK, the ag_exception_regex struct
+ * holds the exception data related to AG_ERNO_REGEX, and the ag_exception_parse
+ * struct holds the exception data related to AG_ERNO_PARSE.
  */
 
 
@@ -80,15 +81,21 @@ struct ag_exception_regex {
 };
 
 
+struct ag_exception_parse {
+        const char *str;        /* String being parsed       */
+        const char *ctx;        /* Parsing context of string */
+};
+
+
 /*
  * Define the exception handlers used to handle the errors raised by the Argent
  * Library. ag_exception_memblock_hnd() handles the AG_ERNO_MEMBLOCK exception,
- * and ag_exception_regex_hnd() handles the AG_ERNO_REGEX exception.
+ * the ag_exception_regex_hnd() handles the AG_ERNO_REGEX exception, and the
+ * ag_exception_parse_hnd() handles the AG_ERNO_PARSE exception.
  */
-
-
 extern void     ag_exception_memblock_hnd(const struct ag_exception *, void *);
 extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
+extern void     ag_exception_parse_hnd(const struct ag_exception *, void *);
 
 
 /*
@@ -147,7 +154,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                             #p, __func__, __FILE__, __LINE__);               \
                         ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \
                             #p, __func__, __FILE__, __LINE__);               \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 
@@ -160,7 +167,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                         ag_log_debug("assertion failed: %s must not be null" \
                             " [%s(), %s:%d]\n", #p,                          \
                              __func__, __FILE__, __LINE__);                  \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 
@@ -173,7 +180,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                         ag_log_debug("assertion failed: string %s must not"  \
                             " be null or empty [%s(), %s:%d]\n",             \
                             #str, __func__, __FILE__, __LINE__);             \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 #else
@@ -239,5 +246,5 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
         }
 #endif
 
-#endif /* !__ARGENT_EXCEPTION_H__ */
+#endif /* !__ARGENT_INCLUDE_EXCEPTION_H__ */
 

@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -544,7 +544,35 @@ static ag_string
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
 
-        return ag_string_new_fmt("list len = %lu", ag_object_len(ctx));
+        const struct payload *p = ag_object_payload(ctx);
+        struct node *n = p->head;
+
+        ag_string *s = ag_string_new_empty();
+        ag_string *s2 = ag_string_new_empty();
+        ag_string *s3 = ag_string_new_empty();
+
+        for (register size_t i = 0; i < p->len; i++) {
+                ag_string_release(&s);
+                s = ag_field_str(n->attr);
+
+                ag_string_release(&s2);
+                s2 = ag_string_new_fmt("(%s)", s);
+
+                ag_string_release(&s);
+                s = ag_string_clone(s3);
+
+                ag_string_release(&s3);
+                s3 = *s ? ag_string_new_fmt("%s %s", s, s2) : ag_string_new(s2);
+
+                n = n->nxt;
+        }
+
+        ag_string_release(&s);
+        s = ag_string_new_fmt("(%s)", s3);
+        
+        ag_string_release(&s2);
+        ag_string_release(&s3);
+        return s;
 }
 
 

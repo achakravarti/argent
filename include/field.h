@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_FIELD_H__
-#define __ARGENT_FIELD_H__
+#ifndef __ARGENT_INCLUDE_FIELD_H__
+#define __ARGENT_INCLUDE_FIELD_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,11 +66,16 @@ AG_OBJECT_DECLARE(ag_field, AG_TYPEID_FIELD);
 
 
 /*
- * Declare the non-inherited manager interface for the ag_field object. There is
- * only one such function, ag_field_new(), which is responsible for creating a
- * field object with a given key and value.
+ * Declare the non-inherited manager interface for the ag_field object.  There
+ * are two functions as part of this interface, both of which are responsible
+ * for creating a new field object instance. ag_field_new() creates a new field
+ * from a given key and value, and ag_field_parse() parses a string to create a
+ * new field instance. The former function allows flexibility in the value type
+ * of the key and value, whereas the latter function sets both key and value as
+ * a string type.
  */
 extern ag_field *ag_field_new(const ag_value *, const ag_value *);
+extern ag_field *ag_field_parse(const char *, const char *);
                 
 
 /*
@@ -95,5 +100,5 @@ extern void     ag_field_val_set(ag_field **, const ag_value *);
 }
 #endif
 
-#endif /* !__ARGENT_FIELD_H__ */
+#endif /* !__ARGENT_INCLUDE_FIELD_H__ */
 

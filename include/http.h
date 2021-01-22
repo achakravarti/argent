@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: GPL-3.0-only
  *
- * Argent - infrastructure for building web services
+ * Argent---infrastructure for building web services
  * Copyright (C) 2020 Abhishek Chakravarti
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -21,69 +21,124 @@
  */
 
 
-#ifndef __ARGENT_HTTP_H__
-#define __ARGENT_HTTP_H__
+#ifndef __ARGENT_INCLUDE_HTTP_H__
+#define __ARGENT_INCLUDE_HTTP_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
+#include "./alist.h"
 #include "./object.h"
 
 
 /*
- * Declare the ag_http_url type. The ag_http_url type is an object with the
- * type ID of AG_TYPEID_HTTP_URL, and reifies an HTTP URL. An HTTP URL comprises
- * of four parts:
+ * Define the HTTP method enumeration, represented by ag_http_method. This
+ * enumeration defines the common HTTP methods (verbs) used to make HTTP
+ * requests. We have also declared the prototypes of two supporting functions,
+ * ag_http_method_parse() and ag_http_method_str(), which are used to convert
+ * from and to the string representation of this enumeration.
+ *
+ * See the following files for more details:
+ *   - src/http-enum.c
+ *   - test/http-method.c
+ */
+
+
+enum ag_http_method {
+        AG_HTTP_METHOD_GET,     /* GET    */
+        AG_HTTP_METHOD_POST,    /* POST   */
+        AG_HTTP_METHOD_PUT,     /* PUT    */
+        AG_HTTP_METHOD_PATCH,   /* PATCH  */
+        AG_HTTP_METHOD_DELETE,  /* DELETE */
+};
+
+extern enum ag_http_method       ag_http_method_parse(const char *);
+extern ag_string                *ag_http_method_str(enum ag_http_method);
+
+
+/*
+ * Define the HTTP MIME type enumeration, represented by ag_http_mime. This
+ * enumeration defines the common HTTP MIME types that are used most often, As
+ * of now, this enumeration is only a subset of all possible MIME types, and may
+ * be expanded in future if required.
+ *
+ * See the following URLs for a more complete list:
+ *   - https://github.com/cujojs/rest/blob/master/docs/mime.md
+ *   - https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/
+ *     MIME_typesCommon_types
+ *
+ * We also declare the prototypes of the supporting functions, which are used to
+ * convert from and to the string representation of the individual enumerators.
+ *
+ * See the following files for more details:
+ *   - src/http-enum.c
+ *   - test/http-mime.c
+ */
+
+
+enum ag_http_mime {
+        AG_HTTP_MIME_APPLICATION_FORM,  /* application/x-www-form-urlencoded */
+        AG_HTTP_MIME_APPLICATION_JSON,  /* application/json                  */
+        AG_HTTP_MIME_APPLICATION_OCTET, /* application/octet-stream          */
+        AG_HTTP_MIME_APPLICATION_XML,   /* application/xml                   */
+        AG_HTTP_MIME_MULTIPART_FORM,    /* multipart/form-data               */
+        AG_HTTP_MIME_TEXT_CSS,          /* text/css                          */
+        AG_HTTP_MIME_TEXT_CSV,          /* text/csv                          */
+        AG_HTTP_MIME_TEXT_HTML,         /* text/html                         */
+        AG_HTTP_MIME_TEXT_JS,           /* text/javascript                   */
+        AG_HTTP_MIME_TEXT_PLAIN,        /* text/plain                        */
+        AG_HTTP_MIME_TEXT_XML,          /* text/xml                          */
+};
+
+extern enum ag_http_mime         ag_http_mime_parse(const char *);
+extern ag_string                *ag_http_mime_str(enum ag_http_mime);
+
+
+/*
+ * Declare the HTTP URL interface. An HTTP URL is the URL of the resource
+ * requested by the client to the server, and makes up part of the HTTP request
+ * specification. The Argent Library reifies HTTP URLs through the ag_http_url
+ * object with the type ID AG_TYPEID_HTTP_URL.
+ *
+ * The ag_http_url object encapsulates the following four properties:
  *   1. The protocol (HTTP/HTTPS)
  *   2. The host
  *   3. The port number
- *   4. The path
+ *   4. The path to the resource
  *
- * Only the port number is optional, and the ag_http_url type uses a port number
- * of 0 to indicate that it is not applicable. If nothing is specified for the
- * path, then the ag_http_url object defaults its path to the root (/).
+ * Only the port number is optional, and the ag_http_url object uses a port
+ * number of 0 to indicate that is not applicable and/or available. If nothing
+ * is specified for the path, then the ag_http_url object defaults its path to
+ * the root (/).
  *
- * We use the AG_OBJECT_DECLARE() macro to declare ag_http_url as an object, and
- * to declare its inherited functions.  The following functions are declared
- * metaprogrammatically as part of the ag_http_url interface:
- *   - ag_http_url_copy()
- *   - ag_http_url_clone()
- *   - ag_http_url_release()
- *   - ag_http_url_cmp()
- *   - ag_http_url_lt()
- *   - ag_http_url_eq()
- *   - ag_http_url_gt()
- *   - ag_http_url_empty()
- *   - ag_http_url_typeid()
- *   - ag_http_url_uuid()
- *   - ag_http_url_valid()
- *   - ag_http_url_sz()
- *   - ag_http_url_refc()
- *   - ag_http_url_len()
- *   - ag_http_url_hash()
- *   - ag_http_url_str()
+ * There are three manager functions which are responsible for creating a new
+ * ag_http_url object instance:
+ *   1. ag_http_url_new()
+ *   2. ag_http_url_new_noport()
+ *   3. ag_http_url_parse()
+ *
+ * The remaining functions are accessors to the properties of the ag_http_url
+ * object. Since the AG_OBJECT_DECLARE() macro is used to declare the HTTP URL
+ * object, the inhertied object functions are metaprogrammatically introduced.
+ *
+ * See the following files for more details:
+ *   - include/typeid.h
+ *   - include/object.h
+ *   - src/http-url.c
+ *   - test/http-url.c
  */
+
+
 AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
 
-
-/*
- * Declare the non-inherited manager interface for the ag_http_url object.
- * ag_http_url_new() creates a new URL object, and ag_http_url_new_noport()
- * creates a URL object without a port number.
- */
 extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
                             const char *);
+extern ag_http_url      *ag_http_url_new_noport(bool, const char *,
+                            const char *);
+extern ag_http_url      *ag_http_url_parse(const char *);
 
-
-/*
- * Declare the non-inherited accessor interface for the ag_http_url object.
- * ag_http_url_secure() determines if a given URL object is secure, i.e.,
- * whether it is using the HTTPS protocol. ag_http_url_host() gets the hostname
- * component of a URL object, ag_http_url_port() gets the port number (0 if not
- * applicable), and ag_http_url_path() gets the path component of the URL.
- */
 extern bool              ag_http_url_secure(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
 extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
@@ -91,53 +146,42 @@ extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
 
 
 /*
- * Declare the ag_http_client object with the typeid AG_TYPEID_HTTP_CLIENT. This
- * object represents a client (human or otherwise) making an HTTP request. The
- * client is represented by five properties: the IP address, the port number,
- * the hostname, the user agent, and the URL from where the request originated.
+ * Declare the HTTP client interface. An HTTP client represents the client
+ * making the HTTP request. Although the HTTP specification does not explicitly
+ * mention a client type, we have introduced it for convenience. The Argent
+ * Library refies HTTP clients through the ag_http_client object with the type
+ * ID AG_TYPEID_HTTP_CLIENT.
  *
- * Since we're using the AG_OBJECT_DECLARE() macro to declare the client object,
- * the following inherited functions are also metaprogrammatically declared as 
- * part of the ag_http_client interface:
- *   - ag_http_client_copy()
- *   - ag_http_client_clone()
- *   - ag_http_client_release()
- *   - ag_http_client_cmp()
- *   - ag_http_client_lt()
- *   - ag_http_client_eq()
- *   - ag_http_client_gt()
- *   - ag_http_client_empty()
- *   - ag_http_client_typeid()
- *   - ag_http_client_uuid()
- *   - ag_http_client_valid()
- *   - ag_http_client_sz()
- *   - ag_http_client_refc()
- *   - ag_http_client_len()
- *   - ag_http_client_hash()
- *   - ag_http_client_str()
+ * The ag_http_client object encapsulates the following properties:
+ *   1. the IP address of the client
+ *   2. the port number
+ *   3. the user agent
+ *   4. the referring URL
+ *
+ * All of these four properties have been made optional for the time being,
+ * though in future this might change. A value of 0 indicates that the port
+ * number is not available, and empty strings are used to denote that the other
+ * properties are not available.
+ *
+ * There is only one manager function, ag_http_client_new(), which creates new
+ * ag_http_client object instances from a given set of properties. The remaining
+ * declared functions are all accessors to the properties. Since the HTTP client
+ * object is declared through the AG_OBJECT_DECLARE() macro, the inherited
+ * object methods are metaprogrammatically included.
+ *
+ * See the following files for more information:
+ *   - include/typeid.h
+ *   - include/object.h
+ *   - src/http-client.c
+ *   - test/http-client.c
  */
+
+
 AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
 
-
-/*
- * Declare the non-inherited manager interface for the ag_http_client object.
- * There is only one function in this interface, ag_http_client_new(), which is
- * responsible for creating a new client object.
- */
 extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
                             const char *, const char *);
 
-
-/*
- * Declare the non-inherited accessor interface for the ag_http_client object.
- * Each of the five functions that make up this interface get a relevant
- * property of the contextual client object.
- *
- * ag_http_client_ip() gets the IP address of a client, ag_http_client_port()
- * the port number, ag_http_client_host() the hostname, ag_http_client_agent()
- * the user agent, and ag_http_client_referer() the referring URL from where the
- * client made the HTTP request.
- */
 extern ag_string        *ag_http_client_ip(const ag_http_client *);
 extern ag_uint           ag_http_client_port(const ag_http_client *);
 extern ag_string        *ag_http_client_host(const ag_http_client *);
@@ -145,9 +189,51 @@ extern ag_string        *ag_http_client_agent(const ag_http_client *);
 extern ag_string        *ag_http_client_referer(const ag_http_client *);
 
 
+/*
+ * Declare the HTTP request interface. An HTTP request is one half of HTTP,
+ * representing a message sent by the client to the server for some resource.
+ * The Argent Library reifies HTTP requests through the ag_http_request object
+ * with the type ID AG_TYPEID_HTTP_REQUEST. 
+ *
+ * The ag_http_request object does not implement the HTTP request strictly
+ * according to specification, and encapsulates only a subset of the properties
+ * which are considered most useful. These are:
+ *   1. The MIME type
+ *   2. The HTTP method (verb)
+ *   3. The HTTP client
+ *   4. The HTTP URL
+ *   5. The HTTP body key-value parameters
+ *
+ * There is only one manager function, ag_http_request_new(), and the remaining
+ * functions declared below are all accessors. Since the ag_http_request object
+ * has been declared through the AG_OBJECT_DECLARE() macro, its inherited object
+ * methods are metaprogrammatically declared.
+ *
+ * See the following files for more details:
+ *   - include/typeid.h
+ *   - include/object.h
+ *   - src/http-request.c
+ *   - test/http-request.c
+ */
+
+
+AG_OBJECT_DECLARE(ag_http_request, AG_TYPEID_HTTP_REQUEST);
+
+extern ag_http_request  *ag_http_request_new(enum ag_http_method,
+                            enum ag_http_mime, const ag_http_url *,
+                            const ag_http_client *, const ag_alist *);
+
+
+extern enum ag_http_mime         ag_http_request_mime(const ag_http_request *);
+extern enum ag_http_method       ag_http_request_method(const ag_http_request *);
+extern ag_http_client           *ag_http_request_client(const ag_http_request *);
+extern ag_http_url              *ag_http_request_url(const ag_http_request *);
+extern ag_alist                 *ag_http_request_param(const ag_http_request *);
+
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* !__ARGENT_HTTP_H__ */
+#endif /* !__ARGENT_INCLUDE_HTTP_H__ */
 
