@@ -29,6 +29,12 @@ AG_OBJECT_DEFINE(ag_field)
 }
 
 
+/*
+ * Define the ag_field_new() interface function. This function is responsible
+ * for creating a new field with a given key and value, specified through its
+ * parameters. Both key and value can be of any acceptable value type, and don't
+ * need to be of the same type.
+ */
 extern ag_field *
 ag_field_new(const ag_value *key, const ag_value *val)
 {
@@ -39,6 +45,18 @@ ag_field_new(const ag_value *key, const ag_value *val)
 }
 
 
+/*
+ * Define the ag_field_parse() interface function. This function creates a new
+ * field object instance by parsing a given string with a specific separator.
+ * The string to parse is passed through the first parameter, and the separator
+ * is specified by the second parameter. The arguments to both parameters need
+ * to be valid non-empty strings, and the separator needs to exist in the source
+ * string.
+ *
+ * As of now, parsing a string results in a field whose key and value are both
+ * string types, but this may change later to allow greater flexibility, if
+ * required.
+ */
 extern ag_field *
 ag_field_parse(const char *src, const char *sep)
 {
@@ -56,7 +74,6 @@ ag_field_parse(const char *src, const char *sep)
 
         return ag_object_new(AG_TYPEID_FIELD, payload_new(kv, vv));
 }
-
 
 
 extern ag_value *ag_field_key(const ag_field *ctx)
