@@ -51,7 +51,7 @@ ag_field_parse(const char *src, const char *sep)
         AG_AUTO(ag_string) *k = ag_string_split(s, sep);
         AG_AUTO(ag_string) *v = ag_string_split_right(s, sep);
 
-        AG_AUTO(ag_value) *kv = ag_value_new_string(s);
+        AG_AUTO(ag_value) *kv = ag_value_new_string(k);
         AG_AUTO(ag_value) *vv = ag_value_new_string(v);
 
         return ag_object_new(AG_TYPEID_FIELD, payload_new(kv, vv));
