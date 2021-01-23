@@ -17,6 +17,27 @@ static AG_THREADLOCAL const char *g_method[] = {
 
 
 /*
+ * Define the g_mime string array. Similar to the g_method string array, this
+ * array holds the string represetations of the individual enumerators of the
+ * ag_http_mime enumeration, with the index of each array member being the same
+ * as the corresponding enumerator that it represents.
+ */
+static AG_THREADLOCAL const char *g_mime[] = {
+        "application/x-www-form-urlencoded",
+        "application/json",
+        "application/octet-stream",
+        "application/xml",
+        "multipart/form-data",
+        "text/css",
+        "text/csv",
+        "text/html",
+        "text/javascript",
+        "text/plain",
+        "text/xml",
+};
+
+
+/*
  * Define the ag_http_method_parse() interface function. This function is
  * responsible for parsing a given string and returning the HTTP method
  * enumerator represented by the string. In case the string contains something
@@ -41,7 +62,7 @@ ag_http_method_parse(const char *str)
 
 
 /*
- * Defien the ag_http_method_str() interface function. This function gets the
+ * Define the ag_http_method_str() interface function. This function gets the
  * string representation of a contextual HTTP method enumerator.
  */
 extern ag_string *
@@ -53,14 +74,39 @@ ag_http_method_str(enum ag_http_method meth)
 }
 
 
+/*
+ * Define the ag_http_mime_parse() interface function. This function parses a
+ * given string and returns the ag_http_mime enumerator corresponding to the
+ * string. If no match is found, then AG_HTTP_MIME_TEXT_PLAIN is returned.
+ *
+ * TODO: explore throwing a runtime exception for parse failure.
+ */
 extern enum ag_http_mime
 ag_http_mime_parse(const char *str)
 {
+        AG_ASSERT_STR (str);
+
+        AG_AUTO(ag_string) *s = ag_string_new(str);
+        AG_AUTO(ag_string) *l = ag_string_lower(s);
+
+        for (register int i = 0; i <= AG_HTTP_MIME_TEXT_XML; i++)
+                if (ag_string_eq(l, g_mime[i]))
+                        return i;
+
+        return AG_HTTP_MIME_TEXT_PLAIN;
 }
 
 
+/*
+ * Define the ag_http_mime_str() interface function. This function returns the
+ * string representation of a given ag_http_mime enumerator.
+ */
 extern ag_string *
 ag_http_mime_str(enum ag_http_mime mime)
 {
+        AG_ASSERT (mime >= AG_HTTP_MIME_APPLICATION_FORM && 
+            mime <= AG_HTTP_MIME_TEXT_XML);
+
+        return ag_string_new(g_mime[mime]);
 }
 
