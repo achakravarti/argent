@@ -33,7 +33,7 @@
  */
 #define AG_METATEST_HTTP_METHOD_PARSE(str, enm)                         \
         AG_TEST_CASE("ag_http_method_parse(): " str " => " #enm)        \
-`       {                                                               \
+        {                                                               \
                 AG_TEST (ag_http_method_parse(str) == enm);             \
         }
 
