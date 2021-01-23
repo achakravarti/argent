@@ -53,7 +53,7 @@
         {                                                                      \
                 AG_AUTO(ag_string) *s;                                         \
                 s = ag_http_method_str(AG_HTTP_METHOD_ ## sfx);                \
-                AG_TEST (ag_string_eq(s, "AG_HTTP_METHOD_" #sfx));             \
+                AG_TEST (ag_string_eq(s, #sfx));                               \
         }
 
 
