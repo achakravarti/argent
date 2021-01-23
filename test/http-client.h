@@ -82,20 +82,5 @@
         }
 
 
-/*
- * Define the AG_METATEST_HTTP_CLIENT_HOST() macro.
- */
-
-
-/*
- * Define the AG_METATEST_HTTP_CLIENT_AGENT() macro.
- */
-
-
-/*
- * Define the AG_METATEST_HTTP_CLIENT_REFERER() macro.
- */
-
-
 #endif /* !__AG_HTTP_CLIENT_METATESTS_H__ */
 
