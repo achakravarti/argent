@@ -45,8 +45,9 @@
  * results in the expected string representation.
  *
  * Since the expected string representation is simply the suffix of the
- * enumerator (i.e., the token after the last underscore in the enumerator
- * symbol), we only require for the suffix to be passed to this macro.
+ * enumerator (i.e., the token after the penultimate underscore in the
+ * enumerator symbol), we only require for the suffix to be passed to this
+ * macro.
  */
 #define AG_METATEST_HTTP_MIME_STR(sfx)                                         \
         AG_TEST_CASE("ag_http_mime_str(): AG_HTTP_MIME_" #sfx " => " #sfx)     \
