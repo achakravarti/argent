@@ -24,6 +24,7 @@ int main(int argc, char **argv)
         ag_test_suite *url = test_suite_http_url();
         ag_test_suite *client = test_suite_http_client();
         ag_test_suite *method= test_suite_http_method();
+        ag_test_suite *mime= test_suite_http_mime();
 
         ag_test_harness_push(th, log);
         ag_test_harness_push(th, mblock);
@@ -36,6 +37,7 @@ int main(int argc, char **argv)
         ag_test_harness_push(th, url);
         ag_test_harness_push(th, client);
         ag_test_harness_push(th, method);
+        ag_test_harness_push(th, mime);
 
         ag_test_suite_release(&log);
         ag_test_suite_release(&mblock);
@@ -48,6 +50,7 @@ int main(int argc, char **argv)
         ag_test_suite_release(&url);
         ag_test_suite_release(&client);
         ag_test_suite_release(&method);
+        ag_test_suite_release(&mime);
 
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);

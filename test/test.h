@@ -15,6 +15,7 @@ extern ag_test_suite    *test_suite_alist(void);
 extern ag_test_suite    *test_suite_http_url(void);
 extern ag_test_suite    *test_suite_http_client(void);
 extern ag_test_suite    *test_suite_http_method(void);
+extern ag_test_suite    *test_suite_http_mime(void);
 
 
 #endif /* !__ARGENT_TEST_H__ */
