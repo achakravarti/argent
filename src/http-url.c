@@ -81,8 +81,8 @@ AG_OBJECT_DEFINE(ag_http_url)
  * HTTP URL instance defined by ihe parameters. The first parameter indicates
  * whether or not the HTTP URL instance uses the HTTPS protocol, the second
  * instance indicates the hostname, the third parameter indicates the port
- * number, and the fourth parameter indicates the resource path. Setting the
- * third parameter to 0 indicates that the default port is to be used.
+ * number, and the fourth parameter indicates the resource path. The port number
+ * must be valid, and the path may be an empty string.
  */
 extern ag_http_url *
 ag_http_url_new(bool secure, const char *host, ag_uint port,
@@ -90,10 +90,26 @@ ag_http_url_new(bool secure, const char *host, ag_uint port,
 {
         AG_ASSERT_STR (host);
         AG_ASSERT_PTR (path);
-        AG_ASSERT (port < 65535);
+        AG_ASSERT (port && port < 65535);
 
         return ag_object_new(AG_TYPEID_HTTP_URL,
             payload_new(secure, host, port, path));
+}
+
+
+/*
+ * Define the ag_http_url_new_noport() function. This function is similar to the
+ * ag_http_url_new() function, except that it allows for the creation a new URL
+ * object without specifying a port number.
+ */
+extern ag_http_url *
+ag_http_url_new_noport(bool secure, const char *host, const char *path)
+{
+        AG_ASSERT_STR (host);
+        AG_ASSERT_PTR (path);
+
+        return ag_object_new(AG_TYPEID_HTTP_URL,
+            payload_new(secure, host, 0, path));
 }
 
 

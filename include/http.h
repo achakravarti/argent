@@ -135,6 +135,8 @@ AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
  */
 extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
                             const char *);
+extern ag_http_url      *ag_http_url_new_noport(bool, const char *,
+                            const char *);
 
 
 /*

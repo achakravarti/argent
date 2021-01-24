@@ -42,7 +42,8 @@
  *
  * For a given tag <TAG>, the SAMPLE() macro generates the following inline
  * support functions:
- *   - TAG()    : returns the sample HTTP URL object.
+ *   - TAG()    : returns the sample HTTP URL object, taking into account the
+ *                presence or absence of the port number.
  *   - TAG_LEN(): returns the length of the sample URL.
  *   - TAG_SZ() : returns the size of the sample URL.
  *   - TAG_HASH : returns the hash of the sample URL.
@@ -50,7 +51,8 @@
 #define SAMPLE(tag, secure, host, port, path)                           \
         static inline ag_http_url *tag(void)                            \
         {                                                               \
-                return ag_http_url_new(secure, host, port, path);       \
+                return port ? ag_http_url_new(secure, host, port, path) \
+                    : ag_http_url_new_noport(secure, host, path);       \
         }                                                               \
         static inline size_t tag ## _LEN(void)                          \
         {                                                               \
