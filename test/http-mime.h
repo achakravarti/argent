@@ -39,22 +39,19 @@
 
 
 /*
- * Define the AG_METATEST_HTTP_MIME_STR() macro. This macro is used to
- * metaprogrammatically generate the test case to check whether calling the
- * ag_http_mime_str() interface function with a given ag_http_mime enumerator
- * results in the expected string representation.
- *
- * Since the expected string representation is simply the suffix of the
- * enumerator (i.e., the token after the penultimate underscore in the
- * enumerator symbol), we only require for the suffix to be passed to this
- * macro.
+ * Define the AG_METATEST_HTTP_MIME_STR() macro. This macro is used to generate
+ * metaprogrammatically a test case that checks whether ag_http_mime_str()
+ * returns the correct string representation of a given ag_http_mime enumerator.
+ * 
+ * The first parameter of this macro is the ag_http_mime enumerator to test, and
+ * the second parameter is the statically allocated string that holds the
+ * expected string representation.
  */
-#define AG_METATEST_HTTP_MIME_STR(sfx)                                         \
-        AG_TEST_CASE("ag_http_mime_str(): AG_HTTP_MIME_" #sfx " => " #sfx)     \
-        {                                                                      \
-                AG_AUTO(ag_string) *s;                                         \
-                s = ag_http_mime_str(AG_HTTP_MIME_ ## sfx);                    \
-                AG_TEST (ag_string_eq(s, #sfx));                               \
+#define AG_METATEST_HTTP_MIME_STR(enm, str)                     \
+        AG_TEST_CASE("ag_http_mime_str(): " #enm " => " str)    \
+        {                                                       \
+                AG_AUTO(ag_string) *s = ag_http_mime_str(enm);  \
+                AG_TEST (ag_string_eq(s, str));                 \
         }
 
 
