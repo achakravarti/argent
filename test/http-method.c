@@ -67,6 +67,7 @@ AG_METATEST_HTTP_METHOD_STR(PUT);
 AG_METATEST_HTTP_METHOD_STR(PATCH);
 AG_METATEST_HTTP_METHOD_STR(DELETE);
 
+
 /*
  * Define the test_suite_http_method() function. We generate the test cases from
  * the above metatest definitions through a call to the AG_TEST_SUITE_GENERATE()
