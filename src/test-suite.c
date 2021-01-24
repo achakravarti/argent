@@ -147,8 +147,8 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
         ag_test_suite *ts = ag_test_suite_new(desc);
 
         for (register int i = 0; i < counter; i++) {
-                tsym = ag_string_new_fmt("__ag_test_%d%d", id, i);
-                dsym = ag_string_new_fmt("__ag_desc_%d%d", id, i);
+                tsym = ag_string_new_fmt("__ag_test_%d_%d", id, i);
+                dsym = ag_string_new_fmt("__ag_desc_%d_%d", id, i);
 
                 testf = dlsym(hnd, tsym);
                 if ((err = dlerror())) {

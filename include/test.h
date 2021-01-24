@@ -80,10 +80,10 @@ enum ag_test_status {
 typedef enum ag_test_status (ag_test)(void);
 
 
-#define __AG_TEST_FUNC_0__(id, num) __ag_test_ ## id ## num 
+#define __AG_TEST_FUNC_0__(id, num) __ag_test_ ## id ## _ ## num 
 #define __AG_TEST_FUNC__(id, num) __AG_TEST_FUNC_0__(id, num)
 
-#define __AG_TEST_DESC_0__(id, num) __ag_desc_ ## id ## num
+#define __AG_TEST_DESC_0__(id, num) __ag_desc_ ## id ## _ ## num
 #define __AG_TEST_DESC__(id, num) __AG_TEST_DESC_0__(id, num)
 
 
