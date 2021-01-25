@@ -6,18 +6,28 @@
 
 
 #define SAMPLE_CLIENT(tag, ip, port, host, agent, referer)                     \
-        static inline ag_http_client *tag(void)                                \
+        static inline ag_http_client *CLIENT_ ## tag(void)                     \
         {                                                                      \
                 return ag_http_client_new(ip, port, host, agent, referer);     \
         }
 
 
 #define SAMPLE_URL(tag, secure, host, port, path)                       \
-        static inline ag_http_url *tag(void)                            \
+        static inline ag_http_url *URL_ ## tag(void)                    \
         {                                                               \
                 return port ? ag_http_url_new(secure, host, port, path) \
                     : ag_http_url_new_noport(secure, host, path);       \
         }                                                               \
+
+
+#define SAMPLE_FIELD(tag, key, val)                                     \
+        static inline ag_field *FIELD_ ## tag(void)                     \
+        {                                                               \
+                AG_AUTO(ag_value) *k = ag_value_new_string(key);        \
+                AG_AUTO(ag_value) *v = ag_value_new_string(val);        \
+                return ag_field_new(k, v);                              \
+        }
+
 
 
 SAMPLE_CLIENT(CLIENT0, "", 0, "", "", "");
@@ -31,6 +41,11 @@ SAMPLE_URL(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
 SAMPLE_URL(HTTPS_LOCALHOST_8080_FOO, true, "localhost", 8080, "foo");
 SAMPLE_URL(HTTPS_DOMAIN_FOO, true, "www.domain.com", 0, "/foo");
 SAMPLE_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
+
+
+SAMPLE_FIELD(KEYVAL, "key", "val");
+SAMPLE_FIELD(FOOBAR, "foo", "bar");
+SAMPLE_FIELD(FOO, "foo", "");
 
 
 extern ag_test_suite *
