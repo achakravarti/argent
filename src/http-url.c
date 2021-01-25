@@ -118,28 +118,35 @@ ag_http_url_parse(const char *src)
 {
         AG_ASSERT_STR (src);
 
+        const char *fmt_spopa = "https://%263[^:]:%lu/%2047[^\n]";
+        const char *fmt_popa = "http://%263[^:]:%lu/%2047[^\n]";
+        const char *fmt_spa = "https://%263[^/]/%2047[^\n]";
+        const char *fmt_pa = "http://%263[^/]/%2047[^\n]";
+        const char *fmt_spo = "https://%263[^:]:%lu[^\n]";
+        const char *fmt_po = "http://%263[^:]:%lu[^\n]";
+        const char *fmt_s = "https://%263[^\n]";
+        const char *fmt = "http://%263[^\n]";
+        
         AG_AUTO(ag_string) *s = ag_string_new(src);
         char host[264];
         char path[2048];
         ag_uint port;
 
-        if (sscanf(s, "https://%263[^:]:%lu/%2047[^\n]", host, &port, path)
-            == 3)
+        if (sscanf(s, fmt_spopa, host, &port, path) == 3)
                 return ag_http_url_new(true, host, port, path);
-        else if (sscanf(s, "http://%263[^:]:%lu/%2047[^\n]", host, &port, path)
-            == 3)
+        else if (sscanf(s, fmt_popa, host, &port, path) == 3)
                 return ag_http_url_new(false, host, port, path);
-        else if (sscanf(s, "https://%263[^/]/%2047[^\n]", host, path) == 2)
+        else if (sscanf(s, fmt_spa, host, path) == 2)
                 return ag_http_url_new_noport(true, host, path);
-        else if (sscanf(s, "http://%263[^/]/%2047[^\n]", host, path) == 2)
+        else if (sscanf(s, fmt_pa, host, path) == 2)
                 return ag_http_url_new_noport(false, host, path);
-        else if (sscanf(s, "https://%263[^:]:%lu[^\n]", host, &port) == 2)
+        else if (sscanf(s, fmt_spo, host, &port) == 2)
                 return ag_http_url_new(true, host, port, "/");
-        else if (sscanf(s, "http://%263[^:]:%lu[^\n]", host, &port) == 2)
+        else if (sscanf(s, fmt_po, host, &port) == 2)
                 return ag_http_url_new(false, host, port, "/");
-        else if (sscanf(s, "https://%263[^\n]", host) == 1)
+        else if (sscanf(s, fmt_s, host) == 1)
                 return ag_http_url_new_noport(true, host, "/");
-        else if (sscanf(s, "http://%263[^\n]", host) == 1)
+        else if (sscanf(s, fmt, host) == 1)
                 return ag_http_url_new_noport(false, host, "/");
         else
                 return NULL;
