@@ -62,8 +62,9 @@ typedef void (ag_exception_handler)(const struct ag_exception *, void *);
 /*
  * The following structures are used to pass exception-related data to their
  * corresponding exception handlers. The ag_exception_memblock struct holds the
- * exception data related to AG_ERNO_MEMBLOCK, and the ag_exception_regex struct
- * holds exception data related to AG_ERNO_REGEX.
+ * exception data related to AG_ERNO_MEMBLOCK, the ag_exception_regex struct
+ * holds the exception data related to AG_ERNO_REGEX, and the ag_exception_parse
+ * struct holds the exception data related to AG_ERNO_PARSE.
  */
 
 
@@ -80,15 +81,21 @@ struct ag_exception_regex {
 };
 
 
+struct ag_exception_parse {
+        const char *str;        /* String being parsed       */
+        const char *ctx;        /* Parsing context of string */
+};
+
+
 /*
  * Define the exception handlers used to handle the errors raised by the Argent
  * Library. ag_exception_memblock_hnd() handles the AG_ERNO_MEMBLOCK exception,
- * and ag_exception_regex_hnd() handles the AG_ERNO_REGEX exception.
+ * the ag_exception_regex_hnd() handles the AG_ERNO_REGEX exception, and the
+ * ag_exception_parse_hnd() handles the AG_ERNO_PARSE exception.
  */
-
-
 extern void     ag_exception_memblock_hnd(const struct ag_exception *, void *);
 extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
+extern void     ag_exception_parse_hnd(const struct ag_exception *, void *);
 
 
 /*

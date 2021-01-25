@@ -89,4 +89,17 @@ ag_exception_regex_hnd(const struct ag_exception *ex, void *opt)
         ag_exit(EXIT_FAILURE);
 }
 
+        
+extern void
+ag_exception_parse_hnd(const struct ag_exception *ex, void *opt)
+{
+        (void)ex;
+        struct ag_exception_parse *o = opt;
+
+        printf("[!] parsing context=%s, string=%s", o->ctx, o->str);
+        ag_log_err("[!] parsing context=%s, string=%s", o->ctx, o->str);
+
+        ag_exit(EXIT_FAILURE);
+}
+
 

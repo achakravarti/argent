@@ -24,6 +24,11 @@ ag_init(void)
                         .msg = AG_ERNO_MSG(AG_ERNO_REGEX),
                         .hnd = &ag_exception_regex_hnd,
                 },
+                {
+                        .erno = AG_ERNO_PARSE, 
+                        .msg = AG_ERNO_MSG(AG_ERNO_PARSE),
+                        .hnd = &ag_exception_parse_hnd,
+                },
         };
 
         ag_exception_registry_init(32);

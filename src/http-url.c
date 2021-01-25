@@ -170,8 +170,10 @@ ag_http_url_parse(const char *src)
                 return ag_http_url_new_noport(true, host, "/");
         else if (sscanf(s, fmt, host) == 1)
                 return ag_http_url_new_noport(false, host, "/");
-        else
-                return NULL;
+
+        struct ag_exception_parse x = {.str = src, .ctx = "ag_http_url"};
+        AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
+        return NULL;
 }
 
 

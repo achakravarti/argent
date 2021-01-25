@@ -47,11 +47,10 @@ typedef int ag_erno;
  * Library. Apart from AG_ERNO_NULL, all of these error codes are negative to
  * distinguish them from error codes used by client code.
  */
-
-
 #define AG_ERNO_NULL    ((ag_erno) 0)
 #define AG_ERNO_MBLOCK  ((ag_erno) -1)
 #define AG_ERNO_REGEX   ((ag_erno) -2)
+#define AG_ERNO_PARSE   ((ag_erno) -3)
 
 
 /* 
@@ -59,11 +58,10 @@ typedef int ag_erno;
  * above error codes. These symbolic constants are used in conjunction with the
  * AG_ERNO_MSG() macro defined below to generate a captioned error string.
  */
-
-
 #define AG_ERNO_NULL_MSG        "no error has occurred"
 #define AG_ERNO_MBLOCK_MSG      "failed to allocate memory block"
 #define AG_ERNO_REGEX_MSG       "failed to process regular expression"
+#define AG_ERNO_PARSE_MSG       "failed to parse string"
 
 
 /*
@@ -74,8 +72,6 @@ typedef int ag_erno;
  * example, calling AG_ERNO_MSG(AG_ERNO_MBLOCK) will lead to the generation of
  * the captioned error string "AG_ERNO_MBLOCK: failed to allocate memory block".
  */
-
-
 #define AG_ERNO_MSG(p) #p ": " p##_MSG
 
 
