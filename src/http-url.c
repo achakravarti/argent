@@ -113,6 +113,39 @@ ag_http_url_new_noport(bool secure, const char *host, const char *path)
 }
 
 
+extern ag_http_url *
+ag_http_url_parse(const char *src)
+{
+        AG_ASSERT_STR (src);
+
+        AG_AUTO(ag_string) *s = ag_string_new(src);
+        char host[264];
+        char path[2048];
+        ag_uint port;
+
+        if (sscanf(s, "https://%263[^:]:%lu/%2047[^\n]", host, &port, path)
+            == 3)
+                return ag_http_url_new(true, host, port, path);
+        else if (sscanf(s, "http://%263[^:]:%lu/%2047[^\n]", host, &port, path)
+            == 3)
+                return ag_http_url_new(false, host, port, path);
+        else if (sscanf(s, "https://%263[^/]/%2047[^\n]", host, path) == 2)
+                return ag_http_url_new_noport(true, host, path);
+        else if (sscanf(s, "http://%263[^/]/%2047[^\n]", host, path) == 2)
+                return ag_http_url_new_noport(false, host, path);
+        else if (sscanf(s, "https://%263[^:]:%lu[^\n]", host, &port) == 2)
+                return ag_http_url_new(true, host, port, "/");
+        else if (sscanf(s, "http://%263[^:]:%lu[^\n]", host, &port) == 2)
+                return ag_http_url_new(false, host, port, "/");
+        else if (sscanf(s, "https://%263[^\n]", host) == 1)
+                return ag_http_url_new_noport(true, host, "/");
+        else if (sscanf(s, "http://%263[^\n]", host) == 1)
+                return ag_http_url_new_noport(false, host, "/");
+        else
+                return NULL;
+}
+
+
 /*
  * Define the ag_http_url_secure() interface function. This function returns
  * true if an HTTP URL object is using the HTTPS protocol, and false if it is

@@ -131,12 +131,14 @@ AG_OBJECT_DECLARE(ag_http_url, AG_TYPEID_HTTP_URL);
 /*
  * Declare the non-inherited manager interface for the ag_http_url object.
  * ag_http_url_new() creates a new URL object, and ag_http_url_new_noport()
- * creates a URL object without a port number.
+ * creates a URL object without a port number. ag_http_url_parse() parses a
+ * given string into an HTTP URL object.
  */
 extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
                             const char *);
 extern ag_http_url      *ag_http_url_new_noport(bool, const char *,
                             const char *);
+extern ag_http_url      *ag_http_url_parse(const char *);
 
 
 /*
