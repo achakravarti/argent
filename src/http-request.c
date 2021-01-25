@@ -10,6 +10,11 @@ struct payload {
 };
 
 
+static struct payload   *payload_new(enum ag_http_method, enum ag_http_mime,
+                            const ag_http_url *, const ag_http_client *,
+                            const ag_alist *);
+
+
 extern ag_http_request *
 ag_http_request_new(enum ag_http_method meth, enum ag_http_mime type,
     const ag_http_url *url, const ag_http_client *usr, const ag_alist *param)
@@ -17,6 +22,9 @@ ag_http_request_new(enum ag_http_method meth, enum ag_http_mime type,
         AG_ASSERT_PTR (url);
         AG_ASSERT_PTR (usr);
         AG_ASSERT_PTR (param);
+
+        return ag_object_new(AG_TYPEID_HTTP_REQUEST,
+            payload_new(meth, type, url, usr, param));
 }
 
 
@@ -67,5 +75,25 @@ ag_http_request_param(const ag_http_request *ctx)
 
         const struct payload *p = ag_object_payload(ctx);
         return ag_alist_copy(p->param);
+}
+
+
+static struct payload *
+payload_new(enum ag_http_method meth, enum ag_http_mime type,
+    const ag_http_url *url, const ag_http_client *usr, const ag_alist *param)
+{
+        AG_ASSERT_PTR (url);
+        AG_ASSERT_PTR (usr);
+        AG_ASSERT_PTR (param);
+
+        struct payload *p = ag_memblock_new(sizeof *p);
+        
+        p->meth = meth;
+        p->type = type;
+        p->url = ag_http_url_copy(url);
+        p->usr = ag_http_client_copy(usr);
+        p->param = ag_alist_copy(param);
+
+        return p;
 }
 
