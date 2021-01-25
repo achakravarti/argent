@@ -12,11 +12,11 @@ struct payload {
 
 extern ag_http_request *
 ag_http_request_new(enum ag_http_method meth, enum ag_http_mime type,
-    const ag_http_url *url, const ag_http_client *usr, const char *body)
+    const ag_http_url *url, const ag_http_client *usr, const ag_alist *param)
 {
         AG_ASSERT_PTR (url);
         AG_ASSERT_PTR (usr);
-        AG_ASSERT_PTR (body);
+        AG_ASSERT_PTR (param);
 }
 
 

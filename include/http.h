@@ -214,7 +214,7 @@ AG_OBJECT_DECLARE(ag_http_request, AG_TYPEID_HTTP_REQUEST);
 
 extern ag_http_request  *ag_http_request_new(enum ag_http_method,
                             enum ag_http_mime, const ag_http_url *,
-                            const ag_http_client *, const char *);
+                            const ag_http_client *, const ag_alist *);
 
 
 extern enum ag_http_mime         ag_http_request_mime(const ag_http_request *);
