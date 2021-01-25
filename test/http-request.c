@@ -23,8 +23,10 @@
 #define SAMPLE_FIELD(tag, key, val)                                     \
         static inline ag_field *FIELD_ ## tag(void)                     \
         {                                                               \
-                AG_AUTO(ag_value) *k = ag_value_new_string(key);        \
-                AG_AUTO(ag_value) *v = ag_value_new_string(val);        \
+                AG_AUTO(ag_string) *ks = ag_string_new(key);            \
+                AG_AUTO(ag_string) *vs = ag_string_new(val);            \
+                AG_AUTO(ag_value) *k = ag_value_new_string(ks);         \
+                AG_AUTO(ag_value) *v = ag_value_new_string(vs);         \
                 return ag_field_new(k, v);                              \
         }
 
@@ -87,6 +89,11 @@ SAMPLE_REQUEST(GET1, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_PLAIN,
     URL_HTTPS_LOCALHOST_8080_NOPATH(), CLIENT_1(), param_single());
 SAMPLE_REQUEST(GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
     URL_HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
+
+
+AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET0());
+AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET2());
 
 
 extern ag_test_suite *
