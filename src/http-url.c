@@ -154,22 +154,22 @@ ag_http_url_parse(const char *src)
         char path[2048];
         ag_uint port;
 
-        if (sscanf(s, fmt, host) == 1)
-                return ag_http_url_new_noport(false, host, "/");
-        else if (sscanf(s, fmt_s, host) == 1)
-                return ag_http_url_new_noport(true, host, "/");
-        else if (sscanf(s, fmt_po, host, &port) == 2)
-                return ag_http_url_new(false, host, port, "/");
-        else if (sscanf(s, fmt_spo, host, &port) == 2)
-                return ag_http_url_new(true, host, port, "/");
-        else if (sscanf(s, fmt_pa, host, path) == 2)
-                return ag_http_url_new_noport(false, host, path);
-        else if (sscanf(s, fmt_spa, host, path) == 2)
-                return ag_http_url_new_noport(true, host, path);
+        if (sscanf(s, fmt_spopa, host, &port, path) == 3)
+                return ag_http_url_new(true, host, port, path);
         else if (sscanf(s, fmt_popa, host, &port, path) == 3)
                 return ag_http_url_new(false, host, port, path);
-        else if (sscanf(s, fmt_spopa, host, &port, path) == 3)
-                return ag_http_url_new(true, host, port, path);
+        else if (sscanf(s, fmt_spa, host, path) == 2)
+                return ag_http_url_new_noport(true, host, path);
+        else if (sscanf(s, fmt_pa, host, path) == 2)
+                return ag_http_url_new_noport(false, host, path);
+        else if (sscanf(s, fmt_spo, host, &port) == 2)
+                return ag_http_url_new(true, host, port, "/");
+        else if (sscanf(s, fmt_po, host, &port) == 2)
+                return ag_http_url_new(false, host, port, "/");
+        else if (sscanf(s, fmt_s, host) == 1)
+                return ag_http_url_new_noport(true, host, "/");
+        else if (sscanf(s, fmt, host) == 1)
+                return ag_http_url_new_noport(false, host, "/");
         else
                 return NULL;
 }
