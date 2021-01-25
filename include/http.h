@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 
+#include "./alist.h"
 #include "./object.h"
 
 
@@ -207,6 +208,20 @@ extern ag_uint           ag_http_client_port(const ag_http_client *);
 extern ag_string        *ag_http_client_host(const ag_http_client *);
 extern ag_string        *ag_http_client_agent(const ag_http_client *);
 extern ag_string        *ag_http_client_referer(const ag_http_client *);
+
+
+AG_OBJECT_DECLARE(ag_http_request, AG_TYPEID_HTTP_REQUEST);
+
+extern ag_http_request  *ag_http_request_new(enum ag_http_method,
+                            enum ag_http_mime, const ag_http_url *,
+                            const ag_http_client *, const char *);
+
+
+extern enum ag_http_mime         ag_http_request_mime(const ag_http_request *);
+extern enum ag_http_method       ag_http_request_method(const ag_http_request *);
+extern ag_http_client           *ag_http_request_client(const ag_http_request *);
+extern ag_http_url              *ag_http_request_url(const ag_http_request *);
+extern ag_alist                 *ag_http_request_param(const ag_http_request *);
 
 
 #ifdef __cplusplus

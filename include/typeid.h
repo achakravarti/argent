@@ -15,6 +15,7 @@ typedef int ag_typeid;
 #define AG_TYPEID_ALIST         ((ag_typeid) -3)
 #define AG_TYPEID_HTTP_URL      ((ag_typeid) -4)
 #define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -5)
+#define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -6)
 
 
 #ifdef __cplusplus
