@@ -25,6 +25,14 @@
 #define __AG_HTTP_URL_METATESTS_H__
 
 
+/*
+ * Define the AG__METATEST_HTTP_URL_PARSE() macro. This macro defines the
+ * metatest that is used to metaprogrammatically generate a test case for the
+ * ag_http_url_parse() interface function. The first parameter is the statically
+ * allocated string that is to be parsed, and the second parameter is the
+ * pointer to the sample ag_http_url object instance that is expected after
+ * parsing the first parameter.
+ */
 #define AG_METATEST_HTTP_URL_PARSE(src, expect)                         \
         AG_TEST_CASE("ag_http_url_parse(): " src " => " #expect)        \
         {                                                               \
