@@ -96,6 +96,16 @@ AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET2());
 
 
+AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET0());
+AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET2());
+
+
+AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET0());
+AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET2());
+
+
 extern ag_test_suite *
 test_suite_http_request(void)
 {
