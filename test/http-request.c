@@ -29,6 +29,16 @@
         }
 
 
+#define SAMPLE_REQUEST(tag, method, mime, url, client, param)           \
+        static inline ag_http_request *REQUEST_ ## tag(void)            \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = url;                          \
+                AG_AUTO(ag_http_client) *c = client;                    \
+                AG_AUTO(ag_alist) *p = param;                           \
+                return ag_http_request_new(method, mime, u, c, p);      \
+        }
+
+
 SAMPLE_CLIENT(0, "", 0, "", "", "");
 SAMPLE_CLIENT(1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
 SAMPLE_CLIENT(2, "192.168.1.1", 40, "domain.com", "webkit", "");
@@ -70,6 +80,13 @@ static ag_list *param_array(void)
         return ag_alist_new_array(f, 3);
 }
 
+
+SAMPLE_REQUEST(GET0, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_HTML,
+    URL_HTTP_LOCALHOST_8080_NOPATH(), CLIENT_0(), param_empty());
+SAMPLE_REQUEST(GET1, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_PLAIN,
+    URL_HTTPS_LOCALHOST_8080_NOPATH(), CLIENT_1(), param_single());
+SAMPLE_REQUEST(GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
+    URL_HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
 extern ag_test_suite *
