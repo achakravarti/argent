@@ -25,6 +25,15 @@
 #define __AG_HTTP_URL_METATESTS_H__
 
 
+#define AG_METATEST_HTTP_URL_PARSE(src, expect)                         \
+        AG_TEST_CASE("ag_http_url_parse(): " src " => " #expect)        \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = ag_http_url_parse(src);       \
+                AG_AUTO(ag_http_url) *e = expect;                       \
+                AG_TEST (ag_http_url_eq(u, e));                         \
+        }
+
+
 /*
  * Define the AG_METATEST_HTTP_URL_HOST() macro. This macro defines the metatest
  * that is used to metaprogrammatically generate a test case for the
