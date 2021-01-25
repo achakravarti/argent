@@ -29,10 +29,9 @@
         }
 
 
-
-SAMPLE_CLIENT(CLIENT0, "", 0, "", "", "");
-SAMPLE_CLIENT(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
-SAMPLE_CLIENT(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
+SAMPLE_CLIENT(0, "", 0, "", "", "");
+SAMPLE_CLIENT(1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
+SAMPLE_CLIENT(2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
 SAMPLE_URL(HTTP_LOCALHOST_8080_NOPATH, false, "127.0.0.1", 8080, "");
@@ -46,6 +45,31 @@ SAMPLE_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
 SAMPLE_FIELD(KEYVAL, "key", "val");
 SAMPLE_FIELD(FOOBAR, "foo", "bar");
 SAMPLE_FIELD(FOO, "foo", "");
+
+
+static inline ag_list *param_empty(void)
+{
+        return ag_alist_new_empty();
+}
+
+
+static inline ag_list *param_single(void)
+{
+        AG_AUTO(ag_field) *f = FIELD_KEYVAL();
+        return ag_alist_new(f);
+}
+
+
+static ag_list *param_array(void)
+{
+        AG_AUTO(ag_field) *f1 = FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f2 = FIELD_FOOBAR();
+        AG_AUTO(ag_field) *f3 = FIELD_FOO();
+
+        const ag_field *f[] = {f1, f2, f3};
+        return ag_alist_new_array(f, 3);
+}
+
 
 
 extern ag_test_suite *
