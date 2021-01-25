@@ -111,7 +111,8 @@ AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
 
 
 AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
-AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
+AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 
 
 AG_METATEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
