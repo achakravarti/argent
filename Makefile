@@ -85,7 +85,7 @@ coverage:
 
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)
-	rm *.gcno *.gcda
+	rm -f *.gcno *.gcda
 
 tidy:
 	rm *.gcno *.gcda
