@@ -317,6 +317,19 @@ AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
 
 
 /*
+ * Run the metatest for ag_http_url_path() with the sample URL objects defined
+ * above. The first parameter to the AG_METATEST_HTTP_URL_PATH() macro is the
+ * sample URL object, and the second parameter is the expected string result.
+ */
+AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_NOPATH(), "/");
+AG_METATEST_HTTP_URL_PATH(HTTPS_LOCALHOST_8080_NOPATH(), "/");
+AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_FOO(), "/foo");
+AG_METATEST_HTTP_URL_PATH(HTTPS_LOCALHOST_8080_FOO(), "/foo");
+AG_METATEST_HTTP_URL_PATH(HTTPS_DOMAIN_FOO(), "/foo");
+AG_METATEST_HTTP_URL_PATH(HTTPS_DOMAIN_FOO_BAR(), "/foo/bar");
+
+
+/*
  * Run the metatest for ag_http_url_host() with the sample URL objects defined
  * above. The first parameter to AG_METATEST_HTTP_URL_HOST() is the sample URL,
  * and the second parameter specifies the expected string result.
@@ -356,17 +369,21 @@ AG_METATEST_HTTP_URL_PORT(HTTPS_DOMAIN_FOO_BAR(), 0);
 
 
 /*
- * Run the metatest for ag_http_url_path() with the sample URL objects defined
- * above. The first parameter to the AG_METATEST_HTTP_URL_PATH() macro is the
- * sample URL object, and the second parameter is the expected string result.
+ * Run the metatests for ag_http_url_parse() with the sample URL objects defined
+ * above. The first parameter to the AG_METATEST_HTTP_URL_PARSE() macro is the
+ * string to parse, and the second parameter is the expected URL object.
  */
-AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_NOPATH(), "/");
-AG_METATEST_HTTP_URL_PATH(HTTPS_LOCALHOST_8080_NOPATH(), "/");
-AG_METATEST_HTTP_URL_PATH(HTTP_LOCALHOST_8080_FOO(), "/foo");
-AG_METATEST_HTTP_URL_PATH(HTTPS_LOCALHOST_8080_FOO(), "/foo");
-AG_METATEST_HTTP_URL_PATH(HTTPS_DOMAIN_FOO(), "/foo");
-AG_METATEST_HTTP_URL_PATH(HTTPS_DOMAIN_FOO_BAR(), "/foo/bar");
-
+AG_METATEST_HTTP_URL_PARSE("http://127.0.0.1:8080/",
+    HTTP_LOCALHOST_8080_NOPATH());
+AG_METATEST_HTTP_URL_PARSE("https://127.0.0.1:8080/",
+    HTTPS_LOCALHOST_8080_NOPATH());
+AG_METATEST_HTTP_URL_PARSE("http://localhost:8080/foo",
+    HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_HTTP_URL_PARSE("https://localhost:8080/foo",
+    HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_HTTP_URL_PARSE("https://www.domain.com/foo", HTTPS_DOMAIN_FOO());
+AG_METATEST_HTTP_URL_PARSE("https://www.domain.com/foo/bar",
+    HTTPS_DOMAIN_FOO_BAR());
 
 /*
  * Define the test_suite_http_url() function. We generate the test cases from
