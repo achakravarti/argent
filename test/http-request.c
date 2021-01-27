@@ -34,6 +34,14 @@
 #define __AG_TEST_SUITE_ID__ 12
 
 
+/*
+ * Define the SAMPLE_CLIENT() macro. This macro is repsonsible for generating
+ * metaprogrammatically a function that returns a pointer to a sample HTTP
+ * client object with a given set of properties. The first parameter to this
+ * macro is a tag used to uniquely identify a given sample HTTP client. The
+ * other parameters are, in sequence, those of ag_http_client_new(). The name of
+ * the generated function is of the form CLIENT_<tag>().
+ */
 #define SAMPLE_CLIENT(tag, ip, port, host, agent, referer)                     \
         static inline ag_http_client *CLIENT_ ## tag(void)                     \
         {                                                                      \
@@ -41,6 +49,14 @@
         }
 
 
+/*
+ * Define the SAMPLE_URL() macro. This macro is responsible for generating
+ * metaprogrammatically a function that returns a pointer to a sample HTTP URL
+ * object with a given set of properties. The first parameter to this macro is
+ * a tag used to uniquely identify a given sample HTTP URL object, and the other
+ * parameters are, in sequence, those of ag_http_url_new(). The name of the
+ * generated function is of the form URL_<tag>().
+ */
 #define SAMPLE_URL(tag, secure, host, port, path)                       \
         static inline ag_http_url *URL_ ## tag(void)                    \
         {                                                               \
