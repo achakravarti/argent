@@ -25,6 +25,12 @@
 #include "./test.h"
 
 
+/*
+ * Define the __AG_TEST_SUITE_ID__ symbolic constant. This constant represents
+ * the unique ID of the HTTP request interface test suite, and is required by
+ * the testing interface to metaprogrammatically generate the relevant testing
+ * functions.
+ */
 #define __AG_TEST_SUITE_ID__ 12
 
 
@@ -306,6 +312,11 @@ AG_METATEST_OBJECT_STR(ag_http_request, REQUEST_GET2(),
     "param=((key:val) (foo:bar) (foo:))");
 
 
+/*
+ * Define the test_suite_http_request() function. We generate the test cases
+ * from the above metatest definitions through a call to
+ * AG_TEST_SUITE_GENERATE().
+ */
 extern ag_test_suite *
 test_suite_http_request(void)
 {

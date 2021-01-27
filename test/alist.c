@@ -26,6 +26,12 @@
 #include "./test.h"
 
 
+/*
+ * Define the __AG_TEST_SUITE_ID__ symbolic constant. This constant represents
+ * the unique ID of the assocation list interface test suite, and is required by
+ * the testing interface to metaprogrammatically generate the relevant testing
+ * functions.
+ */
 #define __AG_TEST_SUITE_ID__ 7
 
 
@@ -87,57 +93,122 @@ static bool     iterator(const ag_field *, void *, void *);
 static bool     iterator_mutable(ag_field **, void *, void *);
 
 
+/*
+ * Run the ag_object_copy() metatest for ag_alist_copy() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
 AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
 AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
 
+
+/*
+ * Run the ag_object_clone() metatest for ag_alist_clone() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
 
+
+/*
+ * Run the ag_object_release() metatest for ag_alist_release() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_single());
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_list());
 
+
+/*
+ * Run the ag_object_cmp() metatest for ag_alist_cmp() with the sample
+ * association list objects declared above. The smaller of the two compared
+ * objects is passed through the second parameter.
+ */
 AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
+
+
+/*
+ * Run the ag_object_lt() metatest for ag_alist_lt() with the sample association
+ * list objects decalred above. The smaller of the two compared objects is
+ * passed through the second paramter.
+ */
 AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
+
+
+/*
+ * Run the ag_object_eq() metatest for ag_alist_eq() with the sample association
+ * list objects decalred above. The smaller of the two compared objects is
+ * passed through the second paramter.
+ */
 AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
+
+
+/*
+ * Run the ag_object_gt() metatest for ag_alist_gt() with the sample association
+ * list objects decalred above. The smaller of the two compared objects is
+ * passed through the second paramter.
+ */
 AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
 
 
+/*
+ * Run the ag_object_empty() metatests for ag_alist_empty() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
 
 
+/*
+ * Run the ag_object_typeid() metatest for ag_alist_typeid() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
 AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
 AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
 
 
+/*
+ * Run the ag_object_uuid() metatest for ag_alist_uuid() with the sample
+ * assocation list objects declared above.
+ */
 AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
 AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
 AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
 
 
+/*
+ * Run the ag_object_refc() metatest for ag_alist_refc() with the sample
+ * association list objects decalred above.
+ */
 AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
 AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
 AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
 
 
+/*
+ * Run the ag_object_len() metatest for ag_alist_len() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
 AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
 AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 
 
+/*
+ * Run the ag_object_str() metatest for ag_alist_str() with the sample
+ * association list objects declared above.
+ */
 AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
 AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
 AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
@@ -150,19 +221,13 @@ AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_2_FOO());
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_FOOBAR());
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_BAR());
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_4_FOOBAR());
-
-
 AG_METATEST_ALIST_HAS(sample_single(), FIELD_KEY_VAL());
-
-
 AG_METATEST_ALIST_HAS(sample_list(), FIELD_1_FOO());
 AG_METATEST_ALIST_HAS(sample_list(), FIELD_2_BAR());
 AG_METATEST_ALIST_HAS(sample_list(), FIELD_3_FOOBAR());
 AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_2_FOO());
 AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_3_BAR());
 AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_4_FOOBAR());
-
-
 AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_2_FOO());
 AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_3_BAR());
 AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_4_FOOBAR());
@@ -471,6 +536,10 @@ AG_TEST_CASE("ag_alist_map_mutable(): sample_list() => sum")
 }
 
 
+/*
+ * Define the test_suite_alist() function. We generate the test cases from the
+ * above metatest definitions through a call to AG_TEST_SUITE_GENERATE().
+ */
 extern ag_test_suite *test_suite_alist(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_alist interface");
