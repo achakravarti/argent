@@ -604,14 +604,6 @@ sample_list(void)
 static ag_alist *
 sample_list_2(void)
 {
-        /*AG_AUTO(ag_value) *vv1 = VALUE_STR_FOO();
-        AG_AUTO(ag_value) *vv2 = VALUE_STR_BAR();
-        AG_AUTO(ag_value) *vv3 = VALUE_STR_FOOBAR();
-
-        AG_AUTO(ag_value) *kv1 = VALUE_INT_2();
-        AG_AUTO(ag_value) *kv2 = VALUE_INT_3();
-        AG_AUTO(ag_value) *kv3 = VALUE_INT_4();*/
-
         AG_AUTO(ag_field) *f1 = FIELD_2_FOO();
         AG_AUTO(ag_field) *f2 = FIELD_3_BAR();
         AG_AUTO(ag_field) *f3 = FIELD_4_FOOBAR();
