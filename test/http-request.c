@@ -49,7 +49,7 @@
         {                                                               \
                 AG_AUTO(ag_http_request) *r = REQUEST_ ## tag();        \
                 return ag_http_request_sz(r);                           \
-        }
+        }                                                               \
 
 
 SAMPLE_CLIENT(0, "", 0, "", "", "");
@@ -210,8 +210,7 @@ AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET2());
 
 
-/*
- * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the
+/* * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the
  * sample HTTP request objects defined above.
  */
 AG_METATEST_OBJECT_TYPEID(ag_http_request, REQUEST_GET0(),
@@ -266,6 +265,21 @@ AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(), REQUEST_GET2_SZ());
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET0(), REQUEST_GET0_HASH());
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET1(), REQUEST_GET1_HASH());
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET2(), REQUEST_GET2_HASH());
+
+
+/*
+ * Run the ag_object_str() metatest for ag_http_request_str() with the sample
+ * HTTP request objects defined above.
+ */
+AG_METATEST_OBJECT_STR(ag_http_request, REQUEST_GET0(),
+    "[GET] text/html: url=http://127.0.0.1:8080/, client=[] host=, agent=, "
+    "referer=, param=list len = 0");
+AG_METATEST_OBJECT_STR(ag_http_request, REQUEST_GET1(),
+    "[GET] text/plain: url=https://127.0.0.1:8080/, client=[192.168.0.1] "
+    "host=host.com, agent=mozilla, referer=google.com, param=list len = 1");
+AG_METATEST_OBJECT_STR(ag_http_request, REQUEST_GET2(),
+    "[GET] text/css: url=http://localhost:8080/foo, client=[192.168.1.1:40] "
+    "host=domain.com, agent=webkit, referer=, param=list len = 3");
 
 
 extern ag_test_suite *
