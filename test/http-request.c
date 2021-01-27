@@ -94,6 +94,20 @@ static ag_list *param_array(void)
 }
 
 
+/*
+ * Define the sample HTTP request objects to be used for testing. We use the
+ * SAMPLE_REQUEST() macro to generate the supporting functions for these sample
+ * objects. The following functions are metaprogrammatically generated to return
+ * the sample objects:
+ *   - REQUEST_GET0(): GET text/html http://127.0.0.1:8080 no params
+ *   - REQUEST_GET1(): GET text/plain https://127.0.0.1:8080 single param
+ *   - REQUEST_GET2(): GET text/css https://localhost:8080/foo multiple params
+ *
+ * These sample HTTP request objects are not meant to be realistic; their
+ * properties have been selected randomly. Each of these sample HTTP request
+ * objects also has a corresponding function metaprogrammatically generated to
+ * determine its size and hash.
+ */
 SAMPLE_REQUEST(GET0, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_HTML,
     URL_HTTP_LOCALHOST_8080_NOPATH(), CLIENT_0(), param_empty());
 SAMPLE_REQUEST(GET1, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_PLAIN,
@@ -102,51 +116,104 @@ SAMPLE_REQUEST(GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
     URL_HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
+/*
+ * Run the ag_object_copy() metatest for ag_http_request_copy() with the sample
+ * HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_clone() metatest for ag_http_request_clone() with the
+ * sample HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_release() metatest for ag_http_request_release() with the
+ * sample HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_cmp() metatest for ag_http_request_cmp() with the sample
+ * HTTP request objects defined above.
+ *
+ * TODO: Rethink implementation ag_http_request_cmp().
+ */
 AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
 AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
+/*
+ * Run the ag_object_lt() metatest for ag_http_request_lt() with the sample HTTP
+ * request objects defined above.
+ *
+ * TODO: Rethink implementation ag_http_request_lt().
+ */
 AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
 AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
+/*
+ * Run the ag_object_gt() metatest for ag_http_request_gt() with the sample HTTP
+ * request objects defined above.
+ *
+ * TODO: Rethink implementation ag_http_request_gt().
+ */
 AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
 AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
+/*
+ * Run the ag_object_eq() metatest for ag_http_request_eq() with the sample HTTP
+ * request objects defined above.
+ *
+ * TODO: Rethink implementation ag_http_request_eq().
+ */
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
+/*
+ * Run the ag_object_empty() metatest for ag_http_request_empty() with the
+ * sample HTTP request objects defined above. Since HTTP request objects can
+ * never be empty, we run only AG_METATEST_OBJECT_EMPTY_NOT() and skip out on
+ * AG_METATEST_OBJECT_EMPTY().
+ */
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_valid() metatest for ag_http_request_valid() with the
+ * sample HTTP request objects defined above. Since HTTP request objects are
+ * guaranteed to be in a valid state when constructed through their interface,
+ * we run only AG_METATEST_OBJECT_VALID() and skip out on
+ * AG_METATEST_OBJECT_VALID_NOT().
+ */
 AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the
+ * sample HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_TYPEID(ag_http_request, REQUEST_GET0(),
     AG_TYPEID_HTTP_REQUEST);
 AG_METATEST_OBJECT_TYPEID(ag_http_request, REQUEST_GET1(),
@@ -155,26 +222,47 @@ AG_METATEST_OBJECT_TYPEID(ag_http_request, REQUEST_GET2(),
     AG_TYPEID_HTTP_REQUEST);
 
 
+/*
+ * Run the ag_object_uuid() metatest for ag_http_request_uuid() with the sample
+ * HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_UUID(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_UUID(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_UUID(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_refc() metatest for ag_http_request_refc() with the sample
+ * HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_REFC(ag_http_request, REQUEST_GET0());
 AG_METATEST_OBJECT_REFC(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_REFC(ag_http_request, REQUEST_GET2());
 
 
+/*
+ * Run the ag_object_len() metatest for ag_http_request_len() with the sample
+ * HTTP request objects defined above. The length of an HTTP request object is
+ * always 1.
+ */
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET0(), 1);
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET1(), 1);
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET2(), 1);
 
 
+/*
+ * Run the ag_object_sz() metatest for ag_http_request_sz() with the sample HTTP
+ * request objects defined above.
+ */
 AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET0(), REQUEST_GET0_SZ());
 AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET1(), REQUEST_GET1_SZ());
 AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(), REQUEST_GET2_SZ());
 
 
+/*
+ * Run the ag_object_hash() metatest for ag_http_request_hash() with the sample
+ * HTTP request objects defined above.
+ */
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET0(), REQUEST_GET0_HASH());
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET1(), REQUEST_GET1_HASH());
 AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET2(), REQUEST_GET2_HASH());
