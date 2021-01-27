@@ -1,5 +1,6 @@
 #include "./test.h"
 #include "./object.h"
+#include "./value.h"
 
 
 #define __AG_TEST_SUITE_ID__ 5
@@ -154,6 +155,12 @@ AG_METATEST_OBJECT_STR(ag_field, sample_int_str_small(), "-1:small");
 AG_METATEST_OBJECT_STR(ag_field, sample_int_str_large(), "2:large");
 
 
+AG_SAMPLE_VALUE_INT(NEGATIVE, -1);
+AG_SAMPLE_VALUE_INT(POSITIVE, 2);
+AG_SAMPLE_VALUE_STRING(SMALL, "small");
+AG_SAMPLE_VALUE_STRING(LARGE, "large");
+
+
 extern ag_test_suite *
 test_suite_field(void)
 {
@@ -164,9 +171,8 @@ test_suite_field(void)
 static ag_field *
 sample_int_str_small(void)
 {
-        AG_AUTO(ag_string) *s = ag_string_new("small");
-        AG_AUTO(ag_value) *k = ag_value_new_int(-1);
-        AG_AUTO(ag_value) *v = ag_value_new_string(s);
+        AG_AUTO(ag_value) *k = SAMPLE_VALUE_NEGATIVE();
+        AG_AUTO(ag_value) *v = SAMPLE_VALUE_SMALL();
 
         return ag_field_new(k, v);
 }
@@ -175,9 +181,8 @@ sample_int_str_small(void)
 static ag_field *
 sample_int_str_large(void)
 {
-        AG_AUTO(ag_string) *s = ag_string_new("large");
-        AG_AUTO(ag_value) *k = ag_value_new_int(2);
-        AG_AUTO(ag_value) *v = ag_value_new_string(s);
+        AG_AUTO(ag_value) *k = SAMPLE_VALUE_POSITIVE();
+        AG_AUTO(ag_value) *v = SAMPLE_VALUE_LARGE();
         
         return ag_field_new(k, v);
 }
