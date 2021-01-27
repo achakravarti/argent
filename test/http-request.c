@@ -38,6 +38,17 @@
                 AG_AUTO(ag_http_client) *c = client;                    \
                 AG_AUTO(ag_alist) *p = param;                           \
                 return ag_http_request_new(method, mime, u, c, p);      \
+        }                                                               \
+        static inline ag_hash REQUEST_ ## tag ## _HASH(void)            \
+        {                                                               \
+                AG_AUTO(ag_http_request) *r = REQUEST_ ## tag();        \
+                AG_AUTO(ag_string) *s = ag_http_request_str(r);         \
+                return ag_hash_new_str(s);                              \
+        }                                                               \
+        static inline size_t REQUEST_ ## tag ## _SZ(void)               \
+        {                                                               \
+                AG_AUTO(ag_http_request) *r = REQUEST_ ## tag();        \
+                return ag_http_request_sz(r);                           \
         }
 
 
@@ -157,6 +168,11 @@ AG_METATEST_OBJECT_REFC(ag_http_request, REQUEST_GET2());
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET0(), 1);
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET1(), 1);
 AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET2(), 1);
+
+
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET0(), REQUEST_GET0_SZ());
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET1(), REQUEST_GET1_SZ());
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(), REQUEST_GET2_SZ());
 
 
 extern ag_test_suite *
