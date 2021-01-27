@@ -175,6 +175,11 @@ AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET1(), REQUEST_GET1_SZ());
 AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(), REQUEST_GET2_SZ());
 
 
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET0(), REQUEST_GET0_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET1(), REQUEST_GET1_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET2(), REQUEST_GET2_HASH());
+
+
 extern ag_test_suite *
 test_suite_http_request(void)
 {
