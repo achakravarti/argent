@@ -115,7 +115,9 @@ AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1);
 AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 
 
-AG_METATEST_OBJECT_STR_HAS(ag_alist, sample_empty(), "list");
+AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
+AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
+AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
 
 
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());
