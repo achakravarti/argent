@@ -26,6 +26,24 @@
 
 
 /*
+ * Define the AG_SAMPLE_HTTP_URL() macro. This macro is responsible for
+ * metaprogrammatically generating a static inline function that returns a
+ * pointer to a sample HTTP URL object with a given set of properties.
+ *
+ * The first parameter to this macro is a tag used to uniquely identify a given
+ * sample HTTP URL object, and the other parameters are, in sequence, those of
+ * ag_http_url_new(). The name of the gengerated function is of the form
+ * SAMPLE_HTTP_URL_<tag>().
+ */
+#define AG_SAMPLE_HTTP_URL(tag, secure, host, port, path)               \
+        static inline ag_http_url *SAMPLE_HTTP_URL_ ## tag(void)        \
+        {                                                               \
+                return port ? ag_http_url_new(secure, host, port, path) \
+                    : ag_http_url_new_noport(secure, host, path);       \
+        }                                                               \
+
+
+/*
  * Define the AG_METATEST_HTTP_URL_PARSE() macro. This macro defines the
  * metatest that is used to metaprogrammatically generate a test case for the
  * ag_http_url_parse() interface function. The first parameter is the statically
