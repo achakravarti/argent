@@ -36,41 +36,20 @@
 
 
 /*
- * Define the SAMPLE() helper macro. This macro metaprogrammatically generates
- * the support functions required for testing a sample HTTP client object. The
- * first parameter specifies the unique tag to identify a given sample, and the
- * remaining parameters are the corresponding properties of the client.
+ * Declare the prototypes of the helper functions. These functions are used in
+ * conjunction with the object metatests for the HTTP client sample objects
+ * defined in this file. These sample objects are generated through the
+ * AG_SAMPLE_HTTP_CLIENT macro, and are passed as the first parameter to these
+ * functions.
  *
- * For a given tag <TAG>, the SAMPLE() macro generates the following inline
- * support functions:
- *   - TAG()    : returns the sample HTTP client object.
- *   - TAG_LEN(): returns the length of the sample client.
- *   - TAG_SZ() : returns the size of the sample client.
- *   - TAG_HASH : returns the hash of the sample client.
+ * sample_str() returns the string representation sample, sample_len() computes
+ * the length of a sample, sample_sz() computes the size of a sample, and
+ * sample_hash() computes the hash of a sample.
  */
-#define SAMPLE(tag, ip, port, host, agent, referer)                            \
-        static inline ag_http_client *tag(void)                                \
-        {                                                                      \
-                return ag_http_client_new(ip, port, host, agent, referer);     \
-        }                                                                      \
-        static inline size_t tag ## _LEN(void)                                 \
-        {                                                                      \
-                AG_AUTO(ag_http_client) *c = tag();                            \
-                AG_AUTO(ag_string) *s = ag_http_client_str(c);                 \
-                return ag_string_len(s);                                       \
-        }                                                                      \
-        static inline size_t tag ## _SZ(void)                                  \
-        {                                                                      \
-                AG_AUTO(ag_http_client) *c = tag();                            \
-                AG_AUTO(ag_string) *s = ag_http_client_str(c);                 \
-                return ag_string_sz(s);                                        \
-        }                                                                      \
-        static inline size_t tag ## _HASH(void)                                \
-        {                                                                      \
-                AG_AUTO(ag_http_client) *c = tag();                            \
-                AG_AUTO(ag_string) *s = ag_http_client_str(c);                 \
-                return ag_hash_new_str(s);                                     \
-        }
+static inline ag_string *sample_str(ag_http_client *);
+static inline size_t     sample_len(ag_http_client *);
+static inline size_t     sample_sz(ag_http_client *);
+static inline ag_hash    sample_hash(ag_http_client *);
 
 
 /*
@@ -78,9 +57,10 @@
  * helper macro defined above to generate the test client objects with different
  * properties.
  */
-SAMPLE(CLIENT0, "", 0, "", "", "");
-SAMPLE(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
-SAMPLE(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
+AG_SAMPLE_HTTP_CLIENT(CLIENT0, "", 0, "", "", "");
+AG_SAMPLE_HTTP_CLIENT(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla",
+    "google.com");
+AG_SAMPLE_HTTP_CLIENT(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
 /*
@@ -201,25 +181,25 @@ AG_METATEST_OBJECT_REFC(ag_http_client, CLIENT2());
  * Run the ag_object_len() metatest for ag_http_client_len() with the sample
  * client objects.
  */
-AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT1(), CLIENT1_LEN());
-AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT2(), CLIENT2_LEN());
+AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT1(), sample_len(CLIENT1()));
+AG_METATEST_OBJECT_LEN(ag_http_client, CLIENT2(), sample_len(CLIENT2()));
 
 
 /*
  * Run the ag_object_sz() metatest for ag_http_client_sz() with the sample
  * client objects.
  */
-AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT1(), CLIENT1_SZ());
-AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT2(), CLIENT2_SZ());
+AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT1(), sample_sz(CLIENT1()));
+AG_METATEST_OBJECT_SZ(ag_http_client, CLIENT2(), sample_sz(CLIENT2()));
 
 
 /*
  * Run the ag_object_hash() metatest for ag_http_client_hash() with the sample
  * client objects.
  */
-AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT0(), CLIENT0_HASH());
-AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT1(), CLIENT1_HASH());
-AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT2(), CLIENT2_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT0(), sample_hash(CLIENT0()));
+AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT1(), sample_hash(CLIENT1()));
+AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT2(), sample_hash(CLIENT2()));
 
 
 /*
@@ -293,4 +273,54 @@ test_suite_http_client(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_http_client interface");
 }
+
+
+/*
+ * Define the sample_str() helper function. This function generates the string
+ * representation of a sample HTTP client object generated by the
+ * AG_SAMPLE_HTTP_CLIENT() macro.
+ */
+static inline ag_string *
+sample_str(ag_http_client *ctx)
+{
+        AG_AUTO(ag_http_client) *c = ctx;
+        return ag_http_client_str(c);
+}
+
+
+/*
+ * Define the sample_len() helper function. This function computes the length of
+ * a sample HTTP client object generated by the AG_SAMPLE_HTTP_CLIENT() macro.
+ */
+static inline size_t
+sample_len(ag_http_client *ctx)
+{
+        AG_AUTO(ag_string) *s = sample_str(ctx);
+        return ag_string_len(s);
+}
+
+
+/*
+ * Define the sample_sz() helper function. This function computes the size of a
+ * sample HTTP client object generated by the AG_SAMPLE_HTTP_CLIENT() macro.
+ */
+static inline size_t
+sample_sz(ag_http_client *ctx)
+{
+        AG_AUTO(ag_string) *s = sample_str(ctx);
+        return ag_string_sz(s);
+}
+
+
+/*
+ * Define the sample_hash() helper function. This function computes the hash of
+ * a sample HTTP client object generated by the AG_SAMPLE_HTTP_CLIENT() macro.
+ */
+static inline ag_hash
+sample_hash(ag_http_client *ctx)
+{
+        AG_AUTO(ag_string) *s = sample_str(ctx);
+        return ag_hash_new_str(s);
+}
+
 
