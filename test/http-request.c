@@ -22,6 +22,7 @@
 
 
 #include "./field.h"
+#include "./http-url.h"
 #include "./object.h"
 #include "./test.h"
 #include "./value.h"
@@ -51,22 +52,6 @@
         }
 
 
-/*
- * Define the SAMPLE_URL() macro. This macro is responsible for generating
- * metaprogrammatically a function that returns a pointer to a sample HTTP URL
- * object with a given set of properties. The first parameter to this macro is
- * a tag used to uniquely identify a given sample HTTP URL object, and the other
- * parameters are, in sequence, those of ag_http_url_new(). The name of the
- * generated function is of the form URL_<tag>().
- */
-#define SAMPLE_URL(tag, secure, host, port, path)                       \
-        static inline ag_http_url *URL_ ## tag(void)                    \
-        {                                                               \
-                return port ? ag_http_url_new(secure, host, port, path) \
-                    : ag_http_url_new_noport(secure, host, path);       \
-        }                                                               \
-
-
 #define SAMPLE_REQUEST(tag, method, mime, url, client, param)           \
         static inline ag_http_request *REQUEST_ ## tag(void)            \
         {                                                               \
@@ -93,9 +78,9 @@ SAMPLE_CLIENT(1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
 SAMPLE_CLIENT(2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
-SAMPLE_URL(HTTP_LOCALHOST_8080_NOPATH, false, "127.0.0.1", 8080, "");
-SAMPLE_URL(HTTPS_LOCALHOST_8080_NOPATH, true, "127.0.0.1", 8080, "");
-SAMPLE_URL(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
+AG_SAMPLE_HTTP_URL(HTTP_LOCALHOST_8080, false, "127.0.0.1", 8080, "");
+AG_SAMPLE_HTTP_URL(HTTPS_LOCALHOST_8080, true, "127.0.0.1", 8080, "");
+AG_SAMPLE_HTTP_URL(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
 //SAMPLE_URL(HTTPS_LOCALHOST_8080_FOO, true, "localhost", 8080, "foo");
 //SAMPLE_URL(HTTPS_DOMAIN_FOO, true, "www.domain.com", 0, "/foo");
 //SAMPLE_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
@@ -170,11 +155,11 @@ static ag_list *param_array(void)
  * determine its size and hash.
  */
 SAMPLE_REQUEST(GET0, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_HTML,
-    URL_HTTP_LOCALHOST_8080_NOPATH(), CLIENT_0(), param_empty());
+    SAMPLE_HTTP_URL_HTTP_LOCALHOST_8080(), CLIENT_0(), param_empty());
 SAMPLE_REQUEST(GET1, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_PLAIN,
-    URL_HTTPS_LOCALHOST_8080_NOPATH(), CLIENT_1(), param_single());
+    SAMPLE_HTTP_URL_HTTPS_LOCALHOST_8080(), CLIENT_1(), param_single());
 SAMPLE_REQUEST(GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
-    URL_HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
+    SAMPLE_HTTP_URL_HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
 /*
