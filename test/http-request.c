@@ -90,16 +90,16 @@ AG_SAMPLE_HTTP_URL(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
  * Define a few sample string values for generating sample fields through the
  * AG_SAMPLE_VALUE_STRING() macro. The following functions returning a pointer
  * to a string value are generated:
- *   - SAMPLE_VALUE_KEY()  : string value set to "key"
- *   - SAMPLE_VALUE_VAL()  : string value set to "val"
- *   - SAMPLE_VALUE_FOO()  : string value set to "foo"
- *   - SAMPLE_VALUE_EMPTY(): empty string value
+ *   - VALUE_KEY()  : string value set to "key"
+ *   - VALUE_VAL()  : string value set to "val"
+ *   - VALUE_FOO()  : string value set to "foo"
+ *   - VALUE_EMPTY(): empty string value
  */
-AG_SAMPLE_VALUE_STRING(KEY, "key");
-AG_SAMPLE_VALUE_STRING(VAL, "val");
-AG_SAMPLE_VALUE_STRING(FOO, "foo");
-AG_SAMPLE_VALUE_STRING(BAR, "bar");
-AG_SAMPLE_VALUE_STRING(EMPTY, "");
+AG_SAMPLE_VALUE_STRING(VALUE_KEY, "key");
+AG_SAMPLE_VALUE_STRING(VALUE_VAL, "val");
+AG_SAMPLE_VALUE_STRING(VALUE_FOO, "foo");
+AG_SAMPLE_VALUE_STRING(VALUE_BAR, "bar");
+AG_SAMPLE_VALUE_STRING(VALUE_EMPTY, "");
 
 
 /*
@@ -111,9 +111,9 @@ AG_SAMPLE_VALUE_STRING(EMPTY, "");
  *   - SAMPLE_FIELD_FOOBAR(): (foo:bar)
  *   - SAMPLE_FIELD_FOO()   : (foo:)
  */
-AG_SAMPLE_FIELD(KEYVAL, SAMPLE_VALUE_KEY(), SAMPLE_VALUE_VAL());
-AG_SAMPLE_FIELD(FOOBAR, SAMPLE_VALUE_FOO(), SAMPLE_VALUE_BAR());
-AG_SAMPLE_FIELD(FOO, SAMPLE_VALUE_FOO(), SAMPLE_VALUE_EMPTY());
+AG_SAMPLE_FIELD(KEYVAL, VALUE_KEY(), VALUE_VAL());
+AG_SAMPLE_FIELD(FOOBAR, VALUE_FOO(), VALUE_BAR());
+AG_SAMPLE_FIELD(FOO, VALUE_FOO(), VALUE_EMPTY());
 
 
 static inline ag_list *param_empty(void)
