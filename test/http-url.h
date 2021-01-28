@@ -32,11 +32,11 @@
  *
  * The first parameter to this macro is a tag used to uniquely identify a given
  * sample HTTP URL object, and the other parameters are, in sequence, those of
- * ag_http_url_new(). The name of the generated function is of the form
- * SAMPLE_HTTP_URL_<tag>().
+ * ag_http_url_new(). The name of the generated function is the same as the
+ * specified tag.
  */
 #define AG_SAMPLE_HTTP_URL(tag, secure, host, port, path)               \
-        static inline ag_http_url *SAMPLE_HTTP_URL_ ## tag(void)        \
+        static inline ag_http_url *tag(void)                            \
         {                                                               \
                 return port ? ag_http_url_new(secure, host, port, path) \
                     : ag_http_url_new_noport(secure, host, path);       \
