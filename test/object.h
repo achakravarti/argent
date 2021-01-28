@@ -1,5 +1,5 @@
-#ifndef __ARGENT_TESTS_OBJECT_H__
-#define __ARGENT_TESTS_OBJECT_H__
+#ifndef __ARGENT_TEST_OBJECT_H__
+#define __ARGENT_TEST_OBJECT_H__
 
 
 #define AG_METATEST_OBJECT_COPY(type, sample)                           \
@@ -270,5 +270,5 @@
         }
 
 
-#endif /* !__ARGENT_TESTS_OBJECT_H__ */
+#endif /* !__ARGENT_TEST_OBJECT_H__ */
 

@@ -1,5 +1,5 @@
-#ifndef __AG_TEST_VALUE_H__
-#define __AG_TEST_VALUE_H__
+#ifndef __ARGENT_TEST_VALUE_H__
+#define __ARGENT_TEST_VALUE_H__
 
 
 #define AG_SAMPLE_VALUE_INT(tag, val)                           \
@@ -39,5 +39,5 @@
         }
 
 
-#endif /* !__AG_TEST_VALUE_H__ */
+#endif /* !__ARGENT_TEST_VALUE_H__ */
 

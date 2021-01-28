@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __AG_HTTP_CLIENT_METATESTS_H__
-#define __AG_HTTP_CLIENT_METATESTS_H__
+#ifndef __ARGENT_TEST_HTTP_CLIENT_H__
+#define __ARGENT_TEST_HTTP_CLIENT_H__
 
 
 /*
@@ -82,5 +82,5 @@
         }
 
 
-#endif /* !__AG_HTTP_CLIENT_METATESTS_H__ */
+#endif /* !__ARGENT_TEST_HTTP_CLIENT_H__ */
 

@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __AG_HTTP_URL_METATESTS_H__
-#define __AG_HTTP_URL_METATESTS_H__
+#ifndef __ARGENT_TEST_HTTP_URL_H__
+#define __ARGENT_TEST_HTTP_URL_H__
 
 
 /*

@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __AG_HTTP_MIME_METATESTS_H__
-#define __AG_HTTP_MIME_METATESTS_H__
+#ifndef __ARGENT_TEST_HTTP_MIME_H__
+#define __ARGENT_TEST__HTTP_MIME_H__
 
 
 /*
@@ -55,5 +55,5 @@
         }
 
 
-#endif /* !__AG_HTTP_MIME_METATESTS_H__ */
+#endif /* !__ARGENT_TEST_HTTP_MIME_H__ */
 

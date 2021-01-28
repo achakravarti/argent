@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __AG_HTTP_METHOD_METATESTS_H__
-#define __AG_HTTP_METHOD_METATESTS_H__
+#ifndef __ARGENT_TEST_HTTP_METHOD_H__
+#define __ARGENT_TEST_HTTP_METHOD_H__
 
 
 /*
@@ -57,5 +57,5 @@
         }
 
 
-#endif /* !__AG_HTTP_METHOD_METATESTS_H__ */
+#endif /* !__ARGENT_TEST_HTTP_METHOD_H__ */
 

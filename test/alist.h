@@ -1,5 +1,5 @@
-#ifndef __AG_ARGENT_METATESTS_ALIST_H__
-#define __AG_ARGENT_METATESTS_ALIST_H__
+#ifndef __ARGENT_TEST_ALIST_H__
+#define __ARGENT_TEST_ALIST_H__
 
 
 #define AG_METATEST_ALIST_HAS(sample, attr)                             \
@@ -130,4 +130,4 @@
         }
 
 
-#endif /* !__AG_ARGENT_METATESTS_ALIST_H__ */
+#endif /* !__ARGENT_TEST_ALIST_H__ */
