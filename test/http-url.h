@@ -44,6 +44,48 @@
 
 
 /*
+ * Define the AG_SAMPLE_EXT_HTTP_URL() macro. This macro is similar to the
+ * AG_SAMPLE_HTTP_URL() macro in that it generates a static  inline function
+ * that returns a pointer to a sample HTTP URL object with a given set of
+ * properties. However, in addition, this macro generates other supporting
+ * functions that help in testing the sample HTTP URL object.
+ *
+ * The parameters to this macro are the same as that of AG_SAMPLE_HTTP_URL().
+ *
+ * In all, for a given tag, the following static inline functions are generated
+ * by this macro:
+ *   - SAMPLE_HTTP_URL_<tag>()     : returns sample HTTP URL object.
+ *   - SAMPLE_HTTP_URL_<tag>_LEN() : returns length of sample.
+ *   - SAMPLE_HTTP_URL_<tag>_SZ()  : returns size of sample.
+ *   - SAMPLE_HTTP_URL_<tag>_HASH(): returns hash of sample.
+ */
+#define AG_SAMPLE_EXT_HTTP_URL(tag, secure, host, port, path)           \
+        static inline ag_http_url *SAMPLE_HTTP_URL_ ## tag(void)        \
+        {                                                               \
+                return port ? ag_http_url_new(secure, host, port, path) \
+                    : ag_http_url_new_noport(secure, host, path);       \
+        }                                                               \
+        static inline size_t SAMPLE_HTTP_URL_ ## tag ## _LEN(void)      \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = SAMPLE_HTTP_URL_ ## tag();    \
+                AG_AUTO(ag_string) *s = ag_http_url_str(u);             \
+                return ag_string_len(s);                                \
+        }                                                               \
+        static inline size_t SAMPLE_HTTP_URL_ ## tag ## _SZ(void)       \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = SAMPLE_HTTP_URL_ ## tag();    \
+                AG_AUTO(ag_string) *s = ag_http_url_str(u);             \
+                return ag_string_sz(s);                                 \
+        }                                                               \
+        static inline size_t SAMPLE_HTTP_URL_ ## tag ## _HASH(void)     \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = SAMPLE_HTTP_URL_ ## tag();    \
+                AG_AUTO(ag_string) *s = ag_http_url_str(u);             \
+                return ag_hash_new_str(s);                              \
+        }
+
+
+/*
  * Define the AG_METATEST_HTTP_URL_PARSE() macro. This macro defines the
  * metatest that is used to metaprogrammatically generate a test case for the
  * ag_http_url_parse() interface function. The first parameter is the statically
