@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_ALIST_H__
-#define __ARGENT_ALIST_H__
+#ifndef __ARGENT_INCLUDE_ALIST_H__
+#define __ARGENT_INCLUDE_ALIST_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -142,5 +142,5 @@ extern void     ag_alist_push(ag_alist **, const ag_field *);
 }
 #endif
 
-#endif /* !__ARGENT_ALIST_H__ */
+#endif /* !__ARGENT_INCLUDE_ALIST_H__ */
 

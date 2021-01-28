@@ -1,5 +1,5 @@
-#ifndef __ARGENT_TYPEID_H__
-#define __ARGENT_TYPEID_H__
+#ifndef __ARGENT_INCLUDE_TYPEID_H__
+#define __ARGENT_INCLUDE_TYPEID_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,5 +22,5 @@ typedef int ag_typeid;
 }
 #endif
 
-#endif /* __ARGENT_TYPEID_H__ */
+#endif /* __ARGENT_INCLUDE_TYPEID_H__ */
 

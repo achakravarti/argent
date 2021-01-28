@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_FIELD_H__
-#define __ARGENT_FIELD_H__
+#ifndef __ARGENT_INCLUDE_FIELD_H__
+#define __ARGENT_INCLUDE_FIELD_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,5 +100,5 @@ extern void     ag_field_val_set(ag_field **, const ag_value *);
 }
 #endif
 
-#endif /* !__ARGENT_FIELD_H__ */
+#endif /* !__ARGENT_INCLUDE_FIELD_H__ */
 

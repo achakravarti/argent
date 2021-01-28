@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_HTTP_H__
-#define __ARGENT_HTTP_H__
+#ifndef __ARGENT_INCLUDE_HTTP_H__
+#define __ARGENT_INCLUDE_HTTP_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -228,5 +228,5 @@ extern ag_alist                 *ag_http_request_param(const ag_http_request *);
 }
 #endif
 
-#endif /* !__ARGENT_HTTP_H__ */
+#endif /* !__ARGENT_INCLUDE_HTTP_H__ */
 

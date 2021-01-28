@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_ERNO_H__
-#define __ARGENT_ERNO_H__
+#ifndef __ARGENT_INCLUDE_ERNO_H__
+#define __ARGENT_INCLUDE_ERNO_H__
 
 
 #ifdef __cplusplus
@@ -80,5 +80,5 @@ typedef int ag_erno;
 #endif
 
 
-#endif /* !__ARGENT_ERNO_H__ */
+#endif /* !__ARGENT_INCLUDE_ERNO_H__ */
 

@@ -1,5 +1,5 @@
-#ifndef __ARGENT_HASH_H__
-#define __ARGENT_HASH_H__
+#ifndef __ARGENT_INCLUDE_HASH_H__
+#define __ARGENT_INCLUDE_HASH_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,5 +19,5 @@ extern ag_hash ag_hash_new_str(const char *);
 }
 #endif
 
-#endif /* !__ARGENT_HASH_H__ */
+#endif /* !__ARGENT_INCLUDE_HASH_H__ */
 

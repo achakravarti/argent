@@ -1,5 +1,5 @@
-#ifndef __ARGENT_VALUE_H__
-#define __ARGENT_VALUE_H__
+#ifndef __ARGENT_INCLUDE_VALUE_H__
+#define __ARGENT_INCLUDE_VALUE_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,5 +92,5 @@ inline bool ag_value_type_object(const ag_value *ctx)
 }
 #endif
 
-#endif /* !__ARGENT_VALUE_H__ */
+#endif /* !__ARGENT_INCLUDE_VALUE_H__ */
 

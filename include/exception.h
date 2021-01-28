@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_EXCEPTION_H__
-#define __ARGENT_EXCEPTION_H__
+#ifndef __ARGENT_INCLUDE_EXCEPTION_H__
+#define __ARGENT_INCLUDE_EXCEPTION_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -246,5 +246,5 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
         }
 #endif
 
-#endif /* !__ARGENT_EXCEPTION_H__ */
+#endif /* !__ARGENT_INCLUDE_EXCEPTION_H__ */
 

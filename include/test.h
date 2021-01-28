@@ -46,8 +46,8 @@
  */
 
 
-#ifndef __ARGENT_TEST_H__
-#define __ARGENT_TEST_H__
+#ifndef __ARGENT_INCLUDE_TEST_H__
+#define __ARGENT_INCLUDE_TEST_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -160,5 +160,5 @@ extern void ag_test_harness_log(const ag_test_harness *, FILE *);
         }
 #endif
 
-#endif /* !__ARGENT_TEST_H__ */
+#endif /* !__ARGENT_INCLUDE_TEST_H__ */
 

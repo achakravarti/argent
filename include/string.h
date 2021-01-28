@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_STRING_H__
-#define __ARGENT_STRING_H__
+#ifndef __ARGENT_INCLUDE_STRING_H__
+#define __ARGENT_INCLUDE_STRING_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -159,5 +159,5 @@ extern ag_string        *ag_string_split_right(const ag_string *, const char *);
 }
 #endif
 
-#endif /* !__ARGENT_STRING_H__ */
+#endif /* !__ARGENT_INCLUDE_STRING_H__ */
 

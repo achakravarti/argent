@@ -1,5 +1,5 @@
-#ifndef __ARGENT_UUID_H__
-#define __ARGENT_UUID_H__
+#ifndef __ARGENT_INCLUDE_UUID_H__
+#define __ARGENT_INCLUDE_UUID_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,4 +49,4 @@ extern ag_string *ag_uuid_str(const ag_uuid *);
 }
 #endif
 
-#endif /* !__ARGENT_UUID_H__ */
+#endif /* !__ARGENT_INCLUDE_UUID_H__ */

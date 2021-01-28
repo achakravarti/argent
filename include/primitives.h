@@ -1,5 +1,5 @@
-#ifndef __ARGENT_PRIMITIVES_H__
-#define __ARGENT_PRIMITIVES_H__
+#ifndef __ARGENT_INCLUDE_PRIMITIVES_H__
+#define __ARGENT_INCLUDE_PRIMITIVES_H__
 
 
 #ifdef __cplusplus
@@ -156,5 +156,5 @@ inline enum ag_cmp ag_float_cmp(ag_float ctx, ag_float cmp)
         }
 #endif
 
-#endif /* !__ARGENT_PRIMITIVE_H__ */
+#endif /* !__ARGENT_INCLUDE_PRIMITIVE_H__ */
 

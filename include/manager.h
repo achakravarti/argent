@@ -1,5 +1,5 @@
-#ifndef __ARGENT_MANAGER_H__
-#define __ARGENT_MANAGER_H__
+#ifndef __ARGENT_INCLUDE_MANAGER_H__
+#define __ARGENT_INCLUDE_MANAGER_H__
 
 #ifdef __cplusplus
         extern "C" {

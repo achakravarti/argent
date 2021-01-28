@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __ARGENT_LIST_H__
-#define __ARGENT_LIST_H__
+#ifndef __ARGENT_INCLUDE_LIST_H__
+#define __ARGENT_INCLUDE_LIST_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,5 +83,5 @@ extern void     ag_list_push(ag_list **, const ag_value *);
 }
 #endif
 
-#endif /* !__ARGENT_LIST_H__ */
+#endif /* !__ARGENT_INCLUDE_LIST_H__ */
 

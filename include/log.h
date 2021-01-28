@@ -1,6 +1,5 @@
-#ifndef __ARGENT_LOG_H__
-#define __ARGENT_LOG_H__
-
+#ifndef __ARGENT_INCLUDE_LOG_H__
+#define __ARGENT_INCLUDE_LOG_H__
 
 #ifdef __cplusplus
         extern "C" {
@@ -22,5 +21,5 @@ extern void ag_log_debug(const char *, ...);
 #endif
 
 
-#endif /*!__ARGENT_LOG_H__ */
+#endif /*!__ARGENT_INCLUDE_LOG_H__ */
 
