@@ -21,8 +21,10 @@
  */
 
 
+#include "./field.h"
 #include "./object.h"
 #include "./test.h"
+#include "./value.h"
 
 
 /*
@@ -65,17 +67,6 @@
         }                                                               \
 
 
-#define SAMPLE_FIELD(tag, key, val)                                     \
-        static inline ag_field *FIELD_ ## tag(void)                     \
-        {                                                               \
-                AG_AUTO(ag_string) *ks = ag_string_new(key);            \
-                AG_AUTO(ag_string) *vs = ag_string_new(val);            \
-                AG_AUTO(ag_value) *k = ag_value_new_string(ks);         \
-                AG_AUTO(ag_value) *v = ag_value_new_string(vs);         \
-                return ag_field_new(k, v);                              \
-        }
-
-
 #define SAMPLE_REQUEST(tag, method, mime, url, client, param)           \
         static inline ag_http_request *REQUEST_ ## tag(void)            \
         {                                                               \
@@ -110,9 +101,34 @@ SAMPLE_URL(HTTP_LOCALHOST_8080_FOO, false, "localhost", 8080, "foo");
 //SAMPLE_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
 
 
-SAMPLE_FIELD(KEYVAL, "key", "val");
-SAMPLE_FIELD(FOOBAR, "foo", "bar");
-SAMPLE_FIELD(FOO, "foo", "");
+/*
+ * Define a few sample string values for generating sample fields through the
+ * AG_SAMPLE_VALUE_STRING() macro. The following functions returning a pointer
+ * to a string value are generated:
+ *   - SAMPLE_VALUE_KEY()  : string value set to "key"
+ *   - SAMPLE_VALUE_VAL()  : string value set to "val"
+ *   - SAMPLE_VALUE_FOO()  : string value set to "foo"
+ *   - SAMPLE_VALUE_EMPTY(): empty string value
+ */
+AG_SAMPLE_VALUE_STRING(KEY, "key");
+AG_SAMPLE_VALUE_STRING(VAL, "val");
+AG_SAMPLE_VALUE_STRING(FOO, "foo");
+AG_SAMPLE_VALUE_STRING(BAR, "bar");
+AG_SAMPLE_VALUE_STRING(EMPTY, "");
+
+
+/*
+ * Define a few sample fields containing string key-value pairs for preparing
+ * the sample parameter lists. We use the AG_SAMPLE_FIELD() macro in conjunction
+ * with the sample string value functions generated above by the macro
+ * AG_SAMPLE_VALUE_STRING(). The sample field functions generated are:
+ *   - SAMPLE_FIELD_KEYVAL(): (key:val)
+ *   - SAMPLE_FIELD_FOOBAR(): (foo:bar)
+ *   - SAMPLE_FIELD_FOO()   : (foo:)
+ */
+AG_SAMPLE_FIELD(KEYVAL, SAMPLE_VALUE_KEY(), SAMPLE_VALUE_VAL());
+AG_SAMPLE_FIELD(FOOBAR, SAMPLE_VALUE_FOO(), SAMPLE_VALUE_BAR());
+AG_SAMPLE_FIELD(FOO, SAMPLE_VALUE_FOO(), SAMPLE_VALUE_EMPTY());
 
 
 static inline ag_list *param_empty(void)
@@ -123,16 +139,16 @@ static inline ag_list *param_empty(void)
 
 static inline ag_list *param_single(void)
 {
-        AG_AUTO(ag_field) *f = FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f = SAMPLE_FIELD_KEYVAL();
         return ag_alist_new(f);
 }
 
 
 static ag_list *param_array(void)
 {
-        AG_AUTO(ag_field) *f1 = FIELD_KEYVAL();
-        AG_AUTO(ag_field) *f2 = FIELD_FOOBAR();
-        AG_AUTO(ag_field) *f3 = FIELD_FOO();
+        AG_AUTO(ag_field) *f1 = SAMPLE_FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f2 = SAMPLE_FIELD_FOOBAR();
+        AG_AUTO(ag_field) *f3 = SAMPLE_FIELD_FOO();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);
