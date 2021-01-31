@@ -87,7 +87,7 @@
 /*
  * Define the AG_METATEST_HTTP_CLIENT_PORT() macro. This macro is used to
  * generate metaprogrammatically the test case for the ag_http_client_port()
- * interface function. The ifrst parameter is a pointer to the sample HTTP
+ * interface function. The first parameter is a pointer to the sample HTTP
  * client object, and the second parameter is the expected unsigned integer
  * result.
  */
