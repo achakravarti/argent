@@ -45,4 +45,86 @@
         }
 
 
+
+/*
+ * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * metaprogrammatically generate the test case for the ag_http_request_mime()
+ * interface function. The first parameter is a pointer to the sample HTTP
+ * request object, and the second parameter is the expected return value of
+ * ag_http_request_mime().
+ */
+#define AG_METATEST_HTTP_REQUEST_MIME(sample, expect)                   \
+        AG_TEST_CASE("ag_http_request_mime(): " #sample " => " #expect) \
+        {                                                               \
+                AG_AUTO(ag_http_request) *r = sample;                   \
+                AG_TEST (ag_http_request_mime(r) == expect;             \
+        }
+
+
+/*
+ * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * metaprogrammatically generate the test case for the ag_http_request_method()
+ * interface function. The first parameter is a pointer to the sample HTTP
+ * request object, and the second parameter is the expected return value of
+ * ag_http_request_method().
+ */
+#define AG_METATEST_HTTP_REQUEST_METHOD(sample, expect)                        \
+        AG_TEST_CASE("ag_http_request_method(): " #sample " => " #expect)      \
+        {                                                                      \
+                AG_AUTO(ag_http_request) *r = sample;                          \
+                AG_TEST (ag_http_request_method(r) == expect;                  \
+        }
+
+
+/*
+ * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * metaprogrammatically generate the test case for the ag_http_request_client()
+ * interface function. The first parameter is a pointer to the sample HTTP
+ * request object, and the second parameter is the expected return value of
+ * ag_http_reequest_client().
+ */
+#define AG_METATEST_HTTP_REQUEST_CLIENT(sample, expect)                        \
+        AG_TEST_CASE("ag_http_request_client(): " #sample " => " #expect)      \
+        {                                                                      \
+                AG_AUTO(ag_http_request) *r = sample;                          \
+                AG_AUTO(ag_http_client) *c = expect;                           \
+                AG_AUTO(ag_http_client) *c2 = ag_http_request_client(r);       \
+                AG_TEST (ag_http_client_eq(c, c2) == expect;                   \
+        }
+
+
+/*
+ * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * metaprogrammatically generate the test case for the ag_http_request_url()
+ * interface function. The first parameter is a pointer to the sample HTTP
+ * request object, and the second parameter is the expected return value of
+ * ag_http_request_url().
+ */
+#define AG_METATEST_HTTP_REQUEST_URL(sample, expect)                    \
+        AG_TEST_CASE("ag_http_request_url(): " #sample " => " #expect)  \
+        {                                                               \
+                AG_AUTO(ag_http_request) *r = sample;                   \
+                AG_AUTO(ag_http_url *u = expect;                        \
+                AG_AUTO(ag_http_url) *u2 = ag_http_request_url(r);      \
+                AG_TEST (ag_http_url_eq(u, u2) == expect;               \
+        }
+
+
+/*
+ * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * metaprogrammatically generate the test case for the ag_http_request_param()
+ * interface function. The first parameter is a pointer to the sample HTTP
+ * request object, and the second parameter is the expected return value of
+ * ag_http_request_param().
+ */
+#define AG_METATEST_HTTP_REQUEST_ALIST(sample, expect)                         \
+        AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
+        {                                                                      \
+                AG_AUTO(ag_http_request) *r = sample;                          \
+                AG_AUTO(ag_alist *p = expect;                                  \
+                AG_AUTO(ag_alist *p2 = ag_http_request_param(r);               \
+                AG_TEST (ag_alist_eq(p, p2) == expect;                         \
+        }
+
+
 #endif /* !__AG_HTTP_REQUEST_H__ */
