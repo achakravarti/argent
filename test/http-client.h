@@ -36,7 +36,7 @@
  * specified tag.
  */
 #define AG_SAMPLE_HTTP_CLIENT(tag, ip, port, host, agent, referer)             \
-        static inline ag_http_url *tag(void)                                   \
+        static inline ag_http_client *tag(void)                                \
         {                                                                      \
                 return ag_http_client_new(ip, port, host, agent, referer);     \
         }
