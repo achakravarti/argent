@@ -23,6 +23,7 @@
 
 #include "./field.h"
 #include "./http-client.h"
+#include "./http-request.h"
 #include "./http-url.h"
 #include "./object.h"
 #include "./test.h"
@@ -36,27 +37,6 @@
  * functions.
  */
 #define __AG_TEST_SUITE_ID__ 12
-
-
-#define SAMPLE_REQUEST(tag, method, mime, url, client, param)           \
-        static inline ag_http_request *REQUEST_ ## tag(void)            \
-        {                                                               \
-                AG_AUTO(ag_http_url) *u = url;                          \
-                AG_AUTO(ag_http_client) *c = client;                    \
-                AG_AUTO(ag_alist) *p = param;                           \
-                return ag_http_request_new(method, mime, u, c, p);      \
-        }                                                               \
-        static inline ag_hash REQUEST_ ## tag ## _HASH(void)            \
-        {                                                               \
-                AG_AUTO(ag_http_request) *r = REQUEST_ ## tag();        \
-                AG_AUTO(ag_string) *s = ag_http_request_str(r);         \
-                return ag_hash_new_str(s);                              \
-        }                                                               \
-        static inline size_t REQUEST_ ## tag ## _SZ(void)               \
-        {                                                               \
-                AG_AUTO(ag_http_request) *r = REQUEST_ ## tag();        \
-                return ag_http_request_sz(r);                           \
-        }                                                               \
 
 
 /*
@@ -143,9 +123,9 @@ static ag_list *param_array(void)
 
 /*
  * Define the sample HTTP request objects to be used for testing. We use the
- * SAMPLE_REQUEST() macro to generate the supporting functions for these sample
- * objects. The following functions are metaprogrammatically generated to return
- * the sample objects:
+ * AG_SAMPLE_HTTP_REQUEST() macro to generate the supporting functions for these
+ * sample objects. The following functions are metaprogrammatically generated to
+ * return the sample objects:
  *   - REQUEST_GET0(): GET text/html http://127.0.0.1:8080 no params
  *   - REQUEST_GET1(): GET text/plain https://127.0.0.1:8080 single param
  *   - REQUEST_GET2(): GET text/css https://localhost:8080/foo multiple params
@@ -155,11 +135,12 @@ static ag_list *param_array(void)
  * objects also has a corresponding function metaprogrammatically generated to
  * determine its size and hash.
  */
-SAMPLE_REQUEST(GET0, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_HTML,
+AG_SAMPLE_HTTP_REQUEST(REQUEST_GET0, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_HTML,
     HTTP_LOCALHOST_8080(), CLIENT_0(), param_empty());
-SAMPLE_REQUEST(GET1, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_PLAIN,
-    HTTPS_LOCALHOST_8080(), CLIENT_1(), param_single());
-SAMPLE_REQUEST(GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
+AG_SAMPLE_HTTP_REQUEST(REQUEST_GET1, AG_HTTP_METHOD_GET,
+    AG_HTTP_MIME_TEXT_PLAIN, HTTPS_LOCALHOST_8080(), CLIENT_1(),
+    param_single());
+AG_SAMPLE_HTTP_REQUEST(REQUEST_GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
     HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
@@ -300,18 +281,24 @@ AG_METATEST_OBJECT_LEN(ag_http_request, REQUEST_GET2(), 1);
  * Run the ag_object_sz() metatest for ag_http_request_sz() with the sample HTTP
  * request objects defined above.
  */
-AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET0(), REQUEST_GET0_SZ());
-AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET1(), REQUEST_GET1_SZ());
-AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(), REQUEST_GET2_SZ());
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET0(),
+    sample_sz(REQUEST_GET0()));
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET1(),
+    sample_sz(REQUEST_GET1()));
+AG_METATEST_OBJECT_SZ(ag_http_request, REQUEST_GET2(),
+    sample_sz(REQUEST_GET2()));
 
 
 /*
  * Run the ag_object_hash() metatest for ag_http_request_hash() with the sample
  * HTTP request objects defined above.
  */
-AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET0(), REQUEST_GET0_HASH());
-AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET1(), REQUEST_GET1_HASH());
-AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET2(), REQUEST_GET2_HASH());
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET0(), 
+    sample_hash(REQUEST_GET0()));
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET1(),
+    sample_hash(REQUEST_GET1()));
+AG_METATEST_OBJECT_HASH(ag_http_request, REQUEST_GET2(),
+    sample_hash(REQUEST_GET2()));
 
 
 /*
