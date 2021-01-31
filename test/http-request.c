@@ -22,6 +22,7 @@
 
 
 #include "./field.h"
+#include "./http-client.h"
 #include "./http-url.h"
 #include "./object.h"
 #include "./test.h"
@@ -35,21 +36,6 @@
  * functions.
  */
 #define __AG_TEST_SUITE_ID__ 12
-
-
-/*
- * Define the SAMPLE_CLIENT() macro. This macro is repsonsible for generating
- * metaprogrammatically a function that returns a pointer to a sample HTTP
- * client object with a given set of properties. The first parameter to this
- * macro is a tag used to uniquely identify a given sample HTTP client. The
- * other parameters are, in sequence, those of ag_http_client_new(). The name of
- * the generated function is of the form CLIENT_<tag>().
- */
-#define SAMPLE_CLIENT(tag, ip, port, host, agent, referer)                     \
-        static inline ag_http_client *CLIENT_ ## tag(void)                     \
-        {                                                                      \
-                return ag_http_client_new(ip, port, host, agent, referer);     \
-        }
 
 
 #define SAMPLE_REQUEST(tag, method, mime, url, client, param)           \
@@ -73,9 +59,10 @@
         }                                                               \
 
 
-SAMPLE_CLIENT(0, "", 0, "", "", "");
-SAMPLE_CLIENT(1, "192.168.0.1", 0, "host.com", "mozilla", "google.com");
-SAMPLE_CLIENT(2, "192.168.1.1", 40, "domain.com", "webkit", "");
+AG_SAMPLE_HTTP_CLIENT(CLIENT_0, "", 0, "", "", "");
+AG_SAMPLE_HTTP_CLIENT(CLIENT_1, "192.168.0.1", 0, "host.com", "mozilla",
+    "google.com");
+AG_SAMPLE_HTTP_CLIENT(CLIENT_2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
 AG_SAMPLE_HTTP_URL(HTTP_LOCALHOST_8080, false, "127.0.0.1", 8080, "");

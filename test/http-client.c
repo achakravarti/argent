@@ -206,8 +206,7 @@ AG_METATEST_OBJECT_HASH(ag_http_client, CLIENT2(), sample_hash(CLIENT2()));
  * Run the ag_object_str() metatest for ag_http_client_str() with the sample
  * client objects.
  */
-AG_METATEST_OBJECT_STR(ag_http_client, CLIENT0(),
-    "[] host=, agent=, referer=");
+AG_METATEST_OBJECT_STR(ag_http_client, CLIENT0(), "[] host=, agent=, referer=");
 AG_METATEST_OBJECT_STR(ag_http_client, CLIENT1(),
     "[192.168.0.1] host=host.com, agent=mozilla, referer=google.com");
 AG_METATEST_OBJECT_STR(ag_http_client, CLIENT2(),
