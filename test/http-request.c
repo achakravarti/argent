@@ -317,6 +317,9 @@ AG_METATEST_OBJECT_STR(ag_http_request, REQUEST_GET2(),
     "param=((key:val) (foo:bar) (foo:))");
 
 
+AG_METATEST_HTTP_REQUEST_MIME(REQUEST_GET0(), AG_HTTP_MIME_TEXT_HTML);
+
+
 /*
  * Define the test_suite_http_request() function. We generate the test cases
  * from the above metatest definitions through a call to
