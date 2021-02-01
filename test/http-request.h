@@ -104,7 +104,7 @@
         AG_TEST_CASE("ag_http_request_url(): " #sample " => " #expect)  \
         {                                                               \
                 AG_AUTO(ag_http_request) *r = sample;                   \
-                AG_AUTO(ag_http_url *u = expect;                        \
+                AG_AUTO(ag_http_url) *u = expect;                       \
                 AG_AUTO(ag_http_url) *u2 = ag_http_request_url(r);      \
                 AG_TEST (ag_http_url_eq(u, u2));                        \
         }
@@ -121,8 +121,8 @@
         AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
         {                                                                      \
                 AG_AUTO(ag_http_request) *r = sample;                          \
-                AG_AUTO(ag_alist *p = expect;                                  \
-                AG_AUTO(ag_alist *p2 = ag_http_request_param(r);               \
+                AG_AUTO(ag_alist) *p = expect;                                 \
+                AG_AUTO(ag_alist) *p2 = ag_http_request_param(r);              \
                 AG_TEST (ag_alist_eq(p, p2));                                  \
         }
 
