@@ -26,7 +26,7 @@
 
 
 /*
- * Define the AG_SAMPLE_HTTP_REQUESTT() macro. This macro is responsible for
+ * Define the AG_SAMPLE_HTTP_REQUEST() macro. This macro is responsible for
  * metaprogrammatically generating a static inline function that returns a
  * pointer to a sample HTTP request object with a given set of properties.
  *
@@ -62,7 +62,7 @@
 
 
 /*
- * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * Define the AG_METATEST_HTTP_REQUEST_METHOD() macro. This macro is used to
  * metaprogrammatically generate the test case for the ag_http_request_method()
  * interface function. The first parameter is a pointer to the sample HTTP
  * request object, and the second parameter is the expected return value of
@@ -77,7 +77,7 @@
 
 
 /*
- * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * Define the AG_METATEST_HTTP_REQUEST_CLIENT() macro. This macro is used to
  * metaprogrammatically generate the test case for the ag_http_request_client()
  * interface function. The first parameter is a pointer to the sample HTTP
  * request object, and the second parameter is the expected return value of
@@ -94,7 +94,7 @@
 
 
 /*
- * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * Define the AG_METATEST_HTTP_REQUEST_URL() macro. This macro is used to
  * metaprogrammatically generate the test case for the ag_http_request_url()
  * interface function. The first parameter is a pointer to the sample HTTP
  * request object, and the second parameter is the expected return value of
@@ -111,13 +111,13 @@
 
 
 /*
- * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
+ * Define the AG_METATEST_HTTP_REQUEST_PARAM() macro. This macro is used to
  * metaprogrammatically generate the test case for the ag_http_request_param()
  * interface function. The first parameter is a pointer to the sample HTTP
  * request object, and the second parameter is the expected return value of
  * ag_http_request_param().
  */
-#define AG_METATEST_HTTP_REQUEST_ALIST(sample, expect)                         \
+#define AG_METATEST_HTTP_REQUEST_PARAMT(sample, expect)                         \
         AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
         {                                                                      \
                 AG_AUTO(ag_http_request) *r = sample;                          \
