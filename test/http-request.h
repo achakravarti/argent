@@ -57,7 +57,7 @@
         AG_TEST_CASE("ag_http_request_mime(): " #sample " => " #expect) \
         {                                                               \
                 AG_AUTO(ag_http_request) *r = sample;                   \
-                AG_TEST (ag_http_request_mime(r) == expect;             \
+                AG_TEST (ag_http_request_mime(r) == expect);            \
         }
 
 
@@ -72,7 +72,7 @@
         AG_TEST_CASE("ag_http_request_method(): " #sample " => " #expect)      \
         {                                                                      \
                 AG_AUTO(ag_http_request) *r = sample;                          \
-                AG_TEST (ag_http_request_method(r) == expect;                  \
+                AG_TEST (ag_http_request_method(r) == expect);                 \
         }
 
 
@@ -89,7 +89,7 @@
                 AG_AUTO(ag_http_request) *r = sample;                          \
                 AG_AUTO(ag_http_client) *c = expect;                           \
                 AG_AUTO(ag_http_client) *c2 = ag_http_request_client(r);       \
-                AG_TEST (ag_http_client_eq(c, c2) == expect;                   \
+                AG_TEST (ag_http_client_eq(c, c2) == expect);                  \
         }
 
 
@@ -106,7 +106,7 @@
                 AG_AUTO(ag_http_request) *r = sample;                   \
                 AG_AUTO(ag_http_url *u = expect;                        \
                 AG_AUTO(ag_http_url) *u2 = ag_http_request_url(r);      \
-                AG_TEST (ag_http_url_eq(u, u2) == expect;               \
+                AG_TEST (ag_http_url_eq(u, u2) == expect);              \
         }
 
 
@@ -117,13 +117,13 @@
  * request object, and the second parameter is the expected return value of
  * ag_http_request_param().
  */
-#define AG_METATEST_HTTP_REQUEST_PARAMT(sample, expect)                         \
+#define AG_METATEST_HTTP_REQUEST_PARAMT(sample, expect)                        \
         AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
         {                                                                      \
                 AG_AUTO(ag_http_request) *r = sample;                          \
                 AG_AUTO(ag_alist *p = expect;                                  \
                 AG_AUTO(ag_alist *p2 = ag_http_request_param(r);               \
-                AG_TEST (ag_alist_eq(p, p2) == expect;                         \
+                AG_TEST (ag_alist_eq(p, p2) == expect);                        \
         }
 
 
