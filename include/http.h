@@ -210,6 +210,28 @@ extern ag_string        *ag_http_client_agent(const ag_http_client *);
 extern ag_string        *ag_http_client_referer(const ag_http_client *);
 
 
+/*
+ * Declare the HTTP request interface. An HTTP request is one half of HTTP,
+ * representing a message sent by the client to the server for some resource.
+ * The Argent Library reifies HTTP requests through the ag_http_request object
+ * with the type ID AG_TYPEID_HTTP_REQUEST. 
+ *
+ * The ag_http_request object does not implement the HTTP request strictly
+ * according to specification, and encapsulates only a subset of the properties
+ * which are considered most useful.
+ *
+ * There is only one manager function, ag_http_request_new(), and the remaining
+ * functions declared below are all accessors. Since the ag_http_request object
+ * has been declared through the AG_OBJECT_DECLARE() macro, its inherited object
+ * methods are metaprogrammatically declared.
+ *
+ * See the following files for more details:
+ *   - include/typeid.h
+ *   - include/object.h
+ *   - src/http-request.c
+ */
+
+
 AG_OBJECT_DECLARE(ag_http_request, AG_TYPEID_HTTP_REQUEST);
 
 extern ag_http_request  *ag_http_request_new(enum ag_http_method,
