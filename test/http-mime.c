@@ -36,10 +36,8 @@
 
 /*
  * Run the metatest for ag_http_mime_parse() for several possible string
- * representations, including uppercase, lowercase, proper case, and invalid
- * forms.
+ * representations, including uppercase, lowercase, and proper case forms.
  */
-AG_METATEST_HTTP_MIME_PARSE("foo", AG_HTTP_MIME_TEXT_PLAIN);
 AG_METATEST_HTTP_MIME_PARSE("application/x-www-form-urlencoded",
     AG_HTTP_MIME_APPLICATION_FORM);
 AG_METATEST_HTTP_MIME_PARSE("APPLICATION/X-WWW-FORM-URLENCODED",

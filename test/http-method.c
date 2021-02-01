@@ -36,10 +36,8 @@
 
 /*
  * Run the metatest for ag_http_method_parse() for possible string
- * representations, including uppercase, lowercase, proper case, and invalid
- * forms.
+ * representations, including uppercase, lowercase, and proper case forms.
  */
-AG_METATEST_HTTP_METHOD_PARSE("foo", AG_HTTP_METHOD_GET);
 AG_METATEST_HTTP_METHOD_PARSE("get", AG_HTTP_METHOD_GET);
 AG_METATEST_HTTP_METHOD_PARSE("GET", AG_HTTP_METHOD_GET);
 AG_METATEST_HTTP_METHOD_PARSE("Get", AG_HTTP_METHOD_GET);

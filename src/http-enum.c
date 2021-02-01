@@ -63,10 +63,11 @@ static AG_THREADLOCAL const char *g_mime[] = {
 /*
  * Define the ag_http_method_parse() interface function. This function is
  * responsible for parsing a given string and returning the HTTP method
- * enumerator represented by the string. In case the string contains something
- * not recognised as a valid enumerator, then AG_HTTP_METHOD_GET is returned.
+ * enumerator represented by the string. 
  *
- * TODO: explore the possiblity of raising a runtime exception.
+ * In case the string contains something not recognised as a valid enumerator,
+ * then the AG_ERNO_PARSE exception is raised. The final return statement is
+ * never reached, and is placed only for syntactic reasons.
  */
 extern enum ag_http_method
 ag_http_method_parse(const char *str)
@@ -80,6 +81,8 @@ ag_http_method_parse(const char *str)
                 if (ag_string_eq(u, g_method[i]))
                         return i;
 
+        struct ag_exception_parse x = {.str = str, .ctx = "ag_http_method"};
+        AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
         return AG_HTTP_METHOD_GET;
 }
 
@@ -100,9 +103,11 @@ ag_http_method_str(enum ag_http_method meth)
 /*
  * Define the ag_http_mime_parse() interface function. This function parses a
  * given string and returns the ag_http_mime enumerator corresponding to the
- * string. If no match is found, then AG_HTTP_MIME_TEXT_PLAIN is returned.
+ * string. 
  *
- * TODO: explore throwing a runtime exception for parse failure.
+ * If no match is found, then the AG_ERNO_PARSE exception is raised. The final
+ * return statement is never reached, and is placed only to prevent compiler
+ * warnings.
  */
 extern enum ag_http_mime
 ag_http_mime_parse(const char *str)
@@ -116,6 +121,8 @@ ag_http_mime_parse(const char *str)
                 if (ag_string_eq(l, g_mime[i]))
                         return i;
 
+        struct ag_exception_parse x = {.str = str, .ctx = "ag_http_mime"};
+        AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
         return AG_HTTP_MIME_TEXT_PLAIN;
 }
 
