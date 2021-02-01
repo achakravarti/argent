@@ -154,7 +154,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                             #p, __func__, __FILE__, __LINE__);               \
                         ag_log_debug("assertion failed: %s [%s(), %s:%d]\n", \
                             #p, __func__, __FILE__, __LINE__);               \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 
@@ -167,7 +167,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                         ag_log_debug("assertion failed: %s must not be null" \
                             " [%s(), %s:%d]\n", #p,                          \
                              __func__, __FILE__, __LINE__);                  \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 
@@ -180,7 +180,7 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                         ag_log_debug("assertion failed: string %s must not"  \
                             " be null or empty [%s(), %s:%d]\n",             \
                             #str, __func__, __FILE__, __LINE__);             \
-                        abort();                                             \
+                        exit(EXIT_FAILURE);                                  \
                 }                                                            \
         } while (0)
 #else
