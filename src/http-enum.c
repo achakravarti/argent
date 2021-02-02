@@ -21,15 +21,24 @@
  ******************************************************************************/
 
 
+
+
 #include "../include/argent.h"
 
 
-/*
- * Define the g_method string array. This array holds the string representations
- * of the enumerators of the ag_http_method enumeration. There is a one-to-one
- * correspondence between the enumerators and their string representations, with
- * the array member index being the same as the corresponding enumerator.
+
+
+/*******************************************************************************
+ * The following string arrays hold the string representations of the individual
+ * enumerators of the HTTP interface. g_method, g_mime and g_status hold the
+ * string representations of the ag_http_method, ag_http_mime and ag_http_status
+ * enumerations respectively.
+ *
+ * There is a one-to-one correspondence between the enumerators and their string
+ * representations, with the array member index being the same as the value of
+ * the corresponding enumerator.
  */
+
 static AG_THREADLOCAL const char *g_method[] = {
         "GET",
         "POST",
@@ -38,13 +47,6 @@ static AG_THREADLOCAL const char *g_method[] = {
         "DELETE",
 };
 
-
-/*
- * Define the g_mime string array. Similar to the g_method string array, this
- * array holds the string represetations of the individual enumerators of the
- * ag_http_mime enumeration, with the index of each array member being the same
- * as the corresponding enumerator that it represents.
- */
 static AG_THREADLOCAL const char *g_mime[] = {
         "application/x-www-form-urlencoded",
         "application/json",
@@ -58,7 +60,6 @@ static AG_THREADLOCAL const char *g_mime[] = {
         "text/plain",
         "text/xml",
 };
-
 
 static AG_THREADLOCAL const char *g_status[] = {
         "200 (OK)",
@@ -84,15 +85,23 @@ static AG_THREADLOCAL const char *g_status[] = {
 
 
 
-/*
- * Define the ag_http_method_parse() interface function. This function is
- * responsible for parsing a given string and returning the HTTP method
- * enumerator represented by the string. 
+
+/*******************************************************************************
+ * The ag_http_method_parse() interface function is responsible for parsing a
+ * given string and returning the HTTP method enumerator represented by that
+ * string. 
  *
- * In case the string contains something not recognised as a valid enumerator,
- * then the AG_ERNO_PARSE exception is raised. The final return statement is
- * never reached, and is placed only for syntactic reasons.
+ * The parsing is performed by looping through the g_method string array and
+ * returning the index of the matching string.  We need to enusre that the
+ * string argument is first transformed into uppercase so that a proper
+ * comparison is performed.
+ *
+ * In case the string contains
+ * something not recognised as a valid enumerator, then the AG_ERNO_PARSE
+ * exception is raised. The final return statement is never reached, and is
+ * placed only to prevent compiler warnings.
  */
+ 
 extern enum ag_http_method
 ag_http_method_parse(const char *str)
 {
@@ -111,10 +120,15 @@ ag_http_method_parse(const char *str)
 }
 
 
-/*
- * Define the ag_http_method_str() interface function. This function gets the
- * string representation of a contextual HTTP method enumerator.
+
+
+/*******************************************************************************
+ * The ag_http_method_str() interface function returns the string representation
+ * of a given ag_http_method enumerator. The implementation is straight-forward,
+ * simply requiring us to return the string contained in the g_method array at
+ * the index corresponding to the enumerator.
  */
+
 extern ag_string *
 ag_http_method_str(enum ag_http_method meth)
 {
@@ -124,15 +138,23 @@ ag_http_method_str(enum ag_http_method meth)
 }
 
 
-/*
- * Define the ag_http_mime_parse() interface function. This function parses a
- * given string and returns the ag_http_mime enumerator corresponding to the
- * string. 
+
+
+/*******************************************************************************
+ * The ag_http_mime_parse() interface function is responsible for parsing a
+ * given string and returning the HTTP MIME enumerator represented by that
+ * string.
  *
- * If no match is found, then the AG_ERNO_PARSE exception is raised. The final
- * return statement is never reached, and is placed only to prevent compiler
- * warnings.
+ * The parsing is performed by looping through the g_mime string array and
+ * returning the index of the matching string. We need to take care to first
+ * transform the string argument to lowercase to ensure that a proper comparison
+ * takes place.
+ *
+ * In case the string contains something not recognised as a valid enumerator,
+ * then the AG_ERNO_PARSE exception is raised. The final return statement is
+ * never reached, and placed only to preven compiler warnings.
  */
+
 extern enum ag_http_mime
 ag_http_mime_parse(const char *str)
 {
@@ -151,10 +173,14 @@ ag_http_mime_parse(const char *str)
 }
 
 
-/*
- * Define the ag_http_mime_str() interface function. This function returns the
- * string representation of a given ag_http_mime enumerator.
+
+
+/*******************************************************************************
+ * The ag_http_mime_str() interface function returns the string representation
+ * of a given ag_http_mime enumerator. We simply return the string contained in
+ * the g_mime array at the index corresponding to the enumerator.
  */
+
 extern ag_string *
 ag_http_mime_str(enum ag_http_mime mime)
 {
@@ -163,6 +189,24 @@ ag_http_mime_str(enum ag_http_mime mime)
 
         return ag_string_new(g_mime[mime]);
 }
+
+
+
+
+/*******************************************************************************
+ * The ag_http_status_parse() interface function is responsible for parsing a
+ * given string and returning the HTTP status enumerator represented by that
+ * string.
+ *
+ * The parsing is performed by looping through the g_status string array and
+ * returning the index of the matching string. We need to take care to first
+ * transform the string argument to proper case to ensure that a proper
+ * comparison takes place.
+ *
+ * In case the string contains something not recognised as a valid enumerator,
+ * then the AG_ERNO_PARSE exception is raised. The final return statement is
+ * never reached, and placed only to preven compiler warnings.
+ */
 
 
 extern enum ag_http_status
@@ -182,6 +226,14 @@ ag_http_status_parse(const char *str)
         return AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR;
 }
 
+
+
+
+/*******************************************************************************
+ * The ag_http_status_str() interface function returns the string representation
+ * of a given ag_http_status enumerator. We simply return the string contained
+ * in the g_status array at the index corresponding to the enumerator.
+ */
 
 extern ag_string *
 ag_http_status_str(enum ag_http_status status)
