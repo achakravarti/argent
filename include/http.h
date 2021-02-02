@@ -120,28 +120,28 @@ enum ag_http_status {
         AG_HTTP_STATUS_201_CREATED,                     /* 201 (Created)      */
         AG_HTTP_STATUS_202_ACCEPTED,                    /* 202 (Accepted)     */
         AG_HTTP_STATUS_204_NO_CONTENT,                  /* 204 (No Content)   */
-        AG_HTTP_STATUS_301_MOVED_PERMANENTLY,           /* 301 (Moved 
+        AG_HTTP_STATUS_301_MOVED_PERMANENTLY,           /* 301 (Moved
                                                            Permanently)       */
         AG_HTTP_STATUS_302_FOUND,                       /* 302 (Found)        */
         AG_HTTP_STATUS_303_SEE_OTHER,                   /* 303 (See Other)    */
         AG_HTTP_STATUS_304_NOT_MODIFIED,                /* 304 (Not Modified) */
-        AG_HTTP_STATUS_307_TEMPORARY_REDIRECT,          /* 307 (Temporary 
+        AG_HTTP_STATUS_307_TEMPORARY_REDIRECT,          /* 307 (Temporary
                                                            Redirect)          */
         AG_HTTP_STATUS_400_BAD_REQUEST,                 /* 400 (Bad Request)  */
         AG_HTTP_STATUS_401_UNAUTHORIZED,                /* 401 (Unauthorized) */
         AG_HTTP_STATUS_403_FORBIDDEN,                   /* 403 (Forbidden)    */
         AG_HTTP_STATUS_404_NOT_FOUND,                   /* 404 (Not Found)    */
-        AG_HTTP_STATUS_405_METHOD_NOT_ALLOWED,          /* 405 (Method Not 
+        AG_HTTP_STATUS_405_METHOD_NOT_ALLOWED,          /* 405 (Method Not
                                                            Allowed)           */
-        AG_HTTP_STATUS_406_NOT_ACCEPTABLE,              /* 406 (Not 
+        AG_HTTP_STATUS_406_NOT_ACCEPTABLE,              /* 406 (Not
                                                            Acceptable)        */
-        AG_HTTP_STATUS_412_PRECONDITION_FAILED,         /* 412 (Precondition 
+        AG_HTTP_STATUS_412_PRECONDITION_FAILED,         /* 412 (Precondition
                                                            Failed)            */
-        AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,      /* 415 (Unsupported 
+        AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,      /* 415 (Unsupported
                                                            Media Type)        */
-        AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR,       /* 500 (Internal Server 
+        AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR,       /* 500 (Internal Server
                                                            Error)             */
-        AG_HTTP_STATUS_501_NOT_IMPLEMENTED,             /* 501 (Not 
+        AG_HTTP_STATUS_501_NOT_IMPLEMENTED,             /* 501 (Not
                                                            Implemented)       */
 };
 
@@ -248,7 +248,7 @@ extern ag_string        *ag_http_client_referer(const ag_http_client *);
  * Declare the HTTP request interface. An HTTP request is one half of HTTP,
  * representing a message sent by the client to the server for some resource.
  * The Argent Library reifies HTTP requests through the ag_http_request object
- * with the type ID AG_TYPEID_HTTP_REQUEST. 
+ * with the type ID AG_TYPEID_HTTP_REQUEST.
  *
  * The ag_http_request object does not implement the HTTP request strictly
  * according to specification, and encapsulates only a subset of the properties
@@ -279,23 +279,32 @@ extern ag_http_request  *ag_http_request_new(enum ag_http_method,
 
 
 extern enum ag_http_mime         ag_http_request_mime(const ag_http_request *);
-extern enum ag_http_method       ag_http_request_method(const ag_http_request *);
-extern ag_http_client           *ag_http_request_client(const ag_http_request *);
+extern enum ag_http_method       ag_http_request_method(
+                                    const ag_http_request *);
+extern ag_http_client           *ag_http_request_client(
+                                    const ag_http_request *);
 extern ag_http_url              *ag_http_request_url(const ag_http_request *);
 extern ag_alist                 *ag_http_request_param(const ag_http_request *);
 
 
 
-/*_new(enum ag_http_mime, enum ag_http_status, const char *);
-_new_file(enum ag_http_mime, enum ag_http_status, const char *);
-_new_empty(enum ag_http_mime, enum ag_http_status);
 
-ag_string *_header(const ag_http_response *);
-ag_string *_body(const ag_http_response *);
+AG_OBJECT_DECLARE(ag_http_response, AG_TYPEID_HTTP_RESPONSE);
 
-_add(ag_http_response **, const char *);
-_add_file(ag_http_response **, const char *);
-_flush(ag_http_response **);Z*/
+extern ag_http_response *ag_http_response_new(enum ag_http_mime,
+                            enum ag_http_status, const char *);
+extern ag_http_response *ag_http_response_new_file(enum ag_http_mime,
+                            enum ag_http_status, const char *);
+extern ag_http_response *ag_http_response_new_empty(enum ag_http_mime,
+                            enum ag_http_status);
+
+extern ag_string        *ag_http_response_header(const ag_http_response *);
+extern ag_string        *ag_http_response_body(const ag_http_response *);
+
+extern void             ag_http_response_add(ag_http_response **, const char *);
+extern void             ag_http_response__add_file(ag_http_response **,
+                            const char *);
+extern void             ag_http_response_flush(ag_http_response **);
 
 
 
