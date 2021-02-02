@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "../include/argent.h"
@@ -344,7 +344,8 @@ ag_string_proper(const ag_string *ctx)
         register size_t sz = ag_memblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {
-                s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.')
+                s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.' || 
+                    s[i - 1] == '(')
                         ? toupper(s[i]) : tolower(s[i]);
         }
 

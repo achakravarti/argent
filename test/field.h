@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,19 +18,19 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #ifndef __ARGENT_TEST_FIELD_H__
 #define __ARGENT_TEST_FIELD_H__
 
 
-#define AG_SAMPLE_FIELD(tag, key, val)                          \
-        static inline ag_field *SAMPLE_FIELD_ ## tag(void)      \
-        {                                                       \
-                AG_AUTO(ag_value) *k = key;                     \
-                AG_AUTO(ag_value) *v = val;                     \
-                return ag_field_new(k, v);                      \
+#define AG_SAMPLE_FIELD(tag, key, val)          \
+        static inline ag_field *tag(void)       \
+        {                                       \
+                AG_AUTO(ag_value) *k = key;     \
+                AG_AUTO(ag_value) *v = val;     \
+                return ag_field_new(k, v);      \
         }
 
 

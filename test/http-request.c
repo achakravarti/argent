@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,13 +18,11 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "./field.h"
-#include "./http-client.h"
-#include "./http-request.h"
-#include "./http-url.h"
+#include "./http.h"
 #include "./object.h"
 #include "./test.h"
 #include "./value.h"
@@ -36,7 +34,7 @@
  * the testing interface to metaprogrammatically generate the relevant testing
  * functions.
  */
-#define __AG_TEST_SUITE_ID__ 12
+#define __AG_TEST_SUITE_ID__ 11
 
 
 /*
@@ -96,9 +94,9 @@ AG_SAMPLE_VALUE_STRING(VALUE_EMPTY, "");
  *   - SAMPLE_FIELD_FOOBAR(): (foo:bar)
  *   - SAMPLE_FIELD_FOO()   : (foo:)
  */
-AG_SAMPLE_FIELD(KEYVAL, VALUE_KEY(), VALUE_VAL());
-AG_SAMPLE_FIELD(FOOBAR, VALUE_FOO(), VALUE_BAR());
-AG_SAMPLE_FIELD(FOO, VALUE_FOO(), VALUE_EMPTY());
+AG_SAMPLE_FIELD(FIELD_KEYVAL, VALUE_KEY(), VALUE_VAL());
+AG_SAMPLE_FIELD(FIELD_FOOBAR, VALUE_FOO(), VALUE_BAR());
+AG_SAMPLE_FIELD(FIELD_FOO, VALUE_FOO(), VALUE_EMPTY());
 
 
 
@@ -126,98 +124,42 @@ AG_SAMPLE_HTTP_REQUEST(REQUEST_GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
     HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_request_copy() with the sample
- * HTTP request objects defined above.
- */
 AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET2());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_http_request_clone() with the
- * sample HTTP request objects defined above.
- */
 AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET2());
-
-
-/*
- * Run the ag_object_release() metatest for ag_http_request_release() with the
- * sample HTTP request objects defined above.
- */
 AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET2());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET0());
+AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET0());
 
+AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
+
+AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
 
 /*
- * Run the ag_object_cmp() metatest for ag_http_request_cmp() with the sample
- * HTTP request objects defined above.
- *
  * TODO: Rethink implementation ag_http_request_cmp().
  */
+
 AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_request_lt() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_lt().
- */
 AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_http_request_gt() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_gt().
- */
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_request_eq() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_eq().
- */
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+
+AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+
+AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_empty() metatest for ag_http_request_empty() with the
- * sample HTTP request objects defined above. Since HTTP request objects can
- * never be empty, we run only AG_METATEST_OBJECT_EMPTY_NOT() and skip out on
- * AG_METATEST_OBJECT_EMPTY().
- */
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET2());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_request_valid() with the
- * sample HTTP request objects defined above. Since HTTP request objects are
- * guaranteed to be in a valid state when constructed through their interface,
- * we run only AG_METATEST_OBJECT_VALID() and skip out on
- * AG_METATEST_OBJECT_VALID_NOT().
- */
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET2());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
 /* * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the
@@ -385,7 +327,7 @@ param_empty(void)
 static inline ag_list *
 param_single(void)
 {
-        AG_AUTO(ag_field) *f = SAMPLE_FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f = FIELD_KEYVAL();
         return ag_alist_new(f);
 }
 
@@ -393,9 +335,9 @@ param_single(void)
 static inline ag_list *
 param_array(void)
 {
-        AG_AUTO(ag_field) *f1 = SAMPLE_FIELD_KEYVAL();
-        AG_AUTO(ag_field) *f2 = SAMPLE_FIELD_FOOBAR();
-        AG_AUTO(ag_field) *f3 = SAMPLE_FIELD_FOO();
+        AG_AUTO(ag_field) *f1 = FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f2 = FIELD_FOOBAR();
+        AG_AUTO(ag_field) *f3 = FIELD_FOO();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);

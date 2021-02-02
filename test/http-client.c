@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,10 +18,10 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
-#include "./http-client.h"
+#include "./http.h"
 #include "./object.h"
 #include "./test.h"
 
@@ -32,7 +32,7 @@
  * testing interface to metaprogrammatically generate the relevant testing
  * functions.
  */
-#define __AG_TEST_SUITE_ID__ 9
+#define __AG_TEST_SUITE_ID__ 10
 
 
 /*
@@ -63,91 +63,38 @@ AG_SAMPLE_HTTP_CLIENT(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla",
 AG_SAMPLE_HTTP_CLIENT(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_client_copy() with the above
- * sample HTTP client objects.
- */
 AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_http_client_clone() with the above
- * sample HTTP client objects.
- */
 AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_release() metatest for ag_http_client_release() with the
- * above sample HTTP client objects.
- */
 AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_cmp() metatest for ag_http_client_cmp() with the above
- * sample HTTP client objects. The client object passed through the first
- * parameter is lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_client_lt() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_client_eq() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_http_client_gt() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_empty() metatest for ag_http_client_empty() with the sample
- * client objects. Since client objects can never be empty, we only run the
- * AG_METATEST_OBJECT_EMPTY_NOT() metatest.
- */
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_client_valid() with the above
- * sample client objects. Since client objects are always valid, we only run the
- * AG_METATEST_OBJECT_VALID() metatest.
- */
 AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT0());
+
+AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT1());
 AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT2());
+
+AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT2());
+AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT2());
+AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT2());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT1());
+
+AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT0());
+AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT0());
+AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT0());
+AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT0());
+
+AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT2(), CLIENT0());
+AG_METATEST_OBJECT_LT(ag_http_client, CLIENT2(), CLIENT0());
+AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT2(), CLIENT0());
+AG_METATEST_OBJECT_GT(ag_http_client, CLIENT2(), CLIENT0());
+
+AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT2());
+AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT2());
+AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT2());
+AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT2());
 
 
 /*

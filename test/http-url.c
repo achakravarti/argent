@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,11 +18,11 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "./object.h"
-#include "./http-url.h"
+#include "./http.h"
 #include "./test.h"
 
 
@@ -31,7 +31,7 @@
  * unique ID for the HTTP URL interface test suite, and is used by the testing
  * macros to metaprogrammatically generate the relevant testing functions.
  */
-#define __AG_TEST_SUITE_ID__ 8
+#define __AG_TEST_SUITE_ID__ 9
 
 
 /*
@@ -69,227 +69,137 @@ AG_SAMPLE_HTTP_URL(HTTPS_DOMAIN_FOO, true, "www.domain.com", 0, "/foo");
 AG_SAMPLE_HTTP_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_http_url_clone() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_cmp() metatest for ag_http_url_cmp() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_url_lt() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_LT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_url_eq() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_http_url_gt() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_GT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_empty() metatest for ag_http_url_empty() with the above
- * sample HTTP URL objects. Since URL objects can never be empty, we only
- * perform the AG_METATEST_OBJECT_EMPTY_NOT() metatest.
- */
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_url_valid() with the above
- * sample HTTP URL objects. Since URL objects can never be invalid if created
- * successfully, we're skipping the AG_METATEST_OBJECT_VALID_NOT() metatest.
- */
 AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_typeid() metatest for ag_http_url_typeid() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTP_LOCALHOST_8080(),
     AG_TYPEID_HTTP_URL);
-AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_LOCALHOST_8080(),
-    AG_TYPEID_HTTP_URL);
-AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    AG_TYPEID_HTTP_URL);
-AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
-    AG_TYPEID_HTTP_URL);
-AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_DOMAIN_FOO(), AG_TYPEID_HTTP_URL);
-AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
-    AG_TYPEID_HTTP_URL);
-
-
-/*
- * Run the ag_object_uuid() metatest for ag_http_url_uuid() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_UUID(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_UUID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_refc() metatest for ag_http_url_refc() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_REFC(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_REFC(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_len() metatest for ag_http_url_len() with the above sample
- * HTTP URL objects.
- */
 AG_METATEST_OBJECT_LEN(ag_http_url, HTTP_LOCALHOST_8080(),
     sample_len(HTTP_LOCALHOST_8080()));
-AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_LOCALHOST_8080(),
-    sample_len(HTTPS_LOCALHOST_8080()));
-AG_METATEST_OBJECT_LEN(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    sample_len(HTTP_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
-    sample_len(HTTPS_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_DOMAIN_FOO(),
-    sample_len(HTTPS_DOMAIN_FOO()));
-AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
-    sample_len(HTTPS_DOMAIN_FOO_BAR()));
-
-
-/*
- * Run the ag_object_url() metatest for ag_http_url_url() with the above sample
- * HTTP URL objects.
- */
 AG_METATEST_OBJECT_SZ(ag_http_url, HTTP_LOCALHOST_8080(),
     sample_sz(HTTP_LOCALHOST_8080()));
-AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080(),
-    sample_sz(HTTPS_LOCALHOST_8080()));
-AG_METATEST_OBJECT_SZ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    sample_sz(HTTP_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
-    sample_sz(HTTPS_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO(),
-    sample_sz(HTTPS_DOMAIN_FOO()));
-AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
-    sample_sz(HTTPS_DOMAIN_FOO_BAR()));
-
-
-/*
- * Run the ag_object_hash() metatest for ag_http_url_hash() with the above
- * sample HTTP URL objects.
- */
 AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080(),
     sample_hash(HTTP_LOCALHOST_8080()));
-AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080(),
-    sample_hash(HTTPS_LOCALHOST_8080()));
-AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    sample_hash(HTTP_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
-    sample_hash(HTTPS_LOCALHOST_8080_FOO()));
-AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO(),
-    sample_hash(HTTPS_DOMAIN_FOO()));
-AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
-    sample_hash(HTTPS_DOMAIN_FOO_BAR()));
-
-
-/*
- * Run the ag_object_str() metatest for ag_http_url_str() with the above sample
- * HTTP URL objects.
- */
 AG_METATEST_OBJECT_STR(ag_http_url, HTTP_LOCALHOST_8080(),
     "http://127.0.0.1:8080/");
+
+AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_LOCALHOST_8080(),
+    AG_TYPEID_HTTP_URL);
+AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_LOCALHOST_8080(),
+    sample_len(HTTPS_LOCALHOST_8080()));
+AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080(),
+    sample_sz(HTTPS_LOCALHOST_8080()));
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080(),
+    sample_hash(HTTPS_LOCALHOST_8080()));
 AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_LOCALHOST_8080(),
     "https://127.0.0.1:8080/");
+
+AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    AG_TYPEID_HTTP_URL);
+AG_METATEST_OBJECT_UUID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_REFC(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_LEN(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    sample_len(HTTP_LOCALHOST_8080_FOO()));
+AG_METATEST_OBJECT_SZ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    sample_sz(HTTP_LOCALHOST_8080_FOO()));
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    sample_hash(HTTP_LOCALHOST_8080_FOO()));
 AG_METATEST_OBJECT_STR(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
     "http://localhost:8080/foo");
+
+AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    AG_TYPEID_HTTP_URL);
+AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    sample_len(HTTPS_LOCALHOST_8080_FOO()));
+AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    sample_sz(HTTPS_LOCALHOST_8080_FOO()));
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
+    sample_hash(HTTPS_LOCALHOST_8080_FOO()));
 AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_LOCALHOST_8080_FOO(),
     "https://localhost:8080/foo");
+
+AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_DOMAIN_FOO(), AG_TYPEID_HTTP_URL);
+AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_DOMAIN_FOO(),
+    sample_len(HTTPS_DOMAIN_FOO()));
+AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO(),
+    sample_sz(HTTPS_DOMAIN_FOO()));
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO(),
+    sample_hash(HTTPS_DOMAIN_FOO()));
 AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO(),
     "https://www.domain.com/foo");
+
+AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_TYPEID(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    AG_TYPEID_HTTP_URL);
+AG_METATEST_OBJECT_UUID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_REFC(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_LEN(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    sample_len(HTTPS_DOMAIN_FOO_BAR()));
+AG_METATEST_OBJECT_SZ(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    sample_sz(HTTPS_DOMAIN_FOO_BAR()));
+AG_METATEST_OBJECT_HASH(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
+    sample_hash(HTTPS_DOMAIN_FOO_BAR()));
 AG_METATEST_OBJECT_STR(ag_http_url, HTTPS_DOMAIN_FOO_BAR(),
     "https://www.domain.com/foo/bar");
+
+
+AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080(),
+    HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080(),
+    HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080(),
+    HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080(),
+    HTTPS_LOCALHOST_8080());
+
+AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+    HTTPS_LOCALHOST_8080_FOO());
+
+AG_METATEST_OBJECT_CMP(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_LT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_EQ(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_GT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
+
 
 
 /*

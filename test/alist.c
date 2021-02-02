@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "./alist.h"
@@ -68,13 +68,13 @@ AG_SAMPLE_VALUE_STRING(VALUE_KEY, "key");
 AG_SAMPLE_VALUE_STRING(VALUE_VAL, "val");
 
 
-AG_SAMPLE_FIELD(KEY_VAL, VALUE_KEY(), VALUE_VAL());
-AG_SAMPLE_FIELD(1_FOO, VALUE_1(), VALUE_FOO());
-AG_SAMPLE_FIELD(2_BAR, VALUE_2(), VALUE_BAR());
-AG_SAMPLE_FIELD(2_FOO, VALUE_2(), VALUE_FOO());
-AG_SAMPLE_FIELD(3_FOOBAR, VALUE_3(), VALUE_FOOBAR());
-AG_SAMPLE_FIELD(3_BAR, VALUE_3(), VALUE_BAR());
-AG_SAMPLE_FIELD(4_FOOBAR, VALUE_4(), VALUE_FOOBAR());
+AG_SAMPLE_FIELD(FIELD_KEY_VAL, VALUE_KEY(), VALUE_VAL());
+AG_SAMPLE_FIELD(FIELD_1_FOO, VALUE_1(), VALUE_FOO());
+AG_SAMPLE_FIELD(FIELD_2_BAR, VALUE_2(), VALUE_BAR());
+AG_SAMPLE_FIELD(FIELD_2_FOO, VALUE_2(), VALUE_FOO());
+AG_SAMPLE_FIELD(FIELD_3_FOOBAR, VALUE_3(), VALUE_FOOBAR());
+AG_SAMPLE_FIELD(FIELD_3_BAR, VALUE_3(), VALUE_BAR());
+AG_SAMPLE_FIELD(FIELD_4_FOOBAR, VALUE_4(), VALUE_FOOBAR());
 
 
 
@@ -89,147 +89,76 @@ static bool     iterator(const ag_field *, void *, void *);
 static bool     iterator_mutable(ag_field **, void *, void *);
 
 
-/*
- * Run the ag_object_copy() metatest for ag_alist_copy() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
-AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
-AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_alist_clone() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
-AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
-AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_release() metatest for ag_alist_release() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
-AG_METATEST_OBJECT_RELEASE(ag_alist, sample_single());
-AG_METATEST_OBJECT_RELEASE(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_cmp() metatest for ag_alist_cmp() with the sample
- * association list objects declared above. The smaller of the two compared
- * objects is passed through the second parameter.
- */
-AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_alist_lt() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_alist_eq() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_alist_gt() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_empty() metatests for ag_alist_empty() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_typeid() metatest for ag_alist_typeid() with the sample
- * association list objects declared above.
- */
+AG_METATEST_OBJECT_VALID_NOT(ag_alist, sample_empty());
 AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
-AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
-AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
-
-
-/*
- * Run the ag_object_uuid() metatest for ag_alist_uuid() with the sample
- * assocation list objects declared above.
- */
 AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
-AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
-AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_refc() metatest for ag_alist_refc() with the sample
- * association list objects decalred above.
- */
 AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
-AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
-AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_len() metatest for ag_alist_len() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
-AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
-AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
-
-
-/*
- * Run the ag_object_str() metatest for ag_alist_str() with the sample
- * association list objects declared above.
- */
 AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
+
+AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
+AG_METATEST_OBJECT_VALID(ag_alist, sample_single());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
+AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
 AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
+
+AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
+AG_METATEST_OBJECT_VALID(ag_alist, sample_list());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
+AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
 
 
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_2_BAR());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_3_FOOBAR());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_HAS_NOT(sample_empty(), SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_HAS(sample_single(), SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_HAS(sample_list(), SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_HAS(sample_list(), SAMPLE_FIELD_2_BAR());
-AG_METATEST_ALIST_HAS(sample_list(), SAMPLE_FIELD_3_FOOBAR());
-AG_METATEST_ALIST_HAS_NOT(sample_list(), SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_HAS_NOT(sample_list(), SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_HAS_NOT(sample_list(), SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_HAS(sample_list_2(), SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_HAS(sample_list_2(), SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_HAS(sample_list_2(), SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_HAS_NOT(sample_list_2(), SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_HAS_NOT(sample_list_2(), SAMPLE_FIELD_2_BAR());
-AG_METATEST_ALIST_HAS_NOT(sample_list_2(), SAMPLE_FIELD_3_FOOBAR());
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
+
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
+
+AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
+
+
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_1_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_2_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_2_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_FOOBAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_3_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_4_FOOBAR());
+AG_METATEST_ALIST_HAS(sample_single(), FIELD_KEY_VAL());
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_1_FOO());
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_2_BAR());
+AG_METATEST_ALIST_HAS(sample_list(), FIELD_3_FOOBAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_2_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_3_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list(), FIELD_4_FOOBAR());
+AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_2_FOO());
+AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_3_BAR());
+AG_METATEST_ALIST_HAS(sample_list_2(), FIELD_4_FOOBAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list_2(), FIELD_1_FOO());
+AG_METATEST_ALIST_HAS_NOT(sample_list_2(), FIELD_2_BAR());
+AG_METATEST_ALIST_HAS_NOT(sample_list_2(), FIELD_3_FOOBAR());
 
 
 AG_METATEST_ALIST_HAS_KEY_NOT(sample_empty(), VALUE_FOOBAR());
@@ -294,115 +223,115 @@ AG_METATEST_ALIST_HAS_VAL_NOT(sample_list_2(), VALUE_KEY());
 AG_METATEST_ALIST_HAS_VAL_NOT(sample_list_2(), VALUE_VAL());
 
 
-AG_METATEST_ALIST_GET(sample_single(), 0, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_GET(sample_single(), 0, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_GET(sample_list(), 0, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_GET(sample_list(), 1, SAMPLE_FIELD_2_BAR());
-AG_METATEST_ALIST_GET(sample_list(), 2, SAMPLE_FIELD_3_FOOBAR());
+AG_METATEST_ALIST_GET(sample_list(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_GET(sample_list(), 1, FIELD_2_BAR());
+AG_METATEST_ALIST_GET(sample_list(), 2, FIELD_3_FOOBAR());
 
 
-AG_METATEST_ALIST_GET(sample_list_2(), 0, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_GET(sample_list_2(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_GET(sample_list_2(), 2, SAMPLE_FIELD_4_FOOBAR());
+AG_METATEST_ALIST_GET(sample_list_2(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_GET(sample_list_2(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_GET(sample_list_2(), 2, FIELD_4_FOOBAR());
 
 
-AG_METATEST_ALIST_GET_AT(sample_single(), 1, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_GET_AT(sample_single(), 1, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_GET_AT(sample_list(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_GET_AT(sample_list(), 2, SAMPLE_FIELD_2_BAR());
-AG_METATEST_ALIST_GET_AT(sample_list(), 3, SAMPLE_FIELD_3_FOOBAR());
+AG_METATEST_ALIST_GET_AT(sample_list(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_GET_AT(sample_list(), 2, FIELD_2_BAR());
+AG_METATEST_ALIST_GET_AT(sample_list(), 3, FIELD_3_FOOBAR());
 
 
-AG_METATEST_ALIST_GET_AT(sample_list_2(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_GET_AT(sample_list_2(), 2, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_GET_AT(sample_list_2(), 3, SAMPLE_FIELD_4_FOOBAR());
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_GET_AT(sample_list_2(), 3, FIELD_4_FOOBAR());
 
 
 AG_METATEST_ALIST_VAL(sample_single(), VALUE_KEY(), VALUE_VAL());
 
 
-AG_METATEST_ALIST_SET(sample_single(), 0, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_single(), 0, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_single(), 0, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_single(), 0, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_single(), 0, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_single(), 0, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_SET(sample_list(), 0, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 0, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 0, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list(), 0, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list(), 0, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET(sample_list(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list(), 1, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list(), 1, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET(sample_list(), 2, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 2, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list(), 2, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list(), 2, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list(), 2, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 0, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list(), 2, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_SET(sample_list_2(), 0, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 0, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 0, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 0, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 0, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET(sample_list_2(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 1, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 1, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET(sample_list_2(), 2, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 2, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET(sample_list_2(), 2, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 2, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET(sample_list_2(), 2, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 0, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET(sample_list_2(), 2, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_SET_AT(sample_single(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_single(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_single(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_single(), 1, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_single(), 1, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_single(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_single(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_single(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_single(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_single(), 1, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_SET_AT(sample_list(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 1, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 1, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET_AT(sample_list(), 2, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 2, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 2, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 2, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 2, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET_AT(sample_list(), 3, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 3, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list(), 3, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 3, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list(), 3, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 2, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list(), 3, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 3, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list(), 3, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 3, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list(), 3, FIELD_KEY_VAL());
 
 
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, SAMPLE_FIELD_KEY_VAL());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, SAMPLE_FIELD_1_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, SAMPLE_FIELD_2_FOO());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, SAMPLE_FIELD_3_BAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, SAMPLE_FIELD_4_FOOBAR());
-AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, SAMPLE_FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 1, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 2, FIELD_KEY_VAL());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, FIELD_1_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, FIELD_2_FOO());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, FIELD_3_BAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, FIELD_4_FOOBAR());
+AG_METATEST_ALIST_SET_AT(sample_list_2(), 3, FIELD_KEY_VAL());
 
 
 AG_METATEST_ALIST_VAL(sample_list(), VALUE_1(), VALUE_FOO());
@@ -552,7 +481,7 @@ sample_empty(void)
 static ag_alist *
 sample_single(void)
 {
-        AG_AUTO(ag_field) *f = SAMPLE_FIELD_KEY_VAL();
+        AG_AUTO(ag_field) *f = FIELD_KEY_VAL();
         return ag_alist_new(f);
 }
 
@@ -560,9 +489,9 @@ sample_single(void)
 static ag_alist *
 sample_list(void)
 {
-        AG_AUTO(ag_field) *f1 = SAMPLE_FIELD_1_FOO();
-        AG_AUTO(ag_field) *f2 = SAMPLE_FIELD_2_BAR();
-        AG_AUTO(ag_field) *f3 = SAMPLE_FIELD_3_FOOBAR();
+        AG_AUTO(ag_field) *f1 = FIELD_1_FOO();
+        AG_AUTO(ag_field) *f2 = FIELD_2_BAR();
+        AG_AUTO(ag_field) *f3 = FIELD_3_FOOBAR();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);
@@ -572,9 +501,9 @@ sample_list(void)
 static ag_alist *
 sample_list_2(void)
 {
-        AG_AUTO(ag_field) *f1 = SAMPLE_FIELD_2_FOO();
-        AG_AUTO(ag_field) *f2 = SAMPLE_FIELD_3_BAR();
-        AG_AUTO(ag_field) *f3 = SAMPLE_FIELD_4_FOOBAR();
+        AG_AUTO(ag_field) *f1 = FIELD_2_FOO();
+        AG_AUTO(ag_field) *f2 = FIELD_3_BAR();
+        AG_AUTO(ag_field) *f3 = FIELD_4_FOOBAR();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);

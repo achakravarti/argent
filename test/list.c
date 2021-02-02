@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "./test.h"
@@ -75,33 +75,47 @@ AG_TEST_CASE("ag_list_new() can create a new empty list")
 }
 
 
-/*
- * Define the test cases for ag_list_copy().
- */
-
+AG_METATEST_OBJECT_COPY(ag_list, ag_list_new());
+AG_METATEST_OBJECT_CLONE(ag_list, ag_list_new());
+AG_METATEST_OBJECT_RELEASE(ag_list, ag_list_new());
+AG_METATEST_OBJECT_EMPTY(ag_list, ag_list_new());
+AG_METATEST_OBJECT_VALID_NOT(ag_list, ag_list_new());
+AG_METATEST_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
+AG_METATEST_OBJECT_UUID(ag_list, ag_list_new());
+AG_METATEST_OBJECT_REFC(ag_list, ag_list_new());
+AG_METATEST_OBJECT_LEN(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_SZ(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_HASH(ag_list, ag_list_new(), 0);
+AG_METATEST_OBJECT_STR_HAS(ag_list, ag_list_new(), "list");
 
 AG_METATEST_OBJECT_COPY(ag_list, sample_int());
-AG_METATEST_OBJECT_COPY(ag_list, sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_clone().
- */
-
-
-AG_METATEST_OBJECT_CLONE(ag_list, ag_list_new());
 AG_METATEST_OBJECT_CLONE(ag_list, sample_int());
-AG_METATEST_OBJECT_CLONE(ag_list, sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_release().
- */
-
-
-AG_METATEST_OBJECT_RELEASE(ag_list, ag_list_new());
 AG_METATEST_OBJECT_RELEASE(ag_list, sample_int());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int())
+AG_METATEST_OBJECT_VALID(ag_list, sample_int())
+AG_METATEST_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
+AG_METATEST_OBJECT_UUID(ag_list, sample_int());
+AG_METATEST_OBJECT_REFC(ag_list, sample_int());
+AG_METATEST_OBJECT_LEN(ag_list, sample_int(), 3);
+AG_METATEST_OBJECT_SZ(ag_list, sample_int(), 3 * sizeof(ag_int));
+AG_METATEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) +
+    ag_hash_new(0) + ag_hash_new(456));
+AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int(), "list");
+
+AG_METATEST_OBJECT_COPY(ag_list, sample_int_2());
+AG_METATEST_OBJECT_CLONE(ag_list, sample_int_2());
 AG_METATEST_OBJECT_RELEASE(ag_list, sample_int_2());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
+AG_METATEST_OBJECT_VALID(ag_list, sample_int_2())
+AG_METATEST_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
+AG_METATEST_OBJECT_UUID(ag_list, sample_int_2());
+AG_METATEST_OBJECT_REFC(ag_list, sample_int_2());
+AG_METATEST_OBJECT_LEN(ag_list, sample_int_2(), 7);
+AG_METATEST_OBJECT_SZ(ag_list, sample_int_2(), 7 * sizeof(ag_int));
+AG_METATEST_OBJECT_HASH(ag_list, sample_int_2(), ag_hash_new(-123) + 
+    ag_hash_new(0) + ag_hash_new(456) + ag_hash_new(-666) + ag_hash_new(0) +
+    ag_hash_new(555) + ag_hash_new(734));
+AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int_2(), "list");
 
 
 /*
@@ -114,98 +128,6 @@ AG_METATEST_OBJECT_CMP(ag_list, sample_int(), sample_int_2());
 AG_METATEST_OBJECT_LT(ag_list, sample_int(), sample_int_2());
 AG_METATEST_OBJECT_EQ(ag_list, sample_int(), sample_int_2());
 AG_METATEST_OBJECT_GT(ag_list, sample_int(), sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_empty().
- */
-
-
-AG_METATEST_OBJECT_EMPTY(ag_list, ag_list_new());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int())
-AG_METATEST_OBJECT_EMPTY_NOT(ag_list, sample_int_2())
-
-/*
- * Define the test case for ag_list_typeid().
- */
-
-
-AG_METATEST_OBJECT_TYPEID(ag_list, ag_list_new(), AG_TYPEID_LIST);
-AG_METATEST_OBJECT_TYPEID(ag_list, sample_int(), AG_TYPEID_LIST);
-AG_METATEST_OBJECT_TYPEID(ag_list, sample_int_2(), AG_TYPEID_LIST);
-
-
-/*
- * Define the test case for ag_list_uuid().
- */
-
-
-AG_METATEST_OBJECT_UUID(ag_list, ag_list_new());
-AG_METATEST_OBJECT_UUID(ag_list, sample_int());
-AG_METATEST_OBJECT_UUID(ag_list, sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_valid().
- */
-
-
-AG_METATEST_OBJECT_VALID(ag_list, sample_int());
-AG_METATEST_OBJECT_VALID(ag_list, sample_int_2());
-AG_METATEST_OBJECT_VALID_NOT(ag_list, ag_list_new());
-
-
-/*
- * Define the test cases for ag_list_sz().
- */
-
-
-AG_METATEST_OBJECT_SZ(ag_list, ag_list_new(), 0);
-AG_METATEST_OBJECT_SZ(ag_list, sample_int(), 3 * sizeof(ag_int));
-AG_METATEST_OBJECT_SZ(ag_list, sample_int_2(), 7 * sizeof(ag_int));
-
-
-/*
- * Define the test cases for ag_list_refc().
- */
-
-
-AG_METATEST_OBJECT_REFC(ag_list, ag_list_new());
-AG_METATEST_OBJECT_REFC(ag_list, sample_int());
-AG_METATEST_OBJECT_REFC(ag_list, sample_int_2());
-
-
-/*
- * Define the test cases for ag_list_len().
- */
-
-
-AG_METATEST_OBJECT_LEN(ag_list, ag_list_new(), 0);
-AG_METATEST_OBJECT_LEN(ag_list, sample_int(), 3);
-AG_METATEST_OBJECT_LEN(ag_list, sample_int_2(), 7);
-
-
-/*
- * Define the test cases for ag_list_hash().
- */
-
-
-AG_METATEST_OBJECT_HASH(ag_list, ag_list_new(), 0);
-AG_METATEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) + ag_hash_new(0) +
-    ag_hash_new(456));
-AG_METATEST_OBJECT_HASH(ag_list, sample_int_2(), ag_hash_new(-123) + 
-    ag_hash_new(0) + ag_hash_new(456) + ag_hash_new(-666) + ag_hash_new(0) +
-    ag_hash_new(555) + ag_hash_new(734));
-
-
-/*
- * Define the test cases for ag_list_str().
- */
-
-
-AG_METATEST_OBJECT_STR_HAS(ag_list, ag_list_new(), "list");
-AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int(), "list");
-AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int_2(), "list");
 
 
 /*

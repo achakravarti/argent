@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "./test.h"
@@ -33,6 +33,7 @@ int main(int argc, char **argv)
         (void) argv;
 
         ag_init();
+        (void)system("mkdir -p bld/test");
 
         ag_test_harness *th = ag_test_harness_new();
 
@@ -44,11 +45,11 @@ int main(int argc, char **argv)
         ag_test_suite *fld = test_suite_field();
         ag_test_suite *lst = test_suite_list();
         ag_test_suite *alst = test_suite_alist();
+        ag_test_suite *http_enum = test_suite_http_enum();
         ag_test_suite *url = test_suite_http_url();
         ag_test_suite *client = test_suite_http_client();
-        ag_test_suite *method = test_suite_http_method();
-        ag_test_suite *mime = test_suite_http_mime();
         ag_test_suite *req = test_suite_http_request();
+        ag_test_suite *resp = test_suite_http_response();
 
         ag_test_harness_push(th, log);
         ag_test_harness_push(th, mblock);
@@ -58,11 +59,11 @@ int main(int argc, char **argv)
         ag_test_harness_push(th, fld);
         ag_test_harness_push(th, lst);
         ag_test_harness_push(th, alst);
+        ag_test_harness_push(th, http_enum);
         ag_test_harness_push(th, url);
         ag_test_harness_push(th, client);
-        ag_test_harness_push(th, method);
-        ag_test_harness_push(th, mime);
         ag_test_harness_push(th, req);
+        ag_test_harness_push(th, resp);
 
         ag_test_suite_release(&log);
         ag_test_suite_release(&mblock);
@@ -72,17 +73,18 @@ int main(int argc, char **argv)
         ag_test_suite_release(&fld);
         ag_test_suite_release(&lst);
         ag_test_suite_release(&alst);
+        ag_test_suite_release(&http_enum);
         ag_test_suite_release(&url);
         ag_test_suite_release(&client);
-        ag_test_suite_release(&method);
-        ag_test_suite_release(&mime);
         ag_test_suite_release(&req);
+        ag_test_suite_release(&resp);
 
         ag_test_harness_exec(th);
         ag_test_harness_log(th, stdout);
 
         ag_test_harness_release(&th);
 
+        (void)system("rm -rf bld/test");
         ag_exit(EXIT_SUCCESS);
 
         return 0;

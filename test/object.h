@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #ifndef __ARGENT_TEST_OBJECT_H__
@@ -179,24 +179,6 @@
         }                                                               \
 
 
-#define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
-        AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
-        {                                                               \
-                AG_AUTO(type) *o = sample;                              \
-                AG_TEST (type ## _typeid(o) == typeid)                  \
-        }                                                               \
-
-
-#define AG_METATEST_OBJECT_UUID(type, sample)                   \
-        AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
-        {                                                       \
-                AG_AUTO(type) *o = sample;                      \
-                AG_AUTO(ag_uuid) *u = type ## _uuid(o);         \
-                AG_AUTO(ag_string) *s = ag_uuid_str(u);         \
-                AG_TEST (!ag_string_empty(s));                  \
-        }                                                       \
-
-
 #define AG_METATEST_OBJECT_EMPTY(type, sample)                  \
         AG_TEST_CASE(#type "_empty(): " #sample " => true")     \
         {                                                       \
@@ -227,6 +209,24 @@
                 AG_AUTO(type) *o = sample;                      \
                 AG_TEST (!type ## _valid(o))                    \
         }
+
+
+#define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
+        AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _typeid(o) == typeid)                  \
+        }                                                               \
+
+
+#define AG_METATEST_OBJECT_UUID(type, sample)                   \
+        AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_AUTO(ag_uuid) *u = type ## _uuid(o);         \
+                AG_AUTO(ag_string) *s = ag_uuid_str(u);         \
+                AG_TEST (!ag_string_empty(s));                  \
+        }                                                       \
 
 
 #define AG_METATEST_OBJECT_LEN(type, sample, len)               \

@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #include "../include/argent.h"
@@ -71,6 +71,7 @@ ag_init(void)
         AG_OBJECT_REGISTER(ag_http_url);
         AG_OBJECT_REGISTER(ag_http_client);
         AG_OBJECT_REGISTER(ag_http_request);
+        AG_OBJECT_REGISTER(ag_http_response);
 }
 
 

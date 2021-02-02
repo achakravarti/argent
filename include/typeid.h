@@ -1,4 +1,4 @@
-/*-
+/*******************************************************************************
  * SPDX-License-Identifier: GPL-3.0-only
  *
  * Argent---infrastructure for building web services
@@ -18,7 +18,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- */
+ ******************************************************************************/
 
 
 #ifndef __ARGENT_INCLUDE_TYPEID_H__
@@ -39,6 +39,7 @@ typedef int ag_typeid;
 #define AG_TYPEID_HTTP_URL      ((ag_typeid) -4)
 #define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -5)
 #define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -6)
+#define AG_TYPEID_HTTP_RESPONSE ((ag_typeid) -7)
 
 
 #ifdef __cplusplus
