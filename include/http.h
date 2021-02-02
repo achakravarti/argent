@@ -96,6 +96,55 @@ extern enum ag_http_mime         ag_http_mime_parse(const char *);
 extern ag_string                *ag_http_mime_str(enum ag_http_mime);
 
 
+/******************************************************************************
+ * The ag_http_status enumeration represents the commonly used subset of HTTP
+ * response codes. Even from this subset, we anticipate that most would be
+ * unused; however, they have been provided in case required by client code.
+ *
+ * Supporting the ag_http_status enumeration are two functions that help to
+ * convert from and to the string representations of the individual enumerators:
+ * ag_http_status_parse() and ag_http_status_str().
+ *
+ * See the following files for more details:
+ *   - src/http-enum.c
+ *   - test/http-status.c
+ ******************************************************************************/
+
+
+enum ag_http_status {
+        AG_HTTP_STATUS_200_OK,                          /* 200 (OK)           */
+        AG_HTTP_STATUS_201_CREATED,                     /* 201 (Created)      */
+        AG_HTTP_STATUS_202_ACCEPTED,                    /* 202 (Accepted)     */
+        AG_HTTP_STATUS_204_NO_CONTENT,                  /* 204 (No Content)   */
+        AG_HTTP_STATUS_301_MOVED_PERMANENTLY,           /* 301 (Moved 
+                                                           Permanently)       */
+        AG_HTTP_STATUS_302_FOUND,                       /* 302 (Found)        */
+        AG_HTTP_STATUS_303_SEE_OTHER,                   /* 303 (See Other)    */
+        AG_HTTP_STATUS_304_NOT_MODIFIED,                /* 304 (Not Modified) */
+        AG_HTTP_STATUS_307_TEMPORARY_REDIRECT,          /* 307 (Temporary 
+                                                           Redirect)          */
+        AG_HTTP_STATUS_400_BAD_REQUEST,                 /* 400 (Bad Request)  */
+        AG_HTTP_STATUS_401_UNAUTHORIZED,                /* 401 (Unauthorized) */
+        AG_HTTP_STATUS_403_FORBIDDEN,                   /* 403 (Forbidden)    */
+        AG_HTTP_STATUS_404_NOT_FOUND,                   /* 404 (Not Found)    */
+        AG_HTTP_STATUS_405_METHOD_NOT_ALLOWED,          /* 405 (Method Not 
+                                                           Allowed)           */
+        AG_HTTP_STATUS_406_NOT_ACCEPTABLE,              /* 406 (Not 
+                                                           Acceptable)        */
+        AG_HTTP_STATUS_412_PRECONDITION_FAILED,         /* 412 (Precondition 
+                                                           Failed)            */
+        AG_HTTP_STATUS_415_UNSUPPORTED_MEDIA_TYPE,      /* 415 (Unsupported 
+                                                           Media Type)        */
+        AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR,       /* 500 (Internal Server 
+                                                           Error)             */
+        AG_HTTP_STATUS_501_NOT_IMPLEMENTED,             /* 501 (Not 
+                                                           Implemented)       */
+};
+
+extern enum ag_http_status       ag_http_status_parse(const char *);
+extern ag_string                *ag_http_status_str(enum ag_http_status);
+
+
 /*
  * Declare the HTTP URL interface. An HTTP URL is the URL of the resource
  * requested by the client to the server, and makes up part of the HTTP request
@@ -229,6 +278,20 @@ extern enum ag_http_method       ag_http_request_method(const ag_http_request *)
 extern ag_http_client           *ag_http_request_client(const ag_http_request *);
 extern ag_http_url              *ag_http_request_url(const ag_http_request *);
 extern ag_alist                 *ag_http_request_param(const ag_http_request *);
+
+
+
+/*_new(enum ag_http_mime, enum ag_http_status, const char *);
+_new_file(enum ag_http_mime, enum ag_http_status, const char *);
+_new_empty(enum ag_http_mime, enum ag_http_status);
+
+ag_string *_header(const ag_http_response *);
+ag_string *_body(const ag_http_response *);
+
+_add(ag_http_response **, const char *);
+_add_file(ag_http_response **, const char *);
+_flush(ag_http_response **);Z*/
+
 
 
 #ifdef __cplusplus
