@@ -302,7 +302,7 @@ extern ag_string        *ag_http_response_header(const ag_http_response *);
 extern ag_string        *ag_http_response_body(const ag_http_response *);
 
 extern void             ag_http_response_add(ag_http_response **, const char *);
-extern void             ag_http_response__add_file(ag_http_response **,
+extern void             ag_http_response_add_file(ag_http_response **,
                             const char *);
 extern void             ag_http_response_flush(ag_http_response **);
 
