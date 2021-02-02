@@ -60,6 +60,30 @@ static AG_THREADLOCAL const char *g_mime[] = {
 };
 
 
+static AG_THREADLOCAL const char *g_status[] = {
+        "200 (OK)",
+        "201 (Created)",
+        "202 (Accepted)",
+        "204 (No Content)",
+        "301 (Moved Permanently)",
+        "302 (Found)",
+        "303 (See Other)",
+        "304 (Not Modified)",
+        "307 (Temporary Redirect)",
+        "400 (Bad Request)",
+        "401 (Unauthorized)",
+        "403 (Forbidden)",
+        "404 (Not Found)",
+        "405 (Method Not Allowed)",
+        "406 (Not Acceptable)",
+        "412 (Precondition Failed)",
+        "415 (Unsupported Media Type)",
+        "500 (Internal Server Error)",
+        "501 (Not Implemented)",
+};
+
+
+
 /*
  * Define the ag_http_method_parse() interface function. This function is
  * responsible for parsing a given string and returning the HTTP method
@@ -139,4 +163,33 @@ ag_http_mime_str(enum ag_http_mime mime)
 
         return ag_string_new(g_mime[mime]);
 }
+
+
+extern enum ag_http_status
+ag_http_status_parse(const char *str)
+{
+        AG_ASSERT_PTR (str);
+
+        AG_AUTO(ag_string) *s = ag_string_new(str);
+        AG_AUTO(ag_string) *p = ag_string_proper(s);
+
+        for (register int i = 0; i <= AG_HTTP_STATUS_501_NOT_IMPLEMENTED; i++)
+                if (ag_string_eq(p, g_status[i]))
+                        return i;
+
+        struct ag_exception_parse x = {.str = str, .ctx = "ag_http_status"};
+        AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
+        return AG_HTTP_STATUS_500_INTERNAL_SERVER_ERROR;
+}
+
+
+extern ag_string *
+ag_http_status_str(enum ag_http_status status)
+{
+        AG_ASSERT (status >= AG_HTTP_STATUS_200_OK &&
+            status <= AG_HTTP_STATUS_501_NOT_IMPLEMENTED);
+
+        return ag_string_new(g_status[status]);
+}
+
 
