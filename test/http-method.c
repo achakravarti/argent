@@ -21,7 +21,7 @@
  ******************************************************************************/
 
 
-#include "./http-method.h"
+#include "./http.h"
 #include "./test.h"
 
 
@@ -59,11 +59,11 @@ AG_METATEST_HTTP_METHOD_PARSE("Delete", AG_HTTP_METHOD_DELETE);
  * Run the metatest for ag_http_method_str() for each of the enumerators in the
  * ag_http_method enumeration.
  */
-AG_METATEST_HTTP_METHOD_STR(GET);
-AG_METATEST_HTTP_METHOD_STR(POST);
-AG_METATEST_HTTP_METHOD_STR(PUT);
-AG_METATEST_HTTP_METHOD_STR(PATCH);
-AG_METATEST_HTTP_METHOD_STR(DELETE);
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_GET, "GET");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_POST, "POST");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_PUT, "PUT");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_PATCH, "PATCH");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_DELETE, "DELETE");
 
 
 /*

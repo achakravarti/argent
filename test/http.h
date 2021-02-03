@@ -47,18 +47,53 @@
  */
 
 
-#define AG_METATEST_HTTP_MIME_PARSE(str, enm)                   \
-        AG_TEST_CASE("ag_http_mime_parse(): " str " => " #enm)  \
-        {                                                       \
-                AG_TEST (ag_http_mime_parse(str) == enm);       \
+#define AG_METATEST_HTTP_MIME_PARSE(sample, expect)                     \
+        AG_TEST_CASE("ag_http_mime_parse(): " sample " => " #expect)    \
+        {                                                               \
+                AG_TEST (ag_http_mime_parse(sample) == expect);         \
         }
 
 
-#define AG_METATEST_HTTP_MIME_STR(enm, str)                     \
-        AG_TEST_CASE("ag_http_mime_str(): " #enm " => " str)    \
-        {                                                       \
-                AG_AUTO(ag_string) *s = ag_http_mime_str(enm);  \
-                AG_TEST (ag_string_eq(s, str));                 \
+#define AG_METATEST_HTTP_MIME_STR(sample, expect)                       \
+        AG_TEST_CASE("ag_http_mime_str(): " #sample" => " expect)       \
+        {                                                               \
+                AG_AUTO(ag_string) *s = ag_http_mime_str(sample);       \
+                AG_TEST (ag_string_eq(s, expect));                      \
+        }
+
+
+
+
+/*******************************************************************************
+ * There are two metatest macros available for the ag_http_method interface:
+ *   1. AG_METATEST_HTTP_METHOD_PARSE()
+ *   2. AG_METATEST_HTTP_METHOD_STR()
+ *
+ * The first metatest macro generates a test case to check whether the
+ * ag_http_method_parse() interface function is able to correctly parse a sample
+ * string to the expected ag_http_method enumerator. The sample is passed
+ * through the first parameter, and the expected value through the second.
+ *
+ * The second metatest macro generates a test case to check whether the
+ * ag_http_method_str() interface function returns the expected string
+ * representation of a given sample ag_http_method enumerator. The sample is
+ * passed through the first parameter, and the expected string through the
+ * second.
+ */
+
+
+#define AG_METATEST_HTTP_METHOD_PARSE(sample, expect)                   \
+        AG_TEST_CASE("ag_http_method_parse(): " sample " => " #expect)  \
+        {                                                               \
+                AG_TEST (ag_http_method_parse(sample) == expect);       \
+        }
+
+
+#define AG_METATEST_HTTP_METHOD_STR(sample, expect)                                       \
+        AG_TEST_CASE("ag_http_method_str(): " #sample " => " expect)    \
+        {                                                               \
+                AG_AUTO(ag_string) *s = ag_http_method_str(sample);     \
+                AG_TEST (ag_string_eq(s, expect));                      \
         }
 
 
