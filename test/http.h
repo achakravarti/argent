@@ -21,16 +21,32 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_TEST_HTTP_MIME_H__
-#define __ARGENT_TEST__HTTP_MIME_H__
 
 
-/*
- * Define the AG_METATEST_HTTP_MIME_PARSE() macro. This macro is used to
- * metaprogrammatically generate the test case to test whether calling
- * ag_http_mime_parse() with a given string results in the expected ag_http_mime
- * enumerator.
+#ifndef __ARGENT_TEST_HTTP_H__
+#define __ARGENT_TEST_HTTP_H__
+
+
+
+
+/*******************************************************************************
+ * There are two metatest macros available for the ag_http_mime interface:
+ *   1. AG_METATEST_HTTP_MIME_PARSE()
+ *   2. AG_METATEST_HTTP_MIME_STR()
+ *
+ * The first metatest macro generates a test case to determine whether the
+ * ag_http_mime_parse() interface function is able to correctly parse a given
+ * string. The string to be parsed is passed through the first parameter, and
+ * the expected ag_http_mime enumerator is passed through the second.
+ *
+ * The second metatest macro generates a test case to check whether the
+ * ag_http_mime_str() interface function generates the expected string
+ * representation of a given ag_http_mime enumerator. The first parameter is the
+ * enumerator for which the string representation must be generated, and the
+ * second parameter is the expected string representation.
  */
+
+
 #define AG_METATEST_HTTP_MIME_PARSE(str, enm)                   \
         AG_TEST_CASE("ag_http_mime_parse(): " str " => " #enm)  \
         {                                                       \
@@ -38,15 +54,6 @@
         }
 
 
-/*
- * Define the AG_METATEST_HTTP_MIME_STR() macro. This macro is used to generate
- * metaprogrammatically a test case that checks whether ag_http_mime_str()
- * returns the correct string representation of a given ag_http_mime enumerator.
- * 
- * The first parameter of this macro is the ag_http_mime enumerator to test, and
- * the second parameter is the statically allocated string that holds the
- * expected string representation.
- */
 #define AG_METATEST_HTTP_MIME_STR(enm, str)                     \
         AG_TEST_CASE("ag_http_mime_str(): " #enm " => " str)    \
         {                                                       \
@@ -55,5 +62,5 @@
         }
 
 
-#endif /* !__ARGENT_TEST_HTTP_MIME_H__ */
+#endif /* !__ARGENT_TEST_HTTP_H__ */
 
