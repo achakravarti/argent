@@ -37,11 +37,10 @@ extern "C" {
 
 
 /*******************************************************************************
- * Define the HTTP method enumeration, represented by ag_http_method. This
- * enumeration defines the common HTTP methods (verbs) used to make HTTP
- * requests. We have also declared the prototypes of two supporting functions,
- * ag_http_method_parse() and ag_http_method_str(), which are used to convert
- * from and to the string representation of this enumeration.
+ * The ag_http_method enumeration defines the common HTTP methods (verbs) used
+ * to make HTTP requests. We have also declared the prototypes of two supporting
+ * functions, ag_http_method_parse() and ag_http_method_str(), which are used to
+ * convert from and to the string representation of this enumeration.
  *
  * See the following files for more details:
  *   - src/http-enum.c
@@ -63,10 +62,9 @@ extern ag_string                *ag_http_method_str(enum ag_http_method);
 
 
 /*******************************************************************************
- * Define the HTTP MIME type enumeration, represented by ag_http_mime. This
- * enumeration defines the common HTTP MIME types that are used most often, As
- * of now, this enumeration is only a subset of all possible MIME types, and may
- * be expanded in future if required.
+ * The ag_http_mime enumeration represents the common HTTP MIME types that are
+ * used most often. As of now, this enumeration is only a subset of all possible
+ * MIME types, and may be expanded in future if required.
  *
  * See the following URLs for a more complete list:
  *   - https://github.com/cujojs/rest/blob/master/docs/mime.md
@@ -199,6 +197,8 @@ extern ag_uint           ag_http_url_port(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_path(const ag_http_url *ctx);
 
 
+
+
 /*******************************************************************************
  * Declare the HTTP client interface. An HTTP client represents the client
  * making the HTTP request. Although the HTTP specification does not explicitly
@@ -245,10 +245,10 @@ extern ag_string        *ag_http_client_referer(const ag_http_client *);
 
 
 /*******************************************************************************
- * Declare the HTTP request interface. An HTTP request is one half of HTTP,
- * representing a message sent by the client to the server for some resource.
- * The Argent Library reifies HTTP requests through the ag_http_request object
- * with the type ID AG_TYPEID_HTTP_REQUEST.
+ * An HTTP request is one half of the HTTP protocol, representing a message sent
+ * by the client to the server for some resource. The Argent Library reifies
+ * HTTP requests through the ag_http_request object with the type ID
+ * AG_TYPEID_HTTP_REQUEST.
  *
  * The ag_http_request object does not implement the HTTP request strictly
  * according to specification, and encapsulates only a subset of the properties
@@ -288,6 +288,30 @@ extern ag_alist                 *ag_http_request_param(const ag_http_request *);
 
 
 
+
+/*******************************************************************************
+ * The other half of the HTTP protocol is the response sent by the server to the
+ * client. The Argent Library reifies the HTTP response through the object
+ * ag_http_response with type ID AG_TYPEID_HTTP_REQUEST.
+ *
+ * The ag_http_response object only has two properties: the header and the body.
+ * The header specifies the response MIME type and the response status. The body
+ * consists of the string representation of the resource to be returned.
+ *
+ * Supporting the ag_http_response object are the three manager functions
+ * ag_http_response_new() and its two overloaded forms, the two accessor
+ * functions ag_http_respone_header() and ag_http_response_body(), and the three
+ * mutator functions ag_http_response_add(), ag_http_response_add_file(), and
+ * ag_http_response_flush(). Since the ag_http_request object has been declared
+ * through the AG_OBJECT_DECLARE() macro, its inherited object methods are added
+ * metaprogrammatically.
+ *
+ * See the following files for more details:
+ *   - include/typeid.h
+ *   - include/object.h
+ *   - src/http-response.c
+ *   - test/http-response.c
+ */
 
 AG_OBJECT_DECLARE(ag_http_response, AG_TYPEID_HTTP_RESPONSE);
 
