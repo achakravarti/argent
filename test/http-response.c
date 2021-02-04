@@ -54,6 +54,10 @@ AG_METATEST_OBJECT_UUID(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_UUID(ag_http_response, JSON_201());
 
 
+AG_METATEST_OBJECT_REFC(ag_http_response, HTML_200_EMPTY());
+AG_METATEST_OBJECT_REFC(ag_http_response, JSON_201());
+
+
 
 extern ag_test_suite *
 test_suite_http_response(void)
