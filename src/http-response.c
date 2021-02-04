@@ -317,9 +317,10 @@ virt_str(const ag_object *ctx)
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
 
         const struct payload *p = ag_object_payload(ctx);
+        AG_AUTO(ag_string) *m = ag_http_mime_str(p->mime);
+        AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
 
         return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n%s", ag_http_mime_str(p->mime),
-            ag_http_status_str(p->status), p->body);
+            "Status: %s\r\n\r\n%s", m, s);
 }
 
