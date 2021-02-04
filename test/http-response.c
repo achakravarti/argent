@@ -73,6 +73,11 @@ AG_METATEST_OBJECT_SZ(ag_http_response, HTML_200_EMPTY(),
 AG_METATEST_OBJECT_SZ(ag_http_response, JSON_201(), sample_sz(JSON_201()));
 
 
+AG_METATEST_OBJECT_HASH(ag_http_response, HTML_200_EMPTY(),
+    sample_hash(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_HASH(ag_http_response, JSON_201(), sample_hash(JSON_201()));
+
+
 
 extern ag_test_suite *
 test_suite_http_response(void)
