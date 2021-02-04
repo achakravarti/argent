@@ -321,6 +321,6 @@ virt_str(const ag_object *ctx)
         AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
 
         return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n%s", m, s);
+            "Status: %s\r\n\r\n%s", m, s, p->body);
 }
 

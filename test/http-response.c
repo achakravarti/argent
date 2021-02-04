@@ -78,6 +78,15 @@ AG_METATEST_OBJECT_HASH(ag_http_response, HTML_200_EMPTY(),
 AG_METATEST_OBJECT_HASH(ag_http_response, JSON_201(), sample_hash(JSON_201()));
 
 
+AG_METATEST_OBJECT_STR(ag_http_response, HTML_200_EMPTY(),
+    "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
+AG_METATEST_OBJECT_STR(ag_http_response, JSON_201(), 
+    "Content-type: application/json; charset=UTF-8\r\nStatus: 201 (Created)"
+    "\r\n\r\n{key:foo, val:bar}");
+
+
+
+
 
 extern ag_test_suite *
 test_suite_http_response(void)
