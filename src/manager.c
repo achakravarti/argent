@@ -71,6 +71,7 @@ ag_init(void)
         AG_OBJECT_REGISTER(ag_http_url);
         AG_OBJECT_REGISTER(ag_http_client);
         AG_OBJECT_REGISTER(ag_http_request);
+        AG_OBJECT_REGISTER(ag_http_response);
 }
 
 
