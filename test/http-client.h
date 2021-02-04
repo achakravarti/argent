@@ -26,23 +26,6 @@
 
 
 /*
- * Define the AG_SAMPLE_HTTP_CLIENT() macro. This macro is responsible for
- * metaprogrammatically generating a static inline function that returns a
- * pointer to a sample HTTP client object with a given set of properties.
- *
- * The first parameter to this macro is a tag used to uniquely identify a given
- * sample HTTP client object, and the other parameters are, in sequence, those
- * of ag_http_url_new(). The name of the generated function is the same as the
- * specified tag.
- */
-#define AG_SAMPLE_HTTP_CLIENT(tag, ip, port, host, agent, referer)             \
-        static inline ag_http_client *tag(void)                                \
-        {                                                                      \
-                return ag_http_client_new(ip, port, host, agent, referer);     \
-        }
-
-
-/*
  * Define the __AG_METATEST_HTTP_CLIENT_STR__() helper macro. This macro is used
  * to metaprogrammatically generate the metatests for the non-inherited string
  * property accessor functions of the ag_http_client interface.

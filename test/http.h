@@ -27,6 +27,51 @@
 #define __ARGENT_TEST_HTTP_H__
 
 
+/*******************************************************************************
+ * For testing purposes, we need to work with sample objects. The following four
+ * macros help metaprogrammatically generate functions that return pointers to
+ * sample objects:
+ *   - AG_SAMPLE_HTTP_URL()     : pointer to sample HTTP URL object
+ *   - AG_SAMPLE_HTTP_CLIENT()  : pointer to sample HTTP client
+ *   - AG_SAMPLE_HTTP_REQUEST() : pointer to sample HTTP request
+ *   - AG_SAMPLE_HTTP_RESPONSE(): pointer to sample HTTP response
+ *
+ * Each of these macros takes a tag as its first parameter. The tag is used as
+ * the name of the generated function, and helps uniquely identify the generated
+ * sample object. The remaining parameters are the same as the corresponding
+ * constructors:
+ *   - AG_SAMPLE_HTTP_URL()     : ag_http_url_new()
+ *   - AG_SAMPLE_HTTP_CLIENT()  : ag_http_client_new()
+ *   - AG_SAMPLE_HTTP_REQUEST() : ag_http_request_new()
+ *   - AG_SAMPLE_HTTP_RESPONSE(): ag_http_response_new()
+ */
+
+
+#define AG_SAMPLE_HTTP_URL(tag, secure, host, port, path)               \
+        static inline ag_http_url *tag(void)                            \
+        {                                                               \
+                return port ? ag_http_url_new(secure, host, port, path) \
+                    : ag_http_url_new_noport(secure, host, path);       \
+        }
+
+
+#define AG_SAMPLE_HTTP_CLIENT(tag, ip, port, host, agent, referer)             \
+        static inline ag_http_client *tag(void)                                \
+        {                                                                      \
+                return ag_http_client_new(ip, port, host, agent, referer);     \
+        }
+
+
+#define AG_SAMPLE_HTTP_REQUEST(tag, method, mime, url, client, param)   \
+        static inline ag_http_request *tag(void)                        \
+        {                                                               \
+                AG_AUTO(ag_http_url) *u = url;                          \
+                AG_AUTO(ag_http_client) *c = client;                    \
+                AG_AUTO(ag_alist) *p = param;                           \
+                return ag_http_request_new(method, mime, u, c, p);      \
+        }
+
+
 
 
 /*******************************************************************************

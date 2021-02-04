@@ -22,6 +22,7 @@
 
 
 #include "./field.h"
+#include "./http.h"
 #include "./http-client.h"
 #include "./http-request.h"
 #include "./http-url.h"

@@ -22,6 +22,7 @@
 
 
 #include "./http-client.h"
+#include "./http.h"
 #include "./object.h"
 #include "./test.h"
 

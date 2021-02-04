@@ -26,27 +26,6 @@
 
 
 /*
- * Define the AG_SAMPLE_HTTP_REQUEST() macro. This macro is responsible for
- * metaprogrammatically generating a static inline function that returns a
- * pointer to a sample HTTP request object with a given set of properties.
- *
- * The first parameter to this macro is a tag used to uniquely identify a given
- * sample HTTP client object, and the other parameters are, in sequence, those
- * of ag_http_request_new(). The name of the generated function is the same as
- * the specified tag.
- */
-#define AG_SAMPLE_HTTP_REQUEST(tag, method, mime, url, client, param)   \
-        static inline ag_http_request *tag(void)                        \
-        {                                                               \
-                AG_AUTO(ag_http_url) *u = url;                          \
-                AG_AUTO(ag_http_client) *c = client;                    \
-                AG_AUTO(ag_alist) *p = param;                           \
-                return ag_http_request_new(method, mime, u, c, p);      \
-        }
-
-
-
-/*
  * Define the AG_METATEST_HTTP_REQUEST_MIME() macro. This macro is used to
  * metaprogrammatically generate the test case for the ag_http_request_mime()
  * interface function. The first parameter is a pointer to the sample HTTP
