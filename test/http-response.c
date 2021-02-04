@@ -28,6 +28,12 @@ AG_METATEST_OBJECT_CLONE(ag_http_response, JSON_201());
 
 AG_METATEST_OBJECT_RELEASE(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_RELEASE(ag_http_response, JSON_201());
+
+
+AG_METATEST_OBJECT_CMP(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_LT(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_EQ(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_GT(ag_http_response, JSON_201(), HTML_200_EMPTY());
         
 
 
