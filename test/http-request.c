@@ -94,9 +94,9 @@ AG_SAMPLE_VALUE_STRING(VALUE_EMPTY, "");
  *   - SAMPLE_FIELD_FOOBAR(): (foo:bar)
  *   - SAMPLE_FIELD_FOO()   : (foo:)
  */
-AG_SAMPLE_FIELD(KEYVAL, VALUE_KEY(), VALUE_VAL());
-AG_SAMPLE_FIELD(FOOBAR, VALUE_FOO(), VALUE_BAR());
-AG_SAMPLE_FIELD(FOO, VALUE_FOO(), VALUE_EMPTY());
+AG_SAMPLE_FIELD(FIELD_KEYVAL, VALUE_KEY(), VALUE_VAL());
+AG_SAMPLE_FIELD(FIELD_FOOBAR, VALUE_FOO(), VALUE_BAR());
+AG_SAMPLE_FIELD(FIELD_FOO, VALUE_FOO(), VALUE_EMPTY());
 
 
 
@@ -383,7 +383,7 @@ param_empty(void)
 static inline ag_list *
 param_single(void)
 {
-        AG_AUTO(ag_field) *f = SAMPLE_FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f = FIELD_KEYVAL();
         return ag_alist_new(f);
 }
 
@@ -391,9 +391,9 @@ param_single(void)
 static inline ag_list *
 param_array(void)
 {
-        AG_AUTO(ag_field) *f1 = SAMPLE_FIELD_KEYVAL();
-        AG_AUTO(ag_field) *f2 = SAMPLE_FIELD_FOOBAR();
-        AG_AUTO(ag_field) *f3 = SAMPLE_FIELD_FOO();
+        AG_AUTO(ag_field) *f1 = FIELD_KEYVAL();
+        AG_AUTO(ag_field) *f2 = FIELD_FOOBAR();
+        AG_AUTO(ag_field) *f3 = FIELD_FOO();
 
         const ag_field *f[] = {f1, f2, f3};
         return ag_alist_new_array(f, 3);
