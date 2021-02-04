@@ -42,7 +42,12 @@ AG_METATEST_OBJECT_EMPTY_NOT(ag_http_response, JSON_201());
 
 AG_METATEST_OBJECT_VALID(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_VALID(ag_http_response, JSON_201());
-        
+       
+
+AG_METATEST_OBJECT_TYPEID(ag_http_response, HTML_200_EMPTY(),
+    AG_TYPEID_HTTP_RESPONSE);
+AG_METATEST_OBJECT_TYPEID(ag_http_response, JSON_201(),
+    AG_TYPEID_HTTP_RESPONSE);
 
 
 
