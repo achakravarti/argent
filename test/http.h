@@ -30,22 +30,29 @@
 
 
 /*******************************************************************************
- * For testing purposes, we need to work with sample objects. The following four
+ * For testing purposes, we need to work with sample objects. The following four 
  * macros help metaprogrammatically generate functions that return pointers to
  * sample objects:
- *   - AG_SAMPLE_HTTP_URL()     : pointer to sample HTTP URL object
- *   - AG_SAMPLE_HTTP_CLIENT()  : pointer to sample HTTP client
- *   - AG_SAMPLE_HTTP_REQUEST() : pointer to sample HTTP request
- *   - AG_SAMPLE_HTTP_RESPONSE(): pointer to sample HTTP response
+ *   - AG_SAMPLE_HTTP_CLIENT()        : pointer to sample HTTP client
+ *   - AG_SAMPLE_HTTP_REQUEST()       : pointer to sample HTTP request
+ *   - AG_SAMPLE_HTTP_RESPONSE()      : pointer to sample HTTP response
+ *   - AG_SAMPLE_HTTP_URL()           : pointer to sample HTTP URL object
+ *
+ * Of these, the AG_SAMPLE_HTTP_RESPONSE() macro is special in that it provides
+ * two additional overloaded forms:
+ *   - AG_SAMPLE_HTTP_RESPONSE_EMPTY()
+ *   - AG_SAMPLE_HTTP_RESPONSE_FILE()
  *
  * Each of these macros takes a tag as its first parameter. The tag is used as
  * the name of the generated function, and helps uniquely identify the generated
  * sample object. The remaining parameters are the same as the corresponding
  * constructors:
- *   - AG_SAMPLE_HTTP_CLIENT()  : ag_http_client_new()
- *   - AG_SAMPLE_HTTP_REQUEST() : ag_http_request_new()
- *   - AG_SAMPLE_HTTP_RESPONSE(): ag_http_response_new()
- *   - AG_SAMPLE_HTTP_URL()     : ag_http_url_new()
+ *   - AG_SAMPLE_HTTP_CLIENT()        : ag_http_client_new()
+ *   - AG_SAMPLE_HTTP_REQUEST()       : ag_http_request_new()
+ *   - AG_SAMPLE_HTTP_RESPONSE()      : ag_http_response_new()
+ *   - AG_SAMPLE_HTTP_RESPONSE_EMPTY(): ag_http_response_new_empty()
+ *   - AG_SAMPLE_HTTP_RESPONSE_FILE() : ag_http_response_new_file()
+ *   - AG_SAMPLE_HTTP_URL()           : ag_http_url_new()
  *
  * See the following files for more details:
  *   - test/http-client.c
@@ -69,6 +76,27 @@
                 AG_AUTO(ag_http_client) *c = client;                    \
                 AG_AUTO(ag_alist) *p = param;                           \
                 return ag_http_request_new(method, mime, u, c, p);      \
+        }
+
+
+#define AG_SAMPLE_HTTP_RESPONSE(tag, mime, status, body)                \
+        static inline ag_http_response *tag(void)                       \
+        {                                                               \
+                return ag_http_response_new(mime, status, body);        \
+        }
+
+
+#define AG_SAMPLE_HTTP_REPSONSE_EMPTY(tag, mime, status)                \
+        static inline ag_http_response *tag(void)                       \
+        {                                                               \
+                return ag_http_response_new_empty(mime, status);        \
+        }
+
+
+#define AG_SAMPLE_HTTP_RESPONSE_FILE(tag, mime, status, path)           \
+        static inline ag_http_response *tag(void)                       \
+        {                                                               \
+                return ag_http_response_new_file(mime, status, path);   \
         }
 
 
