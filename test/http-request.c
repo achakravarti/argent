@@ -23,7 +23,6 @@
 
 #include "./field.h"
 #include "./http.h"
-#include "./http-request.h"
 #include "./object.h"
 #include "./test.h"
 #include "./value.h"
