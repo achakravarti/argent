@@ -86,7 +86,7 @@
         }
 
 
-#define AG_SAMPLE_HTTP_REPSONSE_EMPTY(tag, mime, status)                \
+#define AG_SAMPLE_HTTP_RESPONSE_EMPTY(tag, mime, status)                \
         static inline ag_http_response *tag(void)                       \
         {                                                               \
                 return ag_http_response_new_empty(mime, status);        \
