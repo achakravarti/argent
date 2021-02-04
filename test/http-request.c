@@ -34,7 +34,7 @@
  * the testing interface to metaprogrammatically generate the relevant testing
  * functions.
  */
-#define __AG_TEST_SUITE_ID__ 12
+#define __AG_TEST_SUITE_ID__ 11
 
 
 /*

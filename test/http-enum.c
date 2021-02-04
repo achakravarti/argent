@@ -4,7 +4,7 @@
 
 
 
-#define __AG_TEST_SUITE_ID__ 14
+#define __AG_TEST_SUITE_ID__ 8
 
 
 
@@ -85,7 +85,56 @@ AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_JS, "text/javascript");
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_PLAIN, "text/plain");
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_XML, "text/xml");
 
-        
+
+
+
+/*******************************************************************************
+ * The test caes for the ag_http_method enumeration are metaprogrammatically
+ * generated through the metatest macros AG_METATEST_HTTP_METHOD_PARSE() and
+ * AG_METATEST_HTTP_STR().
+ *
+ * We generate test cases for each enumerator in the ag_http_method enumeration,
+ * checking wheter ag_http_method_parse() and ag_http_method_str() work as
+ * expected in each case.
+ *
+ * In the case of the tests for ag_http_method_parse(), we test against three
+ * sample string representations for each enumerator:
+ *   - the lowercase form
+ *   - the uppercase form
+ *   - the proper case form
+ *
+ * See the following files for more details:
+ *   - include/http.h
+ *   - test/http.h
+ */
+
+
+AG_METATEST_HTTP_METHOD_PARSE("get", AG_HTTP_METHOD_GET);
+AG_METATEST_HTTP_METHOD_PARSE("GET", AG_HTTP_METHOD_GET);
+AG_METATEST_HTTP_METHOD_PARSE("Get", AG_HTTP_METHOD_GET);
+AG_METATEST_HTTP_METHOD_PARSE("post", AG_HTTP_METHOD_POST);
+AG_METATEST_HTTP_METHOD_PARSE("POST", AG_HTTP_METHOD_POST);
+AG_METATEST_HTTP_METHOD_PARSE("Post", AG_HTTP_METHOD_POST);
+AG_METATEST_HTTP_METHOD_PARSE("PUT", AG_HTTP_METHOD_PUT);
+AG_METATEST_HTTP_METHOD_PARSE("put", AG_HTTP_METHOD_PUT);
+AG_METATEST_HTTP_METHOD_PARSE("Put", AG_HTTP_METHOD_PUT);
+AG_METATEST_HTTP_METHOD_PARSE("PATCH", AG_HTTP_METHOD_PATCH);
+AG_METATEST_HTTP_METHOD_PARSE("patch", AG_HTTP_METHOD_PATCH);
+AG_METATEST_HTTP_METHOD_PARSE("Patch", AG_HTTP_METHOD_PATCH);
+AG_METATEST_HTTP_METHOD_PARSE("DELETE", AG_HTTP_METHOD_DELETE);
+AG_METATEST_HTTP_METHOD_PARSE("delete", AG_HTTP_METHOD_DELETE);
+AG_METATEST_HTTP_METHOD_PARSE("Delete", AG_HTTP_METHOD_DELETE);
+
+
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_GET, "GET");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_POST, "POST");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_PUT, "PUT");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_PATCH, "PATCH");
+AG_METATEST_HTTP_METHOD_STR(AG_HTTP_METHOD_DELETE, "DELETE");
+
+
+
+
 extern ag_test_suite *
 test_suite_http_enum(void)
 {

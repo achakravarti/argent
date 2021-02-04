@@ -5,7 +5,7 @@
 
 
 
-#define __AG_TEST_SUITE_ID__ 13
+#define __AG_TEST_SUITE_ID__ 12
 
         
 static inline size_t    sample_len(ag_http_response *);
