@@ -7,6 +7,11 @@
 
 #define __AG_TEST_SUITE_ID__ 13
 
+        
+static inline size_t    sample_len(ag_http_response *);
+static inline size_t    sample_sz(ag_http_response *);
+static inline ag_hash   sample_hash(ag_http_response *);
+
 
 
 
@@ -58,9 +63,50 @@ AG_METATEST_OBJECT_REFC(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_REFC(ag_http_response, JSON_201());
 
 
+AG_METATEST_OBJECT_LEN(ag_http_response, HTML_200_EMPTY(),
+    sample_len(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_LEN(ag_http_response, JSON_201(), sample_len(JSON_201()));
+
+
+AG_METATEST_OBJECT_SZ(ag_http_response, HTML_200_EMPTY(),
+    sample_sz(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_SZ(ag_http_response, JSON_201(), sample_sz(JSON_201()));
+
+
 
 extern ag_test_suite *
 test_suite_http_response(void)
 {
         return AG_TEST_SUITE_GENERATE("ag_http_response interface");
 }
+
+
+static inline size_t
+sample_len(ag_http_response *ctx)
+{
+        AG_AUTO(ag_http_response) *r = ctx;
+        AG_AUTO(ag_string) *s = ag_http_response_body(r);
+
+        return ag_string_len(s);
+}
+
+
+static inline size_t
+sample_sz(ag_http_response *ctx)
+{
+        AG_AUTO(ag_http_response) *r = ctx;
+        AG_AUTO(ag_string) *s = ag_http_response_body(r);
+
+        return ag_string_sz(s);
+}
+
+
+static inline ag_hash
+sample_hash(ag_http_response *ctx)
+{
+        AG_AUTO(ag_http_response) *r = ctx;
+        AG_AUTO(ag_string) *s = ag_http_response_str(r);
+
+        return ag_hash_new_str(s);
+}
+
