@@ -60,7 +60,7 @@ AG_OBJECT_DEFINE(ag_http_response)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_HTTP_REQUEST, &vt);
+        ag_object_registry_set(AG_TYPEID_HTTP_RESPONSE, &vt);
 }
 
 
