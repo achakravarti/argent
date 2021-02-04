@@ -1,43 +1,35 @@
-/*******************************************************************************
- * SPDX-License-Identifier: GPL-3.0-only
- *
- * Argent---infrastructure for building web services
- * Copyright (C) 2020 Abhishek Chakravarti
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
- ******************************************************************************/
-
-
 #include "./http.h"
 #include "./test.h"
 
 
-/*
- * Define the __AG_TEST_SUITE_ID__ symbolic constant. This constant is required
- * by the testing interface to metaprogrammatically generate the supporting
- * testing functionality. It represents the unique ID of the test suite for the
- * HTTP MIME type enumeration test suite.
- */
-#define __AG_TEST_SUITE_ID__ 11
 
 
-/*
- * Run the metatest for ag_http_mime_parse() for several possible string
- * representations, including uppercase, lowercase, and proper case forms.
+#define __AG_TEST_SUITE_ID__ 14
+
+
+
+
+/*******************************************************************************
+ * The test cases for the ag_http_mime enumeration are metaprogrammatically
+ * generated through the metatest macros AG_METATEST_HTTP_MIME_PARSE() and
+ * AG_METATEST_HTTP_MIME_STR().
+ *
+ * We generate test cases for each enumerator in the ag_http_mime enumeration,
+ * checking whether ag_http_mime_parse() and ag_http_mime_str() work as expected
+ * in each case.
+ *
+ * In the case of the tests for ag_http_mime_parse(), we test against three
+ * sample string representations for each enumerator:
+ *   - the lowercase form
+ *   - the uppercase form
+ *   - the proper case form
+ *
+ * See the following files for more details:
+ *   - include/http.h
+ *   - test/http.h
  */
+
+
 AG_METATEST_HTTP_MIME_PARSE("application/x-www-form-urlencoded",
     AG_HTTP_MIME_APPLICATION_FORM);
 AG_METATEST_HTTP_MIME_PARSE("APPLICATION/X-WWW-FORM-URLENCODED",
@@ -79,10 +71,6 @@ AG_METATEST_HTTP_MIME_PARSE("TEXT/XML", AG_HTTP_MIME_TEXT_XML);
 AG_METATEST_HTTP_MIME_PARSE("Text/Xml", AG_HTTP_MIME_TEXT_XML);
 
 
-/*
- * Run the metatest for ag_http_mime_str() for each of the enumerators in the
- * ag_http_mime enumeration.
- */
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_APPLICATION_FORM,
     "application/x-www-form-urlencoded");
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_APPLICATION_JSON, "application/json");
@@ -97,15 +85,10 @@ AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_JS, "text/javascript");
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_PLAIN, "text/plain");
 AG_METATEST_HTTP_MIME_STR(AG_HTTP_MIME_TEXT_XML, "text/xml");
 
-
-/*
- * Define the test_suite_http_mime() function. We generate the test cases from
- * the above metatest definitions through a call to the AG_TEST_SUITE_GENERATE()
- * macro.
- */
+        
 extern ag_test_suite *
-test_suite_http_mime(void)
+test_suite_http_enum(void)
 {
-        return AG_TEST_SUITE_GENERATE("ag_http_mime interface");
+        return AG_TEST_SUITE_GENERATE("ag_http enumeration interfaces");
 }
 
