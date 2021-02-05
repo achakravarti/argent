@@ -344,7 +344,8 @@ ag_string_proper(const ag_string *ctx)
         register size_t sz = ag_memblock_sz(s);
 
         for (register size_t i = 0; i < sz; i++) {
-                s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.')
+                s[i] = (!i || s[i - 1] == ' ' || s[i - 1] == '.' || 
+                    s[i - 1] == '(')
                         ? toupper(s[i]) : tolower(s[i]);
         }
 
