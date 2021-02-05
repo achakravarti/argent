@@ -62,7 +62,7 @@ static AG_THREADLOCAL const char *g_mime[] = {
 };
 
 static AG_THREADLOCAL const char *g_status[] = {
-        "200 (OK)",
+        "200 (Ok)",
         "201 (Created)",
         "202 (Accepted)",
         "204 (No Content)",
@@ -232,7 +232,9 @@ ag_http_status_parse(const char *str)
 /*******************************************************************************
  * The ag_http_status_str() interface function returns the string representation
  * of a given ag_http_status enumerator. We simply return the string contained
- * in the g_status array at the index corresponding to the enumerator.
+ * in the g_status array at the index corresponding to the enumerator. Note that
+ * AG_HTTP_STATUS_200_OK requires special processing because the "OK" is not in
+ * proper case.
  */
 
 extern ag_string *
@@ -241,7 +243,7 @@ ag_http_status_str(enum ag_http_status status)
         AG_ASSERT (status >= AG_HTTP_STATUS_200_OK &&
             status <= AG_HTTP_STATUS_501_NOT_IMPLEMENTED);
 
-        return ag_string_new(g_status[status]);
+        return AG_LIKELY (!status) ? ag_string_new("200 (OK)")
+            : ag_string_new(g_status[status]);
 }
-
 
