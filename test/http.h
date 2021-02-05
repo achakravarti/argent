@@ -188,6 +188,23 @@
 
 
 
+#define AG_METATEST_HTTP_STATUS_PARSE(sample, expect)                   \
+        AG_TEST_CASE("ag_http_status_parse(): " sample " => " #expect)  \
+        {                                                               \
+                AG_TEST (ag_http_status_parse(sample) == expect);       \
+        }
+
+
+#define AG_METATEST_HTTP_STATUS_STR(sample, expect)                                       \
+        AG_TEST_CASE("ag_http_status_str(): " #sample " => " expect)    \
+        {                                                               \
+                AG_AUTO(ag_string) *s = ag_http_status_str(sample);     \
+                AG_TEST (ag_string_eq(s, expect));                      \
+        }
+
+
+
+
 /*******************************************************************************
  * The ag_http_client testing interface provides five macros for generating
  * metaprogrammatically the test cases for its non-inherited accessor functions:
