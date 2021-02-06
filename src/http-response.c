@@ -125,10 +125,11 @@ ag_http_response_header(const ag_http_response *ctx)
         AG_ASSERT_PTR (ctx);
 
         const struct payload *p = ag_object_payload(ctx);
+        AG_AUTO(ag_string) *m = ag_http_mime_str(p->mime);
+        AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
 
         return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n", ag_http_mime_str(p->mime),
-            ag_http_status_str(p->status));
+            "Status: %s\r\n\r\n", m, s);
 }
 
 
