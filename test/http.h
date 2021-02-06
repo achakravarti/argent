@@ -369,5 +369,14 @@
         }
 
 
+#define AG_METATEST_HTTP_RESPONSE_HEADER(sample, expect)                       \
+        AG_TEST_CASE("ag_http_response_header():" #sample " => " expect)       \
+        {                                                                      \
+                AG_AUTO(ag_http_response) *r = sample;                         \
+                AG_AUTO(ag_string) *h = ag_http_response_header(r);            \
+                AG_TEST(ag_string_eq(h, expect));                              \
+        }
+
+
 #endif /* !__ARGENT_TEST_HTTP_H__ */
 
