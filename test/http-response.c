@@ -115,6 +115,13 @@ AG_METATEST_OBJECT_STR(ag_http_response, JSON_201(),
     "\r\n\r\n{key:foo, val:bar}");
 
 
+AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
+    "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
+AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
+    "Content-type: application/json; charset=UTF-8\r\n"
+    "Status: 201 (Created)\r\n\r\n");
+
+
 /**
  * A test suite containing the test cases defined above needs to be generated.
  * This is done through the AG_TEST_SUITE_GENERATE() macro, and the generated
