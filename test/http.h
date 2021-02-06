@@ -21,15 +21,11 @@
  ******************************************************************************/
 
 
-
-
 #ifndef __ARGENT_TEST_HTTP_H__
 #define __ARGENT_TEST_HTTP_H__
 
 
-
-
-/*******************************************************************************
+/**
  * For testing purposes, we need to work with sample objects. The following four 
  * macros help metaprogrammatically generate functions that return pointers to
  * sample objects:
@@ -59,15 +55,13 @@
  *   - test/http-request.c
  *   - test/http-response.c
  *   - test/http-url.c
- */
-
+ **/
 
 #define AG_SAMPLE_HTTP_CLIENT(tag, ip, port, host, agent, referer)             \
         static inline ag_http_client *tag(void)                                \
         {                                                                      \
                 return ag_http_client_new(ip, port, host, agent, referer);     \
         }
-
 
 #define AG_SAMPLE_HTTP_REQUEST(tag, method, mime, url, client, param)   \
         static inline ag_http_request *tag(void)                        \
@@ -78,20 +72,17 @@
                 return ag_http_request_new(method, mime, u, c, p);      \
         }
 
-
 #define AG_SAMPLE_HTTP_RESPONSE(tag, mime, status, body)                \
         static inline ag_http_response *tag(void)                       \
         {                                                               \
                 return ag_http_response_new(mime, status, body);        \
         }
 
-
 #define AG_SAMPLE_HTTP_RESPONSE_EMPTY(tag, mime, status)                \
         static inline ag_http_response *tag(void)                       \
         {                                                               \
                 return ag_http_response_new_empty(mime, status);        \
         }
-
 
 #define AG_SAMPLE_HTTP_RESPONSE_FILE(tag, mime, status, path)           \
         static inline ag_http_response *tag(void)                       \
@@ -108,9 +99,7 @@
         }
 
 
-
-
-/*******************************************************************************
+/**
  * There are two metatest macros available for the ag_http_mime interface:
  *   1. AG_METATEST_HTTP_MIME_PARSE()
  *   2. AG_METATEST_HTTP_MIME_STR()
@@ -129,15 +118,13 @@
  * See the following files for more details:
  *   - include/http.h
  *   - test/http-enum.c
- */
-
+ **/
 
 #define AG_METATEST_HTTP_MIME_PARSE(sample, expect)                     \
         AG_TEST_CASE("ag_http_mime_parse(): " sample " => " #expect)    \
         {                                                               \
                 AG_TEST (ag_http_mime_parse(sample) == expect);         \
         }
-
 
 #define AG_METATEST_HTTP_MIME_STR(sample, expect)                       \
         AG_TEST_CASE("ag_http_mime_str(): " #sample" => " expect)       \
@@ -147,9 +134,7 @@
         }
 
 
-
-
-/*******************************************************************************
+/**
  * There are two metatest macros available for the ag_http_method interface:
  *   1. AG_METATEST_HTTP_METHOD_PARSE()
  *   2. AG_METATEST_HTTP_METHOD_STR()
@@ -168,15 +153,13 @@
  * See the following files for more details:
  *   - include/http.h
  *   - test/http-enum.c
- */
-
+ **/
 
 #define AG_METATEST_HTTP_METHOD_PARSE(sample, expect)                   \
         AG_TEST_CASE("ag_http_method_parse(): " sample " => " #expect)  \
         {                                                               \
                 AG_TEST (ag_http_method_parse(sample) == expect);       \
         }
-
 
 #define AG_METATEST_HTTP_METHOD_STR(sample, expect)                                       \
         AG_TEST_CASE("ag_http_method_str(): " #sample " => " expect)    \
@@ -186,14 +169,27 @@
         }
 
 
-
+/**
+ * There are two macros provided by the ag_http_status testing interface:
+ *   1. AG_METATEST_HTTP_STATUS_PARSE()
+ *   2. AG_METATEST_HTTP_STATUS_STR()
+ *
+ * The first macro generates a test case to determine whether the interface
+ * function ag_http_status_parse() returns the expected ag_http_status
+ * enumerator for a given sample string. The sample string is passed through the
+ * first parameter, and the expected enumerator through the second.
+ *
+ * The second macro generates a test case that checks the corollary. It tests
+ * whether ag_http_status_str() returns the expected string representation of a
+ * given sample ag_http_status enumerator. The sample is passed through the
+ * first parameter, and the expected return value through the second parameter.
+ **/
 
 #define AG_METATEST_HTTP_STATUS_PARSE(sample, expect)                   \
         AG_TEST_CASE("ag_http_status_parse(): " sample " => " #expect)  \
         {                                                               \
                 AG_TEST (ag_http_status_parse(sample) == expect);       \
         }
-
 
 #define AG_METATEST_HTTP_STATUS_STR(sample, expect)                                       \
         AG_TEST_CASE("ag_http_status_str(): " #sample " => " expect)    \
@@ -203,9 +199,7 @@
         }
 
 
-
-
-/*******************************************************************************
+/**
  * The ag_http_client testing interface provides five macros for generating
  * metaprogrammatically the test cases for its non-inherited accessor functions:
  *   - AG_METATEST_HTTP_CLIENT_IP()     : ag_http_client_ip()
@@ -226,8 +220,7 @@
  * See the following files for more details:
  *   - include/http.h
  *   - test/http-client.c
- */
-
+ **/
 
 #define __AG_METATEST_HTTP_CLIENT_STR__(sfx, sample, expect)                   \
         AG_TEST_CASE("ag_http_client_" #sfx "(): " #sample " => " expect)      \
@@ -236,7 +229,6 @@
                 AG_AUTO(ag_string) *s = ag_http_client_ ## sfx(c);             \
                 AG_TEST (ag_string_eq(s, expect));                             \
         }
-
 
 #define AG_METATEST_HTTP_CLIENT_IP(sample, expect)              \
         __AG_METATEST_HTTP_CLIENT_STR__(ip, sample, expect)
@@ -247,7 +239,6 @@
 #define AG_METATEST_HTTP_CLIENT_REFERER(sample, expect)         \
         __AG_METATEST_HTTP_CLIENT_STR__(referer, sample, expect)
 
-
 #define AG_METATEST_HTTP_CLIENT_PORT(sample, expect)                    \
         AG_TEST_CASE("ag_http_url_client(): " #sample " => " #expect)   \
         {                                                               \
@@ -256,9 +247,7 @@
         }
 
 
-
-
-/*******************************************************************************
+/**
  * There are five macros available for metaprogrammatically generating the test
  * cases of the non-inherited functions of the ag_http_url interface:
  *   - AG_METATEST_HTTP_URL_PARSE() : ag_http_url_parse()
@@ -279,8 +268,7 @@
  * See the following files for more details:
  *   - include/http.h
  *   - test/http-url.c
- */
-
+ **/
 
 #define AG_METATEST_HTTP_URL_PARSE(src, expect)                         \
         AG_TEST_CASE("ag_http_url_parse(): " src " => " #expect)        \
@@ -290,7 +278,6 @@
                 AG_TEST (ag_http_url_eq(u, e));                         \
         }
 
-
 #define AG_METATEST_HTTP_URL_HOST(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_host(): " #sample " => " expect)      \
         {                                                               \
@@ -299,7 +286,6 @@
                 AG_TEST (ag_string_eq(h, expect));                      \
         }
 
-
 #define AG_METATEST_HTTP_URL_SECURE(sample, expect)                     \
         AG_TEST_CASE("ag_http_url_secure(): " #sample " => " #expect)   \
         {                                                               \
@@ -307,14 +293,12 @@
                 AG_TEST (ag_http_url_secure(u) == expect);              \
         }
 
-
 #define AG_METATEST_HTTP_URL_PORT(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_port(): " #sample " => " #expect)     \
         {                                                               \
                 AG_AUTO(ag_http_url) *u = sample;                       \
                 AG_TEST (ag_http_url_port(u) == expect);                \
         }
-
 
 #define AG_METATEST_HTTP_URL_PATH(sample, expect)                       \
         AG_TEST_CASE("ag_http_url_path(): " #sample " => " expect)      \
@@ -325,9 +309,7 @@
         }
 
 
-
-
-/*******************************************************************************
+/**
  * The ag_http_request testing interface provides five macros for generating
  * metaprogrammatically the test cases that check whether their corresponding
  * ag_http_request interface accessor functions return the expected result for a
@@ -343,8 +325,7 @@
  * return value is passed through the second parameter. Note that if the
  * expected return value is an object, then the argument to the second parameter
  * is automatically released.
- */
-
+ **/
 
 #define AG_METATEST_HTTP_REQUEST_MIME(sample, expect)                   \
         AG_TEST_CASE("ag_http_request_mime(): " #sample " => " #expect) \
@@ -353,14 +334,12 @@
                 AG_TEST (ag_http_request_mime(r) == expect);            \
         }
 
-
 #define AG_METATEST_HTTP_REQUEST_METHOD(sample, expect)                        \
         AG_TEST_CASE("ag_http_request_method(): " #sample " => " #expect)      \
         {                                                                      \
                 AG_AUTO(ag_http_request) *r = sample;                          \
                 AG_TEST (ag_http_request_method(r) == expect);                 \
         }
-
 
 #define AG_METATEST_HTTP_REQUEST_CLIENT(sample, expect)                        \
         AG_TEST_CASE("ag_http_request_client(): " #sample " => " #expect)      \
@@ -371,7 +350,6 @@
                 AG_TEST (ag_http_client_eq(c, c2));                            \
         }
 
-
 #define AG_METATEST_HTTP_REQUEST_URL(sample, expect)                    \
         AG_TEST_CASE("ag_http_request_url(): " #sample " => " #expect)  \
         {                                                               \
@@ -381,7 +359,6 @@
                 AG_TEST (ag_http_url_eq(u, u2));                        \
         }
 
-
 #define AG_METATEST_HTTP_REQUEST_PARAM(sample, expect)                         \
         AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
         {                                                                      \
@@ -390,8 +367,6 @@
                 AG_AUTO(ag_alist) *p2 = ag_http_request_param(r);              \
                 AG_TEST (ag_alist_eq(p, p2));                                  \
         }
-
-
 
 
 #endif /* !__ARGENT_TEST_HTTP_H__ */
