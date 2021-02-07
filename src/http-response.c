@@ -250,10 +250,10 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
         AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_HTTP_RESPONSE);
 
-        AG_AUTO(ag_string) *s = virt_str(ctx);
-        AG_AUTO(ag_string) *s2 = virt_str(cmp);
+        const struct payload *p = ag_object_payload(ctx);
+        const struct payload *p2 = ag_object_payload(cmp);
 
-        return ag_string_cmp(s, s2);
+        return ag_string_cmp(p->body, p2->body);
 }
 
 
