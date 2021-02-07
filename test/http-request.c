@@ -129,49 +129,12 @@ AG_METATEST_OBJECT_MANAGER(ag_http_request, REQUEST_GET1());
 AG_METATEST_OBJECT_MANAGER(ag_http_request, REQUEST_GET2());
 
 
-
 /*
- * Run the ag_object_cmp() metatest for ag_http_request_cmp() with the sample
- * HTTP request objects defined above.
- *
  * TODO: Rethink implementation ag_http_request_cmp().
  */
-AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_request_lt() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_lt().
- */
-AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_http_request_gt() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_gt().
- */
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_request_eq() with the sample HTTP
- * request objects defined above.
- *
- * TODO: Rethink implementation ag_http_request_eq().
- */
-AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
 /*

@@ -69,45 +69,9 @@ AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT1());
 AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT2());
 
 
-
-/*
- * Run the ag_object_cmp() metatest for ag_http_client_cmp() with the above
- * sample HTTP client objects. The client object passed through the first
- * parameter is lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_CMP(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_client_lt() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_LT(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_client_eq() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_EQ(ag_http_client, CLIENT1(), CLIENT2());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_http_client_gt() with the above sample
- * HTTP client objects. The client object passed through the first parameter is
- * lexicographically smaller than the second.
- */
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT0());
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT2(), CLIENT0());
-AG_METATEST_OBJECT_GT(ag_http_client, CLIENT1(), CLIENT2());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT1(), CLIENT0());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT2(), CLIENT0());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT1(), CLIENT2());
 
 
 /*

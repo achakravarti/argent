@@ -77,40 +77,12 @@ AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_DOMAIN_FOO());
 AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
 
 
-/*
- * Run the ag_object_cmp() metatest for ag_http_url_cmp() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080(),
+AG_METATEST_OBJECT_COMPARATOR(ag_http_url, HTTP_LOCALHOST_8080(),
     HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
+AG_METATEST_OBJECT_COMPARATOR(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
     HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CMP(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_lt() metatest for ag_http_url_lt() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_LT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_LT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_http_url_eq() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EQ(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_COMPARATOR(ag_http_url, HTTPS_DOMAIN_FOO(),
+    HTTPS_DOMAIN_FOO_BAR());
 
 
 /*

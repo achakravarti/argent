@@ -94,44 +94,10 @@ AG_METATEST_OBJECT_MANAGER(ag_alist, sample_single());
 AG_METATEST_OBJECT_MANAGER(ag_alist, sample_list());
 
 
-/*
- * Run the ag_object_cmp() metatest for ag_alist_cmp() with the sample
- * association list objects declared above. The smaller of the two compared
- * objects is passed through the second parameter.
- */
-AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
 
-
-/*
- * Run the ag_object_lt() metatest for ag_alist_lt() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_eq() metatest for ag_alist_eq() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
-
-
-/*
- * Run the ag_object_gt() metatest for ag_alist_gt() with the sample association
- * list objects decalred above. The smaller of the two compared objects is
- * passed through the second paramter.
- */
-AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_list(), sample_list_2());
 
 
 /*
