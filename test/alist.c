@@ -93,20 +93,13 @@ AG_METATEST_OBJECT_MANAGER(ag_alist, sample_empty());
 AG_METATEST_OBJECT_MANAGER(ag_alist, sample_single());
 AG_METATEST_OBJECT_MANAGER(ag_alist, sample_list());
 
-
-
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_list(), sample_list_2());
 
-
-/*
- * Run the ag_object_empty() metatests for ag_alist_empty() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
+AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_empty(), true, false);
+AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_single(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_list(), false, true);
 
 
 /*

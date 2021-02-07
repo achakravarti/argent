@@ -68,30 +68,13 @@ AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT0());
 AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT1());
 AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT2());
 
-
 AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT1(), CLIENT0());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT2(), CLIENT0());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_client, CLIENT1(), CLIENT2());
 
-
-/*
- * Run the ag_object_empty() metatest for ag_http_client_empty() with the sample
- * client objects. Since client objects can never be empty, we only run the
- * AG_METATEST_OBJECT_EMPTY_NOT() metatest.
- */
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_client_valid() with the above
- * sample client objects. Since client objects are always valid, we only run the
- * AG_METATEST_OBJECT_VALID() metatest.
- */
-AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_VALID(ag_http_client, CLIENT2());
+AG_METATEST_OBJECT_PREDICATE(ag_http_client, CLIENT0(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_client, CLIENT1(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_client, CLIENT2(), false, true);
 
 
 /*

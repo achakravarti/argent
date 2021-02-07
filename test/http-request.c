@@ -136,28 +136,9 @@ AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
-
-/*
- * Run the ag_object_empty() metatest for ag_http_request_empty() with the
- * sample HTTP request objects defined above. Since HTTP request objects can
- * never be empty, we run only AG_METATEST_OBJECT_EMPTY_NOT() and skip out on
- * AG_METATEST_OBJECT_EMPTY().
- */
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_request, REQUEST_GET2());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_request_valid() with the
- * sample HTTP request objects defined above. Since HTTP request objects are
- * guaranteed to be in a valid state when constructed through their interface,
- * we run only AG_METATEST_OBJECT_VALID() and skip out on
- * AG_METATEST_OBJECT_VALID_NOT().
- */
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET2());
+AG_METATEST_OBJECT_PREDICATE(ag_http_request, REQUEST_GET0(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_request, REQUEST_GET1(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_request, REQUEST_GET2(), false, true);
 
 
 /* * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the

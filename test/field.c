@@ -82,14 +82,9 @@ AG_METATEST_OBJECT_MANAGER(ag_field, FIELD_LARGE());
 
 AG_METATEST_OBJECT_COMPARATOR(ag_field, FIELD_SMALL(), FIELD_LARGE());
 
+AG_METATEST_OBJECT_PREDICATE(ag_field, FIELD_SMALL(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_field, FIELD_LARGE(), false, true);
 
-/*
- * Define the test case for ag_field_empty().
- */
-
-
-AG_METATEST_OBJECT_EMPTY_NOT(ag_field, FIELD_SMALL());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_field, FIELD_LARGE());
 
 /*
  * Define the test case for ag_field_typeid().

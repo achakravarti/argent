@@ -84,43 +84,12 @@ AG_METATEST_OBJECT_COMPARATOR(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
 AG_METATEST_OBJECT_COMPARATOR(ag_http_url, HTTPS_DOMAIN_FOO(),
     HTTPS_DOMAIN_FOO_BAR());
 
-
-/*
- * Run the ag_object_gt() metatest for ag_http_url_gt() with the above sample
- * HTTP URL objects. The first argument is lexicographically less than the
- * second.
- */
-AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080(),
-    HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_GT(ag_http_url, HTTP_LOCALHOST_8080_FOO(),
-    HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_GT(ag_http_url, HTTPS_DOMAIN_FOO(), HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_empty() metatest for ag_http_url_empty() with the above
- * sample HTTP URL objects. Since URL objects can never be empty, we only
- * perform the AG_METATEST_OBJECT_EMPTY_NOT() metatest.
- */
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_EMPTY_NOT(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_valid() metatest for ag_http_url_valid() with the above
- * sample HTTP URL objects. Since URL objects can never be invalid if created
- * successfully, we're skipping the AG_METATEST_OBJECT_VALID_NOT() metatest.
- */
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_VALID(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTP_LOCALHOST_8080(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTPS_LOCALHOST_8080(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTP_LOCALHOST_8080_FOO(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTPS_LOCALHOST_8080_FOO(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTPS_DOMAIN_FOO(), false, true);
+AG_METATEST_OBJECT_PREDICATE(ag_http_url, HTTPS_DOMAIN_FOO_BAR(), false, true);
 
 
 /*
