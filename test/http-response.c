@@ -57,6 +57,8 @@ AG_SAMPLE_HTTP_RESPONSE_EMPTY(HTML_200_EMPTY, AG_HTTP_MIME_TEXT_HTML,
     AG_HTTP_STATUS_200_OK);
 AG_SAMPLE_HTTP_RESPONSE(JSON_201, AG_HTTP_MIME_APPLICATION_JSON,
     AG_HTTP_STATUS_201_CREATED, "{key:foo, val:bar}");
+AG_SAMPLE_HTTP_RESPONSE_FILE(TEXT_302_FILE, AG_HTTP_MIME_TEXT_PLAIN,
+    AG_HTTP_STATUS_302_FOUND, "bld/data/new.txt");
 
 
 /**
@@ -67,20 +69,30 @@ AG_SAMPLE_HTTP_RESPONSE(JSON_201, AG_HTTP_MIME_APPLICATION_JSON,
 
 AG_METATEST_OBJECT_COPY(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_COPY(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_COPY(ag_http_response, TEXT_302_FILE());
 
 AG_METATEST_OBJECT_CLONE(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_CLONE(ag_http_response, JSON_201());
 
 AG_METATEST_OBJECT_RELEASE(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_RELEASE(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_RELEASE(ag_http_response, TEXT_302_FILE());
 
 AG_METATEST_OBJECT_CMP(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_CMP(ag_http_response, TEXT_302_FILE(), HTML_200_EMPTY());
+
 AG_METATEST_OBJECT_LT(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_LT(ag_http_response, TEXT_302_FILE(), HTML_200_EMPTY());
+
 AG_METATEST_OBJECT_EQ(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_EQ(ag_http_response, TEXT_302_FILE(), HTML_200_EMPTY());
+
 AG_METATEST_OBJECT_GT(ag_http_response, JSON_201(), HTML_200_EMPTY());
+AG_METATEST_OBJECT_GT(ag_http_response, TEXT_302_FILE(), HTML_200_EMPTY());
 
 AG_METATEST_OBJECT_EMPTY(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_http_response, TEXT_302_FILE());
 
 AG_METATEST_OBJECT_VALID(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_VALID(ag_http_response, JSON_201());
@@ -89,30 +101,43 @@ AG_METATEST_OBJECT_TYPEID(ag_http_response, HTML_200_EMPTY(),
     AG_TYPEID_HTTP_RESPONSE);
 AG_METATEST_OBJECT_TYPEID(ag_http_response, JSON_201(),
     AG_TYPEID_HTTP_RESPONSE);
+AG_METATEST_OBJECT_TYPEID(ag_http_response, TEXT_302_FILE(),
+    AG_TYPEID_HTTP_RESPONSE);
 
 AG_METATEST_OBJECT_UUID(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_UUID(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_UUID(ag_http_response, TEXT_302_FILE());
 
 AG_METATEST_OBJECT_REFC(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_REFC(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_REFC(ag_http_response, TEXT_302_FILE());
 
 AG_METATEST_OBJECT_LEN(ag_http_response, HTML_200_EMPTY(),
     sample_len(HTML_200_EMPTY()));
 AG_METATEST_OBJECT_LEN(ag_http_response, JSON_201(), sample_len(JSON_201()));
+AG_METATEST_OBJECT_LEN(ag_http_response, TEXT_302_FILE(),
+    sample_len(TEXT_302_FILE()));
 
 AG_METATEST_OBJECT_SZ(ag_http_response, HTML_200_EMPTY(),
     sample_sz(HTML_200_EMPTY()));
 AG_METATEST_OBJECT_SZ(ag_http_response, JSON_201(), sample_sz(JSON_201()));
+AG_METATEST_OBJECT_SZ(ag_http_response, TEXT_302_FILE(),
+    sample_sz(TEXT_302_FILE()));
 
 AG_METATEST_OBJECT_HASH(ag_http_response, HTML_200_EMPTY(),
     sample_hash(HTML_200_EMPTY()));
 AG_METATEST_OBJECT_HASH(ag_http_response, JSON_201(), sample_hash(JSON_201()));
+AG_METATEST_OBJECT_HASH(ag_http_response, TEXT_302_FILE(),
+    sample_hash(TEXT_302_FILE()));
 
 AG_METATEST_OBJECT_STR(ag_http_response, HTML_200_EMPTY(),
     "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
 AG_METATEST_OBJECT_STR(ag_http_response, JSON_201(), 
     "Content-type: application/json; charset=UTF-8\r\nStatus: 201 (Created)"
     "\r\n\r\n{key:foo, val:bar}");
+AG_METATEST_OBJECT_STR(ag_http_response, TEXT_302_FILE(), 
+    "Content-type: text/plain; charset=UTF-8\r\nStatus: 302 (Found)"
+    "\r\n\r\nHello, world!\n");
 
 
 AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
@@ -120,20 +145,31 @@ AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
 AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
     "Content-type: application/json; charset=UTF-8\r\n"
     "Status: 201 (Created)\r\n\r\n");
+AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
+    "Content-type: text/plain; charset=UTF-8\r\n"
+    "Status: 302 (Found)\r\n\r\n");
 
 AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
 AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
+AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!\n");
 
 
 /**
  * A test suite containing the test cases defined above needs to be generated.
  * This is done through the AG_TEST_SUITE_GENERATE() macro, and the generated
  * test suite instance is returned to the test runner for further processing.
+ * 
+ * However, before we do so, the sample data files that are used for testing are
+ * first created:
+ *   - bld/data/new.txt: for testing ag_http_response_new_file()
+ *   - bld/data/add.txt: for testing ag_http_response_add_file()
  **/
 
 extern ag_test_suite *
 test_suite_http_response(void)
 {
+        (void)system("echo \"Hello, world!\" > bld/data/new.txt");
+
         return AG_TEST_SUITE_GENERATE("ag_http_response interface");
 }
 
