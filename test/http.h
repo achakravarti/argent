@@ -374,7 +374,7 @@
         {                                                                      \
                 AG_AUTO(ag_http_response) *r = sample;                         \
                 AG_AUTO(ag_string) *h = ag_http_response_header(r);            \
-                AG_TEST(ag_string_eq(h, expect));                              \
+                AG_TEST (ag_string_eq(h, expect));                             \
         }
 
 #define AG_METATEST_HTTP_RESPONSE_BODY(sample, expect)                  \
@@ -382,7 +382,7 @@
         {                                                               \
                 AG_AUTO(ag_http_response) *r = sample;                  \
                 AG_AUTO(ag_string) *b = ag_http_response_body(r);       \
-                AG_TEST(ag_string_eq(b, expect));                       \
+                AG_TEST (ag_string_eq(b, expect));                      \
         }
 
 

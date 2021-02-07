@@ -121,6 +121,9 @@ AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
     "Content-type: application/json; charset=UTF-8\r\n"
     "Status: 201 (Created)\r\n\r\n");
 
+AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
+AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
+
 
 /**
  * A test suite containing the test cases defined above needs to be generated.
