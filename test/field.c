@@ -69,26 +69,8 @@ AG_TEST_CASE("ag_field_parse() can parse a string representing a field")
 }
 
 
-AG_METATEST_OBJECT_COPY(ag_field, FIELD_SMALL());
-AG_METATEST_OBJECT_COPY(ag_field, FIELD_LARGE());
-
-
-/*
- * Define the test cases for ag_field_clone().
- */
-
-
-AG_METATEST_OBJECT_CLONE(ag_field, FIELD_SMALL());
-AG_METATEST_OBJECT_CLONE(ag_field, FIELD_LARGE());
-
-
-/*
- * Define the test cases for ag_field_release().
- */
-
-
-AG_METATEST_OBJECT_RELEASE(ag_field, FIELD_SMALL());
-AG_METATEST_OBJECT_RELEASE(ag_field, FIELD_LARGE());
+AG_METATEST_OBJECT_MANAGER(ag_field, FIELD_SMALL());
+AG_METATEST_OBJECT_MANAGER(ag_field, FIELD_LARGE());
 
 
 /*

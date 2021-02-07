@@ -124,31 +124,10 @@ AG_SAMPLE_HTTP_REQUEST(REQUEST_GET2, AG_HTTP_METHOD_GET, AG_HTTP_MIME_TEXT_CSS,
     HTTP_LOCALHOST_8080_FOO(), CLIENT_2(), param_array());
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_request_copy() with the sample
- * HTTP request objects defined above.
- */
-AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_COPY(ag_http_request, REQUEST_GET2());
+AG_METATEST_OBJECT_MANAGER(ag_http_request, REQUEST_GET0());
+AG_METATEST_OBJECT_MANAGER(ag_http_request, REQUEST_GET1());
+AG_METATEST_OBJECT_MANAGER(ag_http_request, REQUEST_GET2());
 
-
-/*
- * Run the ag_object_clone() metatest for ag_http_request_clone() with the
- * sample HTTP request objects defined above.
- */
-AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_CLONE(ag_http_request, REQUEST_GET2());
-
-
-/*
- * Run the ag_object_release() metatest for ag_http_request_release() with the
- * sample HTTP request objects defined above.
- */
-AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET0());
-AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET1());
-AG_METATEST_OBJECT_RELEASE(ag_http_request, REQUEST_GET2());
 
 
 /*

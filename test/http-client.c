@@ -63,31 +63,11 @@ AG_SAMPLE_HTTP_CLIENT(CLIENT1, "192.168.0.1", 0, "host.com", "mozilla",
 AG_SAMPLE_HTTP_CLIENT(CLIENT2, "192.168.1.1", 40, "domain.com", "webkit", "");
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_client_copy() with the above
- * sample HTTP client objects.
- */
-AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_COPY(ag_http_client, CLIENT2());
 
+AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT0());
+AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT1());
+AG_METATEST_OBJECT_MANAGER(ag_http_client, CLIENT2());
 
-/*
- * Run the ag_object_clone() metatest for ag_http_client_clone() with the above
- * sample HTTP client objects.
- */
-AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_CLONE(ag_http_client, CLIENT2());
-
-
-/*
- * Run the ag_object_release() metatest for ag_http_client_release() with the
- * above sample HTTP client objects.
- */
-AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT0());
-AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT1());
-AG_METATEST_OBJECT_RELEASE(ag_http_client, CLIENT2());
 
 
 /*

@@ -89,31 +89,9 @@ static bool     iterator(const ag_field *, void *, void *);
 static bool     iterator_mutable(ag_field **, void *, void *);
 
 
-/*
- * Run the ag_object_copy() metatest for ag_alist_copy() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
-AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
-AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_alist_clone() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
-AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
-AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_release() metatest for ag_alist_release() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
-AG_METATEST_OBJECT_RELEASE(ag_alist, sample_single());
-AG_METATEST_OBJECT_RELEASE(ag_alist, sample_list());
+AG_METATEST_OBJECT_MANAGER(ag_alist, sample_empty());
+AG_METATEST_OBJECT_MANAGER(ag_alist, sample_single());
+AG_METATEST_OBJECT_MANAGER(ag_alist, sample_list());
 
 
 /*

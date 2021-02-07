@@ -69,40 +69,12 @@ AG_SAMPLE_HTTP_URL(HTTPS_DOMAIN_FOO, true, "www.domain.com", 0, "/foo");
 AG_SAMPLE_HTTP_URL(HTTPS_DOMAIN_FOO_BAR, true, "www.domain.com", 0, "foo/bar");
 
 
-/*
- * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
- * sample HTTP URL objects.
- */
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_COPY(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_clone() metatest for ag_http_url_clone() with the above
- * sample HTTP URL objects.
- */
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_CLONE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
-
-
-/*
- * Run the ag_object_copy() metatest for ag_http_url_copy() with the above
- * sample HTTP URL objects.
- */
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTP_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO());
-AG_METATEST_OBJECT_RELEASE(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTP_LOCALHOST_8080());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_LOCALHOST_8080());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTP_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_LOCALHOST_8080_FOO());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_DOMAIN_FOO());
+AG_METATEST_OBJECT_MANAGER(ag_http_url, HTTPS_DOMAIN_FOO_BAR());
 
 
 /*
