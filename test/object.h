@@ -95,6 +95,12 @@
         }
 
 
+#define AG_METATEST_OBJECT_MANAGER(type, sample)        \
+        AG_METATEST_OBJECT_COPY(type, sample);          \
+        AG_METATEST_OBJECT_CLONE(type, sample);         \
+        AG_METATEST_OBJECT_RELEASE(type, sample);
+
+
 #define AG_METATEST_OBJECT_CMP(type, small, big)                        \
         AG_TEST_CASE(#type "_cmp(): ctx < cmp => AG_CMP_LT")            \
         {                                                               \
