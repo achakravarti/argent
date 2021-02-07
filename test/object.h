@@ -143,13 +143,6 @@
         }                                                               \
 
 
-#define AG_METATEST_OBJECT_COMPARATOR(type, small, big) \
-        AG_METATEST_OBJECT_CMP(type, small, big); \
-        AG_METATEST_OBJECT_LT(type, small, big); \
-        AG_METATEST_OBJECT_EQ(type, small, big); \
-        AG_METATEST_OBJECT_GT(type, small, big);
-
-
 #define AG_METATEST_OBJECT_EQ(type, small, big)                         \
         AG_TEST_CASE(#type "_eq(): ctx < cmp => false")                 \
         {                                                               \
@@ -192,22 +185,11 @@
         }                                                               \
 
 
-#define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
-        AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
-        {                                                               \
-                AG_AUTO(type) *o = sample;                              \
-                AG_TEST (type ## _typeid(o) == typeid)                  \
-        }                                                               \
-
-
-#define AG_METATEST_OBJECT_UUID(type, sample)                   \
-        AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
-        {                                                       \
-                AG_AUTO(type) *o = sample;                      \
-                AG_AUTO(ag_uuid) *u = type ## _uuid(o);         \
-                AG_AUTO(ag_string) *s = ag_uuid_str(u);         \
-                AG_TEST (!ag_string_empty(s));                  \
-        }                                                       \
+#define AG_METATEST_OBJECT_COMPARATOR(type, small, big) \
+        AG_METATEST_OBJECT_CMP(type, small, big); \
+        AG_METATEST_OBJECT_LT(type, small, big); \
+        AG_METATEST_OBJECT_EQ(type, small, big); \
+        AG_METATEST_OBJECT_GT(type, small, big);
 
 
 #define AG_METATEST_OBJECT_EMPTY(type, sample)                  \
@@ -240,6 +222,39 @@
                 AG_AUTO(type) *o = sample;                      \
                 AG_TEST (!type ## _valid(o))                    \
         }
+
+
+#define AG_METATEST_OBJECT_PREDICATE(type, sample, empty, valid)        \
+        AG_TEST_CASE(#type "_empty(): " #sample " => " #empty)          \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _empty(o) == empty);                   \
+        }                                                               \
+        AG_TEST_CASE(#type "_valid(): " #sample " => " #valid)          \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _valid(o) == valid);                   \
+        }
+
+
+#define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
+        AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
+        {                                                               \
+                AG_AUTO(type) *o = sample;                              \
+                AG_TEST (type ## _typeid(o) == typeid)                  \
+        }                                                               \
+
+
+#define AG_METATEST_OBJECT_UUID(type, sample)                   \
+        AG_TEST_CASE(#type "_uuid(): " #sample " => UUID")      \
+        {                                                       \
+                AG_AUTO(type) *o = sample;                      \
+                AG_AUTO(ag_uuid) *u = type ## _uuid(o);         \
+                AG_AUTO(ag_string) *s = ag_uuid_str(u);         \
+                AG_TEST (!ag_string_empty(s));                  \
+        }                                                       \
+
+
 
 
 #define AG_METATEST_OBJECT_LEN(type, sample, len)               \
