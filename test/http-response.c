@@ -118,7 +118,7 @@ AG_METATEST_OBJECT_HASH(ag_http_response, TEXT_302_FILE(),
     sample_hash(TEXT_302_FILE()));
 AG_METATEST_OBJECT_STR(ag_http_response, TEXT_302_FILE(), 
     "Content-type: text/plain; charset=UTF-8\r\nStatus: 302 (Found)"
-    "\r\n\r\nHello, world!\n");
+    "\r\n\r\nHello, world!");
 
 AG_METATEST_OBJECT_COMPARATOR(ag_http_response, HTML_200_EMPTY(), JSON_201());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_response, HTML_200_EMPTY(),
@@ -144,9 +144,9 @@ AG_METATEST_HTTP_RESPONSE_FLUSH(JSON_201());
 AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
     "Content-type: text/plain; charset=UTF-8\r\n"
     "Status: 302 (Found)\r\n\r\n");
-AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!\n");
-AG_METATEST_HTTP_RESPONSE_ADD(TEXT_302_FILE(), "Hello, again!",
-    "Hello, world!\nHello, again!");
+AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!");
+AG_METATEST_HTTP_RESPONSE_ADD(TEXT_302_FILE(), " Hello, again!",
+    "Hello, world! Hello, again!");
 AG_METATEST_HTTP_RESPONSE_FLUSH(TEXT_302_FILE());
 
 
@@ -164,7 +164,7 @@ AG_METATEST_HTTP_RESPONSE_FLUSH(TEXT_302_FILE());
 extern ag_test_suite *
 test_suite_http_response(void)
 {
-        (void)system("echo \"Hello, world!\" > bld/data/new.txt");
+        (void)system("echo -n \"Hello, world!\" > bld/data/new.txt");
 
         return AG_TEST_SUITE_GENERATE("ag_http_response interface");
 }
