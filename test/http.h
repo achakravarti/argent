@@ -386,5 +386,16 @@
         }
 
 
+#define AG_METATEST_HTTP_RESPONSE_ADD(sample, add, expect)                     \
+        AG_TEST_CASE("ag_http_response_add(): " #sample " + " add " => "       \
+            expect)                                                            \
+        {                                                                      \
+                AG_AUTO(ag_http_response) *r = sample;                         \
+                ag_http_response_add(&r, add);                                 \
+                AG_AUTO(ag_string) *b = ag_http_response_body(r);              \
+                AG_TEST (ag_string_eq(b, expect));                             \
+        }
+
+
 #endif /* !__ARGENT_TEST_HTTP_H__ */
 
