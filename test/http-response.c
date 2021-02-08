@@ -64,7 +64,7 @@ AG_SAMPLE_HTTP_RESPONSE_FILE(TEXT_302_FILE, AG_HTTP_MIME_TEXT_PLAIN,
 /**
  * Since ag_http_response is an object, it inherits the polymorphic functions of
  * the object interface. We test these inherited polymorphic functions through
- * the object metatest macros.
+ * the object metatest macros for each of the samples.
  **/
 
 AG_METATEST_OBJECT_COPY(ag_http_response, HTML_200_EMPTY());
@@ -72,78 +72,72 @@ AG_METATEST_OBJECT_CLONE(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_RELEASE(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_EMPTY(ag_http_response, HTML_200_EMPTY());
 AG_METATEST_OBJECT_VALID(ag_http_response, HTML_200_EMPTY());
+AG_METATEST_OBJECT_TYPEID(ag_http_response, HTML_200_EMPTY(),
+    AG_TYPEID_HTTP_RESPONSE);
+AG_METATEST_OBJECT_UUID(ag_http_response, HTML_200_EMPTY());
+AG_METATEST_OBJECT_REFC(ag_http_response, HTML_200_EMPTY());
+AG_METATEST_OBJECT_LEN(ag_http_response, HTML_200_EMPTY(),
+    sample_len(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_SZ(ag_http_response, HTML_200_EMPTY(),
+    sample_sz(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_HASH(ag_http_response, HTML_200_EMPTY(),
+    sample_hash(HTML_200_EMPTY()));
+AG_METATEST_OBJECT_STR(ag_http_response, HTML_200_EMPTY(),
+    "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
 
 AG_METATEST_OBJECT_COPY(ag_http_response, JSON_201());
 AG_METATEST_OBJECT_CLONE(ag_http_response, JSON_201());
 AG_METATEST_OBJECT_RELEASE(ag_http_response, JSON_201());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_response, JSON_201());
 AG_METATEST_OBJECT_VALID(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_TYPEID(ag_http_response, JSON_201(),
+    AG_TYPEID_HTTP_RESPONSE);
+AG_METATEST_OBJECT_UUID(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_REFC(ag_http_response, JSON_201());
+AG_METATEST_OBJECT_LEN(ag_http_response, JSON_201(), sample_len(JSON_201()));
+AG_METATEST_OBJECT_SZ(ag_http_response, JSON_201(), sample_sz(JSON_201()));
+AG_METATEST_OBJECT_HASH(ag_http_response, JSON_201(), sample_hash(JSON_201()));
+AG_METATEST_OBJECT_STR(ag_http_response, JSON_201(), 
+    "Content-type: application/json; charset=UTF-8\r\nStatus: 201 (Created)"
+    "\r\n\r\n{key:foo, val:bar}");
 
 AG_METATEST_OBJECT_COPY(ag_http_response, TEXT_302_FILE());
 AG_METATEST_OBJECT_CLONE(ag_http_response, TEXT_302_FILE());
 AG_METATEST_OBJECT_RELEASE(ag_http_response, TEXT_302_FILE());
 AG_METATEST_OBJECT_EMPTY_NOT(ag_http_response, TEXT_302_FILE());
 AG_METATEST_OBJECT_VALID(ag_http_response, TEXT_302_FILE());
+AG_METATEST_OBJECT_TYPEID(ag_http_response, TEXT_302_FILE(),
+    AG_TYPEID_HTTP_RESPONSE);
+AG_METATEST_OBJECT_UUID(ag_http_response, TEXT_302_FILE());
+AG_METATEST_OBJECT_REFC(ag_http_response, TEXT_302_FILE());
+AG_METATEST_OBJECT_LEN(ag_http_response, TEXT_302_FILE(),
+    sample_len(TEXT_302_FILE()));
+AG_METATEST_OBJECT_SZ(ag_http_response, TEXT_302_FILE(),
+    sample_sz(TEXT_302_FILE()));
+AG_METATEST_OBJECT_HASH(ag_http_response, TEXT_302_FILE(),
+    sample_hash(TEXT_302_FILE()));
+AG_METATEST_OBJECT_STR(ag_http_response, TEXT_302_FILE(), 
+    "Content-type: text/plain; charset=UTF-8\r\nStatus: 302 (Found)"
+    "\r\n\r\nHello, world!\n");
 
 AG_METATEST_OBJECT_COMPARATOR(ag_http_response, HTML_200_EMPTY(), JSON_201());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_response, HTML_200_EMPTY(),
     TEXT_302_FILE());
 AG_METATEST_OBJECT_COMPARATOR(ag_http_response, TEXT_302_FILE(), JSON_201());
 
-AG_METATEST_OBJECT_TYPEID(ag_http_response, HTML_200_EMPTY(),
-    AG_TYPEID_HTTP_RESPONSE);
-AG_METATEST_OBJECT_TYPEID(ag_http_response, JSON_201(),
-    AG_TYPEID_HTTP_RESPONSE);
-AG_METATEST_OBJECT_TYPEID(ag_http_response, TEXT_302_FILE(),
-    AG_TYPEID_HTTP_RESPONSE);
-
-AG_METATEST_OBJECT_UUID(ag_http_response, HTML_200_EMPTY());
-AG_METATEST_OBJECT_UUID(ag_http_response, JSON_201());
-AG_METATEST_OBJECT_UUID(ag_http_response, TEXT_302_FILE());
-
-AG_METATEST_OBJECT_REFC(ag_http_response, HTML_200_EMPTY());
-AG_METATEST_OBJECT_REFC(ag_http_response, JSON_201());
-AG_METATEST_OBJECT_REFC(ag_http_response, TEXT_302_FILE());
-
-AG_METATEST_OBJECT_LEN(ag_http_response, HTML_200_EMPTY(),
-    sample_len(HTML_200_EMPTY()));
-AG_METATEST_OBJECT_LEN(ag_http_response, JSON_201(), sample_len(JSON_201()));
-AG_METATEST_OBJECT_LEN(ag_http_response, TEXT_302_FILE(),
-    sample_len(TEXT_302_FILE()));
-
-AG_METATEST_OBJECT_SZ(ag_http_response, HTML_200_EMPTY(),
-    sample_sz(HTML_200_EMPTY()));
-AG_METATEST_OBJECT_SZ(ag_http_response, JSON_201(), sample_sz(JSON_201()));
-AG_METATEST_OBJECT_SZ(ag_http_response, TEXT_302_FILE(),
-    sample_sz(TEXT_302_FILE()));
-
-AG_METATEST_OBJECT_HASH(ag_http_response, HTML_200_EMPTY(),
-    sample_hash(HTML_200_EMPTY()));
-AG_METATEST_OBJECT_HASH(ag_http_response, JSON_201(), sample_hash(JSON_201()));
-AG_METATEST_OBJECT_HASH(ag_http_response, TEXT_302_FILE(),
-    sample_hash(TEXT_302_FILE()));
-
-AG_METATEST_OBJECT_STR(ag_http_response, HTML_200_EMPTY(),
-    "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
-AG_METATEST_OBJECT_STR(ag_http_response, JSON_201(), 
-    "Content-type: application/json; charset=UTF-8\r\nStatus: 201 (Created)"
-    "\r\n\r\n{key:foo, val:bar}");
-AG_METATEST_OBJECT_STR(ag_http_response, TEXT_302_FILE(), 
-    "Content-type: text/plain; charset=UTF-8\r\nStatus: 302 (Found)"
-    "\r\n\r\nHello, world!\n");
-
 
 AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
     "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
+AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
+
 AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
     "Content-type: application/json; charset=UTF-8\r\n"
     "Status: 201 (Created)\r\n\r\n");
+AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
+
 AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
     "Content-type: text/plain; charset=UTF-8\r\n"
     "Status: 302 (Found)\r\n\r\n");
-
-AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
-AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
 AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!\n");
 
 
