@@ -145,9 +145,21 @@ AG_METATEST_OBJECT_VALID(ag_http_request, REQUEST_GET1());
 /*
  * TODO: Rethink implementation ag_http_request_cmp().
  */
-AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
-AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
-AG_METATEST_OBJECT_COMPARATOR(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+
+AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET0(), REQUEST_GET1());
+
+AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET0());
+
+AG_METATEST_OBJECT_CMP(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+AG_METATEST_OBJECT_LT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+AG_METATEST_OBJECT_EQ(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
+AG_METATEST_OBJECT_GT(ag_http_request, REQUEST_GET2(), REQUEST_GET1());
 
 
 /* * Run the ag_object_typeid() metatest for ag_http_request_typeid() with the

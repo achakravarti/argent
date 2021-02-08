@@ -123,10 +123,20 @@ AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
 
 
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_single());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_single());
 
-AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_single());
-AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_list());
-AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_LT(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_empty(), sample_list());
+AG_METATEST_OBJECT_GT(ag_alist, sample_empty(), sample_list());
+
+AG_METATEST_OBJECT_CMP(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_LT(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_EQ(ag_alist, sample_list(), sample_list_2());
+AG_METATEST_OBJECT_GT(ag_alist, sample_list(), sample_list_2());
 
 
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());

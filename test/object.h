@@ -179,13 +179,6 @@
         }                                                               \
 
 
-#define AG_METATEST_OBJECT_COMPARATOR(type, small, big) \
-        AG_METATEST_OBJECT_CMP(type, small, big); \
-        AG_METATEST_OBJECT_LT(type, small, big); \
-        AG_METATEST_OBJECT_EQ(type, small, big); \
-        AG_METATEST_OBJECT_GT(type, small, big);
-
-
 #define AG_METATEST_OBJECT_EMPTY(type, sample)                  \
         AG_TEST_CASE(#type "_empty(): " #sample " => true")     \
         {                                                       \
