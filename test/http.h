@@ -403,6 +403,16 @@
                 AG_TEST (ag_string_eq(b, expect));                             \
         }
 
+#define AG_METATEST_HTTP_RESPONSE_ADD_FILE(sample, add, expect)                \
+        AG_TEST_CASE("ag_http_response_add_file(): " #sample " + " add " => "  \
+            expect)                                                            \
+        {                                                                      \
+                AG_AUTO(ag_http_response) *r = sample;                         \
+                ag_http_response_add_file(&r, add);                            \
+                AG_AUTO(ag_string) *b = ag_http_response_body(r);              \
+                AG_TEST (ag_string_eq(b, expect));                             \
+        }
+
 #define AG_METATEST_HTTP_RESPONSE_FLUSH(sample)                                \
         AG_TEST_CASE("ag_http_response_flush(): " #sample " => empty string")  \
         {                                                                      \
