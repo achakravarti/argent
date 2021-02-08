@@ -92,69 +92,41 @@ static bool     iterator_mutable(ag_field **, void *, void *);
 AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY(ag_alist, sample_empty());
+AG_METATEST_OBJECT_VALID_NOT(ag_alist, sample_empty());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
+AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
+AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
 
 AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_single());
+AG_METATEST_OBJECT_VALID(ag_alist, sample_single());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
+AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
+AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
 
 AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
 AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_EMPTY_NOT(ag_alist, sample_list());
+AG_METATEST_OBJECT_VALID(ag_alist, sample_list());
+AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
+AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
+AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
+AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
+AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
 
 
 
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_list());
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_list(), sample_list_2());
-
-AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_empty(), true, false);
-AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_single(), false, true);
-AG_METATEST_OBJECT_PREDICATE(ag_alist, sample_list(), false, true);
-
-
-/*
- * Run the ag_object_typeid() metatest for ag_alist_typeid() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_TYPEID(ag_alist, sample_empty(), AG_TYPEID_ALIST);
-AG_METATEST_OBJECT_TYPEID(ag_alist, sample_single(), AG_TYPEID_ALIST);
-AG_METATEST_OBJECT_TYPEID(ag_alist, sample_list(), AG_TYPEID_ALIST);
-
-
-/*
- * Run the ag_object_uuid() metatest for ag_alist_uuid() with the sample
- * assocation list objects declared above.
- */
-AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
-AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
-AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_refc() metatest for ag_alist_refc() with the sample
- * association list objects decalred above.
- */
-AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
-AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
-AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
-
-
-/*
- * Run the ag_object_len() metatest for ag_alist_len() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
-AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
-AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
-
-
-/*
- * Run the ag_object_str() metatest for ag_alist_str() with the sample
- * association list objects declared above.
- */
-AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
-AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
-AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
 
 
 AG_METATEST_ALIST_HAS_NOT(sample_empty(), FIELD_KEY_VAL());

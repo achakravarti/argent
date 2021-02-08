@@ -218,19 +218,6 @@
         }
 
 
-#define AG_METATEST_OBJECT_PREDICATE(type, sample, empty, valid)        \
-        AG_TEST_CASE(#type "_empty(): " #sample " => " #empty)          \
-        {                                                               \
-                AG_AUTO(type) *o = sample;                              \
-                AG_TEST (type ## _empty(o) == empty);                   \
-        }                                                               \
-        AG_TEST_CASE(#type "_valid(): " #sample " => " #valid)          \
-        {                                                               \
-                AG_AUTO(type) *o = sample;                              \
-                AG_TEST (type ## _valid(o) == valid);                   \
-        }
-
-
 #define AG_METATEST_OBJECT_TYPEID(type, sample, typeid)                 \
         AG_TEST_CASE(#type "_typeid(): " #sample " => " #typeid)        \
         {                                                               \
