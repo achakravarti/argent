@@ -58,7 +58,7 @@ AG_SAMPLE_HTTP_RESPONSE_EMPTY(HTML_200_EMPTY, AG_HTTP_MIME_TEXT_HTML,
 AG_SAMPLE_HTTP_RESPONSE(JSON_201, AG_HTTP_MIME_APPLICATION_JSON,
     AG_HTTP_STATUS_201_CREATED, "{key:foo, val:bar}");
 AG_SAMPLE_HTTP_RESPONSE_FILE(TEXT_302_FILE, AG_HTTP_MIME_TEXT_PLAIN,
-    AG_HTTP_STATUS_302_FOUND, "bld/data/new.txt");
+    AG_HTTP_STATUS_302_FOUND, "bld/test/new.txt");
 
 
 /**
@@ -131,7 +131,7 @@ AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
 AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
 AG_METATEST_HTTP_RESPONSE_ADD(HTML_200_EMPTY(), "<h1>Hello, world!</h1>",
     "<h1>Hello, world!</h1>");
-AG_METATEST_HTTP_RESPONSE_ADD_FILE(HTML_200_EMPTY(), "bld/data/add.txt",
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(HTML_200_EMPTY(), "bld/test/add.txt",
     "***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(HTML_200_EMPTY());
 
@@ -141,7 +141,7 @@ AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
 AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
 AG_METATEST_HTTP_RESPONSE_ADD(JSON_201(), ", {key:bar, val:foo}",
     "{key:foo, val:bar}, {key:bar, val:foo}");
-AG_METATEST_HTTP_RESPONSE_ADD_FILE(JSON_201(), "bld/data/add.txt",
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(JSON_201(), "bld/test/add.txt",
     "{key:foo, val:bar}***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(JSON_201());
 
@@ -151,7 +151,7 @@ AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
 AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!");
 AG_METATEST_HTTP_RESPONSE_ADD(TEXT_302_FILE(), " Hello, again!",
     "Hello, world! Hello, again!");
-AG_METATEST_HTTP_RESPONSE_ADD_FILE(TEXT_302_FILE(), "bld/data/add.txt",
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(TEXT_302_FILE(), "bld/test/add.txt",
     "Hello, world!***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(TEXT_302_FILE());
 
@@ -163,15 +163,15 @@ AG_METATEST_HTTP_RESPONSE_FLUSH(TEXT_302_FILE());
  * 
  * However, before we do so, the sample data files that are used for testing are
  * first created:
- *   - bld/data/new.txt: for testing ag_http_response_new_file()
- *   - bld/data/add.txt: for testing ag_http_response_add_file()
+ *   - bld/test/new.txt: for testing ag_http_response_new_file()
+ *   - bld/test/add.txt: for testing ag_http_response_add_file()
  **/
 
 extern ag_test_suite *
 test_suite_http_response(void)
 {
-        (void)system("echo -n \"Hello, world!\" > bld/data/new.txt");
-        (void)system("echo -n \"***EOF***\" > bld/data/add.txt");
+        (void)system("echo -n \"Hello, world!\" > bld/test/new.txt");
+        (void)system("echo -n \"***EOF***\" > bld/test/add.txt");
 
         return AG_TEST_SUITE_GENERATE("ag_http_response interface");
 }

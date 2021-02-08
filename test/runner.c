@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         (void) argv;
 
         ag_init();
-        (void)system("mkdir -p bld/data");
+        (void)system("mkdir -p bld/test");
 
         ag_test_harness *th = ag_test_harness_new();
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
         ag_test_harness_release(&th);
 
-        (void)system("rm -rf bld/data");
+        (void)system("rm -rf bld/test");
         ag_exit(EXIT_SUCCESS);
 
         return 0;
