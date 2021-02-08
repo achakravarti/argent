@@ -300,15 +300,5 @@
         }
 
 
-#define AG_METATEST_OBJECT_ACCESSOR(type, sample, typeid, len, sz, hash, str)  \
-        AG_METATEST_OBJECT_TYPEID(type, sample, typeid);                       \
-        AG_METATEST_OBJECT_UUID(type, sample);                                 \
-        AG_METATEST_OBJECT_REFC(type, sample);                                 \
-        AG_METATEST_OBJECT_LEN(type, sample, len);                             \
-        AG_METATEST_OBJECT_SZ(type, sample, sz);                               \
-        AG_METATEST_OBJECT_HASH(type, sample, hash);                           \
-        AG_METATEST_OBJECT_STR(type, sample, str);
-
-
 #endif /* !__ARGENT_TEST_OBJECT_H__ */
 
