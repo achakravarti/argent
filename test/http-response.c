@@ -129,16 +129,22 @@ AG_METATEST_OBJECT_COMPARATOR(ag_http_response, TEXT_302_FILE(), JSON_201());
 AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
     "Content-type: text/html; charset=UTF-8\r\nStatus: 200 (OK)\r\n\r\n");
 AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
+AG_METATEST_HTTP_RESPONSE_ADD(HTML_200_EMPTY(), "<h1>Hello, world!</h1>",
+    "<h1>Hello, world!</h1>");
 
 AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
     "Content-type: application/json; charset=UTF-8\r\n"
     "Status: 201 (Created)\r\n\r\n");
 AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
+AG_METATEST_HTTP_RESPONSE_ADD(JSON_201(), ", {key:bar, val:foo}",
+    "{key:foo, val:bar}, {key:bar, val:foo}");
 
 AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
     "Content-type: text/plain; charset=UTF-8\r\n"
     "Status: 302 (Found)\r\n\r\n");
 AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!\n");
+AG_METATEST_HTTP_RESPONSE_ADD(TEXT_302_FILE(), "Hello, again!",
+    "Hello, world!\nHello, again!");
 
 
 /**
