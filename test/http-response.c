@@ -131,6 +131,8 @@ AG_METATEST_HTTP_RESPONSE_HEADER(HTML_200_EMPTY(),
 AG_METATEST_HTTP_RESPONSE_BODY(HTML_200_EMPTY(), "");
 AG_METATEST_HTTP_RESPONSE_ADD(HTML_200_EMPTY(), "<h1>Hello, world!</h1>",
     "<h1>Hello, world!</h1>");
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(HTML_200_EMPTY(), "bld/data/add.txt",
+    "***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(HTML_200_EMPTY());
 
 AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
@@ -139,6 +141,8 @@ AG_METATEST_HTTP_RESPONSE_HEADER(JSON_201(),
 AG_METATEST_HTTP_RESPONSE_BODY(JSON_201(), "{key:foo, val:bar}");
 AG_METATEST_HTTP_RESPONSE_ADD(JSON_201(), ", {key:bar, val:foo}",
     "{key:foo, val:bar}, {key:bar, val:foo}");
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(JSON_201(), "bld/data/add.txt",
+    "{key:foo, val:bar}***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(JSON_201());
 
 AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
@@ -147,6 +151,8 @@ AG_METATEST_HTTP_RESPONSE_HEADER(TEXT_302_FILE(),
 AG_METATEST_HTTP_RESPONSE_BODY(TEXT_302_FILE(), "Hello, world!");
 AG_METATEST_HTTP_RESPONSE_ADD(TEXT_302_FILE(), " Hello, again!",
     "Hello, world! Hello, again!");
+AG_METATEST_HTTP_RESPONSE_ADD_FILE(TEXT_302_FILE(), "bld/data/add.txt",
+    "Hello, world!***EOF***");
 AG_METATEST_HTTP_RESPONSE_FLUSH(TEXT_302_FILE());
 
 
@@ -165,6 +171,7 @@ extern ag_test_suite *
 test_suite_http_response(void)
 {
         (void)system("echo -n \"Hello, world!\" > bld/data/new.txt");
+        (void)system("echo -n \"***EOF***\" > bld/data/add.txt");
 
         return AG_TEST_SUITE_GENERATE("ag_http_response interface");
 }
