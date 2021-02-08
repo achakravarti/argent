@@ -89,9 +89,19 @@ static bool     iterator(const ag_field *, void *, void *);
 static bool     iterator_mutable(ag_field **, void *, void *);
 
 
-AG_METATEST_OBJECT_MANAGER(ag_alist, sample_empty());
-AG_METATEST_OBJECT_MANAGER(ag_alist, sample_single());
-AG_METATEST_OBJECT_MANAGER(ag_alist, sample_list());
+AG_METATEST_OBJECT_COPY(ag_alist, sample_empty());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_empty());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+
+AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+
+AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
+AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
+AG_METATEST_OBJECT_RELEASE(ag_alist, sample_empty());
+
+
 
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_single());
 AG_METATEST_OBJECT_COMPARATOR(ag_alist, sample_empty(), sample_list());
