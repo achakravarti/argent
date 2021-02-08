@@ -367,6 +367,14 @@
                 AG_AUTO(ag_alist) *p2 = ag_http_request_param(r);              \
                 AG_TEST (ag_alist_eq(p, p2));                                  \
         }
+#define AG_METATEST_HTTP_REQUEST_PARAM(sample, expect)                         \
+        AG_TEST_CASE("ag_http_request_param(): " #sample " => " #expect)       \
+        {                                                                      \
+                AG_AUTO(ag_http_request) *r = sample;                          \
+                AG_AUTO(ag_alist) *p = expect;                                 \
+                AG_AUTO(ag_alist) *p2 = ag_http_request_param(r);              \
+                AG_TEST (ag_alist_eq(p, p2));                                  \
+        }
 
 
 #define AG_METATEST_HTTP_RESPONSE_HEADER(sample, expect)                       \
@@ -385,7 +393,6 @@
                 AG_TEST (ag_string_eq(b, expect));                      \
         }
 
-
 #define AG_METATEST_HTTP_RESPONSE_ADD(sample, add, expect)                     \
         AG_TEST_CASE("ag_http_response_add(): " #sample " + " add " => "       \
             expect)                                                            \
@@ -394,6 +401,15 @@
                 ag_http_response_add(&r, add);                                 \
                 AG_AUTO(ag_string) *b = ag_http_response_body(r);              \
                 AG_TEST (ag_string_eq(b, expect));                             \
+        }
+
+#define AG_METATEST_HTTP_RESPONSE_FLUSH(sample)                                \
+        AG_TEST_CASE("ag_http_response_flush(): " #sample " => empty string")  \
+        {                                                                      \
+                AG_AUTO(ag_http_response) *r = sample;                         \
+                ag_http_response_flush(&r);                                    \
+                AG_AUTO(ag_string) *b = ag_http_response_body(r);              \
+                AG_TEST (ag_string_empty(b));                                  \
         }
 
 
