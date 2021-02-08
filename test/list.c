@@ -98,8 +98,8 @@ AG_METATEST_OBJECT_UUID(ag_list, sample_int());
 AG_METATEST_OBJECT_REFC(ag_list, sample_int());
 AG_METATEST_OBJECT_LEN(ag_list, sample_int(), 3);
 AG_METATEST_OBJECT_SZ(ag_list, sample_int(), 3 * sizeof(ag_int));
-AG_METATEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) + ag_hash_new(0) +
-    ag_hash_new(456));
+AG_METATEST_OBJECT_HASH(ag_list, sample_int(), ag_hash_new(-123) +
+    ag_hash_new(0) + ag_hash_new(456));
 AG_METATEST_OBJECT_STR_HAS(ag_list, sample_int(), "list");
 
 AG_METATEST_OBJECT_COPY(ag_list, sample_int_2());
