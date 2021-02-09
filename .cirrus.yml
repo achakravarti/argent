@@ -5,6 +5,6 @@ task:
   install_script:
     pkg update &&
     pkg install -y gmake ccache e2fsprogs-libuuid postgresql12-server
-    postgresql12-client postgresql-libpgeasy valgrind-devel
+    postgresql12-client postgresql-libpgeasy valgrind-devel fcgi-devkit
   script: gmake check
 
