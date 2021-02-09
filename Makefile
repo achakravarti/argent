@@ -28,7 +28,7 @@ BIN_LIB = bld/libargent.so
 
 CC = ccache cc
 CFLAGS = -fPIC -g --coverage -O0 -Wall -Wextra -I $(shell pg_config --includedir)
-LDFLAGS = -rdynamic -L $(shell pg_config --libdir) -lpq -luuid -ldl
+LDFLAGS = -rdynamic -L $(shell pg_config --libdir) -lfcgi -lpq -luuid -ldl
 
 
 
