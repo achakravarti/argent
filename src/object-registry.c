@@ -24,37 +24,36 @@
 #include "../include/argent.h"
 
 
-struct vector {
-        struct ag_object_vtable *vt;
-        size_t cap;
-};
-
-
-static struct vector *g_argent;
-static struct vector *g_client;
-
-
-/*
- * Prototypes for the helper functions for selecting the appropriate vector and
- * determining the vector index according to type ID.
+/*******************************************************************************
+ * Although the object registry presents a unified interface, it is actually
+ * implemented as two separate internal registries, just like the exception
+ * registry. The `g_argent` registry is responsible for holding the objects
+ * specific to the Argent Library, and the `g_client` registry holds the objects
+ * of client code.
+ *
+ * The objects specific to the Argent Library are distinguished by having a
+ * negative type ID whereas those of the client code are required to be
+ * positive. By having two separate registries, hash collisions between Argent
+ * Library and client code objects is prevented (since the hash of the type ID
+ * is used as the key, and the hash is always determined on the absolute value).
+ *
+ * Supporting these two internal registries is the `reg_dispose()` helper
+ * function, which is invoked during the disposal of the registries.
  */
-static inline struct vector *typeid_vector(ag_typeid);
-static inline size_t         typeid_index(ag_typeid);
+
+static ag_registry *g_argent;
+static ag_registry *g_client;
+
+static void     reg_dispose(void *);
 
 
-/* Prototypes to manage managing vectors */
-static inline struct vector *vector_new(size_t);
-static void                  vector_release(struct vector **);
-static inline void           vector_resize(struct vector *, size_t);
+/*******************************************************************************
+ * The object v-table methods are set to default callbacks in case they are not
+ * provied by client code. By providing default callbacks we not only gain in
+ * convenience but also improve performance since we avoid the need to check
+ * whether or not a callback has been assigned when an object method is invoked.
+ */
 
-
-/* Prototypes for vector accessor and mutator */
-static inline const struct ag_object_vtable *vector_get(const struct vector *,
-                                                        size_t);
-static void vector_set(struct vector *, size_t, const struct ag_object_vtable *);
-
-
-/* Prototypes for the default callback functions */
 static ag_memblock *def_clone(const ag_memblock *);
 static void         def_release(ag_memblock *);
 static enum ag_cmp  def_cmp(const ag_object *, const ag_object *);
@@ -65,161 +64,204 @@ static size_t       def_hash(const ag_object *);
 static ag_string   *def_str(const ag_object *);
 
 
-extern void ag_object_registry_init(void)
+/*******************************************************************************
+ * The `ag_object_registry_init()` interface function initialises the object
+ * registry by creating new instances of the internal registries. Both of the
+ * internal registries are passed the `reg_dispose()` helper function as the
+ * disposal callback.
+ */
+
+extern void
+ag_object_registry_init(void)
 {
-        g_argent = vector_new(sizeof(size_t));
-        g_client = vector_new(sizeof(size_t));
+        g_argent = ag_registry_new(reg_dispose);
+        g_client = ag_registry_new(reg_dispose);
 }
 
 
-extern void ag_object_registry_exit(void)
+/*******************************************************************************
+ * The `ag_object_registry_exit()` interface function is the converse of the
+ * `ag_object_registry_init()` function, and is responsible for releasing the
+ * heap memory resources used by the object registry.
+ */
+
+extern void
+ag_object_registry_exit(void)
 {
-        vector_release(&g_argent);
-        vector_release(&g_client);
+        ag_registry_release(&g_argent);
+        ag_registry_release(&g_client);
 }
 
 
-extern const struct ag_object_vtable *ag_object_registry_get(ag_typeid typeid)
+/*******************************************************************************
+ * The `ag_object_registry_get()` interface function gets the the object v-table
+ * associated with an object with a given type ID (passed through the first
+ * parameter). The retrieval from the correct internal registry is determined
+ * based on whether or not the type ID is positive.
+ */
+
+extern const struct ag_object_vtable *
+ag_object_registry_get(ag_typeid typeid)
 {
-        return vector_get(typeid_vector(typeid), typeid_index(typeid));
+        ag_registry *r = typeid < 0 ? g_argent : g_client;
+        ag_hash h = ag_hash_new(typeid);
+
+        struct ag_object_vtable *v = ag_registry_get(r, h);
+        return v;
 }
 
 
-extern void ag_object_registry_set(ag_typeid typeid,
-                                const struct ag_object_vtable *vt)
+/*******************************************************************************
+ * The `ag_object_registry_push()` interface function pushes the object v-table
+ * (second parameter) associated with a given object type ID (first parameter).
+ * If any of the callbacks in the v-table are not provided (indicated by `NULL`)
+ * then they are set to their corresponding default callback.
+ */
+
+extern void
+ag_object_registry_push(ag_typeid typeid, const struct ag_object_vtable *vt)
 {
-        vector_set(typeid_vector(typeid), typeid_index(typeid), vt);
+        struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
+        v->clone = vt->clone ? vt->clone : def_clone;
+        v->release = vt->release ? vt->release : def_release;
+        v->cmp = vt->cmp ? vt->cmp : def_cmp;
+        v->valid = vt->valid ? vt->valid : def_valid;
+        v->sz = vt->sz ? vt->sz : def_sz;
+        v->len = vt->len ? vt->len : def_len;
+        v->hash = vt->hash ? vt->hash : def_hash;
+        v->str = vt->str ? vt->str : def_str;
+
+        ag_registry *r = typeid < 0 ? g_argent : g_client;
+        ag_hash h = ag_hash_new(typeid);
+        ag_registry_push(r, h, v);
 }
 
 
-static inline struct vector *typeid_vector(ag_typeid typeid)
+/*******************************************************************************
+ * The `reg_dispose()` helper function is the callback function invoked by
+ * `ag_registry_release()` to dispose of each object v-table instance contained
+ * within the internal registries during the release cycle.
+ */
+
+static void
+reg_dispose(void *hnd)
 {
-        return typeid < AG_TYPEID_OBJECT ? g_argent : g_client;
+        ag_memblock_release(&hnd);
 }
 
 
-static inline size_t typeid_index(ag_typeid typeid)
+/*******************************************************************************
+ * The `def_clone()` helper function is the default callback function of the
+ * `ag_object_clone()` method. The handle to the object payload is passed
+ * through the only parameter, and we simply return a clone of it.
+ */
+
+static ag_memblock *
+def_clone(const ag_memblock *hnd)
 {
-        return typeid < AG_TYPEID_OBJECT ? AG_TYPEID_OBJECT - typeid : typeid;
+        return ag_memblock_clone(hnd);
 }
 
 
-static inline struct vector *vector_new(size_t cap)
-{
-        struct vector *ctx = ag_memblock_new(sizeof *ctx);
-        ctx->vt = ag_memblock_new(sizeof *ctx->vt * cap);
-        ctx->cap = cap;
+/*******************************************************************************
+ * The `def_release()` helper function is the default callback function of the
+ * `ag_object_release()` method. The handle to the payload is passed as the only
+ * parameter. We don't do anything because `ag_object_release()` takes care of
+ * releasing the memory allocated to the payload.
+ */
 
-        return ctx;
+static void
+def_release(ag_memblock *hnd)
+{
+        (void)hnd;
 }
 
 
-static void vector_release(struct vector **ctx)
+/*******************************************************************************
+ * The `def_cmp()` helper function is the default callback function of the
+ * `ag_object_cmp()` method. The handles to the left-hand and right-hand objects
+ * are respectively passed as parameters, and we return the result of the memory
+ * comparison of both.
+ */
+
+static enum ag_cmp
+def_cmp(const ag_object *lhs, const ag_object *rhs)
 {
-        struct vector *v;
-
-        if (AG_LIKELY (ctx && (v = *ctx))) {
-                ag_memblock *m = v->vt;
-                ag_memblock_release(&m);
-
-                m = v;
-                ag_memblock_release(&m);
-                *ctx = m;
-        }
+        return ag_memblock_cmp(lhs, rhs);
 }
 
 
-static inline void vector_resize(struct vector *ctx, size_t cap)
+/*******************************************************************************
+ * The `def_valid()` helper function is the default callback function of the
+ * `ag_object_valid()` method. The handle to the contextual object is passed as
+ * the only parameter. By default, an object is considered to be valid if its
+ * handle is not `NULL`.
+ */
+
+static bool
+def_valid(const ag_object *hnd)
 {
-        ag_memblock *m = ctx->vt;
-        ag_memblock_resize(&m, cap);
+        return hnd;
 }
 
 
-static inline const struct ag_object_vtable *vector_get(const struct vector *ctx,
-                                                     size_t idx)
+/*******************************************************************************
+ * The `def_sz()` helper function is the default callback function for the
+ * `ag_object_sz()` method. The handle to the contextual object is passed as the
+ * only parameter. We return the size of object along with the size of its
+ * payload.
+ */
+
+static size_t
+def_sz(const ag_object *hnd)
 {
-        return &ctx->vt[idx];
+        return ag_memblock_sz(hnd) + ag_memblock_sz(ag_object_payload(hnd));
 }
 
 
-static void vector_set(struct vector *ctx, size_t idx,
-                       const struct ag_object_vtable *vt)
+/*******************************************************************************
+ * The `def_len()` helper function is the default callback function for the
+ * `ag_object_len()` method. The handle to the contextual object is passed as
+ * the only parameter, but is unused as we return 1 by default.
+ */
+
+static size_t
+def_len(const ag_object *hnd)
 {
-        register size_t cap = ctx->cap;
-
-        if (cap < idx) {
-                while (cap < idx)
-                        cap *= 2;
-
-                vector_resize(ctx, cap);
-        }
-
-        struct ag_object_vtable *dst = &ctx->vt[idx];
-        dst->clone   = vt->clone   ? vt->clone   : def_clone;
-        dst->release = vt->release ? vt->release : def_release;
-        dst->cmp     = vt->cmp     ? vt->cmp     : def_cmp;
-        dst->valid   = vt->valid   ? vt->valid   : def_valid;
-        dst->sz      = vt->sz      ? vt->sz      : def_sz;
-        dst->len     = vt->len     ? vt->len     : def_len;
-        dst->hash    = vt->hash    ? vt->hash    : def_hash;
-        dst->str     = vt->str     ? vt->str     : def_str;
-}
-
-
-static ag_memblock *def_clone(const ag_memblock *ctx)
-{
-        return ag_memblock_clone(ctx);
-}
-
-
-// we don't do anything because ag_object_release() takes care of releasing the
-// memory allocated to the payload
-static void def_release(ag_memblock *ctx)
-{
-        (void)ctx;
-}
-
-
-static enum ag_cmp def_cmp(const ag_object *ctx, const ag_object *cmp)
-{
-        return ag_memblock_cmp(ctx, cmp);
-}
-
-
-static bool def_valid(const ag_object *ctx)
-{
-        return ctx;
-}
-
-
-static size_t def_sz(const ag_object *ctx)
-{
-        return ag_memblock_sz(ctx) + ag_memblock_sz(ag_object_payload(ctx));
-}
-
-
-static size_t def_len(const ag_object *ctx)
-{
-        (void)ctx;
+        (void)hnd;
         return 1;
 }
 
 
-static ag_hash def_hash(const ag_object *ctx)
+/*******************************************************************************
+ * The `def_hash()` helper function is the default callback function for the
+ * `ag_object_hash()` method. The handle to the contextual object is passed as
+ * the only parameter, and we return the hash of its UUID.
+ */
+
+static ag_hash
+def_hash(const ag_object *hnd)
 {
-        AG_AUTO(ag_uuid) *u = ag_object_uuid(ctx);
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(hnd);
         return ag_uuid_hash(u);
 }
 
 
-static ag_string *def_str(const ag_object *ctx)
-{
-        AG_AUTO(ag_uuid) *u    = ag_object_uuid(ctx);
-        AG_AUTO(ag_string)  *ustr = ag_uuid_str(u);
-        AG_AUTO(ag_string)  *mstr = ag_memblock_str(ctx);
+/*******************************************************************************
+ * The `def_str()` helper function is the default callback function for the
+ * `ag_object_str()` method. The handle to the contextual object is passed as
+ * the only parameter. By default, we return a string specifying the type ID,
+ * the UUID, and the address in memory of the object.
+ */
 
-        return ag_string_new_fmt("typeid = %d, uuid = %s, %s", ag_object_typeid(ctx),
-                              ustr, mstr);
+static ag_string *
+def_str(const ag_object *hnd)
+{
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(hnd);
+        AG_AUTO(ag_string)  *ustr = ag_uuid_str(u);
+        AG_AUTO(ag_string)  *mstr = ag_memblock_str(hnd);
+
+        return ag_string_new_fmt("typeid = %d, uuid = %s, address = %s",
+            ag_object_typeid(hnd), ustr, mstr);
 }
 

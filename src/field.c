@@ -48,7 +48,7 @@ AG_OBJECT_DEFINE(ag_field)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_FIELD, &vt);
+        ag_object_registry_push(AG_TYPEID_FIELD, &vt);
 }
 
 
@@ -87,11 +87,18 @@ ag_field_parse(const char *src, const char *sep)
         AG_ASSERT_STR (sep);
 
         AG_AUTO(ag_string) *s = ag_string_new(src);
-        AG_ASSERT (ag_string_has(s, sep));
+        AG_AUTO(ag_string) *k;
+        AG_AUTO(ag_string) *v;
 
-        AG_AUTO(ag_string) *k = ag_string_split(s, sep);
-        AG_AUTO(ag_string) *v = ag_string_split_right(s, sep);
-
+        
+        if (ag_string_has(s, sep)) {
+                k = ag_string_split(s, sep);
+                v = ag_string_split_right(s, sep);
+        } else {
+                k = ag_string_new(s);
+                v = ag_string_new_empty();
+        }
+                
         AG_AUTO(ag_value) *kv = ag_value_new_string(k);
         AG_AUTO(ag_value) *vv = ag_value_new_string(v);
 

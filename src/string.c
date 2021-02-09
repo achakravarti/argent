@@ -276,6 +276,32 @@ ag_string_refc(const ag_string *ctx)
 }
 
 
+static inline bool
+url_encoded(const char *hnd)
+{
+        return *hnd == '%' && isxdigit(hnd[1]) && isxdigit(hnd[2]);
+}
+
+
+extern bool
+ag_string_url_encoded(const ag_string *hnd)
+{
+        AG_ASSERT_PTR (hnd);
+
+        register size_t sz = ag_string_sz(hnd) - 1;
+
+        if (sz < 3)
+                return false;
+
+        for (register size_t i = 0; i < sz; i++) {
+                if (url_encoded(hnd + i))
+                        return true;
+        }
+
+        return false;
+}
+
+
 /*
  * Define the ag_string_lower() interface function. This function transforms a
  * string to lowercase. Since we have chosen to keep strings as immutable, we
@@ -412,5 +438,89 @@ ag_string_split_right(const ag_string *ctx, const char *pvt)
         rhs[sz] = '\0';
 
         return (rhs);
+}
+
+
+// https://stackoverflow.com/questions/29414709
+extern ag_string *
+ag_string_url_encode(const ag_string *hnd)
+{
+        AG_ASSERT_PTR (hnd);
+
+        if (!*hnd)
+                return ag_string_new_empty();
+
+        register size_t sz = ag_string_sz(hnd) * 3 + 1;
+        char *bfr = ag_memblock_new(sz);
+
+        const char *ctx = hnd;
+        register size_t n = 0;
+        register int c;
+
+        while ((c = *ctx)) {
+                if (c < 33 || c > 126 ||
+                    strchr("!\"*%'();:@&=+$,/?#[]", *ctx)) {
+                        snprintf(bfr + n, sz, "%%%02X", c & 0xff);
+                        n += 3;
+                } else
+                        bfr[n++] = c;
+
+                ctx++;
+        }
+
+        bfr[n] = '\0';
+        ag_string *ret = ag_string_new(bfr);
+
+        ag_memblock *m = bfr;
+        ag_memblock_release(&m);
+
+        return ret;
+}
+
+
+static inline
+char url_decode(char c)
+{
+        if (c >= 'a')
+                return c - ('a' - 'A');
+        else if (c >= 'A')
+                return c - ('A' - 10);
+        else
+                return c - '0';
+}
+
+
+extern ag_string *
+ag_string_url_decode(const ag_string *hnd)
+{
+        AG_ASSERT_PTR (hnd);
+
+        if (!*hnd)
+                return ag_string_new_empty();
+
+        size_t sz = ag_string_sz(hnd) + 1;
+        char *bfr = ag_memblock_new(sz);
+
+        const char *ctx = hnd;
+        char *c = bfr;
+
+        while (*ctx) {
+                if (url_encoded(ctx)) {
+                        *c++ = (16 * url_decode(ctx[1])) + url_decode(ctx[2]);
+                        ctx += 3;
+                } else if (*c == '+') {
+                        *c++ = ' ';
+                        ctx++;
+                } else
+                        *c++ = *ctx++;
+        }
+
+        *c = '\0';
+        ag_string *ret = ag_string_new(bfr);
+
+        ag_memblock *m = bfr;
+        ag_memblock_release(&m);
+
+        return ret;
 }
 

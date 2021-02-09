@@ -22,20 +22,16 @@
 
 
 #include "../include/argent.h"
+#include <dlfcn.h>
 
 
 struct payload {
-        enum ag_http_mime        type;
-        enum ag_http_method      meth;
-        ag_http_client          *usr;
-        ag_http_url             *url;
-        ag_alist                *param;
+        ag_string       *dso;
+        ag_string       *sym;
+        void            *hnd;
 };
 
-
-static struct payload   *payload_new(enum ag_http_method, enum ag_http_mime,
-                            const ag_http_url *, const ag_http_client *,
-                            const ag_alist *);
+static struct payload   *payload_new(const char *, const char *);
 
 
 static ag_memblock      *virt_clone(const ag_memblock *);
@@ -48,7 +44,7 @@ static ag_hash           virt_hash(const ag_object *);
 static ag_string        *virt_str(const ag_object *);
 
 
-AG_OBJECT_DEFINE(ag_http_request)
+AG_OBJECT_DEFINE(ag_plugin)
 {
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
@@ -56,88 +52,79 @@ AG_OBJECT_DEFINE(ag_http_request)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_push(AG_TYPEID_HTTP_REQUEST, &vt);
+        ag_object_registry_push(AG_TYPEID_PLUGIN, &vt);
 }
 
 
-extern ag_http_request *
-ag_http_request_new(enum ag_http_method meth, enum ag_http_mime type,
-    const ag_http_url *url, const ag_http_client *usr, const ag_alist *param)
+
+extern ag_plugin *
+ag_plugin_new(const char *dso, const char *sym)
 {
-        AG_ASSERT_PTR (url);
-        AG_ASSERT_PTR (usr);
-        AG_ASSERT_PTR (param);
+        AG_ASSERT_STR (dso);
+        AG_ASSERT_STR (sym);
 
-        return ag_object_new(AG_TYPEID_HTTP_REQUEST,
-            payload_new(meth, type, url, usr, param));
+        return ag_object_new(AG_TYPEID_PLUGIN, payload_new(dso, sym));
 }
 
-
-extern enum ag_http_mime
-ag_http_request_mime(const ag_http_request *ctx)
+extern ag_plugin *
+ag_plugin_new_local(const char *sym)
 {
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->type;
+        AG_ASSERT_STR (sym);
+        
+        return ag_object_new(AG_TYPEID_PLUGIN, payload_new("", sym));
 }
 
-
-extern enum ag_http_method
-ag_http_request_method(const ag_http_request *ctx)
+extern ag_string *
+ag_plugin_dso(const ag_plugin *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
         const struct payload *p = ag_object_payload(ctx);
-        return p->meth;
+        return ag_string_copy(p->dso);
 }
 
+extern ag_string *
+ag_plugin_sym(const ag_plugin *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        
+        const struct payload *p = ag_object_payload(ctx);
+        return ag_string_copy(p->sym);
+}
 
-extern ag_http_client *
-ag_http_request_client(const ag_http_request *ctx)
+extern void *
+ag_plugin_hnd(const ag_plugin *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
         const struct payload *p = ag_object_payload(ctx);
-        return ag_http_client_copy(p->usr);
+        void *hnd = dlsym(p->hnd, p->sym);
+        char *err = dlerror();
+
+        if (err) {
+                fputs(err, stderr);
+                exit(1);
+        }
+
+        return hnd;
 }
 
-
-extern ag_http_url *
-ag_http_request_url(const ag_http_request *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_http_url_copy(p->url);
-}
-
-
-extern ag_alist *
-ag_http_request_param(const ag_http_request *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_alist_copy(p->param);
-}
-
-
+        
 static struct payload *
-payload_new(enum ag_http_method meth, enum ag_http_mime type,
-    const ag_http_url *url, const ag_http_client *usr, const ag_alist *param)
+payload_new(const char *dso, const char *sym)
 {
-        AG_ASSERT_PTR (url);
-        AG_ASSERT_PTR (usr);
-        AG_ASSERT_PTR (param);
+        AG_ASSERT_PTR (dso);
+        AG_ASSERT_STR (sym);
 
         struct payload *p = ag_memblock_new(sizeof *p);
+        p->dso = ag_string_new(dso);
+        p->sym = ag_string_new(sym);
+        p->hnd = dlopen(p->dso, RTLD_NOW);
 
-        p->meth = meth;
-        p->type = type;
-        p->url = ag_http_url_copy(url);
-        p->usr = ag_http_client_copy(usr);
-        p->param = ag_alist_copy(param);
+        if (!p->hnd) {
+                fputs(dlerror(), stderr);
+                exit(1);
+        }
 
         return p;
 }
@@ -149,7 +136,7 @@ virt_clone(const ag_memblock *ctx)
         AG_ASSERT_PTR (ctx);
 
         const struct payload *p = ctx;
-        return payload_new(p->meth, p->type, p->url, p->usr, p->param);
+        return payload_new(p->dso, p->sym);
 }
 
 
@@ -159,17 +146,19 @@ virt_release(ag_memblock *ctx)
         AG_ASSERT_PTR (ctx);
 
         struct payload *p = ctx;
-
-        ag_http_client_release(&p->usr);
-        ag_http_url_release(&p->url);
-        ag_alist_release(&p->param);
+        ag_string_release(&p->dso);
+        ag_string_release(&p->sym);
+        dlclose(p->hnd);
 }
 
 
-static enum ag_cmp
+static enum ag_cmp       
 virt_cmp(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_PLUGIN);
 
         AG_AUTO(ag_string) *s = virt_str(ctx);
         AG_AUTO(ag_string) *s2 = virt_str(cmp);
@@ -178,41 +167,44 @@ virt_cmp(const ag_object *ctx, const ag_object *cmp)
 }
 
 
-static bool
+static bool              
 virt_valid(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
 
         (void)ctx;
         return true;
 }
 
 
-static size_t
+static size_t            
 virt_sz(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
 
-        const struct payload *p = ag_object_payload(ctx);
-        return sizeof *p + ag_http_client_sz(p->usr) + ag_http_url_sz(p->url)
-            + ag_alist_sz(p->param);
+        (void)ctx;
+        return sizeof(struct payload);
 }
 
 
-static size_t
+static size_t            
 virt_len(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
 
         (void)ctx;
         return 1;
 }
 
 
-static ag_hash
+static ag_hash           
 virt_hash(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
 
         AG_AUTO(ag_string) *s = virt_str(ctx);
         return ag_hash_new_str(s);
@@ -223,16 +215,9 @@ static ag_string *
 virt_str(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
 
         const struct payload *p = ag_object_payload(ctx);
-
-        AG_AUTO(ag_string) *meth = ag_http_method_str(p->meth);
-        AG_AUTO(ag_string) *type = ag_http_mime_str(p->type);
-        AG_AUTO(ag_string) *url = ag_http_url_str(p->url);
-        AG_AUTO(ag_string) *usr = ag_http_client_str(p->usr);
-        AG_AUTO(ag_string) *param = ag_alist_str(p->param);
-
-        return ag_string_new_fmt("[%s] %s: url=%s, client=%s, param=%s",
-            meth, type, url, usr, param);
+        return ag_string_new_fmt("%s::%s()", p->dso, p->sym);
 }
 

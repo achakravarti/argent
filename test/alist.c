@@ -417,6 +417,13 @@ AG_METATEST_ALIST_VAL_SET(sample_list_2(), VALUE_4(), VALUE_3());
 AG_METATEST_ALIST_VAL_SET(sample_list_2(), VALUE_4(), VALUE_4());
 
 
+AG_METATEST_ALIST_PARSE("", "=", "&", "()");
+AG_METATEST_ALIST_PARSE("foo=bar", "=", "&", "((foo:bar))");
+AG_METATEST_ALIST_PARSE("foo=bar&bar=foo", "=", "&", "((foo:bar) (bar:foo))");
+AG_METATEST_ALIST_PARSE("foo=bar&bar=foo&key=val", "=", "&",
+    "((foo:bar) (bar:foo) (key:val))");
+
+
 AG_TEST_CASE("ag_alist_map(): sample_empty() => no effect")
 {
         AG_AUTO(ag_alist) *a = sample_empty();

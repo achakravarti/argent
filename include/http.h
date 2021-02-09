@@ -30,6 +30,7 @@ extern "C" {
 
 #include "./alist.h"
 #include "./object.h"
+#include "./plugin.h"
 
 
 /**
@@ -139,6 +140,45 @@ extern enum ag_http_status       ag_http_status_parse(const char *);
 extern ag_string                *ag_http_status_str(enum ag_http_status);
 
 
+// https://docstore.mik.ua/orelly/linux/cgi/ch03_02.htm
+// http://www.cgi101.com/book/ch3/text.html
+struct ag_http_env {
+        const char      *auth_type;             /* AUTH_TYPE            */
+        const char      *content_length;        /* CONTENT_LENGTH       */
+        const char      *content_type;          /* CONTENT_TYPE         */
+        const char      *document_root;         /* DOCUMENT_ROOT        */
+        const char      *gateway_interface;     /* GATEWAY_INTEFACE     */
+        const char      *http_accept;           /* HTTP_ACCEPT          */
+        const char      *http_accept_charset;   /* HTTP_ACCEPT_CHARSET  */
+        const char      *http_accept_encoding;  /* HTTP_ACCEPT_ENCODING */
+        const char      *http_accept_language;  /* HTTP_ACCEPT_LANGUAGE */
+        const char      *http_cookie;           /* HTTP_COOKIE          */
+        const char      *http_from;             /* HTTP_FROM            */
+        const char      *http_host;             /* HTTP_HOST            */
+        const char      *http_referer;          /* HTTP_REFERER         */
+        const char      *http_user_agent;       /* HTTP_USER_AGENT      */
+        const char      *https;                 /* HTTPS                */
+        const char      *path;                  /* PATH                 */
+        const char      *path_info;             /* PATH_INFO            */
+        const char      *path_translated;       /* PATH_TRANSLATED      */
+        const char      *query_string;          /* QUERY_STRING         */
+        const char      *remote_addr;           /* REMOTE_ADDR          */
+        const char      *remote_host;           /* REMOTE_HOST          */
+        const char      *remote_ident;          /* REMOTE_IDENT         */
+        const char      *remote_port;           /* REMOTE_PORT          */
+        const char      *remote_user;           /* REMOTE_USER          */
+        const char      *request_method;        /* REQUEST_METHOD       */
+        const char      *request_uri;           /* REQUEST_URI          */
+        const char      *script_filename;       /* SCRIPT_FILENAME      */
+        const char      *script_name;           /* SCRIPT_NAME          */
+        const char      *server_admin;          /* SERVER_ADMIN         */
+        const char      *server_name;           /* SERVER_NAME          */
+        const char      *server_port;           /* SERVER_PORT          */
+        const char      *server_protocol;       /* SERVER_PROTOCOL      */
+        const char      *server_software;       /* SERVER_SOFTWARE      */
+};
+
+
 /**
  * Declare the HTTP URL interface. An HTTP URL is the URL of the resource
  * requested by the client to the server, and makes up part of the HTTP request
@@ -156,11 +196,12 @@ extern ag_string                *ag_http_status_str(enum ag_http_status);
  * is specified for the path, then the ag_http_url object defaults its path to
  * the root (/).
  *
- * There are three manager functions which are responsible for creating a new
+ * There are four manager functions which are responsible for creating a new
  * ag_http_url object instance:
  *   1. ag_http_url_new()
  *   2. ag_http_url_new_noport()
  *   3. ag_http_url_parse()
+ *   4. ag_http_url_parse_env()
  *
  * The remaining functions are accessors to the properties of the ag_http_url
  * object. Since the AG_OBJECT_DECLARE() macro is used to declare the HTTP URL
@@ -180,6 +221,7 @@ extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
 extern ag_http_url      *ag_http_url_new_noport(bool, const char *,
                             const char *);
 extern ag_http_url      *ag_http_url_parse(const char *);
+extern ag_http_url      *ag_http_url_parse_env(const struct ag_http_env *);
 
 extern bool              ag_http_url_secure(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
@@ -222,6 +264,7 @@ AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
 
 extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
                             const char *, const char *);
+extern ag_http_client  *ag_http_client_parse_env(const struct ag_http_env *);
 
 extern ag_string        *ag_http_client_ip(const ag_http_client *);
 extern ag_uint           ag_http_client_port(const ag_http_client *);
@@ -312,6 +355,24 @@ extern void             ag_http_response_add(ag_http_response **, const char *);
 extern void             ag_http_response_add_file(ag_http_response **,
                             const char *);
 extern void             ag_http_response_flush(ag_http_response **);
+
+
+/**
+ * HTTP server
+ * TODO: Add description
+ **/
+
+typedef void (ag_http_handler)(const ag_http_request *);
+
+extern void     ag_http_server_init(void);
+extern void     ag_http_server_exit(void);
+
+extern const struct ag_http_env *ag_http_server_env(void);
+extern const ag_http_request    *ag_http_server_request(void);
+
+extern void     ag_http_server_register(const char *, const ag_plugin *);
+extern void     ag_http_server_respond(const ag_http_response *);
+extern void     ag_http_server_run(void);
 
 
 #ifdef __cplusplus

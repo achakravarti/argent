@@ -11,6 +11,7 @@ before_install:
   - sudo apt update
   - sudo apt install uuid-dev
   - sudo apt install valgrind
+  - sudo apt install libfcgi-dev
   - pip install --user cpp-coveralls
 
 script:

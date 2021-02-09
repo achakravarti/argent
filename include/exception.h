@@ -37,12 +37,19 @@
 #include <stdlib.h>
 
 
-/*
+/*******************************************************************************
  * When an exception occurs, we need a way to pass around metadata regarding the
  * error. We encapsulate this metadata in the `ag_exception` struct. We are
  * deliberately choosing a struct instead of an abstract data type in order to
  * avoid relying on the heap.
+ *
+ * In addition to `ag_exception`, we have structs holding the details for the
+ * specific exceptions handled by the Argent Libray:
+ *   - `ag_exception_memblock` for `AG_ERNO_MEMBLOCK`,
+ *   - `ag_exception_regex` for `AG_ERNO_REGEX`, and
+ *   - `ag_exception_parse` for `AG_ERNO_PARSE`.
  */
+
 struct ag_exception {
         ag_erno          erno;  /* Error code.                       */
         const char      *func;  /* Function where error occurred.    */
@@ -50,36 +57,16 @@ struct ag_exception {
         size_t           line;  /* Line number where error occurred. */
 };
 
-
-/*
- * The `ag_exception_handler` callback allows us to handle specific error
- * conditions. Metadata about the the exception is passed through the first
- * parameter, and optional exception data through the second parameter.
- */
-typedef void (ag_exception_handler)(const struct ag_exception *, void *);
-
-
-/*
- * The following structures are used to pass exception-related data to their
- * corresponding exception handlers. The ag_exception_memblock struct holds the
- * exception data related to AG_ERNO_MEMBLOCK, the ag_exception_regex struct
- * holds the exception data related to AG_ERNO_REGEX, and the ag_exception_parse
- * struct holds the exception data related to AG_ERNO_PARSE.
- */
-
-
 struct ag_exception_memblock {
         size_t  sz;     /* Memory block size      */
         size_t  align;  /* Memory block alignment */
 };
 
-
 struct ag_exception_regex {
         const char      *str;           /* String on which regex is applied */
         const char      *regex;         /* Regex to apply                   */
-        int              ecode;         /* Regex interal error code         */
+        int              ecode;         /* Regex internal error code        */
 };
-
 
 struct ag_exception_parse {
         const char *str;        /* String being parsed       */
@@ -87,65 +74,58 @@ struct ag_exception_parse {
 };
 
 
-/*
- * Define the exception handlers used to handle the errors raised by the Argent
- * Library. ag_exception_memblock_hnd() handles the AG_ERNO_MEMBLOCK exception,
- * the ag_exception_regex_hnd() handles the AG_ERNO_REGEX exception, and the
- * ag_exception_parse_hnd() handles the AG_ERNO_PARSE exception.
+/*******************************************************************************
+ * The `ag_exception_handler` callback allows us to handle specific error
+ * conditions. Metadata about the the exception is passed through the first
+ * parameter, and optional exception data through the second parameter.
+ *
+ * The exception handlers used to handle the exceptions raised by the Argent
+ * Library are:
+ *   - `ag_exception_hnd_memblock()` for `AG_ERNO_MEMBLOCK`,
+ *   - `ag_exception_hnd_regex()` for `AG_ERNO_REGEX`,
+ *   - `ag_exception_hnd_parse()` for `AG_ERNO_PARSE`.
+ *
+ * See src/exception-handler.c for more details.
  */
-extern void     ag_exception_memblock_hnd(const struct ag_exception *, void *);
-extern void     ag_exception_regex_hnd(const struct ag_exception *, void *);
-extern void     ag_exception_parse_hnd(const struct ag_exception *, void *);
+
+typedef void (ag_exception_hnd)(const struct ag_exception *, void *);
+
+extern void     ag_exception_hnd_memblock(const struct ag_exception *, void *);
+extern void     ag_exception_hnd_regex(const struct ag_exception *, void *);
+extern void     ag_exception_hnd_parse(const struct ag_exception *, void *);
 
 
-/*
+/*******************************************************************************
  * The exception registry maintains a list of exception messages and handlers
  * associated with each error code of both the Argent Library and client code.
- * The following functions manage the instantiation and destruction of the
- * exception registry, and *must* be called at program startup and termination.
+ * The exception registry is implemented as a type-less interface similar to a
+ * singleton.
+ *
+ * See src/exception-registry.c for more details.
  */
 
-
-extern void     ag_exception_registry_init(size_t);
-extern void     ag_exception_registry_exit(void);
-
-/*
- * The following functions are the accessors for the exception registry,
- * returning the exception message and handler associated with a given error
- * code.
- */
+extern void              ag_exception_registry_init(void);
+extern void              ag_exception_registry_exit(void);
+extern const char       *ag_exception_registry_msg(ag_erno);
+extern ag_exception_hnd *ag_exception_registry_hnd(ag_erno);
+extern void              ag_exception_registry_set(ag_erno, const char *, 
+                            ag_exception_hnd *);
 
 
-extern const char               *ag_exception_registry_msg(ag_erno);
-extern ag_exception_handler     *ag_exception_registry_hnd(ag_erno);
-
-
-/*
- * The `ag_exception_registry_set()` function is the only mutator for the
- * exception registry, and sets the exception message and handler associated
- * with a given error code. Subsequent calls to this function override the
- * previous values, and passing a NULL pointer for the handler causes the
- * default unhandled exception handler to be set.
- */
-
-
-extern void     ag_exception_registry_set(ag_erno, const char *,
-                    ag_exception_handler *);
-
-
-/*
- * The AG_ASSERT() macro asserts whether a given predicate is true. This macro
+/*******************************************************************************
+ * The `AG_ASSERT()` macro asserts whether a given predicate is true. This macro
  * is avaiable only in debug builds, and provides a way for both the Argent
  * Library and client code to assert conditions that should *never* be false.
  *
- * AG_ASSERT_PTR() is similar to AG_ASSERT(), except that it is specifically
- * used to assert whether a pointer is valid. AG_ASSERT_PTR() provides a more
- * focused failure message as compared to the generic one given by AG_ASSERT().
+ * `AG_ASSERT_TAG()` is essentially the same as `AG_ASSERT()`, the only
+ * difference begin that the former allows a a tag to be specified along with
+ * the predicate in order to provide a more meaningful failure message.
  *
- * AG_ASSERT_STR() asserts that a string is valid, i.e., it is a valid pointer
- * and it is not an empty string.
+ * `AG_ASSERT_PTR()` and `AG_ASSERT_STR()` are specialisations of
+ * `AG_ASSERT_TAG()`, checking, respectively, whether a given pointer and string
+ * is valid. A pointer is considered to be valid if it is not NULL, and a string
+ * is considered to be valid if it is not null and not empty.
  */
-
 
 #ifndef NDEBUG
 #       define AG_ASSERT(p) do {                                             \
@@ -158,51 +138,40 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                 }                                                            \
         } while (0)
 
-
-        #define AG_ASSERT_PTR(p) do {                                        \
-                if (AG_UNLIKELY (!(p))) {                                    \
-                        printf("[!] assertion failed: %s must not be null"   \
-                            " [%s(), %s:%d]\n", #p,                          \
-                            __func__, __FILE__, __LINE__);                   \
-                        ag_log_debug("assertion failed: %s must not be null" \
-                            " [%s(), %s:%d]\n", #p,                          \
-                             __func__, __FILE__, __LINE__);                  \
-                        exit(EXIT_FAILURE);                                  \
-                }                                                            \
+#       define AG_ASSERT_TAG(t, p) do {                                 \
+                if (AG_UNLIKELY (!(p))) {                               \
+                        printf("[!] assertion failed: "                 \
+                            "%s (%s) [%s(), %s:%d]\n",                  \
+                            t, #p, __func__, __FILE__, __LINE__);       \
+                        ag_log_debug("assertion failed: "               \
+                            "%s (%s) [%s(), %s:%d]\n",                  \
+                            t, #p, __func__, __FILE__, __LINE__);       \
+                        exit(EXIT_FAILURE);                             \
+                }                                                       \
         } while (0)
 
-
-        #define AG_ASSERT_STR(str) do {                                      \
-                if (AG_UNLIKELY (!(str && *str))) {                          \
-                        printf("[!] assertion failed: string %s must not be" \
-                            " null or empty [%s(), %s:%d]\n",                \
-                            #str, __func__, __FILE__,   __LINE__);           \
-                        ag_log_debug("assertion failed: string %s must not"  \
-                            " be null or empty [%s(), %s:%d]\n",             \
-                            #str, __func__, __FILE__, __LINE__);             \
-                        exit(EXIT_FAILURE);                                  \
-                }                                                            \
-        } while (0)
+#       define AG_ASSERT_PTR(p) AG_ASSERT_TAG("PTR_VALID", p)
+#       define AG_ASSERT_STR(s) AG_ASSERT_TAG("STR_VALID", s && *s)
 #else
 #       define AG_ASSERT(p)
+#       define AG_ASSERT_TAG(p)
 #       define AG_ASSERT_PTR(p)
 #       define AG_ASSERT_STR(s)
 #endif
 
 
-/*
- * The AG_REQUIRE() and AG_REQUIRE_OPT() macros are used to check whether a
+/*******************************************************************************
+ * The `AG_REQUIRE()` and `AG_REQUIRE_OPT()` macros are used to check whether a
  * given predicate is true, and if not, signal an appropriate error code.
  *
  * The exception handler associated with the error code is automatically invoked
  * and passed the exception metadata. Before the exception handler is called, we
  * print and log the exception location metadata.
  *
- * AG_REQUIRE_OPT() behaves identically to AG_REQUIRE(), except that it allows
+ * `AG_REQUIRE_OPT()` behaves identically to AG_REQUIRE(), except that it allows
  * optional exception data to be passed along to the exception handler along
  * with the exception metadata.
  */
-
 
 #define AG_REQUIRE(p, e) do {                                   \
         if (AG_UNLIKELY (!(p))) {                               \
@@ -221,7 +190,6 @@ extern void     ag_exception_registry_set(ag_erno, const char *,
                 ag_exception_registry_hnd((e))(&_x_, NULL);     \
         }                                                       \
 } while (0)
-
 
 #define AG_REQUIRE_OPT(p, e, o) do {                            \
         if (AG_UNLIKELY (!(p))) {                               \

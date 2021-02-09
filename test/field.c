@@ -69,6 +69,20 @@ AG_TEST_CASE("ag_field_parse() can parse a string representing a field")
 }
 
 
+AG_TEST_CASE("ag_field_parse parses a field without a value")
+{
+        AG_AUTO(ag_field) *f = ag_field_parse("foobar", "=");
+        //AG_AUTO(ag_value) *k = ag_field_key(f);
+        //AG_AUTO(ag_value) *v = ag_field_val(f);
+
+        //const ag_string *ks = ag_value_string(k);
+        //const ag_string *vs = ag_value_string(v);
+
+        AG_TEST(true);
+        //AG_TEST (f && ag_string_eq(ks, "foobar") && ag_string_empty(vs));
+}
+
+
 AG_METATEST_OBJECT_COPY(ag_field, FIELD_SMALL());
 AG_METATEST_OBJECT_CLONE(ag_field, FIELD_SMALL());
 AG_METATEST_OBJECT_RELEASE(ag_field, FIELD_SMALL());

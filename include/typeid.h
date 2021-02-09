@@ -40,6 +40,7 @@ typedef int ag_typeid;
 #define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -5)
 #define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -6)
 #define AG_TYPEID_HTTP_RESPONSE ((ag_typeid) -7)
+#define AG_TYPEID_PLUGIN        ((ag_typeid) -8)
 
 
 #ifdef __cplusplus

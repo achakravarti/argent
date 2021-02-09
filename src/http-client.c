@@ -75,7 +75,7 @@ AG_OBJECT_DEFINE(ag_http_client)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_HTTP_CLIENT, &vt);
+        ag_object_registry_push(AG_TYPEID_HTTP_CLIENT, &vt);
 }
 
 
@@ -103,6 +103,18 @@ ag_http_client_new(const char *ip, ag_uint port, const char *host,
 
         return ag_object_new(AG_TYPEID_HTTP_CLIENT,
             payload_new(ip, port, host, agent, referer));
+}
+
+
+extern ag_http_client *
+ag_http_client_parse_env(const struct ag_http_env *cgi)
+{
+        AG_ASSERT_PTR (cgi);
+
+        ag_uint port = ag_uint_parse(cgi->remote_port);
+
+        return ag_http_client_new(cgi->remote_addr, port, cgi->remote_host,
+            cgi->http_user_agent, cgi->http_referer);
 }
 
 

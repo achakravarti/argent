@@ -29,7 +29,7 @@
 struct node {
         ag_erno                  erno;
         char                    *msg;
-        ag_exception_handler    *hnd;
+        ag_exception_hnd        *hnd;
 };
 
 
@@ -40,21 +40,21 @@ ag_init(void)
                 {
                         .erno = AG_ERNO_MBLOCK, 
                         .msg = AG_ERNO_MSG(AG_ERNO_MBLOCK),
-                        .hnd = &ag_exception_memblock_hnd
+                        .hnd = &ag_exception_hnd_memblock
                 },
                 {
                         .erno = AG_ERNO_REGEX, 
                         .msg = AG_ERNO_MSG(AG_ERNO_REGEX),
-                        .hnd = &ag_exception_regex_hnd,
+                        .hnd = &ag_exception_hnd_regex,
                 },
                 {
                         .erno = AG_ERNO_PARSE, 
                         .msg = AG_ERNO_MSG(AG_ERNO_PARSE),
-                        .hnd = &ag_exception_parse_hnd,
+                        .hnd = &ag_exception_hnd_parse,
                 },
         };
 
-        ag_exception_registry_init(32);
+        ag_exception_registry_init();
         ag_object_registry_init();
 
         register struct node n;
@@ -72,6 +72,7 @@ ag_init(void)
         AG_OBJECT_REGISTER(ag_http_client);
         AG_OBJECT_REGISTER(ag_http_request);
         AG_OBJECT_REGISTER(ag_http_response);
+        AG_OBJECT_REGISTER(ag_plugin);
 }
 
 

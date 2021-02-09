@@ -153,4 +153,13 @@
         }
 
 
+#define AG_METATEST_ALIST_PARSE(src, sep, delim, exp) \
+        AG_TEST_CASE("ag_alist_parse(): " src " => " exp) \
+        { \
+                AG_AUTO(ag_alist) *a = ag_alist_parse(src, sep, delim); \
+                AG_AUTO(ag_string) *s = ag_alist_str(a); \
+                AG_TEST (ag_string_eq(s, exp)); \
+        }
+
+
 #endif /* !__ARGENT_TEST_ALIST_H__ */

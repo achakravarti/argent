@@ -66,11 +66,13 @@ ag_memblock_new(size_t sz)
 {
         AG_ASSERT (is_size_valid(sz));
 
-        size_t *ctx = malloc(sizeof(size_t) * 2 + sz);
+        size_t sz2 = sz + sizeof(size_t) * 2;
+        size_t *ctx = malloc(sz2);
+
         struct ag_exception_memblock x = { .sz = sz, .align = 0i };
         AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
 
-        memset(ctx, 0, sz);
+        memset(ctx, 0, sz2);
         ctx[0] = 1;
         ctx[1] = sz;
 
@@ -83,14 +85,15 @@ ag_memblock_new_align(size_t sz, size_t align)
 {
         AG_ASSERT (is_size_valid(sz));
         AG_ASSERT (is_alignment_valid(align));
-        
+       
+        size_t sz2 = sz + sizeof(size_t) * 2; 
         size_t *ctx;
-        (void)posix_memalign((void **)&ctx, align, sizeof(size_t) * 2 + sz);
+        (void)posix_memalign((void **)&ctx, align, sz2);
 
         struct ag_exception_memblock x = { .sz = sz, .align = align };
         AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
         
-        memset(ctx, 0, sz);
+        memset(ctx, 0, sz2);
         ctx[0] = 1;
         ctx[1] = sz;
 

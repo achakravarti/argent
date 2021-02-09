@@ -130,6 +130,7 @@ extern size_t   ag_string_sz(const ag_string *);
 extern size_t   ag_string_refc(const ag_string *);
 extern bool     ag_string_has(const ag_string *, const char *);
 extern bool     ag_string_match(const ag_string *, const char *);
+extern bool     ag_string_url_encoded(const ag_string *);
 
 
 inline bool
@@ -153,6 +154,8 @@ extern ag_string        *ag_string_upper(const ag_string *);
 extern ag_string        *ag_string_proper(const ag_string *);
 extern ag_string        *ag_string_split(const ag_string *, const char *);
 extern ag_string        *ag_string_split_right(const ag_string *, const char *);
+extern ag_string        *ag_string_url_encode(const ag_string *);
+extern ag_string        *ag_string_url_decode(const ag_string *);
 
 
 #ifdef __cplusplus
