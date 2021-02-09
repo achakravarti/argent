@@ -51,6 +51,7 @@ typedef int ag_erno;
 #define AG_ERNO_MBLOCK  ((ag_erno) -1)
 #define AG_ERNO_REGEX   ((ag_erno) -2)
 #define AG_ERNO_PARSE   ((ag_erno) -3)
+#define AG_ERNO_HTTP    ((ag_erno) -4)
 
 
 /* 
@@ -62,6 +63,7 @@ typedef int ag_erno;
 #define AG_ERNO_MBLOCK_MSG      "failed to allocate memory block"
 #define AG_ERNO_REGEX_MSG       "failed to process regular expression"
 #define AG_ERNO_PARSE_MSG       "failed to parse string"
+#define AG_ERNO_HTTP_MSG        "error in HTTP server"
 
 
 /*
