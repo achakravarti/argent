@@ -1,4 +1,5 @@
 #include "../include/argent.h"
+#include <fcgiapp.h>
 
 
 struct node {
@@ -21,8 +22,12 @@ static void     registry_push(struct node *);
 
 
 static AG_THREADLOCAL struct {
-        struct node    **reg;
+        FCGX_Request     *req;
+        struct node     **reg;
 } *g_http = NULL;
+
+#define HTTP_LISTENSOCK_FILENO  0
+#define HTTP_LISTENSOCK_FLAGS   0
 
 
 extern void
@@ -32,6 +37,10 @@ ag_http_server_init(void)
 
         g_http = ag_memblock_new(sizeof *g_http);
         g_http->reg = registry_new();
+
+        AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
+        AG_REQUIRE (!FCGX_InitRequest(g_http->req, HTTP_LISTENSOCK_FILENO,
+            HTTP_LISTENSOCK_FLAGS), AG_ERNO_HTTP);
 }
 
 
@@ -64,6 +73,17 @@ ag_http_server_register_dso(const char *path, const char *dso, const char *sym)
         AG_ASSERT_PTR (g_http);
 
         registry_push(node_new(path, dso, sym));
+}
+
+
+extern void
+ag_http_server_run(void)
+{
+        AG_ASSERT_PTR (g_http);
+
+        while (FCGX_Accept_r(g_http->req) >= 0) {
+                FCGX_Finish_r(g_http->req);
+        }
 }
 
 
