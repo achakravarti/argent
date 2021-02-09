@@ -1,49 +1,47 @@
 #include "../include/argent.h"
 
 
-struct registry_node {
-        ag_string               *path;
-        ag_string               *dso;
-        ag_string               *sym;
-        struct registry_node    *next;
+struct node {
+        ag_string       *path;
+        ag_string       *dso;
+        ag_string       *sym;
+        struct node     *next;
 };
 
-static struct registry_node     *registry_node_new(const char *, const char *,
-                                    const char *);
-static void                      registry_node_release(struct registry_node *);
+static struct node      *node_new(const char *, const char *, const char *);
+static void              node_release(struct node *);
 
-
-static AG_THREADLOCAL struct registry_node      **g_registry = NULL;
 
 #define REGISTRY_BUCKETS        sizeof(int)
 
-static void     registry_push(struct registry_node *);
+static inline struct node      **registry_new(void);
+static void                      registry_release(struct node **);
+
+static void     registry_push(struct node *);
+
+
+static AG_THREADLOCAL struct {
+        struct node    **reg;
+} *g_http = NULL;
 
 
 extern void
 ag_http_server_init(void)
 {
-        AG_ASSERT (!g_registry);
+        AG_ASSERT (!g_http);
 
-        g_registry = ag_memblock_new(sizeof *g_registry * REGISTRY_BUCKETS);
+        g_http = ag_memblock_new(sizeof *g_http);
+        g_http->reg = registry_new();
 }
 
 
 extern void
 ag_http_server_exit(void)
 {
-        if (AG_UNLIKELY (!g_registry))
+        if (AG_UNLIKELY (!g_http))
                 return;
 
-        for (register size_t i = 0; i < REGISTRY_BUCKETS; i++) {
-                register struct registry_node *n = g_registry[i];
-
-                while (n) {
-                        register struct registry_node *n2 = n->next;
-                        registry_node_release(n);
-                        n = n2;
-                }
-        }
+        registry_release(g_http->reg);
 }
 
 
@@ -52,9 +50,9 @@ ag_http_server_register(const char *path, const char *sym)
 {
         AG_ASSERT_STR (path);
         AG_ASSERT_STR (sym);
-        AG_ASSERT_PTR (g_registry);
+        AG_ASSERT_PTR (g_http);
 
-        registry_push(registry_node_new(path, NULL, sym));
+        registry_push(node_new(path, NULL, sym));
 }
 
 extern void
@@ -63,19 +61,19 @@ ag_http_server_register_dso(const char *path, const char *dso, const char *sym)
         AG_ASSERT_STR (path);
         AG_ASSERT_STR (dso);
         AG_ASSERT_STR (sym);
-        AG_ASSERT_PTR (g_registry);
+        AG_ASSERT_PTR (g_http);
 
-        registry_push(registry_node_new(path, dso, sym));
+        registry_push(node_new(path, dso, sym));
 }
 
 
-static struct registry_node *
-registry_node_new(const char *path, const char *dso, const char *sym)
+static struct node *
+node_new(const char *path, const char *dso, const char *sym)
 {
         AG_ASSERT_STR (path);
         AG_ASSERT_STR (sym);
 
-        struct registry_node *n = ag_memblock_new(sizeof *n);
+        struct node *n = ag_memblock_new(sizeof *n);
 
         n->path = ag_string_new(path);
         n->dso = ag_string_new(dso);
@@ -86,7 +84,7 @@ registry_node_new(const char *path, const char *dso, const char *sym)
 }
 
 static void
-registry_node_release(struct registry_node *ctx)
+node_release(struct node *ctx)
 {
         if (AG_LIKELY (ctx)) {
                 ag_string_release(&ctx->path);
@@ -100,12 +98,13 @@ registry_node_release(struct registry_node *ctx)
 
 
 static void
-registry_push(struct registry_node *node)
+registry_push(struct node *node)
 {
-        AG_ASSERT (node);
+        AG_ASSERT_PTR (node);
+        AG_ASSERT_PTR (g_http);
 
         ag_hash h = ag_hash_new_str(node->path);
-        register struct registry_node *i = g_registry[h % REGISTRY_BUCKETS];
+        register struct node *i = g_http->reg[h % REGISTRY_BUCKETS];
 
         if (i) {
                 while (i && i->next)
@@ -114,5 +113,26 @@ registry_push(struct registry_node *node)
                 i->next = node;
         } else
                 i = node;
+}
+
+        
+static inline struct node **
+registry_new(void)
+{
+        return ag_memblock_new(sizeof(struct node *) * REGISTRY_BUCKETS);
+}
+
+static void
+registry_release(struct node **ctx)
+{
+        for (register size_t i = 0; i < REGISTRY_BUCKETS; i++) {
+                register struct node *n = ctx[i];
+
+                while (n) {
+                        register struct node *n2 = n->next;
+                        node_release(n);
+                        n = n2;
+                }
+        }
 }
 
