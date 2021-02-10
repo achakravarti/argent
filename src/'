@@ -68,19 +68,10 @@ ag_plugin_hnd(const ag_plugin *ctx)
 
         const struct payload *p = ag_object_payload(ctx);
 
-        void *dso = dlopen(p->dso, RTLD_NOW);
+        void *dso = dlopenm(NULL, RTLD_NOW);
         if (!dso) {
                 fputs(dlerror(), stderr);
                 exit(1);
         }
-
-        void *sym = dlsym(dso, p->sym);
-        char *err = dlerror();
-        if (err) {
-                fputs(err, stderr);
-                exit(1);
-        }
-
-        return sym;
 }
 
