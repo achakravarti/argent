@@ -24,13 +24,36 @@
 #include "../include/argent.h"
 #include <dlfcn.h>
 
+
 struct payload {
         ag_string       *dso;
         ag_string       *sym;
 };
 
-
 static struct payload   *payload_new(const char *, const char *);
+
+
+static ag_memblock      *virt_clone(const ag_memblock *);
+static void              virt_release(ag_memblock *);
+static enum ag_cmp       virt_cmp(const ag_object *, const ag_object *);
+static bool              virt_valid(const ag_object *);
+static size_t            virt_sz(const ag_object *);
+static size_t            virt_len(const ag_object *);
+static ag_hash           virt_hash(const ag_object *);
+static ag_string        *virt_str(const ag_object *);
+
+
+AG_OBJECT_DEFINE(ag_plugin)
+{
+        struct ag_object_vtable vt = {
+                .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
+                .valid = virt_valid, .sz = virt_sz,           .len = virt_len,
+                .hash = virt_hash,   .str = virt_str,
+        };
+
+        ag_object_registry_set(AG_TYPEID_PLUGIN, &vt);
+}
+
 
 
 extern ag_plugin *
@@ -103,5 +126,92 @@ payload_new(const char *dso, const char *sym)
         p->sym = ag_string_new(sym);
 
         return p;
+}
+
+
+static ag_memblock *
+virt_clone(const ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return payload_new(p->dso, p->sym);
+}
+
+
+static void
+virt_release(ag_memblock *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+}
+
+
+static enum ag_cmp       
+virt_cmp(const ag_object *ctx, const ag_object *cmp)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT_PTR (cmp);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_PLUGIN);
+
+        AG_AUTO(ag_string) *s = virt_str(ctx);
+        AG_AUTO(ag_string) *s2 = virt_str(cmp);
+
+        return ag_string_cmp(s, s2);
+}
+
+
+static bool              
+virt_valid(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+
+        (void)ctx;
+        return true;
+}
+
+
+static size_t            
+virt_sz(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+
+        (void)ctx;
+        return sizeof(struct payload);
+}
+
+
+static size_t            
+virt_len(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+
+        (void)ctx;
+        return 1;
+}
+
+
+static ag_hash           
+virt_hash(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+
+        AG_AUTO(ag_string) *s = virt_str(ctx);
+        return ag_hash_new_str(s);
+}
+
+
+static ag_string *
+virt_str(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
+
+        const struct payload *p = ag_object_payload(ctx);
+        return ag_string_new_fmt("%s::%s()", p->dso, p->sym);
 }
 

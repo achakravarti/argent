@@ -38,7 +38,7 @@ extern ag_plugin        *ag_plugin_new_local(const char *);
 
 extern ag_string        *ag_plugin_dso(const ag_plugin *);
 extern ag_string        *ag_plugin_sym(const ag_plugin *);
-extern void *ag_plugin_hnd(const ag_plugin *);
+extern void             *ag_plugin_hnd(const ag_plugin *);
 
 #ifdef __cplusplus
 }
