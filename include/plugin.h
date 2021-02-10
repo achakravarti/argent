@@ -21,31 +21,28 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_INCLUDE_TYPEID_H__
-#define __ARGENT_INCLUDE_TYPEID_H__
+#ifndef __ARGENT_INCLUDE_PLUGIN_H__
+#define __ARGENT_INCLUDE_PLUGIN_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "./object.h"
 
-typedef int ag_typeid;
 
+AG_OBJECT_DECLARE(ag_plugin, AG_TYPEID_PLUGIN);
 
-#define AG_TYPEID_OBJECT        ((ag_typeid)  0)
-#define AG_TYPEID_FIELD         ((ag_typeid) -1)
-#define AG_TYPEID_LIST          ((ag_typeid) -2)
-#define AG_TYPEID_ALIST         ((ag_typeid) -3)
-#define AG_TYPEID_PLUGIN        ((ag_typeid) -4)
-#define AG_TYPEID_HTTP_URL      ((ag_typeid) -5)
-#define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -6)
-#define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -7)
-#define AG_TYPEID_HTTP_RESPONSE ((ag_typeid) -8)
+extern ag_plugin        *ag_plugin_new(const char *, const char *);
+extern ag_plugin        *ag_plugin_new_local(const char *);
 
+extern ag_string        *ag_plugin_dso(const ag_plugin *);
+extern ag_string        *ag_plugin_sym(const ag_plugin *);
+extern void             *ag_plugin_hnd(const ag_plugin *);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __ARGENT_INCLUDE_TYPEID_H__ */
+#endif /* !__ARGENT_INCLUDE_PLUGIN_H__ */
 
