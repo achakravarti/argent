@@ -36,11 +36,12 @@ typedef int ag_typeid;
 #define AG_TYPEID_FIELD         ((ag_typeid) -1)
 #define AG_TYPEID_LIST          ((ag_typeid) -2)
 #define AG_TYPEID_ALIST         ((ag_typeid) -3)
-#define AG_TYPEID_PLUGIN        ((ag_typeid) -4)
-#define AG_TYPEID_HTTP_URL      ((ag_typeid) -5)
-#define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -6)
-#define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -7)
-#define AG_TYPEID_HTTP_RESPONSE ((ag_typeid) -8)
+#define AG_TYPEID_HTTP_URL      ((ag_typeid) -4)
+#define AG_TYPEID_HTTP_CLIENT   ((ag_typeid) -5)
+#define AG_TYPEID_HTTP_REQUEST  ((ag_typeid) -6)
+#define AG_TYPEID_HTTP_RESPONSE ((ag_typeid) -7)
+/* TODO: find out why -8 and -9 screw up make test and check respectively */
+#define AG_TYPEID_PLUGIN        ((ag_typeid) -10)
 
 
 #ifdef __cplusplus

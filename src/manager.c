@@ -68,11 +68,11 @@ ag_init(void)
         AG_OBJECT_REGISTER(ag_field);
         AG_OBJECT_REGISTER(ag_list);
         AG_OBJECT_REGISTER(ag_alist);
-        AG_OBJECT_REGISTER(ag_plugin);
         AG_OBJECT_REGISTER(ag_http_url);
         AG_OBJECT_REGISTER(ag_http_client);
         AG_OBJECT_REGISTER(ag_http_request);
         AG_OBJECT_REGISTER(ag_http_response);
+        AG_OBJECT_REGISTER(ag_plugin);
 }
 
 
