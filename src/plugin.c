@@ -30,17 +30,24 @@ struct payload {
 };
 
 
+static struct payload   *payload_new(const char *, const char *);
+
+
 extern ag_plugin *
 ag_plugin_new(const char *dso, const char *sym)
 {
         AG_ASSERT_STR (dso);
         AG_ASSERT_STR (sym);
+
+        return ag_object_new(AG_TYPEID_PLUGIN, payload_new(dso, sym));
 }
 
 extern ag_plugin *
 ag_plugin_new_local(const char *sym)
 {
         AG_ASSERT_STR (sym);
+        
+        return ag_object_new(AG_TYPEID_PLUGIN, payload_new("", sym));
 }
 
 extern ag_string *
@@ -82,5 +89,19 @@ ag_plugin_hnd(const ag_plugin *ctx)
         }
 
         return sym;
+}
+
+        
+static struct payload *
+payload_new(const char *dso, const char *sym)
+{
+        AG_ASSERT_PTR (dso);
+        AG_ASSERT_STR (sym);
+
+        struct payload *p = ag_memblock_new(sizeof *p);
+        p->dso = ag_string_new(dso);
+        p->sym = ag_string_new(sym);
+
+        return p;
 }
 
