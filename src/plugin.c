@@ -21,28 +21,36 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_INCLUDE_PLUGIN_H__
-#define __ARGENT_INCLUDE_PLUGIN_H__
+#include "../include/argen.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "./object.h"
+struct payload {
+        ag_string       *dso;
+        ag_string       *sym;
+};
 
 
-AG_OBJECT_DECLARE(ag_plugin, AG_TYPEID_PLUGIN);
-
-extern ag_plugin        *ag_plugin_new(const char *, const char *);
-extern ag_plugin        *ag_plugin_new_local(const char *);
-
-extern ag_string        *ag_plugin_dso(const ag_plugin *);
-extern ag_string        *ag_plugin_sym(const ag_plugin *);
-extern void *ag_plugin_hnd(const ag_plugin *);
-
-#ifdef __cplusplus
+extern ag_plugin *
+ag_plugin_new(const char *dso, const char *sym)
+{
 }
-#endif
 
-#endif /* !__ARGENT_INCLUDE_PLUGIN_H__ */
+extern ag_plugin *
+ag_plugin_new_local(const char *sym)
+{
+}
+
+extern ag_plugin *
+ag_plugin_dso(const ag_plugin *ctx)
+{
+}
+
+extern ag_plugin *
+ag_plugin_sym(const ag_plugin *ctx)
+{
+}
+
+extern void *
+ag_plugin_hnd(const ag_plugin *ctx)
+{
+}
 
