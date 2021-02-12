@@ -25,7 +25,7 @@
 
 
 struct vector {
-        struct ag_object_vtable *vt;
+        struct ag_object_vtable **vt;
         size_t cap;
 };
 
@@ -107,8 +107,11 @@ static inline size_t typeid_index(ag_typeid typeid)
 static inline struct vector *vector_new(size_t cap)
 {
         struct vector *ctx = ag_memblock_new(sizeof *ctx);
-        ctx->vt = ag_memblock_new(sizeof *ctx->vt * cap);
         ctx->cap = cap;
+        ctx->vt = ag_memblock_new(sizeof *ctx->vt * cap);
+
+        for (register size_t i = 0; i < cap; i++)
+                ctx->vt[i] = NULL;
 
         return ctx;
 }
@@ -117,9 +120,15 @@ static inline struct vector *vector_new(size_t cap)
 static void vector_release(struct vector **ctx)
 {
         struct vector *v;
+        ag_memblock *m;
 
         if (AG_LIKELY (ctx && (v = *ctx))) {
-                ag_memblock *m = v->vt;
+                for (register size_t i = 0; i < v->cap; i++) {
+                        m = v->vt[i];
+                        ag_memblock_release(&m);
+                }
+
+                m = v->vt;
                 ag_memblock_release(&m);
 
                 m = v;
@@ -139,7 +148,7 @@ static inline void vector_resize(struct vector *ctx, size_t cap)
 static inline const struct ag_object_vtable *vector_get(const struct vector *ctx,
                                                      size_t idx)
 {
-        return &ctx->vt[idx];
+        return ctx->vt[idx];
 }
 
 
@@ -155,7 +164,14 @@ static void vector_set(struct vector *ctx, size_t idx,
                 vector_resize(ctx, cap);
         }
 
-        struct ag_object_vtable *dst = &ctx->vt[idx];
+        if (ctx->vt[idx]) {
+                ag_memblock *hnd = ctx->vt[idx];
+                ag_memblock_release(&hnd);
+        }
+
+        ctx->vt[idx] = ag_memblock_new(sizeof *ctx->vt[idx]);
+        struct ag_object_vtable *dst = ctx->vt[idx];
+
         dst->clone   = vt->clone   ? vt->clone   : def_clone;
         dst->release = vt->release ? vt->release : def_release;
         dst->cmp     = vt->cmp     ? vt->cmp     : def_cmp;
