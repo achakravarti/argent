@@ -28,6 +28,7 @@
 struct payload {
         ag_string       *dso;
         ag_string       *sym;
+        void            *hnd;
 };
 
 static struct payload   *payload_new(const char *, const char *);
@@ -97,21 +98,15 @@ ag_plugin_hnd(const ag_plugin *ctx)
         AG_ASSERT_PTR (ctx);
 
         const struct payload *p = ag_object_payload(ctx);
-
-        void *dso = dlopen(p->dso, RTLD_NOW);
-        if (!dso) {
-                fputs(dlerror(), stderr);
-                exit(1);
-        }
-
-        void *sym = dlsym(dso, p->sym);
+        void *hnd = dlsym(p->hnd, p->sym);
         char *err = dlerror();
+
         if (err) {
                 fputs(err, stderr);
                 exit(1);
         }
 
-        return sym;
+        return hnd;
 }
 
         
@@ -124,6 +119,13 @@ payload_new(const char *dso, const char *sym)
         struct payload *p = ag_memblock_new(sizeof *p);
         p->dso = ag_string_new(dso);
         p->sym = ag_string_new(sym);
+        p->hnd = dlopen(p->dso, RTLD_NOW);
+
+        if (!p->hnd) {
+                fputs(dlerror(), stderr);
+                exit(1);
+        }
+
 
         return p;
 }
@@ -143,6 +145,11 @@ static void
 virt_release(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
+
+        struct payload *p = ctx;
+        ag_string_release(&p->dso);
+        ag_string_release(&p->sym);
+        dlclose(p->hnd);
 }
 
 
