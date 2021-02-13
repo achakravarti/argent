@@ -25,6 +25,7 @@
 #define __ARGENT_INCLUDE_ARGENT_H__
 
 #include "./primitives.h"
+#include "./registry.h"
 #include "./log.h"
 #include "./erno.h"
 #include "./exception.h"

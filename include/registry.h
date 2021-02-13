@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include <stddef.h>
+#include "./primitives.h"
 
 
 typedef struct ag_registry      ag_registry;
