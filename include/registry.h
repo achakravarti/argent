@@ -34,7 +34,7 @@ extern "C" {
 typedef struct ag_registry      ag_registry;
 typedef void                    (ag_registry_release_cbk)(void *);
 
-extern ag_registry      *ag_registry_new(size_t, ag_registry_release_cbk *);
+extern ag_registry      *ag_registry_new(ag_registry_release_cbk *);
 extern void              ag_registry_release(ag_registry **);
 
 extern void     *ag_registry_get(size_t);

@@ -37,7 +37,7 @@ struct node {
 };
 
 static inline struct node       *node_new(void *);
-static inline void               node_release(struct node **, 
+static inline void               node_release(struct node *, 
                                     ag_registry_release_cbk *);
 
 
@@ -87,14 +87,48 @@ node_new(void *data)
 }
 
 static inline void
-node_release(struct node **hnd, ag_registry_release_cbk *disp)
+node_release(struct node *hnd, ag_registry_release_cbk *disp)
 {
-        struct node *n;
+        if (AG_LIKELY (hnd)) {
+                disp(hnd->data);
+                void *m = hnd;
+                mem_release(&m);
+        }
+}
 
-        if (AG_LIKELY (hnd && (n = *hnd))) {
-                disp(n->data);
-                void *m = &n;
-                mem_release(m);
+
+extern ag_registry *
+ag_registry_new(ag_registry_release_cbk *disp)
+{
+        AG_ASSERT_PTR (disp);
+
+        ag_registry *r = mem_new(sizeof *r);
+        r->len = sizeof(size_t);
+        r->buck = mem_new(sizeof *r->buck * r->len);
+        r->disp = disp;
+
+        return r;
+}
+
+
+extern void
+ag_registry_release(ag_registry **hnd)
+{
+        ag_registry *r;
+
+        if (AG_LIKELY (hnd && (r = *hnd))) {
+                for (register size_t i = 0; i < r->len; i++) {
+                        register struct node *n = r->buck[i];
+
+                        while (n) {
+                                register struct node *n2 = n->next;
+                                node_release(n, r->disp);
+                                n = n2;
+                        }
+                }
+
+                void *m = r;
+                mem_release(&m);
         }
 }
 
