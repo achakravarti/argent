@@ -27,20 +27,26 @@
 #include <string.h>
 
 
+/* Prototypes for heap memory helper functions */
+
 static inline void      *mem_new(size_t);
 static inline void       mem_release(void **);
 
 
 struct node {
-        ag_hash          key;
-        void            *data;
-        struct node     *next;
+        ag_hash          key;   /* node key  */
+        void            *data;  /* node data */
+        struct node     *next;  /* next node */
 };
+
+
+/* Prototypes for node management helper functions */
 
 static inline struct node       *node_new(ag_hash, void *);
 static inline void               node_release(struct node *, 
                                     ag_registry_release_cbk *);
 
+/* Definition of the ag_registry ADT. */
 
 struct ag_registry {
         size_t                    len;  /* number of buckets     */
@@ -48,7 +54,14 @@ struct ag_registry {
         ag_registry_release_cbk  *disp; /* cleanup callback      */
 };
 
-        
+
+/* 
+ * ag_registry_new() creates a new registry instance. The registry is
+ * implemented as a hash map of generic data. The number of buckets is set to be
+ * the native word size. The callback to dispose the contained data is passed
+ * through the first parameter.
+ */
+
 extern ag_registry *
 ag_registry_new(ag_registry_release_cbk *disp)
 {
@@ -79,7 +92,10 @@ ag_registry_release(ag_registry **hnd)
                         }
                 }
 
-                void *m = r;
+                void *m = r->buck;
+                mem_release(&m);
+
+                m = r;
                 mem_release(&m);
         }
 }
