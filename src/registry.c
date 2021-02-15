@@ -92,13 +92,12 @@ ag_registry_get(const ag_registry *hnd, ag_hash key)
 
 
 extern void
-ag_registry_push(ag_registry **hnd, ag_hash key, void *data)
+ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
 {
-        AG_ASSERT_PTR (hnd && *hnd);
+        AG_ASSERT_PTR (hnd);
         AG_ASSERT_PTR (data);
 
-        ag_registry *r = *hnd;
-        register struct node *n = r->buck[key % r->len];
+        register struct node *n = hnd->buck[key % hnd->len];
 
         if (n) {
                 while (n && n->next)
@@ -108,7 +107,6 @@ ag_registry_push(ag_registry **hnd, ag_hash key, void *data)
         } else
                 n = node_new(data);
 }
-
 
 
 static inline void *

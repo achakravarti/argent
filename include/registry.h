@@ -40,7 +40,7 @@ extern void              ag_registry_release(ag_registry **);
 
 extern void     *ag_registry_get(const ag_registry *, ag_hash);
 
-extern void     ag_registry_push(ag_registry **, ag_hash, void *);
+extern void     ag_registry_push(ag_registry *, ag_hash, void *);
 
 
 #ifdef __cplusplus
