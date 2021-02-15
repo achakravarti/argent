@@ -32,11 +32,12 @@ static inline void       mem_release(void **);
 
 
 struct node {
+        ag_hash          key;
         void            *data;
         struct node     *next;
 };
 
-static inline struct node       *node_new(void *);
+static inline struct node       *node_new(ag_hash, void *);
 static inline void               node_release(struct node *, 
                                     ag_registry_release_cbk *);
 
@@ -88,6 +89,17 @@ extern void *
 ag_registry_get(const ag_registry *hnd, ag_hash key)
 {
         AG_ASSERT_PTR (hnd);
+
+        register struct node *n = hnd->buck[key % hnd->len];
+
+        while (n) {
+                if (n->key == key)
+                        return n->data;
+
+                n = n->next;
+        }
+
+        return NULL;
 }
 
 
@@ -103,9 +115,9 @@ ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
                 while (n && n->next)
                         n = n->next;
 
-                n->next = node_new(data);
+                n->next = node_new(key, data);
         } else
-                n = node_new(data);
+                n = node_new(key, data);
 }
 
 
@@ -136,11 +148,12 @@ mem_release(void **hnd)
 
 
 static inline struct node *
-node_new(void *data)
+node_new(ag_hash key, void *data)
 {
         AG_ASSERT_PTR (data);
 
         struct node *n = mem_new(sizeof *n);
+        n->key = key;
         n->data = data;
         n->next = NULL;
 
