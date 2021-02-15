@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 #include "./primitives.h"
+#include "./hash.h"
 
 
 typedef struct ag_registry      ag_registry;
@@ -37,9 +38,9 @@ typedef void                    (ag_registry_release_cbk)(void *);
 extern ag_registry      *ag_registry_new(ag_registry_release_cbk *);
 extern void              ag_registry_release(ag_registry **);
 
-extern void     *ag_registry_get(size_t);
+extern void     *ag_registry_get(const ag_registry *, ag_hash);
 
-extern void     ag_registry_push(size_t, void *);
+extern void     ag_registry_push(ag_registry **, ag_hash, void *);
 
 
 #ifdef __cplusplus
