@@ -206,7 +206,7 @@ AG_METATEST_OBJECT_COPY(ag_object, sample_base());
 AG_METATEST_OBJECT_COPY(ag_object, sample_derived());
 
 
-AG_METATEST_OBJECT_CLONE(ag_object, sample_base());
+//AG_METATEST_OBJECT_CLONE(ag_object, sample_base());
 //AG_METATEST_OBJECT_CLONE(ag_object, sample_derived());
 
 
