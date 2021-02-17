@@ -58,8 +58,8 @@ struct ag_registry {
 /* 
  * ag_registry_new() creates a new registry instance. The registry is
  * implemented as a hash map of generic data. The number of buckets is set to be
- * the native word size. The callback to dispose the contained data is passed
- * through the first parameter.
+ * the native word size in bits. The callback to dispose the contained data is 
+ * passed through the first parameter.
  */
 
 extern ag_registry *
@@ -68,7 +68,7 @@ ag_registry_new(ag_registry_release_cbk *disp)
         AG_ASSERT_PTR (disp);
 
         ag_registry *r = mem_new(sizeof *r);
-        r->len = sizeof(size_t);
+        r->len = sizeof(size_t) * 8;
         r->buck = mem_new(sizeof *r->buck * r->len);
         r->disp = disp;
 
@@ -133,7 +133,7 @@ ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
 
                 n->next = node_new(key, data);
         } else
-                n = node_new(key, data);
+                hnd->buck[key % hnd->len] = node_new(key, data);
 }
 
 
@@ -179,11 +179,11 @@ node_new(ag_hash key, void *data)
 static inline void
 node_release(struct node *hnd, ag_registry_release_cbk *disp)
 {
-        if (AG_LIKELY (hnd)) {
-                disp(hnd->data);
-                void *m = hnd;
-                mem_release(&m);
-        }
+        AG_ASSERT_PTR (hnd);
+
+        disp(hnd->data);
+        void *m = hnd;
+        mem_release(&m);
 }
 
 

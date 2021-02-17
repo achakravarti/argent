@@ -30,8 +30,18 @@ struct vector {
 };
 
 
-static struct vector *g_argent;
-static struct vector *g_client;
+static void
+vt_release(void *hnd)
+{
+        ag_memblock_release(&hnd);
+}
+
+
+//static struct vector *g_argent;
+//static struct vector *g_client;
+
+static ag_registry *g_argent;
+static ag_registry *g_client;
 
 
 /*
@@ -67,28 +77,54 @@ static ag_string   *def_str(const ag_object *);
 
 extern void ag_object_registry_init(void)
 {
-        g_argent = vector_new(sizeof(size_t));
-        g_client = vector_new(sizeof(size_t));
+        //g_argent = vector_new(sizeof(size_t));
+        //g_client = vector_new(sizeof(size_t));
+
+        g_argent = ag_registry_new(vt_release);
+        g_client = ag_registry_new(vt_release);
 }
 
 
 extern void ag_object_registry_exit(void)
 {
-        vector_release(&g_argent);
-        vector_release(&g_client);
+        //vector_release(&g_argent);
+        //vector_release(&g_client);
+
+        ag_registry_release(&g_argent);
+        ag_registry_release(&g_client);
 }
 
 
 extern const struct ag_object_vtable *ag_object_registry_get(ag_typeid typeid)
 {
-        return vector_get(typeid_vector(typeid), typeid_index(typeid));
+        //return vector_get(typeid_vector(typeid), typeid_index(typeid));
+
+        ag_registry *r = typeid < 0 ? g_argent : g_client;
+        ag_hash h = ag_hash_new(typeid);
+
+        struct ag_object_vtable *v = ag_registry_get(r, h);
+        return v;
 }
 
 
 extern void ag_object_registry_set(ag_typeid typeid,
                                 const struct ag_object_vtable *vt)
 {
-        vector_set(typeid_vector(typeid), typeid_index(typeid), vt);
+        //vector_set(typeid_vector(typeid), typeid_index(typeid), vt);
+
+        struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
+        v->clone = vt->clone ? vt->clone : def_clone;
+        v->release = vt->release ? vt->release : def_release;
+        v->cmp = vt->cmp ? vt->cmp : def_cmp;
+        v->valid = vt->valid ? vt->valid : def_valid;
+        v->sz = vt->sz ? vt->sz : def_sz;
+        v->len = vt->len ? vt->len : def_len;
+        v->hash = vt->hash ? vt->hash : def_hash;
+        v->str = vt->str ? vt->str : def_str;
+
+        ag_registry *r = typeid < 0 ? g_argent : g_client;
+        ag_hash h = ag_hash_new(typeid);
+        ag_registry_push(r, h, v);
 }
 
 
