@@ -75,7 +75,7 @@ AG_OBJECT_DEFINE(ag_http_client)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_HTTP_CLIENT, &vt);
+        ag_object_registry_push(AG_TYPEID_HTTP_CLIENT, &vt);
 }
 
 

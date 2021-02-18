@@ -233,7 +233,7 @@ extern void ag_object_registry_init(void);
 extern void ag_object_registry_exit(void);
 
 extern const struct ag_object_vtable *ag_object_registry_get(ag_typeid);
-extern void ag_object_registry_set(ag_typeid, const struct ag_object_vtable *);
+extern void ag_object_registry_push(ag_typeid, const struct ag_object_vtable *);
 
 
 #ifdef __cplusplus

@@ -108,7 +108,7 @@ AG_OBJECT_DEFINE(ag_list)
                 .hash = virt_hash,   .str = virt_str,
         };
 
-        ag_object_registry_set(AG_TYPEID_LIST, &vt);
+        ag_object_registry_push(AG_TYPEID_LIST, &vt);
 }
 
 

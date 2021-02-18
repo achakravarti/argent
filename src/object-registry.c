@@ -69,7 +69,7 @@ ag_object_registry_get(ag_typeid typeid)
 
 
 extern void
-ag_object_registry_set(ag_typeid typeid, const struct ag_object_vtable *vt)
+ag_object_registry_push(ag_typeid typeid, const struct ag_object_vtable *vt)
 {
         struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
         v->clone = vt->clone ? vt->clone : def_clone;
