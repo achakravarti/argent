@@ -54,7 +54,7 @@ ag_init(void)
                 },
         };
 
-        ag_exception_registry_init(32);
+        ag_exception_registry_init();
         ag_object_registry_init();
 
         register struct node n;

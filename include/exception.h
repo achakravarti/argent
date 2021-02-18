@@ -106,7 +106,7 @@ extern void     ag_exception_parse_hnd(const struct ag_exception *, void *);
  */
 
 
-extern void     ag_exception_registry_init(size_t);
+extern void     ag_exception_registry_init(void);
 extern void     ag_exception_registry_exit(void);
 
 /*
