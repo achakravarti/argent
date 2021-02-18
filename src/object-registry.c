@@ -24,12 +24,6 @@
 #include "../include/argent.h"
 
 
-struct vector {
-        struct ag_object_vtable **vt;
-        size_t cap;
-};
-
-
 static void
 vt_release(void *hnd)
 {
@@ -37,31 +31,8 @@ vt_release(void *hnd)
 }
 
 
-//static struct vector *g_argent;
-//static struct vector *g_client;
-
 static ag_registry *g_argent;
 static ag_registry *g_client;
-
-
-/*
- * Prototypes for the helper functions for selecting the appropriate vector and
- * determining the vector index according to type ID.
- */
-static inline struct vector *typeid_vector(ag_typeid);
-static inline size_t         typeid_index(ag_typeid);
-
-
-/* Prototypes to manage managing vectors */
-static inline struct vector *vector_new(size_t);
-static void                  vector_release(struct vector **);
-static inline void           vector_resize(struct vector *, size_t);
-
-
-/* Prototypes for vector accessor and mutator */
-static inline const struct ag_object_vtable *vector_get(const struct vector *,
-                                                        size_t);
-static void vector_set(struct vector *, size_t, const struct ag_object_vtable *);
 
 
 /* Prototypes for the default callback functions */
@@ -77,9 +48,6 @@ static ag_string   *def_str(const ag_object *);
 
 extern void ag_object_registry_init(void)
 {
-        //g_argent = vector_new(sizeof(size_t));
-        //g_client = vector_new(sizeof(size_t));
-
         g_argent = ag_registry_new(vt_release);
         g_client = ag_registry_new(vt_release);
 }
@@ -87,9 +55,6 @@ extern void ag_object_registry_init(void)
 
 extern void ag_object_registry_exit(void)
 {
-        //vector_release(&g_argent);
-        //vector_release(&g_client);
-
         ag_registry_release(&g_argent);
         ag_registry_release(&g_client);
 }
@@ -97,8 +62,6 @@ extern void ag_object_registry_exit(void)
 
 extern const struct ag_object_vtable *ag_object_registry_get(ag_typeid typeid)
 {
-        //return vector_get(typeid_vector(typeid), typeid_index(typeid));
-
         ag_registry *r = typeid < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(typeid);
 
@@ -110,8 +73,6 @@ extern const struct ag_object_vtable *ag_object_registry_get(ag_typeid typeid)
 extern void ag_object_registry_set(ag_typeid typeid,
                                 const struct ag_object_vtable *vt)
 {
-        //vector_set(typeid_vector(typeid), typeid_index(typeid), vt);
-
         struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
         v->clone = vt->clone ? vt->clone : def_clone;
         v->release = vt->release ? vt->release : def_release;
@@ -125,97 +86,6 @@ extern void ag_object_registry_set(ag_typeid typeid,
         ag_registry *r = typeid < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(typeid);
         ag_registry_push(r, h, v);
-}
-
-
-static inline struct vector *typeid_vector(ag_typeid typeid)
-{
-        return typeid < AG_TYPEID_OBJECT ? g_argent : g_client;
-}
-
-
-static inline size_t typeid_index(ag_typeid typeid)
-{
-        return typeid < AG_TYPEID_OBJECT ? AG_TYPEID_OBJECT - typeid : typeid;
-}
-
-
-static inline struct vector *vector_new(size_t cap)
-{
-        struct vector *ctx = ag_memblock_new(sizeof *ctx);
-        ctx->cap = cap;
-        ctx->vt = ag_memblock_new(sizeof *ctx->vt * cap);
-
-        for (register size_t i = 0; i < cap; i++)
-                ctx->vt[i] = NULL;
-
-        return ctx;
-}
-
-
-static void vector_release(struct vector **ctx)
-{
-        struct vector *v;
-        ag_memblock *m;
-
-        if (AG_LIKELY (ctx && (v = *ctx))) {
-                for (register size_t i = 0; i < v->cap; i++) {
-                        m = v->vt[i];
-                        ag_memblock_release(&m);
-                }
-
-                m = v->vt;
-                ag_memblock_release(&m);
-
-                m = v;
-                ag_memblock_release(&m);
-                *ctx = m;
-        }
-}
-
-
-static inline void vector_resize(struct vector *ctx, size_t cap)
-{
-        ag_memblock *m = ctx->vt;
-        ag_memblock_resize(&m, cap);
-}
-
-
-static inline const struct ag_object_vtable *vector_get(const struct vector *ctx,
-                                                     size_t idx)
-{
-        return ctx->vt[idx];
-}
-
-
-static void vector_set(struct vector *ctx, size_t idx,
-                       const struct ag_object_vtable *vt)
-{
-        register size_t cap = ctx->cap;
-
-        if (cap < idx) {
-                while (cap < idx)
-                        cap *= 2;
-
-                vector_resize(ctx, cap);
-        }
-
-        if (ctx->vt[idx]) {
-                ag_memblock *hnd = ctx->vt[idx];
-                ag_memblock_release(&hnd);
-        }
-
-        ctx->vt[idx] = ag_memblock_new(sizeof *ctx->vt[idx]);
-        struct ag_object_vtable *dst = ctx->vt[idx];
-
-        dst->clone   = vt->clone   ? vt->clone   : def_clone;
-        dst->release = vt->release ? vt->release : def_release;
-        dst->cmp     = vt->cmp     ? vt->cmp     : def_cmp;
-        dst->valid   = vt->valid   ? vt->valid   : def_valid;
-        dst->sz      = vt->sz      ? vt->sz      : def_sz;
-        dst->len     = vt->len     ? vt->len     : def_len;
-        dst->hash    = vt->hash    ? vt->hash    : def_hash;
-        dst->str     = vt->str     ? vt->str     : def_str;
 }
 
 
