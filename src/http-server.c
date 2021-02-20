@@ -2,20 +2,12 @@
 #include <fcgiapp.h>
 
 
-struct entry {
-        ag_string       *path;
-        ag_string       *dso;
-        ag_string       *sym;
-};
-
-static void entry_release(void *hnd)
+static void plugin_release(void *hnd)
 {
-        AG_ASSERT (hnd);
+        AG_ASSERT_PTR (hnd);
 
-        struct entry *e = hnd;
-        ag_string_release(&e->path);
-        ag_string_release(&e->dso);
-        ag_string_release(&e->sym);
+        ag_plugin *p = hnd;
+        ag_plugin_release(&p);
 }
 
 
@@ -24,9 +16,6 @@ static AG_THREADLOCAL struct {
         ag_registry     *reg;
 } *g_http = NULL;
 
-#define HTTP_LISTENSOCK_FILENO  0
-#define HTTP_LISTENSOCK_FLAGS   0
-
 
 extern void
 ag_http_server_init(void)
@@ -34,11 +23,10 @@ ag_http_server_init(void)
         AG_ASSERT (!g_http);
 
         g_http = ag_memblock_new(sizeof *g_http);
-        g_http->reg = ag_registry_new(entry_release);
+        g_http->reg = ag_registry_new(plugin_release);
 
         AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
-        AG_REQUIRE (!FCGX_InitRequest(g_http->req, HTTP_LISTENSOCK_FILENO,
-            HTTP_LISTENSOCK_FLAGS), AG_ERNO_HTTP);
+        AG_REQUIRE (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_HTTP);
 }
 
 
@@ -49,38 +37,21 @@ ag_http_server_exit(void)
                 return;
 
         ag_registry_release(&g_http->reg);
+
+        ag_memblock *m = g_http;
+        ag_memblock_release(&m);
 }
 
 
 extern void
-ag_http_server_register(const char *path, const char *sym)
+ag_http_server_register(const char *path, const ag_plugin *plg)
 {
         AG_ASSERT_STR (path);
-        AG_ASSERT_STR (sym);
+        AG_ASSERT_PTR (plg);
         AG_ASSERT_PTR (g_http);
 
-        struct entry *e = ag_memblock_new(sizeof *e);
-        e->path = ag_string_new(path);
-        e->sym = ag_string_new(sym);
-        e->dso = NULL;
-
-        ag_registry_push(g_http->reg, ag_hash_new_str(path), e);
-}
-
-extern void
-ag_http_server_register_dso(const char *path, const char *dso, const char *sym)
-{
-        AG_ASSERT_STR (path);
-        AG_ASSERT_STR (dso);
-        AG_ASSERT_STR (sym);
-        AG_ASSERT_PTR (g_http);
-
-        struct entry *e = ag_memblock_new(sizeof *e);
-        e->path = ag_string_new(path);
-        e->sym = ag_string_new(sym);
-        e->dso = ag_string_new(dso);
-
-        ag_registry_push(g_http->reg, ag_hash_new_str(path), e);
+        ag_registry_push(g_http->reg, ag_hash_new_str(path),
+            ag_plugin_copy(plg));
 }
 
 

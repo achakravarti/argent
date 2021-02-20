@@ -30,6 +30,7 @@ extern "C" {
 
 #include "./alist.h"
 #include "./object.h"
+#include "./plugin.h"
 
 
 /**
@@ -324,8 +325,7 @@ typedef void (*ag_http_handler)(const ag_http_request *);
 void ag_http_server_init(void);
 void ag_http_server_exit(void);
 
-void ag_http_server_register(const char *, const char *);
-void ag_http_server_register_dso(const char *, const char *, const char *);
+void ag_http_server_register(const char *, const ag_plugin *);
 void ag_http_server_run(void);
 
 

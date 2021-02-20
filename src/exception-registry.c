@@ -36,18 +36,6 @@ static void     data_release(void *);
 
 
 /*
- * The exception registry uses a vector of dynamically sized arrays to hold the
- * exception messages and handlers associated with error codes. The error codes
- * are used as indices for the arrays.
- */
-struct vector {
-        char                    **msg; /* Exception message. */
-        ag_exception_handler    **hnd; /* Exception handler.  */
-        size_t                    cap; /* Capacity of vector. */
-};
-
-
-/*
  * Although the exception registry presents itself through its interface as a
  * single list, it is implemented as two separate vectors. One vector maintains
  * the exception messages and handlers for the Argent Library error codes
