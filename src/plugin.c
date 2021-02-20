@@ -126,7 +126,6 @@ payload_new(const char *dso, const char *sym)
                 exit(1);
         }
 
-
         return p;
 }
 
@@ -136,7 +135,7 @@ virt_clone(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
-        const struct payload *p = ag_object_payload(ctx);
+        const struct payload *p = ctx;
         return payload_new(p->dso, p->sym);
 }
 
