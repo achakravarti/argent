@@ -25,16 +25,30 @@ ag_http_server_init(void)
 
         g_http = ag_memblock_new(sizeof *g_http);
         g_http->reg = ag_registry_new(plugin_release);
-
+        
+        g_http->env.auth_type = "";
+        g_http->env.content_length = "";
+        g_http->env.content_type = "";
         g_http->env.document_root = "";
+        g_http->env.gateway_interface = "";
+        g_http->env.http_accept = "";
+        g_http->env.http_accept_charset = "";
+        g_http->env.http_accept_encoding = "";
+        g_http->env.http_accept_language = "";
         g_http->env.http_cookie = "";
+        g_http->env.http_from = "";
         g_http->env.http_host = "";
         g_http->env.http_referer = "";
         g_http->env.http_user_agent = "";
         g_http->env.https = "";
         g_http->env.path = "";
+        g_http->env.path_info = "";
+        g_http->env.path_translated = "";
         g_http->env.query_string = "";
         g_http->env.remote_addr = "";
+        g_http->env.remote_host = "";
+        g_http->env.remote_ident = "";
+        g_http->env.remote_port = "";
         g_http->env.remote_user = "";
         g_http->env.request_method = "";
         g_http->env.request_uri = "";
@@ -43,6 +57,7 @@ ag_http_server_init(void)
         g_http->env.server_admin = "";
         g_http->env.server_name = "";
         g_http->env.server_port = "";
+        g_http->env.server_protocol = "";
         g_http->env.server_software = "";
 
         AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
