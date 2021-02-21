@@ -140,6 +140,29 @@ extern enum ag_http_status       ag_http_status_parse(const char *);
 extern ag_string                *ag_http_status_str(enum ag_http_status);
 
 
+struct ag_http_env {
+        const char      *document_root;         /* DOCUMENT_ROOT   */
+        const char      *http_cookie;           /* HTTP_COOKIE     */
+        const char      *http_host;             /* HTTP_HOST       */
+        const char      *http_referer;          /* HTTP_REFERER    */
+        const char      *http_user_agent;       /* HTTP_USER_AGENT */
+        const char      *https;                 /* HTTPS           */
+        const char      *path;                  /* PATH            */
+        const char      *query_string;          /* QUERY_STRING    */
+        const char      *remote_addr;           /* REMOTE_ADDR     */
+        const char      *remote_port;           /* REMOTE_PORT     */
+        const char      *remote_user;           /* REMOTE_USER     */
+        const char      *request_method;        /* REQUEST_METHOD  */
+        const char      *request_uri;           /* REQUEST_URI     */
+        const char      *script_filename;       /* SCRIPT_FILENAME */
+        const char      *script_name;           /* SCRIPT_NAME     */
+        const char      *server_admin;          /* SERVER_ADMIN    */
+        const char      *server_name;           /* SERVER_NAME     */
+        const char      *server_port;           /* SERVER_PORT     */
+        const char      *server_software;       /* SERVER_SOFTWARE */
+};
+
+
 /**
  * Declare the HTTP URL interface. An HTTP URL is the URL of the resource
  * requested by the client to the server, and makes up part of the HTTP request
@@ -322,11 +345,13 @@ extern void             ag_http_response_flush(ag_http_response **);
 
 typedef void (*ag_http_handler)(const ag_http_request *);
 
-void ag_http_server_init(void);
-void ag_http_server_exit(void);
+extern void     ag_http_server_init(void);
+extern void     ag_http_server_exit(void);
 
-void ag_http_server_register(const char *, const ag_plugin *);
-void ag_http_server_run(void);
+extern const struct ag_http_env *ag_http_server_env(void);
+
+extern void     ag_http_server_register(const char *, const ag_plugin *);
+extern void     ag_http_server_run(void);
 
 
 #ifdef __cplusplus
