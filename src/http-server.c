@@ -79,16 +79,30 @@ extern const struct ag_http_env *
 ag_http_server_env(void)
 {
         AG_ASSERT_PTR (g_http);
-        
+
+        g_http->env.auth_type = env_read("AUTH_TYPE");
+        g_http->env.content_length = env_read("CONTENT_LENGTH");
+        g_http->env.content_type = env_read("CONTENT_TYPE");
         g_http->env.document_root = env_read("DOCUMENT_ROOT");
+        g_http->env.gateway_interface = env_read("GATEWAY_INTEFACE");
+        g_http->env.http_accept = env_read("HTTP_ACCEPT");
+        g_http->env.http_accept_charset = env_read("HTTP_ACCEPT_CHARSET");
+        g_http->env.http_accept_encoding = env_read("HTTP_ACCEPT_ENCODING");
+        g_http->env.http_accept_language = env_read("HTTP_ACCEPT_LANGUAGE");
         g_http->env.http_cookie = env_read("HTTP_COOKIE");
+        g_http->env.http_from = env_read("HTTP_FROM");
         g_http->env.http_host = env_read("HTTP_HOST");
         g_http->env.http_referer = env_read("HTTP_REFERER");
         g_http->env.http_user_agent = env_read("HTTP_USER_AGENT");
         g_http->env.https = env_read("HTTPS");
         g_http->env.path = env_read("PATH");
+        g_http->env.path_info = env_read("PATH_INFO");
+        g_http->env.path_translated = env_read("PATH_TRANSLATED");
         g_http->env.query_string = env_read("QUERY_STRING");
         g_http->env.remote_addr = env_read("REMOTE_ADDR");
+        g_http->env.remote_host = env_read("REMOTE_HOST");
+        g_http->env.remote_ident = env_read("REMOTE_IDENT");
+        g_http->env.remote_port = env_read("REMOTE_PORT");
         g_http->env.remote_user = env_read("REMOTE_USER");
         g_http->env.request_method = env_read("REQUEST_METHOD");
         g_http->env.request_uri = env_read("REQUEST_URI");
@@ -97,6 +111,7 @@ ag_http_server_env(void)
         g_http->env.server_admin = env_read("SERVER_ADMIN");
         g_http->env.server_name = env_read("SERVER_NAME");
         g_http->env.server_port = env_read("SERVER_PORT");
+        g_http->env.server_protocol = env_read("SERVER_PROTOCOL");
         g_http->env.server_software = env_read("SERVER_SOFTWARE");
 
         return &g_http->env;
@@ -112,16 +127,6 @@ ag_http_server_register(const char *path, const ag_plugin *plug)
 
         ag_registry_push(g_http->reg, ag_hash_new_str(path),
             ag_plugin_copy(plug));
-}
-
-
-
-static enum ag_http_method
-http_parse_method(void)
-{
-        AG_ASSERT_PTR (g_http);
-
-        return ag_http_method_parse(env_read("REQUEST_METHOD"));
 }
 
 
@@ -155,6 +160,7 @@ ag_http_server_run(void)
         while (FCGX_Accept_r(g_http->req) >= 0) {
                 const struct ag_http_env *e = ag_http_server_env();
 
+                enum ag_http_method m = ag_http_method_parse(e->request_method);
                 /*
                 enum ag_http_method m = http_parse_method();
                 enum ag_http_mime t = http_parse_mime();

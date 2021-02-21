@@ -140,26 +140,42 @@ extern enum ag_http_status       ag_http_status_parse(const char *);
 extern ag_string                *ag_http_status_str(enum ag_http_status);
 
 
+// https://docstore.mik.ua/orelly/linux/cgi/ch03_02.htm
+// http://www.cgi101.com/book/ch3/text.html
 struct ag_http_env {
-        const char      *document_root;         /* DOCUMENT_ROOT   */
-        const char      *http_cookie;           /* HTTP_COOKIE     */
-        const char      *http_host;             /* HTTP_HOST       */
-        const char      *http_referer;          /* HTTP_REFERER    */
-        const char      *http_user_agent;       /* HTTP_USER_AGENT */
-        const char      *https;                 /* HTTPS           */
-        const char      *path;                  /* PATH            */
-        const char      *query_string;          /* QUERY_STRING    */
-        const char      *remote_addr;           /* REMOTE_ADDR     */
-        const char      *remote_port;           /* REMOTE_PORT     */
-        const char      *remote_user;           /* REMOTE_USER     */
-        const char      *request_method;        /* REQUEST_METHOD  */
-        const char      *request_uri;           /* REQUEST_URI     */
-        const char      *script_filename;       /* SCRIPT_FILENAME */
-        const char      *script_name;           /* SCRIPT_NAME     */
-        const char      *server_admin;          /* SERVER_ADMIN    */
-        const char      *server_name;           /* SERVER_NAME     */
-        const char      *server_port;           /* SERVER_PORT     */
-        const char      *server_software;       /* SERVER_SOFTWARE */
+        const char      *auth_type;             /* AUTH_TYPE            */
+        const char      *content_length;        /* CONTENT_LENGTH       */
+        const char      *content_type;          /* CONTENT_TYPE         */
+        const char      *document_root;         /* DOCUMENT_ROOT        */
+        const char      *gateway_interface;     /* GATEWAY_INTEFACE     */
+        const char      *http_accept;           /* HTTP_ACCEPT          */
+        const char      *http_accept_charset;   /* HTTP_ACCEPT_CHARSET  */
+        const char      *http_accept_encoding;  /* HTTP_ACCEPT_ENCODING */
+        const char      *http_accept_language;  /* HTTP_ACCEPT_LANGUAGE */
+        const char      *http_cookie;           /* HTTP_COOKIE          */
+        const char      *http_from;             /* HTTP_FROM            */
+        const char      *http_host;             /* HTTP_HOST            */
+        const char      *http_referer;          /* HTTP_REFERER         */
+        const char      *http_user_agent;       /* HTTP_USER_AGENT      */
+        const char      *https;                 /* HTTPS                */
+        const char      *path;                  /* PATH                 */
+        const char      *path_info;             /* PATH_INFO            */
+        const char      *path_translated;       /* PATH_TRANSLATED      */
+        const char      *query_string;          /* QUERY_STRING         */
+        const char      *remote_addr;           /* REMOTE_ADDR          */
+        const char      *remote_host;           /* REMOTE_HOST          */
+        const char      *remote_ident;          /* REMOTE_IDENT         */
+        const char      *remote_port;           /* REMOTE_PORT          */
+        const char      *remote_user;           /* REMOTE_USER          */
+        const char      *request_method;        /* REQUEST_METHOD       */
+        const char      *request_uri;           /* REQUEST_URI          */
+        const char      *script_filename;       /* SCRIPT_FILENAME      */
+        const char      *script_name;           /* SCRIPT_NAME          */
+        const char      *server_admin;          /* SERVER_ADMIN         */
+        const char      *server_name;           /* SERVER_NAME          */
+        const char      *server_port;           /* SERVER_PORT          */
+        const char      *server_protocol;       /* SERVER_PROTOCOL      */
+        const char      *server_software;       /* SERVER_SOFTWARE      */
 };
 
 
