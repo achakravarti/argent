@@ -22,6 +22,8 @@
 
 
 #include "../include/argent.h"
+#include <errno.h>
+#include <inttypes.h>
 
 
 /*
@@ -174,6 +176,28 @@ ag_http_url_parse(const char *src)
         struct ag_exception_parse x = {.str = src, .ctx = "ag_http_url"};
         AG_REQUIRE_OPT (false, AG_ERNO_PARSE, &x);
         return NULL;
+}
+
+
+extern ag_http_url *
+ag_http_url_parse_env(const struct ag_http_env *cgi)
+{
+        AG_ASSERT_PTR (cgi);
+
+        AG_AUTO(ag_string) *s = ag_string_new(cgi->https);
+        AG_AUTO(ag_string) *s2 = ag_string_lower(s);
+        bool secure = ag_string_eq(s2, "on");
+
+        AG_AUTO(ag_string) *p = ag_string_new(cgi->request_uri);
+        AG_AUTO(ag_string) *p2 = ag_string_split(p, "?");
+        AG_AUTO(ag_string) *path = ag_string_split(p2, "#");
+
+        ag_uint port = strtoumax(cgi->server_port, NULL, 10);
+        if (port == UINTMAX_MAX && errno == ERANGE)
+                exit(EXIT_FAILURE);
+
+        return port ? ag_http_url_new(secure, cgi->server_name, port, path)
+            : ag_http_url_new_noport(secure, cgi->server_name, path);
 }
 
 

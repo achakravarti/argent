@@ -145,28 +145,6 @@ ag_http_server_register(const char *path, const ag_plugin *plug)
 }
 
 
-static ag_http_url *
-http_parse_url(void)
-{
-        AG_ASSERT_PTR (g_http);
-
-        AG_AUTO(ag_string) *s = ag_string_new(env_read("HTTPS"));
-        AG_AUTO(ag_string) *s2 = ag_string_lower(s);
-        bool secure = ag_string_eq(s2, "on");
-
-        const char *host = env_read("SERVER_NAME");
-
-        AG_AUTO(ag_string) *p = ag_string_new(env_read("REQUEST_URI"));
-        AG_AUTO(ag_string) *p2 = ag_string_split(p, "?");
-        AG_AUTO(ag_string) *path = ag_string_split(p2, "#");
-
-        ag_uint port;
-
-        return port ? ag_http_url_new(secure, host, port, path)
-            : ag_http_url_new_noport(secure, host, path);
-}
-
-
 extern void
 ag_http_server_run(void)
 {
@@ -175,13 +153,14 @@ ag_http_server_run(void)
         while (FCGX_Accept_r(g_http->req) >= 0) {
                 const struct ag_http_env *e = ag_http_server_env();
 
-                enum ag_http_method m = ag_http_method_parse(e->request_method);
+                //enum ag_http_method m = ag_http_method_parse(e->request_method);
+                //enum ag_http_mime t = ag_http_mime_parse(e->content_type);
+
+                AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
+
                 /*
-                enum ag_http_method m = http_parse_method();
-                enum ag_http_mime t = http_parse_mime();
 
                 AG_AUTO(ag_http_client) *c = http_parse_client();
-                AG_AUTO(ag_http_url) *u = http_parse_url();
                 AG_AUTO(ag_alist) *p = ag_alist_new_empty();
 
                 AG_AUTO(ag_http_request) *r = ag_http_request_new(m, t, u, c, p);

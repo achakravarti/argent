@@ -196,11 +196,12 @@ struct ag_http_env {
  * is specified for the path, then the ag_http_url object defaults its path to
  * the root (/).
  *
- * There are three manager functions which are responsible for creating a new
+ * There are four manager functions which are responsible for creating a new
  * ag_http_url object instance:
  *   1. ag_http_url_new()
  *   2. ag_http_url_new_noport()
  *   3. ag_http_url_parse()
+ *   4. ag_http_url_parse_env()
  *
  * The remaining functions are accessors to the properties of the ag_http_url
  * object. Since the AG_OBJECT_DECLARE() macro is used to declare the HTTP URL
@@ -220,6 +221,7 @@ extern ag_http_url      *ag_http_url_new(bool, const char *, ag_uint,
 extern ag_http_url      *ag_http_url_new_noport(bool, const char *,
                             const char *);
 extern ag_http_url      *ag_http_url_parse(const char *);
+extern ag_http_url      *ag_http_url_parse_env(const struct ag_http_env *);
 
 extern bool              ag_http_url_secure(const ag_http_url *ctx);
 extern ag_string        *ag_http_url_host(const ag_http_url *ctx);
