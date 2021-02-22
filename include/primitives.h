@@ -115,6 +115,9 @@ enum ag_cmp {
         AG_CMP_GT
 };
 
+extern ag_int ag_int_parse(const char *);
+
+extern ag_uint ag_uint_parse(const char *);
 
 inline bool ag_int_lt(ag_int ctx, ag_int cmp)
 {

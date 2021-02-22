@@ -23,6 +23,8 @@
 
 #include "../include/argent.h"
 
+#include <errno.h>
+#include <inttypes.h>
 #include <math.h>
 
 
@@ -37,6 +39,36 @@ extern inline bool              ag_uint_gt(ag_uint ctx, ag_uint cmp);
 extern inline enum ag_cmp       ag_uint_cmp(ag_uint ctx, ag_uint cmp);
 
 extern inline enum ag_cmp       ag_float_cmp(ag_float, ag_float);
+
+
+extern ag_int
+ag_int_parse(const char *str)
+{
+        AG_ASSERT_STR (str);
+
+        ag_int num = strtoimax(str, NULL, 10);
+
+        struct ag_exception_parse x = {.str = str, .ctx = "ag_int"};
+        AG_REQUIRE_OPT (!(num == INTMAX_MAX && errno == ERANGE), AG_ERNO_PARSE,
+            &x);
+
+        return num;
+}
+
+
+extern ag_uint
+ag_uint_parse(const char *str)
+{
+        AG_ASSERT_STR (str);
+
+        ag_uint num = strtoumax(str, NULL, 10);
+        
+        struct ag_exception_parse x = {.str = str, .ctx = "ag_uint"};
+        AG_REQUIRE_OPT (!(num == UINTMAX_MAX && errno == ERANGE), AG_ERNO_PARSE,
+            &x);
+
+        return num;
+}
 
 
 extern bool

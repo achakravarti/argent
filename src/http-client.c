@@ -22,8 +22,6 @@
 
 
 #include "../include/argent.h"
-#include <errno.h>
-#include <inttypes.h>
 
 
 /*
@@ -113,11 +111,9 @@ ag_http_client_parse_env(const struct ag_http_env *cgi)
 {
         AG_ASSERT_PTR (cgi);
 
-        ag_uint port = strtoumax(cgi->remote_port, NULL, 10);
-        if (port == UINTMAX_MAX && errno == ERANGE)
-                exit(EXIT_FAILURE);
+        ag_uint port = ag_uint_parse(cgi->remote_port);
 
-        return ag_http_client_new(cgi->remote_addr, 0, cgi->remote_host,
+        return ag_http_client_new(cgi->remote_addr, port, cgi->remote_host,
             cgi->http_user_agent, cgi->http_referer);
 }
 
