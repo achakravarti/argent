@@ -13,8 +13,9 @@ static void plugin_release(void *hnd)
 
 static AG_THREADLOCAL struct {
         struct ag_http_env       env;
-        FCGX_Request            *req;
+        FCGX_Request            *cgi;
         ag_registry             *reg;
+        ag_http_request         *req;
 } *g_http = NULL;
 
 
@@ -25,6 +26,7 @@ ag_http_server_init(void)
 
         g_http = ag_memblock_new(sizeof *g_http);
         g_http->reg = ag_registry_new(plugin_release);
+        g_http->req = NULL;
         
         g_http->env.auth_type = "";
         g_http->env.content_length = "";
@@ -61,7 +63,7 @@ ag_http_server_init(void)
         g_http->env.server_software = "";
 
         AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
-        AG_REQUIRE (!FCGX_InitRequest(g_http->req, 0, 0), AG_ERNO_HTTP);
+        AG_REQUIRE (!FCGX_InitRequest(g_http->cgi, 0, 0), AG_ERNO_HTTP);
 }
 
 
@@ -72,6 +74,7 @@ ag_http_server_exit(void)
                 return;
 
         ag_registry_release(&g_http->reg);
+        ag_http_request_release(&g_http->req);
 
         ag_memblock *m = g_http;
         ag_memblock_release(&m);
@@ -84,7 +87,7 @@ env_read(const char *key)
         AG_ASSERT_PTR (g_http);
         AG_ASSERT_STR (key);
 
-        const char *v = FCGX_GetParam(key, g_http->req->envp);
+        const char *v = FCGX_GetParam(key, g_http->cgi->envp);
         return v ? v : "";
 }
 
@@ -133,6 +136,16 @@ ag_http_server_env(void)
 }
 
 
+extern const ag_http_request *
+ag_http_server_request(void)
+{
+        AG_ASSERT_PTR (g_http);
+        AG_ASSERT_PTR (g_http->req);
+
+        return g_http->req;
+}
+
+
 extern void
 ag_http_server_register(const char *path, const ag_plugin *plug)
 {
@@ -150,7 +163,7 @@ ag_http_server_run(void)
 {
         AG_ASSERT_PTR (g_http);
 
-        while (FCGX_Accept_r(g_http->req) >= 0) {
+        while (FCGX_Accept_r(g_http->cgi) >= 0) {
                 const struct ag_http_env *e = ag_http_server_env();
 
                 enum ag_http_method m = ag_http_method_parse(e->request_method);
@@ -159,9 +172,10 @@ ag_http_server_run(void)
                 AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
                 AG_AUTO(ag_alist) *p = ag_alist_new_empty();
 
-                AG_AUTO(ag_http_request) *r = ag_http_request_new(m, t, u, c, p);
+                ag_http_request_release(&g_http->req);
+                g_http->req = ag_http_request_new(m, t, u, c, p);
 
-                FCGX_Finish_r(g_http->req);
+                FCGX_Finish_r(g_http->cgi);
         }
 }
 
