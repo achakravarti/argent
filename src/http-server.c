@@ -159,6 +159,16 @@ ag_http_server_register(const char *path, const ag_plugin *plug)
 
 
 extern void
+ag_http_server_respond(const ag_http_response *resp)
+{
+        AG_ASSERT_PTR (g_http);
+
+        AG_AUTO(ag_string) *s = ag_http_response_str(resp);
+        FCGX_FPrintF(g_http->cgi->out, s);
+}
+
+
+extern void
 ag_http_server_run(void)
 {
         AG_ASSERT_PTR (g_http);
@@ -174,6 +184,9 @@ ag_http_server_run(void)
 
                 ag_http_request_release(&g_http->req);
                 g_http->req = ag_http_request_new(m, t, u, c, p);
+
+                // 1. update request
+                // 2. run plugin
 
                 FCGX_Finish_r(g_http->cgi);
         }

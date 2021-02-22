@@ -371,6 +371,7 @@ extern const struct ag_http_env *ag_http_server_env(void);
 extern const ag_http_request    *ag_http_server_request(void);
 
 extern void     ag_http_server_register(const char *, const ag_plugin *);
+extern void     ag_http_server_respond(const ag_http_response *);
 extern void     ag_http_server_run(void);
 
 
