@@ -153,18 +153,13 @@ ag_http_server_run(void)
         while (FCGX_Accept_r(g_http->req) >= 0) {
                 const struct ag_http_env *e = ag_http_server_env();
 
-                //enum ag_http_method m = ag_http_method_parse(e->request_method);
-                //enum ag_http_mime t = ag_http_mime_parse(e->content_type);
-
+                enum ag_http_method m = ag_http_method_parse(e->request_method);
+                enum ag_http_mime t = ag_http_mime_parse(e->content_type);
                 AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
-
-                /*
-
-                AG_AUTO(ag_http_client) *c = http_parse_client();
+                AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
                 AG_AUTO(ag_alist) *p = ag_alist_new_empty();
 
                 AG_AUTO(ag_http_request) *r = ag_http_request_new(m, t, u, c, p);
-                */
 
                 FCGX_Finish_r(g_http->req);
         }

@@ -22,6 +22,8 @@
 
 
 #include "../include/argent.h"
+#include <errno.h>
+#include <inttypes.h>
 
 
 /*
@@ -103,6 +105,20 @@ ag_http_client_new(const char *ip, ag_uint port, const char *host,
 
         return ag_object_new(AG_TYPEID_HTTP_CLIENT,
             payload_new(ip, port, host, agent, referer));
+}
+
+
+extern ag_http_client *
+ag_http_client_parse_env(const struct ag_http_env *cgi)
+{
+        AG_ASSERT_PTR (cgi);
+
+        ag_uint port = strtoumax(cgi->remote_port, NULL, 10);
+        if (port == UINTMAX_MAX && errno == ERANGE)
+                exit(EXIT_FAILURE);
+
+        return ag_http_client_new(cgi->remote_addr, 0, cgi->remote_host,
+            cgi->http_user_agent, cgi->http_referer);
 }
 
 

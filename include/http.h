@@ -264,6 +264,7 @@ AG_OBJECT_DECLARE(ag_http_client, AG_TYPEID_HTTP_CLIENT);
 
 extern ag_http_client   *ag_http_client_new(const char *, ag_uint, const char *,
                             const char *, const char *);
+extern ag_http_client  *ag_http_client_parse_env(const struct ag_http_env *);
 
 extern ag_string        *ag_http_client_ip(const ag_http_client *);
 extern ag_uint           ag_http_client_port(const ag_http_client *);
