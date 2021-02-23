@@ -185,8 +185,14 @@ ag_http_server_run(void)
                 ag_http_request_release(&g_http->req);
                 g_http->req = ag_http_request_new(m, t, u, c, p);
 
-                // 1. update request
-                // 2. run plugin
+                // TODO: determine params
+
+                AG_AUTO(ag_string) *path = ag_http_url_path(u); 
+                ag_hash h = ag_hash_new_str(path);
+                const ag_plugin *plug = ag_registry_get(g_http->reg, h);
+                ag_http_handler *hnd = ag_plugin_hnd(plug);
+                hnd(g_http->req);
+
 
                 FCGX_Finish_r(g_http->cgi);
         }

@@ -362,7 +362,7 @@ extern void             ag_http_response_flush(ag_http_response **);
  * TODO: Add description
  **/
 
-typedef void (*ag_http_handler)(const ag_http_request *);
+typedef void (ag_http_handler)(const ag_http_request *);
 
 extern void     ag_http_server_init(void);
 extern void     ag_http_server_exit(void);
