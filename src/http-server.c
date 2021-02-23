@@ -198,7 +198,7 @@ ag_http_server_run(void)
                 const ag_plugin *plug = ag_registry_get(g_http->reg, h);
                 ag_http_handler *hnd = ag_plugin_hnd(plug);
 
-                if (AG_LIKELY (hnd(g_http->req)))
+                if (AG_LIKELY (hnd))
                         hnd(g_http->req);
                 else
                         default_http_handler(g_http->req);
