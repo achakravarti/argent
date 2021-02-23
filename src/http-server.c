@@ -168,6 +168,12 @@ ag_http_server_respond(const ag_http_response *resp)
 }
 
 
+static void
+default_http_handler(const ag_http_request *req)
+{
+}
+
+
 extern void
 ag_http_server_run(void)
 {
@@ -191,7 +197,11 @@ ag_http_server_run(void)
                 ag_hash h = ag_hash_new_str(path);
                 const ag_plugin *plug = ag_registry_get(g_http->reg, h);
                 ag_http_handler *hnd = ag_plugin_hnd(plug);
-                hnd(g_http->req);
+
+                if (AG_LIKELY (hnd(g_http->req)))
+                        hnd(g_http->req);
+                else
+                        default_http_handler(g_http->req);
 
 
                 FCGX_Finish_r(g_http->cgi);
