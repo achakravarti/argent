@@ -276,6 +276,32 @@ ag_string_refc(const ag_string *ctx)
 }
 
 
+static inline bool
+url_encoded(const char *hnd)
+{
+        return *hnd == '%' && isxdigit(hnd[1]) && isxdigit(hnd[2]);
+}
+
+
+extern bool
+ag_string_url_encoded(const ag_string *hnd)
+{
+        AG_ASSERT_PTR (hnd);
+
+        register size_t sz = ag_string_sz(hnd) - 1;
+
+        if (sz < 3)
+                return false;
+
+        for (register size_t i = 0; i < sz; i++) {
+                if (url_encoded(hnd + i))
+                        return true;
+        }
+
+        return false;
+}
+
+
 /*
  * Define the ag_string_lower() interface function. This function transforms a
  * string to lowercase. Since we have chosen to keep strings as immutable, we
