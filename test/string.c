@@ -1046,6 +1046,68 @@ AG_TEST_CASE("ag_string_split() returns the right side of the pivot if it"
 }
 
 
+/* Define the test cases for ag_string_encode() */
+
+
+AG_TEST_CASE("ag_string_url_encode() has no effect on an empty string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new_empty();
+        AG_AUTO(ag_string) *s2 = ag_string_url_encode(s);
+
+        AG_TEST (!*s2);
+}
+
+
+AG_TEST_CASE("ag_string_url_encode() URL encodes an ASCII string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello, world!");
+        AG_AUTO(ag_string) *s2 = ag_string_url_encode(s);
+        
+        AG_TEST (ag_string_eq(s2, "Hello%2C%20world%21"));
+}
+
+
+AG_TEST_CASE("ag_string_url_encode() URL encodes a Unicode string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Привет, мир!");
+        AG_AUTO(ag_string) *s2 = ag_string_url_encode(s);
+    
+        AG_TEST (ag_string_eq(s2,
+            "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21"));
+}
+
+
+/* Define the test cases for ag_string_decode() */
+
+
+AG_TEST_CASE("ag_string_url_decode() has no effect on an empty string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new_empty();
+        AG_AUTO(ag_string) *s2 = ag_string_url_decode(s);
+
+        AG_TEST (!*s2);
+}
+
+
+AG_TEST_CASE("ag_string_url_decode() URL encodes an ASCII string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new("Hello%2C%20world%21");
+        AG_AUTO(ag_string) *s2 = ag_string_url_decode(s);
+
+        AG_TEST (ag_string_eq(s2, "Hello, world!"));
+}
+
+
+AG_TEST_CASE("ag_string_url_decode() URL decodes a Unicode string")
+{
+        AG_AUTO(ag_string) *s = ag_string_new(
+            "%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D0%BC%D0%B8%D1%80%21");
+        AG_AUTO(ag_string) *s2 = ag_string_url_decode(s);
+
+        AG_TEST (ag_string_eq(s2, "Привет, мир!"));
+}
+
+
 /*
  * Define the test_suite_list() testing interface function. This function is
  * responsible for creating a test suite from the test cases defined above.
