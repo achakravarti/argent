@@ -478,9 +478,49 @@ ag_string_url_encode(const ag_string *hnd)
 }
 
 
+static inline
+char url_decode(char c)
+{
+        if (c >= 'a')
+                return c - ('a' - 'A');
+        else if (c >= 'A')
+                return c - ('A' - 10);
+        else
+                return c - '0';
+}
+
+
 extern ag_string *
 ag_string_url_decode(const ag_string *hnd)
 {
-        return NULL;
+        AG_ASSERT_PTR (hnd);
+
+        if (!*hnd)
+                return ag_string_new_empty();
+
+        size_t sz = ag_string_sz(hnd) + 1;
+        char *bfr = ag_memblock_new(sz);
+
+        const char *ctx = hnd;
+        char *c = bfr;
+
+        while (*ctx) {
+                if (url_encoded(ctx)) {
+                        *c++ = (16 * url_decode(ctx[1])) + url_decode(ctx[2]);
+                        ctx += 3;
+                } else if (*c == '+') {
+                        *c++ = ' ';
+                        ctx++;
+                } else
+                        *c++ = *ctx++;
+        }
+
+        *c = '\0';
+        ag_string *ret = ag_string_new(bfr);
+
+        ag_memblock *m = bfr;
+        ag_memblock_release(&m);
+
+        return ret;
 }
 
