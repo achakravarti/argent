@@ -440,3 +440,47 @@ ag_string_split_right(const ag_string *ctx, const char *pvt)
         return (rhs);
 }
 
+
+// https://stackoverflow.com/questions/29414709
+extern ag_string *
+ag_string_url_encode(const ag_string *hnd)
+{
+        AG_ASSERT_PTR (hnd);
+
+        if (!*hnd)
+                return ag_string_new_empty();
+
+        register size_t sz = ag_string_sz(hnd) * 3 + 1;
+        char *bfr = ag_memblock_new(sz);
+
+        const char *ctx = hnd;
+        register size_t n = 0;
+        register int c;
+
+        while ((c = *ctx)) {
+                if (c < 33 || c > 126 ||
+                    strchr("!\"*%'();:@&=+$,/?#[]", *ctx)) {
+                        snprintf(bfr + n, sz, "%%%02X", c & 0xff);
+                        n += 3;
+                } else
+                        bfr[n++] = c;
+
+                ctx++;
+        }
+
+        bfr[n] = '\0';
+        ag_string *ret = ag_string_new(bfr);
+
+        ag_memblock *m = bfr;
+        ag_memblock_release(&m);
+
+        return ret;
+}
+
+
+extern ag_string *
+ag_string_url_decode(const ag_string *hnd)
+{
+        return NULL;
+}
+
