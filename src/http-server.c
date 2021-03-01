@@ -171,6 +171,15 @@ ag_http_server_respond(const ag_http_response *resp)
 static void
 default_http_handler(const ag_http_request *req)
 {
+        AG_ASSERT_PTR (req);
+
+        const char *msg = "<h1>[!] request handler not found!</h1><p>%s</p>";
+        AG_AUTO(ag_string) *s = ag_http_request_str(req);
+        AG_AUTO(ag_string) *s2 = ag_string_new_fmt(msg, s);
+
+        AG_AUTO(ag_http_response) *r = ag_http_response_new(
+            AG_HTTP_MIME_TEXT_HTML, AG_HTTP_STATUS_404_NOT_FOUND, s2);
+        ag_http_server_respond(r);
 }
 
 
