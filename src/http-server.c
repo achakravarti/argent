@@ -183,36 +183,60 @@ default_http_handler(const ag_http_request *req)
 }
 
 
+static ag_alist *
+srv_param(void)
+{
+        AG_ASSERT_PTR (g_http);
+        
+        return ag_alist_new_empty();
+}
+
+        
+static void
+srv_req(void)
+{
+        AG_ASSERT_PTR (g_http);
+
+        const struct ag_http_env *e = ag_http_server_env();
+
+        enum ag_http_method m = ag_http_method_parse(e->request_method);
+        enum ag_http_mime t = ag_http_mime_parse(e->content_type);
+
+        AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
+        AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
+
+        ag_http_request_release(&g_http->req);
+        g_http->req = ag_http_request_new(m, t, u, c, srv_param());
+}
+
+
+static void
+srv_resp(void)
+{
+        AG_ASSERT_PTR (g_http);
+
+        AG_AUTO(ag_http_url) *u = ag_http_request_url(g_http->req);
+        AG_AUTO(ag_string) *p = ag_http_url_path(u);
+        ag_hash h = ag_hash_new_str(p);
+
+        const ag_plugin *plg = ag_registry_get(g_http->reg, h);
+        ag_http_handler *hnd = ag_plugin_hnd(plg);
+
+        if (AG_LIKELY (hnd))
+                hnd(g_http->req);
+        else
+                default_http_handler(g_http->req);
+}
+
+
 extern void
 ag_http_server_run(void)
 {
         AG_ASSERT_PTR (g_http);
 
         while (FCGX_Accept_r(g_http->cgi) >= 0) {
-                const struct ag_http_env *e = ag_http_server_env();
-
-                enum ag_http_method m = ag_http_method_parse(e->request_method);
-                enum ag_http_mime t = ag_http_mime_parse(e->content_type);
-                AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
-                AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
-                AG_AUTO(ag_alist) *p = ag_alist_new_empty();
-
-                ag_http_request_release(&g_http->req);
-                g_http->req = ag_http_request_new(m, t, u, c, p);
-
-                // TODO: determine params
-
-                AG_AUTO(ag_string) *path = ag_http_url_path(u); 
-                ag_hash h = ag_hash_new_str(path);
-                const ag_plugin *plug = ag_registry_get(g_http->reg, h);
-                ag_http_handler *hnd = ag_plugin_hnd(plug);
-
-                if (AG_LIKELY (hnd))
-                        hnd(g_http->req);
-                else
-                        default_http_handler(g_http->req);
-
-
+                srv_req();
+                srv_resp();
                 FCGX_Finish_r(g_http->cgi);
         }
 }
