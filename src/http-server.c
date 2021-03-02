@@ -184,12 +184,71 @@ default_http_handler(const ag_http_request *req)
 }
 
 
+static inline ag_string *
+param_get(void)
+{
+        AG_ASSERT_PTR (g_http);
+
+        AG_AUTO(ag_string) *s = ag_string_new(g_http->env.query_string);
+        return ag_string_url_decode(s);
+}
+
+
+static ag_string *
+param_post(void)
+{
+        AG_ASSERT_PTR (g_http);
+
+        size_t sz = 1024;
+        char *bfr = ag_memblock_new(sz);
+
+        size_t read = 0;
+        int err = 0;
+
+        do {
+                sz = sz << 1;
+                ag_memblock *m = bfr;
+                ag_memblock_resize(&m, sz);
+
+                read += FCGX_GetStr(bfr + read, sz - read, g_http->cgi->in);
+                if (AG_UNLIKELY (!read || 
+                    (err = FCGX_GetError(g_http->cgi->in))))
+                        ag_memblock_release(&m);
+
+                AG_REQUIRE (!err, AG_ERNO_HTTP);
+        } while(read == sz);
+
+        bfr[read] = '\0';
+        AG_AUTO(ag_string) *s = ag_string_new(bfr); 
+   
+        ag_memblock *m = bfr; 
+        ag_memblock_release(&m);
+
+        return ag_string_url_decode(s);
+}
+
+
 static ag_alist *
-srv_param(void)
+srv_param(enum ag_http_method meth)
 {
         AG_ASSERT_PTR (g_http);
         
-        return ag_alist_new_empty();
+        ag_alist *param = ag_alist_new_empty();
+
+        AG_AUTO(ag_string) *paramstr = (meth == AG_HTTP_METHOD_GET ||
+            meth == AG_HTTP_METHOD_DELETE) ? param_get() : param_post();
+
+        if (!*paramstr)
+                return param;
+
+        if (!ag_string_has(paramstr, "&")) {
+                AG_AUTO(ag_field) *f = ag_field_parse(paramstr, "=");
+                ag_alist_push(&param, f);
+
+                return param;
+        }
+
+        return param;
 }
 
         
@@ -207,7 +266,7 @@ srv_req(void)
         AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
 
         ag_http_request_release(&g_http->req);
-        g_http->req = ag_http_request_new(m, t, u, c, srv_param());
+        g_http->req = ag_http_request_new(m, t, u, c, srv_param(m));
 }
 
 
