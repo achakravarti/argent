@@ -95,7 +95,7 @@ ag_field_parse(const char *src, const char *sep)
                 k = ag_string_split(s, sep);
                 v = ag_string_split_right(s, sep);
         } else {
-                k = s;
+                k = ag_string_new(s);
                 v = ag_string_new_empty();
         }
                 
