@@ -138,7 +138,7 @@ ag_alist_parse(const char *src, const char *sep, const char *delim)
                 ag_string_release(&l);
                 l = ag_string_split(s, delim);
 
-                AG_AUTO(ag_field) *f = ag_field_parse(l, sep);
+                AG_AUTO(ag_field) *f = ag_field_parse(*l ? l : s, sep);
                 ag_alist_push(&a, f);
 
                 ag_string_release(&r);
