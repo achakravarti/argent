@@ -87,6 +87,7 @@ typedef bool    (ag_alist_iterator_mutable)(ag_field **, void *, void *);
 extern ag_alist *ag_alist_new(const ag_field *);
 extern ag_alist *ag_alist_new_array(const ag_field **, size_t);
 extern ag_alist *ag_alist_new_empty(void);
+extern ag_alist *ag_alist_parse(const char *, const char *, const char *);
 
 
 /*

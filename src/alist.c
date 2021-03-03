@@ -103,6 +103,56 @@ ag_alist_new_empty(void)
 }
 
 
+extern ag_alist *
+ag_alist_parse(const char *src, const char *sep, const char *delim)
+{
+        AG_ASSERT_PTR (src);
+        AG_ASSERT_STR (sep);
+        AG_ASSERT_STR (delim);
+
+        ag_alist *a = ag_alist_new_empty();
+
+        if (AG_UNLIKELY (!*src))
+                return a;
+
+        ag_string *s = ag_string_new(src);
+
+        if (!ag_string_has(s, delim)) {
+                AG_AUTO(ag_field) *f = ag_field_parse(s, sep);
+                ag_alist_push(&a, f);
+                ag_string_release(&s);
+
+                return a;
+        }
+
+        ag_string *l = ag_string_split(s, delim);
+        ag_string *r = ag_string_split_right(s, delim);
+
+        AG_AUTO(ag_field) *f = ag_field_parse(l, sep);
+        ag_alist_push(&a, f);
+
+        while (*r) {
+                ag_string_release(&s);
+                s = ag_string_copy(r);
+
+                ag_string_release(&l);
+                l = ag_string_split(s, delim);
+
+                AG_AUTO(ag_field) *f = ag_field_parse(l, sep);
+                ag_alist_push(&a, f);
+
+                ag_string_release(&r);
+                r = ag_string_split_right(s, delim);
+        }
+
+        ag_string_release(&s);
+        ag_string_release(&l);
+        ag_string_release(&r);
+
+        return a;
+}
+
+
 extern bool
 ag_alist_has(const ag_alist *ctx, const ag_field *attr)
 {
