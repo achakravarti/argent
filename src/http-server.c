@@ -195,30 +195,6 @@ param_post(void)
 }
 
 
-static ag_alist *
-srv_param(enum ag_http_method meth)
-{
-        AG_ASSERT_PTR (g_http);
-        
-        ag_alist *param = ag_alist_new_empty();
-
-        AG_AUTO(ag_string) *paramstr = (meth == AG_HTTP_METHOD_GET ||
-            meth == AG_HTTP_METHOD_DELETE) ? param_get() : param_post();
-
-        if (!*paramstr)
-                return param;
-
-        if (!ag_string_has(paramstr, "&")) {
-                AG_AUTO(ag_field) *f = ag_field_parse(paramstr, "=");
-                ag_alist_push(&param, f);
-
-                return param;
-        }
-
-        return param;
-}
-
-        
 static void
 srv_req(void)
 {
@@ -232,8 +208,12 @@ srv_req(void)
         AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
         AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
 
+        AG_AUTO(ag_string) *s = (m == AG_HTTP_METHOD_GET ||
+            m == AG_HTTP_METHOD_DELETE) ? param_get() : param_post();
+        AG_AUTO(ag_alist) *p = ag_alist_parse(s, "=", "&");
+
         ag_http_request_release(&g_http->req);
-        g_http->req = ag_http_request_new(m, t, u, c, srv_param(m));
+        g_http->req = ag_http_request_new(m, t, u, c, p);
 }
 
 
