@@ -65,7 +65,7 @@ struct ag_exception_memblock {
 struct ag_exception_regex {
         const char      *str;           /* String on which regex is applied */
         const char      *regex;         /* Regex to apply                   */
-        int              ecode;         /* Regex interal error code         */
+        int              ecode;         /* Regex internal error code        */
 };
 
 struct ag_exception_parse {
