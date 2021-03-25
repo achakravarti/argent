@@ -29,7 +29,7 @@
 
 struct data {
         char                    *msg;
-        ag_exception_handler    *hnd;
+        ag_exception_hnd        *hnd;
 };
 
 static void     data_release(void *);
@@ -117,7 +117,7 @@ ag_exception_registry_msg(ag_erno erno)
  * ag_exception_registry_hnd() gets the exception handler associated with a
  * given error code.
  */
-extern ag_exception_handler *
+extern ag_exception_hnd *
 ag_exception_registry_hnd(ag_erno erno)
 {
         AG_ASSERT (is_exception_registry_initialised());
@@ -136,9 +136,15 @@ ag_exception_registry_hnd(ag_erno erno)
  * with a given error code. In case NULL is passed for hnd, then the default
  * exception handler is associated with the error code.
  */
+/*
+ * The `ag_exception_registry_set()` function is the only mutator for the
+ * exception registry, and sets the exception message and handler associated
+ * with a given error code. Subsequent calls to this function override the
+ * previous values, and passing a NULL pointer for the handler causes the
+ * default unhandled exception handler to be set.
+ */
 extern void
-ag_exception_registry_set(ag_erno erno, const char *msg,
-    ag_exception_handler *hnd)
+ag_exception_registry_set(ag_erno erno, const char *msg, ag_exception_hnd *hnd)
 {
         AG_ASSERT (is_exception_registry_initialised());
         AG_ASSERT (is_erno_valid(erno));

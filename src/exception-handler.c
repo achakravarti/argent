@@ -25,9 +25,22 @@
 
 #include <regex.h>
 
-        
+
+/*******************************************************************************
+ * `ag_exception_hnd_memblock()` is the exception handler that handles the
+ * `AG_ERNO_MEMBLOCK` error. It prints and logs an error message indicating the
+ * size of the memory block that could not be allocated, and optionally its
+ * alignment.
+ *
+ * The exception metadata is passed through the first parameter, and the
+ * exception details through the second parameter as a generic pointer that is
+ * resolved to the `ag_exception_memblock` struct.
+ *
+ * See include/exception.h for the prototype declaration.
+ */
+
 extern void
-ag_exception_memblock_hnd(const struct ag_exception *ex, void *opt)
+ag_exception_hnd_memblock(const struct ag_exception *ex, void *opt)
 {
         (void)ex;
         struct ag_exception_memblock *o = opt;
@@ -46,8 +59,20 @@ ag_exception_memblock_hnd(const struct ag_exception *ex, void *opt)
 }
 
 
+/*******************************************************************************
+ * `ag_exception_hnd_regex()` is the exception handler that handles the
+ * `AG_ERNO_REGEX` error. It prints and logs an error message indicating the
+ * regular expression, the string being matched, and a diagnostic explanation.
+ *
+ * The exception metadata is passed through the first parameter, and the
+ * exception details through the second parameter as a generic pointer that is
+ * resolved to an `ag_exception_regex` struct.
+ *
+ * See include/exception.h for the prototype declaration.
+ */
+
 extern void
-ag_exception_regex_hnd(const struct ag_exception *ex, void *opt)
+ag_exception_hnd_regex(const struct ag_exception *ex, void *opt)
 {
         (void)ex;
 
@@ -59,15 +84,15 @@ ag_exception_regex_hnd(const struct ag_exception *ex, void *opt)
 
         switch (o->ecode) {
         case REG_BADBR:
-                msg = "[!] there was an invalid `\\{…\\}` construct in the"
+                msg = "[!] there was an invalid `\\{...\\}` construct in the"
                     " regular expression";
                 break;
         case REG_BADPAT:
                 msg = "[!] there was a syntax error in the regular expression";
                 break;
         case REG_BADRPT:
-                msg = "[!] a repetition operator such as ‘?’ or ‘*’ appeared in"
-                    " a bad position";
+                msg = "[!] a repetition operator such as ‘?’ or ‘*’"
+                    " appeared in a bad position";
                 break;
         case REG_ECOLLATE:
                 msg = "[!] the regular expression referred to an invalid"
@@ -112,17 +137,28 @@ ag_exception_regex_hnd(const struct ag_exception *ex, void *opt)
         ag_exit(EXIT_FAILURE);
 }
 
-        
+
+/*******************************************************************************
+ * `ag_exception_hnd_parse()` is the exception handler that handles the
+ * `AG_ERNO_PARSE` error. It prints and logs the error message, indicating both
+ * the context and the string that failed to be parsed.
+ *
+ * The exception metadata is received through the first parameter, and the parse
+ * error details are received through the second parameter as a generic pointer
+ * that is resolved to the `ag_exception_parse` struct.
+ *
+ * See include/exception.h for the prototype declaration.
+ */
+
 extern void
-ag_exception_parse_hnd(const struct ag_exception *ex, void *opt)
+ag_exception_hnd_parse(const struct ag_exception *ex, void *opt)
 {
         (void)ex;
         struct ag_exception_parse *o = opt;
 
         printf("[!] parsing context=%s, string=%s\n", o->ctx, o->str);
-        ag_log_err("[!] parsing context=%s, string=%s", o->ctx, o->str);
+        ag_log_err("parsing context=%s, string=%s", o->ctx, o->str);
 
         ag_exit(EXIT_FAILURE);
 }
-
 

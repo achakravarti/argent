@@ -29,7 +29,7 @@
 struct node {
         ag_erno                  erno;
         char                    *msg;
-        ag_exception_handler    *hnd;
+        ag_exception_hnd        *hnd;
 };
 
 
@@ -40,17 +40,17 @@ ag_init(void)
                 {
                         .erno = AG_ERNO_MBLOCK, 
                         .msg = AG_ERNO_MSG(AG_ERNO_MBLOCK),
-                        .hnd = &ag_exception_memblock_hnd
+                        .hnd = &ag_exception_hnd_memblock
                 },
                 {
                         .erno = AG_ERNO_REGEX, 
                         .msg = AG_ERNO_MSG(AG_ERNO_REGEX),
-                        .hnd = &ag_exception_regex_hnd,
+                        .hnd = &ag_exception_hnd_regex,
                 },
                 {
                         .erno = AG_ERNO_PARSE, 
                         .msg = AG_ERNO_MSG(AG_ERNO_PARSE),
-                        .hnd = &ag_exception_parse_hnd,
+                        .hnd = &ag_exception_hnd_parse,
                 },
         };
 
