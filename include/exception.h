@@ -150,8 +150,8 @@ extern void              ag_exception_registry_set(ag_erno, const char *,
                 }                                                       \
         } while (0)
 
-#       define AG_ASSERT_PTR(p) AG_ASSERT_TAG("IS_PTR_VALID", p)
-#       define AG_ASSERT_STR(s) AG_ASSERT_TAG("IS_STR_VALID", s && *s)
+#       define AG_ASSERT_PTR(p) AG_ASSERT_TAG("PTR_VALID", p)
+#       define AG_ASSERT_STR(s) AG_ASSERT_TAG("STR_VALID", s && *s)
 #else
 #       define AG_ASSERT(p)
 #       define AG_ASSERT_TAG(p)
