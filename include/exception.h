@@ -117,13 +117,14 @@ extern void              ag_exception_registry_set(ag_erno, const char *,
  * is avaiable only in debug builds, and provides a way for both the Argent
  * Library and client code to assert conditions that should *never* be false.
  *
- * `AG_ASSERT_PTR()` is similar to `AG_ASSERT()`, except that it is specifically
- * used to assert whether a pointer is valid. `AG_ASSERT_PTR()` provides a more
- * focused failure message as compared to the generic one given by 
- * `AG_ASSERT()`.
+ * `AG_ASSERT_TAG()` is essentially the same as `AG_ASSERT()`, the only
+ * difference begin that the former allows a a tag to be specified along with
+ * the predicate in order to provide a more meaningful failure message.
  *
- * `AG_ASSERT_STR()` asserts that a string is valid, i.e., it is a valid pointer
- * and it is not an empty string.
+ * `AG_ASSERT_PTR()` and `AG_ASSERT_STR()` are specialisations of
+ * `AG_ASSERT_TAG()`, checking, respectively, whether a given pointer and string
+ * is valid. A pointer is considered to be valid if it is not NULL, and a string
+ * is considered to be valid if it is not null and not empty.
  */
 
 #ifndef NDEBUG
@@ -137,32 +138,23 @@ extern void              ag_exception_registry_set(ag_erno, const char *,
                 }                                                            \
         } while (0)
 
-
-        #define AG_ASSERT_PTR(p) do {                                        \
-                if (AG_UNLIKELY (!(p))) {                                    \
-                        printf("[!] assertion failed: %s must not be null"   \
-                            " [%s(), %s:%d]\n", #p,                          \
-                            __func__, __FILE__, __LINE__);                   \
-                        ag_log_debug("assertion failed: %s must not be null" \
-                            " [%s(), %s:%d]\n", #p,                          \
-                             __func__, __FILE__, __LINE__);                  \
-                        exit(EXIT_FAILURE);                                  \
-                }                                                            \
+#       define AG_ASSERT_TAG(t, p) do {                                 \
+                if (AG_UNLIKELY (!(p))) {                               \
+                        printf("[!] assertion failed: "                 \
+                            "%s (%s) [%s(), %s:%d]\n",                  \
+                            t, #p, __func__, __FILE__, __LINE__);       \
+                        ag_log_debug("assertion failed: "               \
+                            "%s (%s) [%s(), %s:%d]\n",                  \
+                            t, #p, __func__, __FILE__, __LINE__);       \
+                        exit(EXIT_FAILURE);                             \
+                }                                                       \
         } while (0)
 
-        #define AG_ASSERT_STR(str) do {                                      \
-                if (AG_UNLIKELY (!(str && *str))) {                          \
-                        printf("[!] assertion failed: string %s must not be" \
-                            " null or empty [%s(), %s:%d]\n",                \
-                            #str, __func__, __FILE__,   __LINE__);           \
-                        ag_log_debug("assertion failed: string %s must not"  \
-                            " be null or empty [%s(), %s:%d]\n",             \
-                            #str, __func__, __FILE__, __LINE__);             \
-                        exit(EXIT_FAILURE);                                  \
-                }                                                            \
-        } while (0)
+#       define AG_ASSERT_PTR(p) AG_ASSERT_TAG("IS_PTR_VALID", p)
+#       define AG_ASSERT_STR(s) AG_ASSERT_TAG("IS_STR_VALID", s && *s)
 #else
 #       define AG_ASSERT(p)
+#       define AG_ASSERT_TAG(p)
 #       define AG_ASSERT_PTR(p)
 #       define AG_ASSERT_STR(s)
 #endif
