@@ -28,19 +28,32 @@
 extern "C" {
 #endif
 
+
 #include "./primitives.h"
 #include "./hash.h"
 
+
+/*******************************************************************************
+ * The Argent Library maintains registries of certain items that need to be
+ * initialised once and referred to later during the lifetime of the client
+ * application. As of now, the most important registries are the exception and
+ * object registries. The `ag_registry` ADT reifies such registries, and is also
+ * avaialble for use by client code.
+ *
+ * The `ag_registry` type is a hash table maintaining pointers to any generic
+ * data mapped to given hashes as keys. Both the key and value are required to
+ * be provided by the client code, along with a callback function that releases
+ * the values on termination. The callback function is required to be of the
+ * type `ag_registry_release_cbk`.
+ */
 
 typedef struct ag_registry      ag_registry;
 typedef void                    (ag_registry_release_cbk)(void *);
 
 extern ag_registry      *ag_registry_new(ag_registry_release_cbk *);
 extern void              ag_registry_release(ag_registry **);
-
-extern void     *ag_registry_get(const ag_registry *, ag_hash);
-
-extern void     ag_registry_push(ag_registry *, ag_hash, void *);
+extern void             *ag_registry_get(const ag_registry *, ag_hash);
+extern void              ag_registry_push(ag_registry *, ag_hash, void *);
 
 
 #ifdef __cplusplus
