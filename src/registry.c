@@ -30,7 +30,6 @@
 /* Prototypes for heap memory helper functions */
 
 static inline void      *mem_new(size_t);
-static inline void       mem_release(void **);
 
 
 struct node {
@@ -92,11 +91,8 @@ ag_registry_release(ag_registry **hnd)
                         }
                 }
 
-                void *m = r->buck;
-                mem_release(&m);
-
-                m = r;
-                mem_release(&m);
+                free(r->buck);
+                free(r);
         }
 }
 
@@ -153,15 +149,6 @@ mem_new(size_t sz)
         return ctx;
 }
 
-static inline void
-mem_release(void **hnd)
-{
-        if (AG_LIKELY (hnd && *hnd)) {
-                free(*hnd);
-                *hnd = NULL;
-        }
-}
-
 
 static inline struct node *
 node_new(ag_hash key, void *data)
@@ -182,8 +169,6 @@ node_release(struct node *hnd, ag_registry_release_cbk *disp)
         AG_ASSERT_PTR (hnd);
 
         disp(hnd->data);
-        void *m = hnd;
-        mem_release(&m);
+        free(hnd);
 }
-
 
