@@ -27,19 +27,11 @@
 #include <string.h>
 
 
-/* Prototypes for heap memory helper functions */
-
-static inline void      *mem_new(size_t);
-
-
 struct node {
         ag_hash          key;   /* node key  */
         void            *data;  /* node data */
         struct node     *next;  /* next node */
 };
-
-
-/* Prototypes for node management helper functions */
 
 static inline struct node       *node_new(ag_hash, void *);
 static inline void               node_release(struct node *, 
@@ -54,6 +46,13 @@ struct ag_registry {
 };
 
 
+#define MEM_CHECK(p) do {                                               \
+        if (AG_UNLIKELY (!(p))) {                                       \
+                printf("[!] failed to allocate memory for registry");   \
+                ag_log_err("failed to allocate memory for registry");   \
+        }                                                               \
+} while (0)
+
 /* 
  * ag_registry_new() creates a new registry instance. The registry is
  * implemented as a hash map of generic data. The number of buckets is set to be
@@ -66,10 +65,16 @@ ag_registry_new(ag_registry_release_cbk *disp)
 {
         AG_ASSERT_PTR (disp);
 
-        ag_registry *r = mem_new(sizeof *r);
+        ag_registry *r = malloc(sizeof *r);
+        MEM_CHECK (r);
+
         r->len = sizeof(size_t) * 8;
-        r->buck = mem_new(sizeof *r->buck * r->len);
         r->disp = disp;
+
+        size_t sz = sizeof *r->buck * r->len;
+        r->buck = malloc(sz);
+        MEM_CHECK (r->buck);
+        memset(r->buck, 0, sz);
 
         return r;
 }
@@ -133,29 +138,14 @@ ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
 }
 
 
-static inline void *
-mem_new(size_t sz)
-{
-        AG_ASSERT (sz);
-
-        void *ctx = malloc(sz);
-
-        if (AG_UNLIKELY (!ctx)) {
-                printf("[!] failed to allocate memory for registry\n");
-                exit(EXIT_FAILURE);
-        }
-
-        memset(ctx, 0, sz);
-        return ctx;
-}
-
-
 static inline struct node *
 node_new(ag_hash key, void *data)
 {
         AG_ASSERT_PTR (data);
 
-        struct node *n = mem_new(sizeof *n);
+        struct node *n = malloc(sizeof *n);
+        MEM_CHECK(n);
+
         n->key = key;
         n->data = data;
         n->next = NULL;
