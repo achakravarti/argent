@@ -27,17 +27,27 @@
 #include <string.h>
 
 
+/*******************************************************************************
+ * Every registry entry is recorded as a node in a bucket list of a hash map.
+ * These nodes are represented by the `node` struct, and are implemented as key
+ * value pairs along with a pointer to the next node. The key is a hash value
+ * that is also used to determine the bucket in which the node is placed.
+ */
+
 struct node {
         ag_hash          key;   /* node key  */
         void            *data;  /* node data */
         struct node     *next;  /* next node */
 };
 
-static inline struct node       *node_new(ag_hash, void *);
-static inline void               node_release(struct node *, 
-                                    ag_registry_release_cbk *);
+static struct node      *node_new(ag_hash, void *);
+static inline void       node_release(struct node *, ag_registry_release_cbk *);
 
-/* Definition of the ag_registry ADT. */
+
+/*******************************************************************************
+ * The `ag_registry` ADT was forward declared in include/registry.h, and is
+ * implemented as a hash map of `node` structs. 
+ */
 
 struct ag_registry {
         size_t                    len;  /* number of buckets     */
@@ -46,6 +56,14 @@ struct ag_registry {
 };
 
 
+/*******************************************************************************
+ * We are not using the `ag_memblock` interface in order to avoid a possible
+ * circular dependency with the `ag_registry` implementation. Hence, we need to
+ * directly `malloc()` and friends in this implementation, and we need the
+ * `MEM_CHECK()` helper macro to check that `malloc()` has not returned a null
+ * pointer.
+ */
+
 #define MEM_CHECK(p) do {                                               \
         if (AG_UNLIKELY (!(p))) {                                       \
                 printf("[!] failed to allocate memory for registry");   \
@@ -53,8 +71,9 @@ struct ag_registry {
         }                                                               \
 } while (0)
 
-/* 
- * ag_registry_new() creates a new registry instance. The registry is
+
+/*******************************************************************************
+ * `ag_registry_new()` creates a new registry instance. The registry is
  * implemented as a hash map of generic data. The number of buckets is set to be
  * the native word size in bits. The callback to dispose the contained data is 
  * passed through the first parameter.
@@ -80,6 +99,13 @@ ag_registry_new(ag_registry_release_cbk *disp)
 }
 
 
+/*******************************************************************************
+ * `ag_registry_release()` is responsible for releasing the heap memory being
+ * used by a registry instance, including all the nodes contained within the
+ * registry hash map. The registry instance that needs to be released is passed
+ * to this function as a double pointer.
+ */
+
 extern void
 ag_registry_release(ag_registry **hnd)
 {
@@ -102,6 +128,14 @@ ag_registry_release(ag_registry **hnd)
 }
 
 
+/*******************************************************************************
+ * `ag_registry_get() gets the registry item with a given hash key. The registry
+ * instance is passed through the first parameter, and the hash key through the
+ * second. The hash key is searched for in the registry hash map, and if found,
+ * the corresponding value is returned. If the hash key is not found, then
+ * `NULL` is returned.
+ */
+
 extern void *
 ag_registry_get(const ag_registry *hnd, ag_hash key)
 {
@@ -119,6 +153,17 @@ ag_registry_get(const ag_registry *hnd, ag_hash key)
         return NULL;
 }
 
+
+/*******************************************************************************
+ * `ag_registry_push()` pushes a new registry entry into a registry instance.
+ * The registry instance is passed through the first parameter, and the hash key
+ * of the registry entry along with its associated data are passed respectively
+ * through the remaining parameters.
+ *
+ * A new node is created for the registry entry and appended to the end of the
+ * list in the appropriate bucket of the hash map contained in the registry
+ * instance.
+ */
 
 extern void
 ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
@@ -138,7 +183,14 @@ ag_registry_push(ag_registry *hnd, ag_hash key, void *data)
 }
 
 
-static inline struct node *
+/*******************************************************************************
+ * `node_new()` is a helper function to create a new node in the hash map of a
+ * registry instance. The hash key and corresponding value of the registry item
+ * are passed through the parameters respectively, and a new node instance is
+ * returned, with its `next` pointer set to `NULL`.
+ */
+
+static struct node *
 node_new(ag_hash key, void *data)
 {
         AG_ASSERT_PTR (data);
@@ -153,10 +205,18 @@ node_new(ag_hash key, void *data)
         return n;
 }
 
+
+/*******************************************************************************
+ * `node_release()` is the converse of `node_new()`. It releases a given node
+ * (passed through the first parameter), taking care to first dispose of the
+ * custom registry data using the callback passed through the second parameter.
+ */
+
 static inline void
 node_release(struct node *hnd, ag_registry_release_cbk *disp)
 {
         AG_ASSERT_PTR (hnd);
+        AG_ASSERT_PTR (disp);
 
         disp(hnd->data);
         free(hnd);
