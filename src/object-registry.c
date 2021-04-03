@@ -54,14 +54,15 @@ static void     reg_dispose(void *);
  * whether or not a callback has been assigned when an object method is invoked.
  */
 
-static ag_memblock *def_clone(const ag_memblock *);
-static void         def_release(ag_memblock *);
-static enum ag_cmp  def_cmp(const ag_object *, const ag_object *);
-static bool         def_valid(const ag_object *);
-static size_t       def_sz(const ag_object *);
-static size_t       def_len(const ag_object *);
-static size_t       def_hash(const ag_object *);
-static ag_string   *def_str(const ag_object *);
+static ag_memblock      *def_clone(const ag_memblock *);
+static void              def_release(ag_memblock *);
+static enum ag_cmp       def_cmp(const ag_object *, const ag_object *);
+static bool              def_valid(const ag_object *);
+static size_t            def_sz(const ag_object *);
+static size_t            def_len(const ag_object *);
+static size_t            def_hash(const ag_object *);
+static ag_string        *def_str(const ag_object *);
+static ag_string        *def_json(const ag_object *);
 
 
 /*******************************************************************************
@@ -130,6 +131,7 @@ ag_object_registry_push(ag_typeid typeid, const struct ag_object_vtable *vt)
         v->len = vt->len ? vt->len : def_len;
         v->hash = vt->hash ? vt->hash : def_hash;
         v->str = vt->str ? vt->str : def_str;
+        v->json = vt->json ? vt->json : def_json;
 
         ag_registry *r = typeid < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(typeid);
@@ -262,6 +264,19 @@ def_str(const ag_object *hnd)
         AG_AUTO(ag_string)  *mstr = ag_memblock_str(hnd);
 
         return ag_string_new_fmt("typeid = %d, uuid = %s, address = %s",
+            ag_object_typeid(hnd), ustr, mstr);
+}
+
+
+static ag_string *
+def_json(const ag_object *hnd)
+{
+        AG_AUTO(ag_uuid) *u = ag_object_uuid(hnd);
+        AG_AUTO(ag_string) *ustr = ag_uuid_str(u);
+        AG_AUTO(ag_string) *mstr = ag_memblock_str(hnd);
+
+        return ag_string_new_fmt(
+            "{\"object\":{\"typeid\":%s,\"uuid\":%s,\"address\":%s}",
             ag_object_typeid(hnd), ustr, mstr);
 }
 
