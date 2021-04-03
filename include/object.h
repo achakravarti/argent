@@ -148,7 +148,8 @@ typedef struct ag_object ag_object;
         }                                                                      \
         extern void __ ## name ## _register__(void)
 
-#define AG_OBJECT_DEFINE(name)                                                 \
+
+#define AG_OBJECT_DEFINE(name, typeid)                                        \
         extern inline name *name ## _copy(const name *);                       \
         extern inline name *name ## _clone(const name *);                      \
         extern inline void name ## _release(name **);                          \
@@ -166,7 +167,21 @@ typedef struct ag_object ag_object;
         extern inline ag_hash name ## _hash(const name *);                     \
         extern inline ag_string *name ## _str(const name *);                   \
         extern inline ag_string *name ## _json(const name *);                  \
-        extern void __ ## name ## _register__(void)
+        extern void __ ## name ## _register__(void)                            \
+        {                                                                      \
+                struct ag_object_vtable vt = {                                 \
+                        .clone = __AG_OBJECT_CLONE_CBK__,                      \
+                        .release = __AG_OBJECT_RELEASE_CBK__,                  \
+                        .cmp = __AG_OBJECT_CMP_CBK__,                          \
+                        .valid = __AG_OBJECT_VALID_CBK__,                      \
+                        .sz = __AG_OBJECT_SZ_CBK__,                            \
+                        .len = __AG_OBJECT_LEN_CBK__,                          \
+                        .hash = __AG_OBJECT_HASH_CBK__,                        \
+                        .str = __AG_OBJECT_STR_CBK__,                          \
+                        .json = __AG_OBJECT_JSON_CBK__,                        \
+                };                                                             \
+                ag_object_registry_push(typeid, &vt);                          \
+        }
 
 #define AG_OBJECT_REGISTER(name) __ ## name ##_register__()
 
