@@ -69,7 +69,7 @@ AG_OBJECT_DEFINE(ag_http_url)
         struct ag_object_vtable vt = {
                 .clone = virt_clone, .release = virt_release, .cmp = virt_cmp,
                 .valid = virt_valid, .sz = virt_sz,           .len = virt_len,
-                .hash = virt_hash,   .str = virt_str,
+                .hash = virt_hash,   .str = virt_str,         .json = NULL,
         };
 
         ag_object_registry_push(AG_TYPEID_HTTP_URL, &vt);
