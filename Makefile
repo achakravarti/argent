@@ -23,7 +23,7 @@ DIR_BLD = bld
 
 DIR_LIB = src
 SRC_LIB = $(sort $(shell find $(DIR_LIB)/ -type f -name '*.c'))
-OBJ_LIB = $(patsubst $(DIR_LIB)/%.c, $(DIR_BLD)/%.o, $(SRC_LIB))
+OBJ_LIB = $(patsubst %.c, %.o, $(SRC_LIB))
 BIN_LIB = bld/libargent.so
 
 CC = ccache cc
@@ -86,9 +86,13 @@ coverage:
 clean:
 	rm -rfv $(DIR_BLD) $(DOC_TMP)
 	rm -f *.gcno *.gcda
+	find . -type f -name '*.o' -delete
+	find . -type f -name '*.gcno' -delete
+	find . -type f -name '*.gcda' -delete
 
 tidy:
-	rm *.gcno *.gcda
+	find . -type f -name '*.gcno' -delete
+	find . -type f -name '*.gcda' -delete
 
 
 .PHONY: all doc clean tidy coverage

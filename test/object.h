@@ -36,6 +36,7 @@
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _copy(o);                   \
+                (void)cp;                                               \
                 AG_TEST (type ## _refc(o) == 2);                        \
         }                                                               \
         AG_TEST_CASE(#type "_copy(): " #sample " => data preserved")    \
@@ -57,6 +58,7 @@
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _clone(o);                  \
+                (void)cp;                                               \
                 AG_TEST (type ## _refc(o) == 1);                        \
         }                                                               \
         AG_TEST_CASE(#type "_clone(): " #sample " => data preserved")   \
@@ -271,6 +273,24 @@
         }
 
 
+#define AG_METATEST_OBJECT_JSON(T, SMP, JSTR)           \
+        AG_TEST_CASE(#T "_json(): " #SMP " => " #JSTR)  \
+        {                                               \
+                AG_AUTO(T) *o = SMP;                    \
+                AG_AUTO(ag_string) *j = T##_json(o);    \
+                AG_TEST (ag_string_eq(j, JSTR));        \
+        }
+
+
+#define AG_METATEST_OBJECT_JSON_HAS(T, SMP, JSTR)       \
+        AG_TEST_CASE(#T "_json(): " #SMP " => " #JSTR)  \
+        {                                               \
+                AG_AUTO(T) *o = SMP;                    \
+                AG_AUTO(ag_string) *j = T##_json(o);    \
+                AG_TEST (ag_string_has(j, JSTR));       \
+        }
+
+
 #define AG_METATEST_OBJECT_REFC(type, sample)                           \
         AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
         {                                                               \
@@ -282,6 +302,7 @@
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _copy(o);                   \
                 AG_AUTO(type) *cp2 = type ## _copy(cp);                 \
+                (void)cp2;                                              \
                 AG_TEST (type ## _refc(o) == 3);                        \
         }                                                               \
         AG_TEST_CASE(#type "_refc(): deep copy => refc == 1")           \
@@ -289,6 +310,7 @@
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _clone(o);                  \
                 AG_AUTO(type) *cp2 = type ## _clone(cp);                \
+                (void)cp2;                                              \
                 AG_TEST (type ## _refc(o) == 1);                        \
         }
 

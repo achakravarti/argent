@@ -21,27 +21,33 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_TEST_TEST_H__
-#define __ARGENT_TEST_TEST_H__
+#include "../argent.h"
 
-#include "../src/argent.h"
-
-
-extern ag_test_suite    *test_suite_log(void);
-extern ag_test_suite    *test_suite_memblock(void);
-extern ag_test_suite    *test_suite_string(void);
-extern ag_test_suite    *test_suite_object(void);
-extern ag_test_suite    *test_suite_value(void);
-extern ag_test_suite    *test_suite_field(void);
-extern ag_test_suite    *test_suite_list(void);
-extern ag_test_suite    *test_suite_alist(void);
-extern ag_test_suite    *test_suite_http_enum(void);
-extern ag_test_suite    *test_suite_http_url(void);
-extern ag_test_suite    *test_suite_http_client(void);
-extern ag_test_suite    *test_suite_http_request(void);
-extern ag_test_suite    *test_suite_http_response(void);
-extern ag_test_suite    *test_suite_plugin(void);
+#include <stdint.h>
 
 
-#endif /* !__ARGENT_TEST_TEST_H__ */
+extern ag_hash
+ag_hash_new(size_t key)
+{
+        key = (key ^ (key >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
+        key = (key ^ (key >> 27)) * UINT64_C(0x94d049bb133111eb);
+        key = key ^ (key >> 31);
+    
+        return key;
+}
+
+
+extern ag_hash
+ag_hash_new_str(const char *key)
+{
+        AG_ASSERT_PTR (key);
+
+        register ag_hash hash = 5381;
+        register int c;
+
+        while ((c = *key++))
+                hash = ((hash << 5) + hash) + c;
+
+        return hash;
+}
 

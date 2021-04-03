@@ -21,27 +21,28 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_TEST_TEST_H__
-#define __ARGENT_TEST_TEST_H__
+#ifndef __ARGENT_INCLUDE_PLUGIN_H__
+#define __ARGENT_INCLUDE_PLUGIN_H__
 
-#include "../src/argent.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-
-extern ag_test_suite    *test_suite_log(void);
-extern ag_test_suite    *test_suite_memblock(void);
-extern ag_test_suite    *test_suite_string(void);
-extern ag_test_suite    *test_suite_object(void);
-extern ag_test_suite    *test_suite_value(void);
-extern ag_test_suite    *test_suite_field(void);
-extern ag_test_suite    *test_suite_list(void);
-extern ag_test_suite    *test_suite_alist(void);
-extern ag_test_suite    *test_suite_http_enum(void);
-extern ag_test_suite    *test_suite_http_url(void);
-extern ag_test_suite    *test_suite_http_client(void);
-extern ag_test_suite    *test_suite_http_request(void);
-extern ag_test_suite    *test_suite_http_response(void);
-extern ag_test_suite    *test_suite_plugin(void);
+#include "../type/object.h"
 
 
-#endif /* !__ARGENT_TEST_TEST_H__ */
+AG_OBJECT_DECLARE(ag_plugin, AG_TYPEID_PLUGIN);
+
+extern ag_plugin        *ag_plugin_new(const char *, const char *);
+extern ag_plugin        *ag_plugin_new_local(const char *);
+
+extern ag_string        *ag_plugin_dso(const ag_plugin *);
+extern ag_string        *ag_plugin_sym(const ag_plugin *);
+extern void             *ag_plugin_hnd(const ag_plugin *);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* !__ARGENT_INCLUDE_PLUGIN_H__ */
 

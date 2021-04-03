@@ -21,27 +21,28 @@
  ******************************************************************************/
 
 
-#ifndef __ARGENT_TEST_TEST_H__
-#define __ARGENT_TEST_TEST_H__
+#ifndef __ARGENT_INCLUDE_ARGENT_H__
+#define __ARGENT_INCLUDE_ARGENT_H__
 
-#include "../src/argent.h"
+#include "ds/alist.h"
+#include "ds/field.h"
+#include "ds/list.h"
+#include "ex/erno.h"
+#include "ex/exception.h"
+#include "http/http.h"
+#include "test/test.h"
+#include "type/primitives.h"
+#include "type/string.h"
+#include "type/typeid.h"
+#include "type/object.h"
+#include "type/value.h"
+#include "util/registry.h"
+#include "util/log.h"
+#include "util/hash.h"
+#include "util/memblock.h"
+#include "util/uuid.h"
+#include "util/plugin.h"
+#include "util/manager.h"
 
-
-extern ag_test_suite    *test_suite_log(void);
-extern ag_test_suite    *test_suite_memblock(void);
-extern ag_test_suite    *test_suite_string(void);
-extern ag_test_suite    *test_suite_object(void);
-extern ag_test_suite    *test_suite_value(void);
-extern ag_test_suite    *test_suite_field(void);
-extern ag_test_suite    *test_suite_list(void);
-extern ag_test_suite    *test_suite_alist(void);
-extern ag_test_suite    *test_suite_http_enum(void);
-extern ag_test_suite    *test_suite_http_url(void);
-extern ag_test_suite    *test_suite_http_client(void);
-extern ag_test_suite    *test_suite_http_request(void);
-extern ag_test_suite    *test_suite_http_response(void);
-extern ag_test_suite    *test_suite_plugin(void);
-
-
-#endif /* !__ARGENT_TEST_TEST_H__ */
+#endif /* !__ARGENT_INCLUDE_ARGENT_H__ */
 
