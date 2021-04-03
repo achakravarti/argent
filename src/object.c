@@ -181,6 +181,15 @@ ag_object_str(const ag_object *ctx)
 }
 
 
+extern ag_string *
+ag_object_json(const ag_object *ctx)
+{
+        AG_ASSERT_PTR (ctx);
+
+        return vtable_get(ctx)->json(ctx);
+}
+
+
 extern const ag_memblock *
 ag_object_payload(const ag_object *ctx)
 {

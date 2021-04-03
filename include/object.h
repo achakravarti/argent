@@ -140,6 +140,12 @@ typedef struct ag_object ag_object;
                 AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
                 return ag_object_str(ctx);                                     \
         }                                                                      \
+        inline ag_string *name ## _json(const name *ctx)                       \
+        {                                                                      \
+                AG_ASSERT_PTR (ctx);                                           \
+                AG_ASSERT (ag_object_typeid(ctx) == typeid);                   \
+                return ag_object_json(ctx);                                    \
+        }                                                                      \
         extern void __ ## name ## _register__(void)
 
 #define AG_OBJECT_DEFINE(name)                                                 \
@@ -159,6 +165,7 @@ typedef struct ag_object ag_object;
         extern inline size_t name ## _len(const name *);                       \
         extern inline ag_hash name ## _hash(const name *);                     \
         extern inline ag_string *name ## _str(const name *);                   \
+        extern inline ag_string *name ## _json(const name *);                  \
         extern void __ ## name ## _register__(void)
 
 #define AG_OBJECT_REGISTER(name) __ ## name ##_register__()
@@ -177,6 +184,7 @@ extern size_t                    ag_object_refc(const ag_object *);
 extern size_t                    ag_object_len(const ag_object *);
 extern ag_hash                   ag_object_hash(const ag_object *);
 extern ag_string                *ag_object_str(const ag_object *);
+extern ag_string                *ag_object_json(const ag_object *);
 extern const ag_memblock        *ag_object_payload(const ag_object *);
 extern ag_memblock              *ag_object_payload_mutable(ag_object **);
 
@@ -205,25 +213,28 @@ ag_object_empty(const ag_object *ctx)
 }
 
 
-typedef ag_memblock *(ag_object_clone_virt)(const ag_memblock *);
-typedef void         (ag_object_release_virt)(ag_memblock *);
-typedef enum ag_cmp  (ag_object_cmp_virt)(const ag_object *, const ag_object *);
-typedef bool         (ag_object_valid_virt)(const ag_object *);
-typedef size_t       (ag_object_sz_virt)(const ag_object *);
-typedef size_t       (ag_object_len_virt)(const ag_object *);
-typedef ag_hash      (ag_object_hash_virt)(const ag_object *);
-typedef ag_string   *(ag_object_str_virt)(const ag_object *);
+typedef ag_memblock     *(ag_object_clone_virt)(const ag_memblock *);
+typedef void             (ag_object_release_virt)(ag_memblock *);
+typedef enum ag_cmp      (ag_object_cmp_virt)(const ag_object *,
+                            const ag_object *);
+typedef bool             (ag_object_valid_virt)(const ag_object *);
+typedef size_t           (ag_object_sz_virt)(const ag_object *);
+typedef size_t           (ag_object_len_virt)(const ag_object *);
+typedef ag_hash          (ag_object_hash_virt)(const ag_object *);
+typedef ag_string       *(ag_object_str_virt)(const ag_object *);
+typedef ag_string       *(ag_object_json_virt)(const ag_object *);
 
 
 struct ag_object_vtable {
-        ag_object_clone_virt   *clone;   /* Clone callback              */
-        ag_object_release_virt *release; /* Release callback            */
-        ag_object_cmp_virt     *cmp;     /* Comparison callback         */
-        ag_object_valid_virt   *valid;   /* Validation callback         */
-        ag_object_sz_virt      *sz;      /* Size computation callback   */
-        ag_object_len_virt     *len;     /* Length computation callback */
-        ag_object_hash_virt    *hash;    /* Hash computation callback   */
-        ag_object_str_virt     *str;     /* String generation callback  */
+        ag_object_clone_virt    *clone;   /* Clone callback               */
+        ag_object_release_virt  *release; /* Release callback             */
+        ag_object_cmp_virt      *cmp;     /* Comparison callback          */
+        ag_object_valid_virt    *valid;   /* Validation callback          */
+        ag_object_sz_virt       *sz;      /* Size computation callback    */
+        ag_object_len_virt      *len;     /* Length computation callback  */
+        ag_object_hash_virt     *hash;    /* Hash computation callback    */
+        ag_object_str_virt      *str;     /* String generation callback   */
+        ag_object_json_virt     *json;    /* JSON representation callback */
 };
 
 
