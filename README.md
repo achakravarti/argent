@@ -80,6 +80,7 @@ available:
 
 ## Contributors  
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](http://makeapullrequest.com) [![GitHub contributors](https://img.shields.io/github/contributors/achakravarti/argent.svg)](https://github.com/achakravarti/argent/graphs/contributors/)
+[![wakatime](https://wakatime.com/badge/github/achakravarti/argent.svg)](https://wakatime.com/badge/github/achakravarti/argent)
 
 Contributions are welcome!
 
