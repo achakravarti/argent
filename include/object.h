@@ -194,6 +194,17 @@ typedef struct ag_object ag_object;
         }
 
 
+#define AG_OBJECT_DEFINE_SZ(TO, TID, TP, CLOS)                                 \
+        static size_t                                                          \
+        __AG_OBJECT_SZ_CBK__(const ag_object *_O_)                             \
+        {                                                                      \
+                AG_ASSERT_PTR (_O_);                                           \
+                AG_ASSERT (ag_object_typeid(_O_) == AG_TYPEID_HTTP_RESPONSE);  \
+                const TP *_P_ = ag_object_payload(_O_);                        \
+                CLOS                                                           \
+        }
+
+
 #define AG_OBJECT_DEFINE(name, typeid)                                        \
         extern inline name *name ## _copy(const name *);                       \
         extern inline name *name ## _clone(const name *);                      \
