@@ -149,6 +149,26 @@ typedef struct ag_object ag_object;
         extern void __ ## name ## _register__(void)
 
 
+#define AG_OBJECT_DEFINE_CLONE(OT, PT, CLOS)            \
+        static ag_memblock *                            \
+        __AG_OBJECT_CLONE_CBK__(const ag_memblock *hnd) \
+        {                                               \
+                AG_ASSERT_PTR (hnd);                    \
+                const PT *_P_ = hnd;                    \
+                CLOS                                    \
+        }
+
+
+#define AG_OBJECT_DEFINE_RELEASE(OT, PT, CLOS)          \
+        static void                                     \
+        __AG_OBJECT_RELEASE_CBK__(ag_memblock *hnd)     \
+        {                                               \
+                AG_ASSERT_PTR (hnd);                    \
+                PT *_P_ = hnd;                          \
+                CLOS                                    \
+        }
+
+
 #define AG_OBJECT_DEFINE(name, typeid)                                        \
         extern inline name *name ## _copy(const name *);                       \
         extern inline name *name ## _clone(const name *);                      \
