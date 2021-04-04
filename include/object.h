@@ -216,6 +216,16 @@ typedef struct ag_object ag_object;
         }
 
 
+#define AG_OBJECT_DEFINE_HASH(TO, TID, CLOS)                    \
+        static ag_hash                                          \
+        __AG_OBJECT_HASH_CBK__(const ag_object *_O_)            \
+        {                                                       \
+                AG_ASSERT_PTR (_O_);                            \
+                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
+                CLOS                                            \
+        }
+
+
 #define AG_OBJECT_DEFINE(name, typeid)                                        \
         extern inline name *name ## _copy(const name *);                       \
         extern inline name *name ## _clone(const name *);                      \
