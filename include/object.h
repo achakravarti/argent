@@ -149,23 +149,48 @@ typedef struct ag_object ag_object;
         extern void __ ## name ## _register__(void)
 
 
-#define AG_OBJECT_DEFINE_CLONE(OT, PT, CLOS)            \
+#define AG_OBJECT_DEFINE_CLONE(TO, TP, CLOS)            \
         static ag_memblock *                            \
         __AG_OBJECT_CLONE_CBK__(const ag_memblock *hnd) \
         {                                               \
                 AG_ASSERT_PTR (hnd);                    \
-                const PT *_P_ = hnd;                    \
+                const TP *_P_ = hnd;                    \
                 CLOS                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_RELEASE(OT, PT, CLOS)          \
+#define AG_OBJECT_DEFINE_RELEASE(TO, TP, CLOS)          \
         static void                                     \
         __AG_OBJECT_RELEASE_CBK__(ag_memblock *hnd)     \
         {                                               \
                 AG_ASSERT_PTR (hnd);                    \
-                PT *_P_ = hnd;                          \
+                TP *_P_ = hnd;                          \
                 CLOS                                    \
+        }
+
+
+#define AG_OBJECT_DEFINE_CMP(TO, TID, TP, CLOS)                                \
+        static enum ag_cmp                                                     \
+        __AG_OBJECT_CMP_CBK__(const ag_object *_O1_, const ag_object *_O2_)    \
+        {                                                                      \
+                AG_ASSERT_PTR (_O1_);                                          \
+                AG_ASSERT_PTR (_O2_);                                          \
+                AG_ASSERT (ag_object_typeid(_O1_) == TID);                     \
+                AG_ASSERT (ag_object_typeid(_O2_) == TID);                     \
+                const TP *_P1_ = ag_object_payload(_O1_);                      \
+                const TP *_P2_ = ag_object_payload(_O2_);                      \
+                CLOS                                                           \
+        }
+
+
+#define AG_OBJECT_DEFINE_VALID(TO, TID, TP, CLOS)               \
+        static bool                                             \
+        __AG_OBJECT_VALID_CBK__(const ag_object *_O_)           \
+        {                                                       \
+                AG_ASSERT_PTR (_O_);                            \
+                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
+                const TP *_P_ = ag_object_payload(_O_);         \
+                CLOS                                            \
         }
 
 
