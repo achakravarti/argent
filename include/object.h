@@ -149,27 +149,25 @@ typedef struct ag_object ag_object;
         extern void __ ## name ## _register__(void)
 
 
-#define AG_OBJECT_DEFINE_CLONE(TO, TP, CLOS)            \
+#define AG_OBJECT_DEFINE_CLONE(TO, CLOS)                \
         static ag_memblock *                            \
-        __AG_OBJECT_CLONE_CBK__(const ag_memblock *hnd) \
+        __AG_OBJECT_CLONE_CBK__(const ag_memblock *_P_) \
         {                                               \
-                AG_ASSERT_PTR (hnd);                    \
-                const TP *_P_ = hnd;                    \
+                AG_ASSERT_PTR (_P_);                    \
                 CLOS                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_RELEASE(TO, TP, CLOS)          \
+#define AG_OBJECT_DEFINE_RELEASE(TO, CLOS)              \
         static void                                     \
-        __AG_OBJECT_RELEASE_CBK__(ag_memblock *hnd)     \
+        __AG_OBJECT_RELEASE_CBK__(ag_memblock *_P_)     \
         {                                               \
-                AG_ASSERT_PTR (hnd);                    \
-                TP *_P_ = hnd;                          \
+                AG_ASSERT_PTR (_P_);                    \
                 CLOS                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_CMP(TO, TID, TP, CLOS)                                \
+#define AG_OBJECT_DEFINE_CMP(TO, TID, CLOS)                                    \
         static enum ag_cmp                                                     \
         __AG_OBJECT_CMP_CBK__(const ag_object *_O1_, const ag_object *_O2_)    \
         {                                                                      \
@@ -177,41 +175,36 @@ typedef struct ag_object ag_object;
                 AG_ASSERT_PTR (_O2_);                                          \
                 AG_ASSERT (ag_object_typeid(_O1_) == TID);                     \
                 AG_ASSERT (ag_object_typeid(_O2_) == TID);                     \
-                const TP *_P1_ = ag_object_payload(_O1_);                      \
-                const TP *_P2_ = ag_object_payload(_O2_);                      \
                 CLOS                                                           \
         }
 
 
-#define AG_OBJECT_DEFINE_VALID(TO, TID, TP, CLOS)               \
+#define AG_OBJECT_DEFINE_VALID(TO, TID, CLOS)                   \
         static bool                                             \
         __AG_OBJECT_VALID_CBK__(const ag_object *_O_)           \
         {                                                       \
                 AG_ASSERT_PTR (_O_);                            \
                 AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                const TP *_P_ = ag_object_payload(_O_);         \
                 CLOS                                            \
         }
 
 
-#define AG_OBJECT_DEFINE_SZ(TO, TID, TP, CLOS)                  \
+#define AG_OBJECT_DEFINE_SZ(TO, TID, CLOS)                      \
         static size_t                                           \
         __AG_OBJECT_SZ_CBK__(const ag_object *_O_)              \
         {                                                       \
                 AG_ASSERT_PTR (_O_);                            \
                 AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                const TP *_P_ = ag_object_payload(_O_);         \
                 CLOS                                            \
         }
 
 
-#define AG_OBJECT_DEFINE_LEN(TO, TID, TP, CLOS)                 \
+#define AG_OBJECT_DEFINE_LEN(TO, TID, CLOS)                     \
         static size_t                                           \
         __AG_OBJECT_LEN_CBK__(const ag_object *_O_)             \
         {                                                       \
                 AG_ASSERT_PTR (_O_);                            \
                 AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                const TP *_P_ = ag_object_payload(_O_);         \
                 CLOS                                            \
         }
 
