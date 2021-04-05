@@ -52,15 +52,15 @@ static struct payload   *payload_new(const char *, ag_uint, const char *,
  * Declare the dynamic dispatch callback function prototypes for ag_http_client
  * object. There is one callback function for each polymorphic object function.
  */
-static ag_memblock      *__AG_OBJECT_CLONE_CBK__(const ag_memblock *);
-static void              __AG_OBJECT_RELEASE_CBK__(ag_memblock *);
-static enum ag_cmp       __AG_OBJECT_CMP_CBK__(const ag_object *, const ag_object *);
-static bool              __AG_OBJECT_VALID_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_SZ_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_LEN_CBK__(const ag_object *);
-static ag_hash           __AG_OBJECT_HASH_CBK__(const ag_object *);
-static ag_string        *__AG_OBJECT_STR_CBK__(const ag_object *);
-#define __AG_OBJECT_JSON_CBK__ NULL
+static ag_memblock      *__ag_http_client_clone__(const ag_memblock *);
+static void              __ag_http_client_release__(ag_memblock *);
+static enum ag_cmp       __ag_http_client_cmp__(const ag_object *, const ag_object *);
+static bool              __ag_http_client_valid__(const ag_object *);
+static size_t            __ag_http_client_sz__(const ag_object *);
+static size_t            __ag_http_client_len__(const ag_object *);
+static ag_hash           __ag_http_client_hash__(const ag_object *);
+static ag_string        *__ag_http_client_str__(const ag_object *);
+#define __ag_http_client_json__ NULL
 
 
 /*
@@ -219,13 +219,13 @@ payload_new(const char *ip, ag_uint port, const char *host, const char *agent,
 
 
 /*
- * Define the __AG_OBJECT_CLONE_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_clone__() dynamic dispatch function. This function is called by
  * ag_object_clone() when ag_http_client_clone() is invoked. We return a deep
  * copy of the payload of a client object by creating a new payload instance
  * with the same properties as the source.
  */
 static ag_memblock *
-__AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
+__ag_http_client_clone__(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -235,12 +235,12 @@ __AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_RELEASE_CBK__() dynamic dispatch function. This function is called
+ * Define the __ag_http_client_release__() dynamic dispatch function. This function is called
  * by ag_object_release() when ag_http_client_release() is invoked. We release
  * the dynamically allocated string fields of the payload structure.
  */
 static void
-__AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
+__ag_http_client_release__(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -253,13 +253,13 @@ __AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_CMP_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_cmp__() dynamic dispatch function. This function is called by
  * ag_object_cmp() when ag_http_client_cmp() is invoked. We perform a straight
  * lexicographical comparison between the string representations of both client
  * objects.
  */
 static enum ag_cmp
-__AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
+__ag_http_client_cmp__(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
@@ -272,13 +272,13 @@ __AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
 
 
 /*
- * Define the __AG_OBJECT_VALID_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_valid__() dynamic dispatch function. This function is called by
  * ag_object_valid() when ag_http_client_valid() is invoked. Since every client
  * object instance constructed through ag_http_client_new() is guaranteed to be
  * valid, we always return true.
  */
 static bool
-__AG_OBJECT_VALID_CBK__(const ag_object *ctx)
+__ag_http_client_valid__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -288,12 +288,12 @@ __AG_OBJECT_VALID_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_SZ_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_sz__() dynamic dispatch function. This function is called by
  * ag_object_sz() when ag_http_client_sz() is invoked. We consider the size of
  * a client object as the size of its string representation.
  */
 static size_t
-__AG_OBJECT_SZ_CBK__(const ag_object *ctx)
+__ag_http_client_sz__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -303,12 +303,12 @@ __AG_OBJECT_SZ_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_LEN_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_len__() dynamic dispatch function. This function is called by
  * ag_object_len() when ag_http_client_len() is invoked. We consider the length
  * of a client object as the length of its string representation.
  */
 static size_t
-__AG_OBJECT_LEN_CBK__(const ag_object *ctx)
+__ag_http_client_len__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -318,12 +318,12 @@ __AG_OBJECT_LEN_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_HASH_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_hash__() dynamic dispatch function. This function is called by
  * ag_object_hash() when ag_http_client_hash() is invoked. We consider the hash
  * of a client object as the hash of its string representation.
  */
 static ag_hash
-__AG_OBJECT_HASH_CBK__(const ag_object *ctx)
+__ag_http_client_hash__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         
@@ -333,14 +333,14 @@ __AG_OBJECT_HASH_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_STR_CBK__() dynamic dispatch function. This function is called by
+ * Define the __ag_http_client_str__() dynamic dispatch function. This function is called by
  * ag_object_str() when ag_http_client_str() is invoked. The string
  * representation follows the format "[<ip>:<port>] host=<host>, agent=<agent>,
  * referer=<referer>". In case the port number is not specified, the port number
  * component does not appear in the string representation.
  */
 static ag_string *
-__AG_OBJECT_STR_CBK__(const ag_object *ctx)
+__ag_http_client_str__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 

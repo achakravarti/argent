@@ -83,15 +83,15 @@ static void              payload_push(struct payload *, const ag_value *);
  */
 
 
-static ag_memblock *__AG_OBJECT_CLONE_CBK__(const ag_memblock *);
-static void         __AG_OBJECT_RELEASE_CBK__(ag_memblock *);
-static enum ag_cmp  __AG_OBJECT_CMP_CBK__(const ag_object *, const ag_object *);
-static bool         __AG_OBJECT_VALID_CBK__(const ag_object *);
-static size_t       __AG_OBJECT_SZ_CBK__(const ag_object *);
-static size_t       __AG_OBJECT_LEN_CBK__(const ag_object *);
-static ag_hash      __AG_OBJECT_HASH_CBK__(const ag_object *);
-static ag_string   *__AG_OBJECT_STR_CBK__(const ag_object *);
-#define __AG_OBJECT_JSON_CBK__ NULL
+static ag_memblock *__ag_list_clone__(const ag_memblock *);
+static void         __ag_list_release__(ag_memblock *);
+static enum ag_cmp  __ag_list_cmp__(const ag_object *, const ag_object *);
+static bool         __ag_list_valid__(const ag_object *);
+static size_t       __ag_list_sz__(const ag_object *);
+static size_t       __ag_list_len__(const ag_object *);
+static ag_hash      __ag_list_hash__(const ag_object *);
+static ag_string   *__ag_list_str__(const ag_object *);
+#define __ag_list_json__ NULL
 
 
 /*
@@ -443,14 +443,14 @@ payload_push(struct payload *ctx, const ag_value *val)
 
 
 /*
- * Define the __AG_OBJECT_CLONE_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_clone__() dynamic dispatch callback function. This function is
  * called by ag_object_clone() when ag_list_clone() is invoked. We create a new
  * list using the contextual list as a reference.
  */
 
 
 static ag_memblock *
-__AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
+__ag_list_clone__(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -460,7 +460,7 @@ __AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_RELEASE_CBK__() dynamic dispatch callback function. This function
+ * Define the __ag_list_release__() dynamic dispatch callback function. This function
  * is called by ag_object_release() when ag_list_release() is invoked. We simply
  * iterate through each of the nodes in the list and release the node through
  * node_release(). node_release() takes care of releasing the encapsulated value
@@ -473,7 +473,7 @@ __AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
 
 
 static void
-__AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
+__ag_list_release__(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -486,7 +486,7 @@ __AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_CMP_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_cmp__() dynamic dispatch callback function. This function is
  * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
  * lexicographical comparison of the two lists. Two empty lists are considered
  * equal, and an empty list is considered smaller than a non-empty list.
@@ -498,7 +498,7 @@ __AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
 
 
 static enum ag_cmp
-__AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
+__ag_list_cmp__(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
@@ -537,7 +537,7 @@ __AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
 
 
 /*
- * Define the __AG_OBJECT_VALID_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_valid__() dynamic dispatch callback function. This function is
  * called by ag_object_valid() when ag_list_valid() is invoked. We consider a
  * list to be valid if (a) it's not empty, and (b) each of the values contained
  * within it is valid.
@@ -550,7 +550,7 @@ __AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
 
 
 static bool
-__AG_OBJECT_VALID_CBK__(const ag_object *ctx)
+__ag_list_valid__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
@@ -569,14 +569,14 @@ __AG_OBJECT_VALID_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_SZ_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_sz__() dynamic dispatch callback function. This function is
  * called by ag_object_sz() when ag_list_sz() is invoked. The size of list is
  * the cumulative size of all the values contained within it.
  */
 
 
 static size_t
-__AG_OBJECT_SZ_CBK__(const ag_object *ctx)
+__ag_list_sz__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
@@ -587,14 +587,14 @@ __AG_OBJECT_SZ_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_LEN_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_len__() dynamic dispatch callback function. This function is
  * called by ag_object_len() when ag_list_len() is invoked. The length of a list
  * is the number of values contained within it.
  */
 
 
 static size_t
-__AG_OBJECT_LEN_CBK__(const ag_object *ctx)
+__ag_list_len__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
@@ -605,14 +605,14 @@ __AG_OBJECT_LEN_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_HASH_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_hash__() dynamic dispatch callback function. This function is
  * called by ag_object_hash() when ag_list_hash() is invoked. The hash of a list
  * is the cumulative hash of all the values contained within it.
  */
 
 
 static ag_hash
-__AG_OBJECT_HASH_CBK__(const ag_object *ctx)
+__ag_list_hash__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
@@ -623,7 +623,7 @@ __AG_OBJECT_HASH_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_STR_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_list_str__() dynamic dispatch callback function. This function is
  * called by ag_object_str() when ag_list_str() is invoked.
  *
  * TODO: Improve definition
@@ -631,7 +631,7 @@ __AG_OBJECT_HASH_CBK__(const ag_object *ctx)
 
 
 static ag_string
-*__AG_OBJECT_STR_CBK__(const ag_object *ctx)
+*__ag_list_str__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);

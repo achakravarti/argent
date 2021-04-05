@@ -32,8 +32,13 @@ extern "C" {
 #include "./exception.h"
 #include "./memblock.h"
 #include "./hash.h"
+#include "./string.h"
 #include "./typeid.h"
 #include "./uuid.h"
+
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 typedef struct ag_object ag_object;
@@ -41,7 +46,6 @@ typedef struct ag_object ag_object;
 #define AG_OBJECT_DECLARE(T, TID)                                       \
         typedef ag_object T;                                            \
         extern const ag_typeid __##T##_tid__;                           \
-        extern struct ag_object_vtable __##T##_vt__;                    \
         inline T *T##_copy(const T *hnd)                                \
         {                                                               \
                 AG_ASSERT_PTR (hnd);                                    \
@@ -153,39 +157,39 @@ typedef struct ag_object ag_object;
         extern void __ ## T ## _register__(void)
 
 
-#define AG_OBJECT_DEFINE_CLONE(T, CLOS)                 \
-        static ag_memblock *                            \
-        __AG_OBJECT_CLONE_CBK__(const ag_memblock *_P_) \
-        {                                               \
-                AG_ASSERT_PTR (_P_);                    \
-                CLOS                                    \
+#define AG_OBJECT_DEFINE_CLONE(T, CLOS)         \
+        ag_memblock *                           \
+        __##T##_clone__(const ag_memblock *_P_) \
+        {                                       \
+                AG_ASSERT_PTR (_P_);            \
+                CLOS                            \
         }
 
 
-#define AG_OBJECT_DEFINE_RELEASE(T, CLOS)               \
-        static void                                     \
-        __AG_OBJECT_RELEASE_CBK__(ag_memblock *_P_)     \
-        {                                               \
-                AG_ASSERT_PTR (_P_);                    \
-                CLOS                                    \
+#define AG_OBJECT_DEFINE_RELEASE(T, CLOS)       \
+        void                                    \
+        __##T##_release__(ag_memblock *_P_)     \
+        {                                       \
+                AG_ASSERT_PTR (_P_);            \
+                CLOS                            \
         }
 
 
-#define AG_OBJECT_DEFINE_CMP(T, CLOS)                                          \
-        static enum ag_cmp                                                     \
-        __AG_OBJECT_CMP_CBK__(const ag_object *_O1_, const ag_object *_O2_)    \
-        {                                                                      \
-                AG_ASSERT_PTR (_O1_);                                          \
-                AG_ASSERT_PTR (_O2_);                                          \
-                AG_ASSERT (ag_object_typeid(_O1_) == __##T##_tid__);           \
-                AG_ASSERT (ag_object_typeid(_O2_) == __##T##_tid__);           \
-                CLOS                                                           \
+#define AG_OBJECT_DEFINE_CMP(T, CLOS)                                   \
+        enum ag_cmp                                                     \
+        __##T##_cmp__(const ag_object *_O1_, const ag_object *_O2_)     \
+        {                                                               \
+                AG_ASSERT_PTR (_O1_);                                   \
+                AG_ASSERT_PTR (_O2_);                                   \
+                AG_ASSERT (ag_object_typeid(_O1_) == __##T##_tid__);    \
+                AG_ASSERT (ag_object_typeid(_O2_) == __##T##_tid__);    \
+                CLOS                                                    \
         }
 
 
 #define AG_OBJECT_DEFINE_VALID(T, CLOS)                                 \
-        static bool                                                     \
-        __AG_OBJECT_VALID_CBK__(const ag_object *_O_)                   \
+        bool                                                            \
+        __##T##_valid__(const ag_object *_O_)                           \
         {                                                               \
                 AG_ASSERT_PTR (_O_);                                    \
                 AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
@@ -194,8 +198,8 @@ typedef struct ag_object ag_object;
 
 
 #define AG_OBJECT_DEFINE_SZ(T, CLOS)                                    \
-        static size_t                                                   \
-        __AG_OBJECT_SZ_CBK__(const ag_object *_O_)                      \
+        size_t                                                          \
+        __##T##_sz__(const ag_object *_O_)                              \
         {                                                               \
                 AG_ASSERT_PTR (_O_);                                    \
                 AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
@@ -204,8 +208,8 @@ typedef struct ag_object ag_object;
 
 
 #define AG_OBJECT_DEFINE_LEN(T, CLOS)                                   \
-        static size_t                                                   \
-        __AG_OBJECT_LEN_CBK__(const ag_object *_O_)                     \
+        size_t                                                          \
+        __##T##_len__(const ag_object *_O_)                             \
         {                                                               \
                 AG_ASSERT_PTR (_O_);                                    \
                 AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
@@ -214,8 +218,8 @@ typedef struct ag_object ag_object;
 
 
 #define AG_OBJECT_DEFINE_HASH(T, CLOS)                                  \
-        static ag_hash                                                  \
-        __AG_OBJECT_HASH_CBK__(const ag_object *_O_)                    \
+        ag_hash                                                         \
+        __##T##_hash__(const ag_object *_O_)                            \
         {                                                               \
                 AG_ASSERT_PTR (_O_);                                    \
                 AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
@@ -224,8 +228,8 @@ typedef struct ag_object ag_object;
 
 
 #define AG_OBJECT_DEFINE_STR(T, CLOS)                                   \
-        static ag_string *                                              \
-        __AG_OBJECT_STR_CBK__(const ag_object *_O_)                     \
+        ag_string *                                                     \
+        __##T##_str__(const ag_object *_O_)                             \
         {                                                               \
                 AG_ASSERT_PTR (_O_);                                    \
                 AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
@@ -233,50 +237,44 @@ typedef struct ag_object ag_object;
         }
 
 
-#define AG_OBJECT_DEFINE(T, TI)                                        \
-        const ag_typeid __##T##_tid__ = TI;             \
-        struct ag_object_vtable __##T##_vt__ = { \
-                .clone = NULL, \
-                .release = NULL, \
-                .cmp = NULL, \
-                .valid = NULL, \
-                .sz = NULL, \
-                .len = NULL, \
-                .hash = NULL, \
-                .str = NULL, \
-                .json = NULL, \
-        }; \
-        extern inline T *T##_copy(const T *);                        \
-        extern inline T *T##_clone(const T *);                       \
-        extern inline void T##_release(T **);                         \
-        extern inline enum ag_cmp T##_cmp(const T *, const T *);     \
-        extern inline bool T##_lt(const T *, const T *);             \
-        extern inline bool T##_eq(const T *, const T *);             \
-        extern inline bool T##_gt(const T *, const T *);             \
-        extern inline bool T##_empty(const T *);                      \
-        extern inline ag_typeid T##_typeid(const T *);                \
-        extern inline ag_uuid *T##_uuid(const T *);                   \
-        extern inline bool T##_valid(const T *);                      \
-        extern inline size_t T##_sz(const T *);                       \
-        extern inline size_t T##_refc(const T *);                     \
-        extern inline size_t T##_len(const T *);                      \
-        extern inline ag_hash T##_hash(const T *);                    \
-        extern inline ag_string *T##_str(const T *);                  \
-        extern inline ag_string *T##_json(const T *);                 \
-        extern void __##T##_register__(void)                           \
+#define AG_OBJECT_DEFINE(T, TID)                                        \
+        const ag_typeid __##T##_tid__ = TID;                            \
+        extern inline T *T##_copy(const T *);                           \
+        extern inline T *T##_clone(const T *);                          \
+        extern inline void T##_release(T **);                           \
+        extern inline enum ag_cmp T##_cmp(const T *, const T *);        \
+        extern inline bool T##_lt(const T *, const T *);                \
+        extern inline bool T##_eq(const T *, const T *);                \
+        extern inline bool T##_gt(const T *, const T *);                \
+        extern inline bool T##_empty(const T *);                        \
+        extern inline ag_typeid T##_typeid(const T *);                  \
+        extern inline ag_uuid *T##_uuid(const T *);                     \
+        extern inline bool T##_valid(const T *);                        \
+        extern inline size_t T##_sz(const T *);                         \
+        extern inline size_t T##_refc(const T *);                       \
+        extern inline size_t T##_len(const T *);                        \
+        extern inline ag_hash T##_hash(const T *);                      \
+        extern inline ag_string *T##_str(const T *);                    \
+        extern inline ag_string *T##_json(const T *);                   \
+        extern void __##T##_register__(void)                            \
         {                                                               \
+                void *hnd = dlopen(NULL, RTLD_NOW);                     \
+                if (AG_UNLIKELY (!hnd)) {                               \
+                        fputs(dlerror(), stderr);                       \
+                        exit(1);                                        \
+                }                                                       \
                 struct ag_object_vtable vt = {                          \
-                        .clone = __AG_OBJECT_CLONE_CBK__,               \
-                        .release = __AG_OBJECT_RELEASE_CBK__,           \
-                        .cmp = __AG_OBJECT_CMP_CBK__,                   \
-                        .valid = __AG_OBJECT_VALID_CBK__,               \
-                        .sz = __AG_OBJECT_SZ_CBK__,                     \
-                        .len = __AG_OBJECT_LEN_CBK__,                   \
-                        .hash = __AG_OBJECT_HASH_CBK__,                 \
-                        .str = __AG_OBJECT_STR_CBK__,                   \
-                        .json = __AG_OBJECT_JSON_CBK__,                 \
+                        .clone = __##T##_clone__,                       \
+                        .release = __##T##_release__,                   \
+                        .cmp = __##T##_cmp__,                           \
+                        .valid = __##T##_valid__,                       \
+                        .sz = __##T##_sz__,                             \
+                        .len = __##T##_len__,                           \
+                        .hash = __##T##_hash__,                         \
+                        .str = __##T##_str__,                           \
+                        .json = __##T##_json__,                         \
                 };                                                      \
-                ag_object_registry_push(TI, &vt);                       \
+                ag_object_registry_push(TID, &vt);                      \
         }
 
 #define AG_OBJECT_REGISTER(T) __##T##_register__()

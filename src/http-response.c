@@ -38,15 +38,54 @@ static struct payload   *payload_new(enum ag_http_mime, enum ag_http_status,
                             const char *);
 
 
-static ag_memblock      *__AG_OBJECT_CLONE_CBK__(const ag_memblock *);
-static void              __AG_OBJECT_RELEASE_CBK__(ag_memblock *);
-static enum ag_cmp       __AG_OBJECT_CMP_CBK__(const ag_object *, const ag_object *);
-static bool              __AG_OBJECT_VALID_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_SZ_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_LEN_CBK__(const ag_object *);
-static ag_hash           __AG_OBJECT_HASH_CBK__(const ag_object *);
-static ag_string        *__AG_OBJECT_STR_CBK__(const ag_object *);
-#define __AG_OBJECT_JSON_CBK__ NULL
+#define __ag_http_response_json__ NULL
+
+AG_OBJECT_DEFINE_CLONE(ag_http_response,
+        const struct payload *p = _P_;
+        return payload_new(p->mime, p->status, p->body);
+);
+
+AG_OBJECT_DEFINE_RELEASE(ag_http_response,
+        struct payload *p = _P_;
+        ag_string_release(&p->body);
+);
+
+AG_OBJECT_DEFINE_CMP(ag_http_response,
+        const struct payload *p1 = ag_object_payload(_O1_);
+        const struct payload *p2 = ag_object_payload(_O2_);
+
+        return ag_string_cmp(p1->body, p2->body);
+);
+
+AG_OBJECT_DEFINE_VALID(ag_http_response,
+        (void)_O_;
+        return true;
+);
+
+AG_OBJECT_DEFINE_SZ(ag_http_response,
+        const struct payload *p = ag_object_payload(_O_);
+        return ag_string_sz(p->body);
+);
+
+AG_OBJECT_DEFINE_LEN(ag_http_response,
+        const struct payload *p = ag_object_payload(_O_);
+        return ag_string_len(p->body);
+);
+
+AG_OBJECT_DEFINE_HASH(ag_http_response,
+        AG_AUTO(ag_string) *s = ag_object_str(_O_);
+        return ag_hash_new_str(s);
+);
+
+AG_OBJECT_DEFINE_STR(ag_http_response,
+        const struct payload *p = ag_object_payload(_O_);
+        AG_AUTO(ag_string) *m = ag_http_mime_str(p->mime);
+        AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
+
+        return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
+            "Status: %s\r\n\r\n%s", m, s, p->body);
+);
+
 
 AG_OBJECT_DEFINE(ag_http_response, AG_TYPEID_HTTP_RESPONSE);
 
@@ -200,103 +239,5 @@ payload_new(enum ag_http_mime mime, enum ag_http_status status,
         p->body = ag_string_new(body);
 
         return p;
-}
-
-
-static ag_memblock *
-__AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->mime, p->status, p->body);
-}
-
-
-static void 
-__AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        ag_string_release(&p->body);
-}
-
-
-
-
-static enum ag_cmp
-__AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_HTTP_RESPONSE);
-
-        const struct payload *p = ag_object_payload(ctx);
-        const struct payload *p2 = ag_object_payload(cmp);
-
-        return ag_string_cmp(p->body, p2->body);
-}
-
-
-static bool              
-__AG_OBJECT_VALID_CBK__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-
-        (void)ctx;
-        return true;
-}
-
-
-static size_t            
-__AG_OBJECT_SZ_CBK__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_string_sz(p->body);
-}
-
-
-static size_t            
-__AG_OBJECT_LEN_CBK__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_string_len(p->body);
-}
-
-
-static ag_hash           
-__AG_OBJECT_HASH_CBK__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_hash_new_str(s);
-}
-
-
-
-
-static ag_string *
-__AG_OBJECT_STR_CBK__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_HTTP_RESPONSE);
-
-        const struct payload *p = ag_object_payload(ctx);
-        AG_AUTO(ag_string) *m = ag_http_mime_str(p->mime);
-        AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
-
-        return ag_string_new_fmt("Content-type: %s; charset=UTF-8\r\n"
-            "Status: %s\r\n\r\n%s", m, s, p->body);
 }
 

@@ -47,15 +47,15 @@ static struct payload   *payload_new(const struct node *);
 static void              payload_push(struct payload *, const ag_field *);
 
 
-static ag_memblock *__AG_OBJECT_CLONE_CBK__(const ag_memblock *);
-static void         __AG_OBJECT_RELEASE_CBK__(ag_memblock *);
-static enum ag_cmp  __AG_OBJECT_CMP_CBK__(const ag_object *, const ag_object *);
-static bool         __AG_OBJECT_VALID_CBK__(const ag_object *);
-static size_t       __AG_OBJECT_SZ_CBK__(const ag_object *);
-static size_t       __AG_OBJECT_LEN_CBK__(const ag_object *);
-static ag_hash      __AG_OBJECT_HASH_CBK__(const ag_object *);
-static ag_string   *__AG_OBJECT_STR_CBK__(const ag_object *);
-#define __AG_OBJECT_JSON_CBK__ NULL
+static ag_memblock *__ag_alist_clone__(const ag_memblock *);
+static void         __ag_alist_release__(ag_memblock *);
+static enum ag_cmp  __ag_alist_cmp__(const ag_object *, const ag_object *);
+static bool         __ag_alist_valid__(const ag_object *);
+static size_t       __ag_alist_sz__(const ag_object *);
+static size_t       __ag_alist_len__(const ag_object *);
+static ag_hash      __ag_alist_hash__(const ag_object *);
+static ag_string   *__ag_alist_str__(const ag_object *);
+#define __ag_alist_json__ NULL
 
 
 AG_OBJECT_DEFINE(ag_alist, AG_TYPEID_ALIST);
@@ -469,7 +469,7 @@ payload_push(struct payload *ctx, const ag_field *attr)
 
         
 static ag_memblock *
-__AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
+__ag_alist_clone__(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -479,7 +479,7 @@ __AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
 
 
 static void
-__AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
+__ag_alist_release__(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -492,7 +492,7 @@ __AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
 
 
 static enum ag_cmp
-__AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
+__ag_alist_cmp__(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
@@ -529,7 +529,7 @@ __AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
 
 
 static bool
-__AG_OBJECT_VALID_CBK__(const ag_object *ctx)
+__ag_alist_valid__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
@@ -548,7 +548,7 @@ __AG_OBJECT_VALID_CBK__(const ag_object *ctx)
 
 
 static size_t
-__AG_OBJECT_SZ_CBK__(const ag_object *ctx)
+__ag_alist_sz__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
@@ -559,7 +559,7 @@ __AG_OBJECT_SZ_CBK__(const ag_object *ctx)
 
 
 static size_t
-__AG_OBJECT_LEN_CBK__(const ag_object *ctx)
+__ag_alist_len__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
@@ -570,7 +570,7 @@ __AG_OBJECT_LEN_CBK__(const ag_object *ctx)
 
 
 static ag_hash
-__AG_OBJECT_HASH_CBK__(const ag_object *ctx)
+__ag_alist_hash__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
@@ -581,7 +581,7 @@ __AG_OBJECT_HASH_CBK__(const ag_object *ctx)
 
 
 static ag_string
-*__AG_OBJECT_STR_CBK__(const ag_object *ctx)
+*__ag_alist_str__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);

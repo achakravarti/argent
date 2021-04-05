@@ -49,15 +49,15 @@ static struct payload   *payload_new(bool, const char *, ag_uint, const char *);
  * ag_http_url object. We are providing callback functions for all polymorphic
  * object functions.
  */
-static ag_memblock      *__AG_OBJECT_CLONE_CBK__(const ag_memblock *);
-static void              __AG_OBJECT_RELEASE_CBK__(ag_memblock *);
-static enum ag_cmp       __AG_OBJECT_CMP_CBK__(const ag_object *, const ag_object *);
-static bool              __AG_OBJECT_VALID_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_SZ_CBK__(const ag_object *);
-static size_t            __AG_OBJECT_LEN_CBK__(const ag_object *);
-static ag_hash           __AG_OBJECT_HASH_CBK__(const ag_object *);
-static ag_string        *__AG_OBJECT_STR_CBK__(const ag_object *);
-#define __AG_OBJECT_JSON_CBK__ NULL
+static ag_memblock      *__ag_http_url_clone__(const ag_memblock *);
+static void              __ag_http_url_release__(ag_memblock *);
+static enum ag_cmp       __ag_http_url_cmp__(const ag_object *, const ag_object *);
+static bool              __ag_http_url_valid__(const ag_object *);
+static size_t            __ag_http_url_sz__(const ag_object *);
+static size_t            __ag_http_url_len__(const ag_object *);
+static ag_hash           __ag_http_url_hash__(const ag_object *);
+static ag_string        *__ag_http_url_str__(const ag_object *);
+#define __ag_http_url_json__ NULL
 
 
 /*
@@ -279,13 +279,13 @@ payload_new(bool secure, const char *host, ag_uint port, const char *path)
 
 
 /*
- * Define the __AG_OBJECT_CLONE_CBK__() dynamic dispatch callback function. This function
+ * Define the __ag_http_url_clone__() dynamic dispatch callback function. This function
  * is called by ag_object_clone() when ag_http_url_clone() is invoked. We simply
  * return a payload instance with the same fields as that of the contextual
  * payload.
  */
 static ag_memblock *
-__AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
+__ag_http_url_clone__(const ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -295,12 +295,12 @@ __AG_OBJECT_CLONE_CBK__(const ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_RELEASE_CBK__() dynamic dispatch callback function. This function
+ * Define the __ag_http_url_release__() dynamic dispatch callback function. This function
  * is called by ag_object_release() when ag_http_url_release() is invoked. We
  * release the dynamically allocated string components of the payload.
  */
 static void
-__AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
+__ag_http_url_release__(ag_memblock *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -311,13 +311,13 @@ __AG_OBJECT_RELEASE_CBK__(ag_memblock *ctx)
 
 
 /*
- * Define the __AG_OBJECT_CMP_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_cmp__() dynamic dispatch callback function. This function is
  * called by ag_object_cmp() when ag_http_url_cmp() is invoked. We perform a
  * lexicographical comparison of the string representations of the HTTP URL
  * objects.
  */
 static enum ag_cmp
-__AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
+__ag_http_url_cmp__(const ag_object *ctx, const ag_object *cmp)
 {
         AG_ASSERT_PTR (ctx);
         AG_ASSERT_PTR (cmp);
@@ -330,12 +330,12 @@ __AG_OBJECT_CMP_CBK__(const ag_object *ctx, const ag_object *cmp)
 
 
 /*
- * Define the __AG_OBJECT_VALID_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_valid__() dynamic dispatch callback function. This function is
  * called by ag_object_valid() when ag_http_url_valid() is invoked. An HTTP URL
  * is guaranteed to be valid when constructed through ag_http_url_new().
  */
 static bool
-__AG_OBJECT_VALID_CBK__(const ag_object *ctx)
+__ag_http_url_valid__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -345,12 +345,12 @@ __AG_OBJECT_VALID_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_SZ_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_sz__() dynamic dispatch callback function. This function is
  * called by ag_object_sz() when ag_http_url_sz() is invoked. The size of an
  * HTTP URL is the size of its string representation.
  */
 static size_t
-__AG_OBJECT_SZ_CBK__(const ag_object *ctx)
+__ag_http_url_sz__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -360,12 +360,12 @@ __AG_OBJECT_SZ_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_LEN_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_len__() dynamic dispatch callback function. This function is
  * called by ag_object_len() when ag_http_url_len() is invoked. The length of an
  * HTTP URL is the length of its string representation.
  */
 static size_t
-__AG_OBJECT_LEN_CBK__(const ag_object *ctx)
+__ag_http_url_len__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -375,12 +375,12 @@ __AG_OBJECT_LEN_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_HASH_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_hash__() dynamic dispatch callback function. This function is
  * called by ag_object_hash() when ag_http_url_hash() is invoked. The hash of an
  * HTTP URL object is the hash of its string representation.
  */
 static ag_hash
-__AG_OBJECT_HASH_CBK__(const ag_object *ctx)
+__ag_http_url_hash__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
@@ -390,11 +390,11 @@ __AG_OBJECT_HASH_CBK__(const ag_object *ctx)
 
 
 /*
- * Define the __AG_OBJECT_STR_CBK__() dynamic dispatch callback function. This function is
+ * Define the __ag_http_url_str__() dynamic dispatch callback function. This function is
  * called by ag_object_str() when ag_http_url_str() is invoked.
  */
 static ag_string *
-__AG_OBJECT_STR_CBK__(const ag_object *ctx)
+__ag_http_url_str__(const ag_object *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
