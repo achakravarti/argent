@@ -219,38 +219,48 @@ typedef struct ag_object ag_object;
         }
 
 
-#define AG_OBJECT_DEFINE(name, typeid)                                        \
-        extern inline name *name ## _copy(const name *);                       \
-        extern inline name *name ## _clone(const name *);                      \
-        extern inline void name ## _release(name **);                          \
-        extern inline enum ag_cmp name ## _cmp(const name *, const name *);    \
-        extern inline bool name ## _lt(const name *, const name *);            \
-        extern inline bool name ## _eq(const name *, const name *);            \
-        extern inline bool name ## _gt(const name *, const name *);            \
-        extern inline bool name ## _empty(const name *);                       \
-        extern inline ag_typeid name ## _typeid(const name *);                 \
-        extern inline ag_uuid *name ## _uuid(const name *);                    \
-        extern inline bool name ## _valid(const name *);                       \
-        extern inline size_t name ## _sz(const name *);                        \
-        extern inline size_t name ## _refc(const name *);                      \
-        extern inline size_t name ## _len(const name *);                       \
-        extern inline ag_hash name ## _hash(const name *);                     \
-        extern inline ag_string *name ## _str(const name *);                   \
-        extern inline ag_string *name ## _json(const name *);                  \
-        extern void __ ## name ## _register__(void)                            \
-        {                                                                      \
-                struct ag_object_vtable vt = {                                 \
-                        .clone = __AG_OBJECT_CLONE_CBK__,                      \
-                        .release = __AG_OBJECT_RELEASE_CBK__,                  \
-                        .cmp = __AG_OBJECT_CMP_CBK__,                          \
-                        .valid = __AG_OBJECT_VALID_CBK__,                      \
-                        .sz = __AG_OBJECT_SZ_CBK__,                            \
-                        .len = __AG_OBJECT_LEN_CBK__,                          \
-                        .hash = __AG_OBJECT_HASH_CBK__,                        \
-                        .str = __AG_OBJECT_STR_CBK__,                          \
-                        .json = __AG_OBJECT_JSON_CBK__,                        \
-                };                                                             \
-                ag_object_registry_push(typeid, &vt);                          \
+#define AG_OBJECT_DEFINE_STR(TO, TID, CLOS)                     \
+        static ag_string *                                      \
+        __AG_OBJECT_STR_CBK__(const ag_object *_O_)             \
+        {                                                       \
+                AG_ASSERT_PTR (_O_);                            \
+                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
+                CLOS                                            \
+        }
+
+
+#define AG_OBJECT_DEFINE(TO, TI)                                        \
+        extern inline TO *TO##_copy(const TO *);                        \
+        extern inline TO *TO##_clone(const TO *);                       \
+        extern inline void TO##_release(TO **);                         \
+        extern inline enum ag_cmp TO##_cmp(const TO *, const TO *);     \
+        extern inline bool TO##_lt(const TO *, const TO *);             \
+        extern inline bool TO##_eq(const TO *, const TO *);             \
+        extern inline bool TO##_gt(const TO *, const TO *);             \
+        extern inline bool TO##_empty(const TO *);                      \
+        extern inline ag_typeid TO##_typeid(const TO *);                \
+        extern inline ag_uuid *TO##_uuid(const TO *);                   \
+        extern inline bool TO##_valid(const TO *);                      \
+        extern inline size_t TO##_sz(const TO *);                       \
+        extern inline size_t TO##_refc(const TO *);                     \
+        extern inline size_t TO##_len(const TO *);                      \
+        extern inline ag_hash TO##_hash(const TO *);                    \
+        extern inline ag_string *TO##_str(const TO *);                  \
+        extern inline ag_string *TO##_json(const TO *);                 \
+        extern void __##TO##_register__(void)                           \
+        {                                                               \
+                struct ag_object_vtable vt = {                          \
+                        .clone = __AG_OBJECT_CLONE_CBK__,               \
+                        .release = __AG_OBJECT_RELEASE_CBK__,           \
+                        .cmp = __AG_OBJECT_CMP_CBK__,                   \
+                        .valid = __AG_OBJECT_VALID_CBK__,               \
+                        .sz = __AG_OBJECT_SZ_CBK__,                     \
+                        .len = __AG_OBJECT_LEN_CBK__,                   \
+                        .hash = __AG_OBJECT_HASH_CBK__,                 \
+                        .str = __AG_OBJECT_STR_CBK__,                   \
+                        .json = __AG_OBJECT_JSON_CBK__,                 \
+                };                                                      \
+                ag_object_registry_push(TI, &vt);                       \
         }
 
 #define AG_OBJECT_REGISTER(name) __ ## name ##_register__()
