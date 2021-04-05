@@ -153,7 +153,7 @@ typedef struct ag_object ag_object;
         extern void __ ## T ## _register__(void)
 
 
-#define AG_OBJECT_DEFINE_CLONE(TO, CLOS)                \
+#define AG_OBJECT_DEFINE_CLONE(T, CLOS)                 \
         static ag_memblock *                            \
         __AG_OBJECT_CLONE_CBK__(const ag_memblock *_P_) \
         {                                               \
@@ -162,7 +162,7 @@ typedef struct ag_object ag_object;
         }
 
 
-#define AG_OBJECT_DEFINE_RELEASE(TO, CLOS)              \
+#define AG_OBJECT_DEFINE_RELEASE(T, CLOS)               \
         static void                                     \
         __AG_OBJECT_RELEASE_CBK__(ag_memblock *_P_)     \
         {                                               \
@@ -171,65 +171,65 @@ typedef struct ag_object ag_object;
         }
 
 
-#define AG_OBJECT_DEFINE_CMP(TO, TID, CLOS)                                    \
+#define AG_OBJECT_DEFINE_CMP(T, CLOS)                                          \
         static enum ag_cmp                                                     \
         __AG_OBJECT_CMP_CBK__(const ag_object *_O1_, const ag_object *_O2_)    \
         {                                                                      \
                 AG_ASSERT_PTR (_O1_);                                          \
                 AG_ASSERT_PTR (_O2_);                                          \
-                AG_ASSERT (ag_object_typeid(_O1_) == TID);                     \
-                AG_ASSERT (ag_object_typeid(_O2_) == TID);                     \
+                AG_ASSERT (ag_object_typeid(_O1_) == __##T##_tid__);           \
+                AG_ASSERT (ag_object_typeid(_O2_) == __##T##_tid__);           \
                 CLOS                                                           \
         }
 
 
-#define AG_OBJECT_DEFINE_VALID(TO, TID, CLOS)                   \
-        static bool                                             \
-        __AG_OBJECT_VALID_CBK__(const ag_object *_O_)           \
-        {                                                       \
-                AG_ASSERT_PTR (_O_);                            \
-                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                CLOS                                            \
+#define AG_OBJECT_DEFINE_VALID(T, CLOS)                                 \
+        static bool                                                     \
+        __AG_OBJECT_VALID_CBK__(const ag_object *_O_)                   \
+        {                                                               \
+                AG_ASSERT_PTR (_O_);                                    \
+                AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
+                CLOS                                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_SZ(TO, TID, CLOS)                      \
-        static size_t                                           \
-        __AG_OBJECT_SZ_CBK__(const ag_object *_O_)              \
-        {                                                       \
-                AG_ASSERT_PTR (_O_);                            \
-                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                CLOS                                            \
+#define AG_OBJECT_DEFINE_SZ(T, CLOS)                                    \
+        static size_t                                                   \
+        __AG_OBJECT_SZ_CBK__(const ag_object *_O_)                      \
+        {                                                               \
+                AG_ASSERT_PTR (_O_);                                    \
+                AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
+                CLOS                                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_LEN(TO, TID, CLOS)                     \
-        static size_t                                           \
-        __AG_OBJECT_LEN_CBK__(const ag_object *_O_)             \
-        {                                                       \
-                AG_ASSERT_PTR (_O_);                            \
-                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                CLOS                                            \
+#define AG_OBJECT_DEFINE_LEN(T, CLOS)                                   \
+        static size_t                                                   \
+        __AG_OBJECT_LEN_CBK__(const ag_object *_O_)                     \
+        {                                                               \
+                AG_ASSERT_PTR (_O_);                                    \
+                AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
+                CLOS                                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_HASH(TO, TID, CLOS)                    \
-        static ag_hash                                          \
-        __AG_OBJECT_HASH_CBK__(const ag_object *_O_)            \
-        {                                                       \
-                AG_ASSERT_PTR (_O_);                            \
-                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                CLOS                                            \
+#define AG_OBJECT_DEFINE_HASH(T, CLOS)                                  \
+        static ag_hash                                                  \
+        __AG_OBJECT_HASH_CBK__(const ag_object *_O_)                    \
+        {                                                               \
+                AG_ASSERT_PTR (_O_);                                    \
+                AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
+                CLOS                                                    \
         }
 
 
-#define AG_OBJECT_DEFINE_STR(TO, TID, CLOS)                     \
-        static ag_string *                                      \
-        __AG_OBJECT_STR_CBK__(const ag_object *_O_)             \
-        {                                                       \
-                AG_ASSERT_PTR (_O_);                            \
-                AG_ASSERT (ag_object_typeid(_O_) == TID);       \
-                CLOS                                            \
+#define AG_OBJECT_DEFINE_STR(T, CLOS)                                   \
+        static ag_string *                                              \
+        __AG_OBJECT_STR_CBK__(const ag_object *_O_)                     \
+        {                                                               \
+                AG_ASSERT_PTR (_O_);                                    \
+                AG_ASSERT (ag_object_typeid(_O_) == __##T##_tid__);     \
+                CLOS                                                    \
         }
 
 
