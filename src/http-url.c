@@ -90,17 +90,6 @@ AG_OBJECT_DEFINE_CMP(ag_http_url,
 
 
 /*
- * Define the __ag_http_url_valid__() dynamic dispatch callback function. This function is
- * called by ag_object_valid() when ag_http_url_valid() is invoked. An HTTP URL
- * is guaranteed to be valid when constructed through ag_http_url_new().
- */
-AG_OBJECT_DEFINE_VALID(ag_http_url,
-        (void)_o_;
-        return true;
-);
-
-
-/*
  * Define the __ag_http_url_sz__() dynamic dispatch callback function. This function is
  * called by ag_object_sz() when ag_http_url_sz() is invoked. The size of an
  * HTTP URL is the size of its string representation.

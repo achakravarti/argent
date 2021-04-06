@@ -63,12 +63,6 @@ AG_OBJECT_DEFINE_CMP(ag_http_request,
 );
 
 
-AG_OBJECT_DEFINE_VALID(ag_http_request,
-        (void)_o_;
-        return true;
-);
-
-
 AG_OBJECT_DEFINE_SZ(ag_http_request,
         const struct payload *p = ag_object_payload(_o_);
         return sizeof *p + ag_http_client_sz(p->usr) + ag_http_url_sz(p->url)

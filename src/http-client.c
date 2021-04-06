@@ -97,18 +97,6 @@ AG_OBJECT_DEFINE_CMP(ag_http_client,
 
 
 /*
- * Define the __ag_http_client_valid__() dynamic dispatch function. This function is called by
- * ag_object_valid() when ag_http_client_valid() is invoked. Since every client
- * object instance constructed through ag_http_client_new() is guaranteed to be
- * valid, we always return true.
- */
-AG_OBJECT_DEFINE_VALID(ag_http_client,
-        (void)_o_;
-        return true;
-);
-
-
-/*
  * Define the __ag_http_client_sz__() dynamic dispatch function. This function is called by
  * ag_object_sz() when ag_http_client_sz() is invoked. We consider the size of
  * a client object as the size of its string representation.

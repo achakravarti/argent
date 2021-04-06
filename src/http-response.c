@@ -56,11 +56,6 @@ AG_OBJECT_DEFINE_CMP(ag_http_response,
         return ag_string_cmp(p1->body, p2->body);
 );
 
-AG_OBJECT_DEFINE_VALID(ag_http_response,
-        (void)_o_;
-        return true;
-);
-
 AG_OBJECT_DEFINE_SZ(ag_http_response,
         const struct payload *p = ag_object_payload(_o_);
         return ag_string_sz(p->body);
