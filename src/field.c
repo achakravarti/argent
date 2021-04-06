@@ -31,15 +31,54 @@ struct payload {
 static struct payload   *payload_new(const ag_value *, const ag_value *);
 
 
-static ag_memblock *__ag_field_clone__(const ag_memblock *);
-static void         __ag_field_release__(ag_memblock *);
-static enum ag_cmp  __ag_field_cmp__(const ag_object *, const ag_object *);
-static bool         __ag_field_valid__(const ag_object *);
-static size_t       __ag_field_sz__(const ag_object *);
-static size_t       __ag_field_len__(const ag_object *);
-static ag_hash      __ag_field_hash__(const ag_object *);
-static ag_string   *__ag_field_str__(const ag_object *);
-#define __ag_field_json__ NULL
+AG_OBJECT_DEFINE_CLONE(ag_field,
+        const struct payload *p = _p_;
+        return payload_new(p->key, p->val);
+);
+
+AG_OBJECT_DEFINE_RELEASE(ag_field,
+        struct payload *p = _p_;
+        ag_value_release(&p->key);
+        ag_value_release(&p->val);
+);
+
+AG_OBJECT_DEFINE_CMP(ag_field,
+        const struct payload *p1 = ag_object_payload(_o1_);
+        const struct payload *p2 = ag_object_payload(_o2_);
+
+        if (ag_value_eq(p1->key, p2->key))
+                return ag_value_cmp(p1->val, p2->val);
+
+        return ag_value_lt(p1->key, p2->key) ? AG_CMP_LT : AG_CMP_GT;
+);
+
+AG_OBJECT_DEFINE_VALID(ag_field,
+        const struct payload *p = ag_object_payload(_o_);
+        return ag_value_valid(p->key) && ag_value_valid(p->val);
+);
+
+AG_OBJECT_DEFINE_SZ(ag_field,
+        const struct payload *p = ag_object_payload(_o_);
+        return ag_value_sz(p->key) + ag_value_sz(p->val);
+);
+
+AG_OBJECT_DEFINE_LEN(ag_field,
+        const struct payload *p = ag_object_payload(_o_);
+        return ag_value_len(p->val);
+);
+
+AG_OBJECT_DEFINE_HASH(ag_field,
+        const struct payload *p = ag_object_payload(_o_);
+        return ag_value_hash(p->key);
+);
+
+AG_OBJECT_DEFINE_STR(ag_field,
+        const struct payload *p = ag_object_payload(_o_);
+        AG_AUTO(ag_string) *key = ag_value_str(p->key);
+        AG_AUTO(ag_string) *val = ag_value_str(p->val);
+
+        return ag_string_new_fmt("%s:%s", key, val);
+);
 
 AG_OBJECT_DEFINE(ag_field, AG_TYPEID_FIELD);
 
@@ -151,102 +190,5 @@ payload_new(const ag_value *key, const ag_value *val)
         p->val = ag_value_copy(val);
 
         return p;
-}
-
-
-static ag_memblock *
-__ag_field_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->key, p->val);
-}
-
-
-static void
-__ag_field_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        ag_value_release(&p->key);
-        ag_value_release(&p->val);
-}
-
-
-static enum ag_cmp
-__ag_field_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        const struct payload *p2 = ag_object_payload(cmp);
-
-        if (ag_value_eq(p->key, p2->key))
-                return ag_value_cmp(p->val, p2->val);
-
-        return ag_value_lt(p->key, p2->key) ? AG_CMP_LT : AG_CMP_GT;
-}
-
-
-static bool
-__ag_field_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_value_valid(p->key) && ag_value_valid(p->val);
-}
-
-
-static size_t
-__ag_field_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_value_sz(p->key) + ag_value_sz(p->val);
-}
-
-
-static size_t
-__ag_field_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_value_len(p->val);
-}
-
-
-static ag_hash
-__ag_field_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_value_hash(p->key);
-}
-
-
-static ag_string *
-__ag_field_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_FIELD);
-
-        const struct payload *p = ag_object_payload(ctx);
-        AG_AUTO(ag_string) *key = ag_value_str(p->key);
-        AG_AUTO(ag_string) *val = ag_value_str(p->val);
-
-        return ag_string_new_fmt("%s:%s", key, val);
 }
 

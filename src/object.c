@@ -23,6 +23,10 @@
 
 #include "../include/argent.h"
 
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 struct ag_object {
         ag_typeid        typeid;  /* Object type ID */
@@ -213,5 +217,43 @@ ag_object_payload_mutable(ag_object **ctx)
         }
 
         return (*ctx)->payload;
+}
+
+static void *
+sym_load(void *dso, const char *type, const char *meth)
+{
+        AG_ASSERT_STR (type);
+        AG_ASSERT_STR (meth);
+
+        AG_AUTO(ag_string) *sym = ag_string_new_fmt("__%s_%s__", type, meth);
+        return dlsym(dso, sym);
+}
+
+
+extern void
+__ag_object_register__(const char *type, ag_typeid tid)
+{
+        AG_ASSERT_STR (type);
+
+        void *dso = dlopen(NULL, RTLD_NOW);
+        if (AG_UNLIKELY (!dso)) {
+                fputs(dlerror(), stderr);
+                fputs("\n", stderr);
+                exit(1);
+        }
+
+        struct ag_object_vtable vt;
+        vt.clone = sym_load(dso, type, "clone");
+        vt.release = sym_load(dso, type, "release");
+        vt.cmp = sym_load(dso, type, "cmp");
+        vt.valid = sym_load(dso, type, "valid");
+        vt.sz = sym_load(dso, type, "sz");
+        vt.len = sym_load(dso, type, "len");
+        vt.hash = sym_load(dso, type, "hash");
+        vt.str = sym_load(dso, type, "str");
+        vt.json = sym_load(dso, type, "json");
+
+        ag_object_registry_push(tid, &vt);
+        dlclose(dso);
 }
 

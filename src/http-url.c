@@ -45,27 +45,109 @@ static struct payload   *payload_new(bool, const char *, ag_uint, const char *);
 
 
 /*
- * Declare the prototypes for the dynamic dispatch callbak functions for the
- * ag_http_url object. We are providing callback functions for all polymorphic
- * object functions.
- */
-static ag_memblock      *__ag_http_url_clone__(const ag_memblock *);
-static void              __ag_http_url_release__(ag_memblock *);
-static enum ag_cmp       __ag_http_url_cmp__(const ag_object *, const ag_object *);
-static bool              __ag_http_url_valid__(const ag_object *);
-static size_t            __ag_http_url_sz__(const ag_object *);
-static size_t            __ag_http_url_len__(const ag_object *);
-static ag_hash           __ag_http_url_hash__(const ag_object *);
-static ag_string        *__ag_http_url_str__(const ag_object *);
-#define __ag_http_url_json__ NULL
-
-
-/*
  * Define the ag_http_url object. The ag_http_url type is defined as an object
  * by its dynamic dispatch callback functions that are registered with the
  * object registry.
  */
 AG_OBJECT_DEFINE(ag_http_url, AG_TYPEID_HTTP_URL);
+
+/*
+ * Define the __ag_http_url_clone__() dynamic dispatch callback function. This function
+ * is called by ag_object_clone() when ag_http_url_clone() is invoked. We simply
+ * return a payload instance with the same fields as that of the contextual
+ * payload.
+ */
+AG_OBJECT_DEFINE_CLONE(ag_http_url,
+        const struct payload *p = _p_;
+        return payload_new(p->secure, p->host, p->port, p->path);
+);
+
+
+/*
+ * Define the __ag_http_url_release__() dynamic dispatch callback function. This function
+ * is called by ag_object_release() when ag_http_url_release() is invoked. We
+ * release the dynamically allocated string components of the payload.
+ */
+AG_OBJECT_DEFINE_RELEASE(ag_http_url,
+        struct payload *p = _p_;
+        ag_string_release(&p->host);
+        ag_string_release(&p->path);
+);
+
+
+/*
+ * Define the __ag_http_url_cmp__() dynamic dispatch callback function. This function is
+ * called by ag_object_cmp() when ag_http_url_cmp() is invoked. We perform a
+ * lexicographical comparison of the string representations of the HTTP URL
+ * objects.
+ */
+AG_OBJECT_DEFINE_CMP(ag_http_url,
+        AG_AUTO(ag_string) *s1 = ag_object_str(_o1_);
+        AG_AUTO(ag_string) *s2 = ag_object_str(_o2_);
+
+        return ag_string_cmp(s1, s2);
+);
+
+
+/*
+ * Define the __ag_http_url_valid__() dynamic dispatch callback function. This function is
+ * called by ag_object_valid() when ag_http_url_valid() is invoked. An HTTP URL
+ * is guaranteed to be valid when constructed through ag_http_url_new().
+ */
+AG_OBJECT_DEFINE_VALID(ag_http_url,
+        (void)_o_;
+        return true;
+);
+
+
+/*
+ * Define the __ag_http_url_sz__() dynamic dispatch callback function. This function is
+ * called by ag_object_sz() when ag_http_url_sz() is invoked. The size of an
+ * HTTP URL is the size of its string representation.
+ */
+AG_OBJECT_DEFINE_SZ(ag_http_url,
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
+        return ag_string_sz(s);
+);
+
+
+/*
+ * Define the __ag_http_url_len__() dynamic dispatch callback function. This function is
+ * called by ag_object_len() when ag_http_url_len() is invoked. The length of an
+ * HTTP URL is the length of its string representation.
+ */
+AG_OBJECT_DEFINE_LEN(ag_http_url,
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
+        return ag_string_len(s);
+);
+
+
+/*
+ * Define the __ag_http_url_hash__() dynamic dispatch callback function. This function is
+ * called by ag_object_hash() when ag_http_url_hash() is invoked. The hash of an
+ * HTTP URL object is the hash of its string representation.
+ */
+AG_OBJECT_DEFINE_HASH(ag_http_url,
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
+        return ag_hash_new_str(s);
+);
+
+
+/*
+ * Define the __ag_http_url_str__() dynamic dispatch callback function. This function is
+ * called by ag_object_str() when ag_http_url_str() is invoked.
+ */
+AG_OBJECT_DEFINE_STR(ag_http_url,
+        const struct payload *p = ag_object_payload(_o_);
+
+        if (p->port)
+                return ag_string_new_fmt("http%s://%s:%lu%s",
+                    p->secure ? "s" : "", p->host, p->port, p->path);
+        else
+                return ag_string_new_fmt("http%s://%s%s",
+                    p->secure ? "s" : "", p->host, p->path);
+);
+
 
 
 /*
@@ -275,137 +357,5 @@ payload_new(bool secure, const char *host, ag_uint port, const char *path)
                 p->path = ag_string_new("/");
 
         return p;
-}
-
-
-/*
- * Define the __ag_http_url_clone__() dynamic dispatch callback function. This function
- * is called by ag_object_clone() when ag_http_url_clone() is invoked. We simply
- * return a payload instance with the same fields as that of the contextual
- * payload.
- */
-static ag_memblock *
-__ag_http_url_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->secure, p->host, p->port, p->path);
-}
-
-
-/*
- * Define the __ag_http_url_release__() dynamic dispatch callback function. This function
- * is called by ag_object_release() when ag_http_url_release() is invoked. We
- * release the dynamically allocated string components of the payload.
- */
-static void
-__ag_http_url_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        ag_string_release(&p->host);
-        ag_string_release(&p->path);
-}
-
-
-/*
- * Define the __ag_http_url_cmp__() dynamic dispatch callback function. This function is
- * called by ag_object_cmp() when ag_http_url_cmp() is invoked. We perform a
- * lexicographical comparison of the string representations of the HTTP URL
- * objects.
- */
-static enum ag_cmp
-__ag_http_url_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        AG_AUTO(ag_string) *s2 = ag_object_str(cmp);
-
-        return ag_string_cmp(s, s2);
-}
-
-
-/*
- * Define the __ag_http_url_valid__() dynamic dispatch callback function. This function is
- * called by ag_object_valid() when ag_http_url_valid() is invoked. An HTTP URL
- * is guaranteed to be valid when constructed through ag_http_url_new().
- */
-static bool
-__ag_http_url_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        (void) ctx;
-        return true;
-}
-
-
-/*
- * Define the __ag_http_url_sz__() dynamic dispatch callback function. This function is
- * called by ag_object_sz() when ag_http_url_sz() is invoked. The size of an
- * HTTP URL is the size of its string representation.
- */
-static size_t
-__ag_http_url_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_string_sz(s);
-}
-
-
-/*
- * Define the __ag_http_url_len__() dynamic dispatch callback function. This function is
- * called by ag_object_len() when ag_http_url_len() is invoked. The length of an
- * HTTP URL is the length of its string representation.
- */
-static size_t
-__ag_http_url_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_string_len(s);
-}
-
-
-/*
- * Define the __ag_http_url_hash__() dynamic dispatch callback function. This function is
- * called by ag_object_hash() when ag_http_url_hash() is invoked. The hash of an
- * HTTP URL object is the hash of its string representation.
- */
-static ag_hash
-__ag_http_url_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_hash_new_str(s);
-}
-
-
-/*
- * Define the __ag_http_url_str__() dynamic dispatch callback function. This function is
- * called by ag_object_str() when ag_http_url_str() is invoked.
- */
-static ag_string *
-__ag_http_url_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-
-        if (p->port) {
-                return ag_string_new_fmt("http%s://%s:%lu%s",
-                    p->secure ? "s" : "", p->host, p->port, p->path);
-        } else {
-                return ag_string_new_fmt("http%s://%s%s",
-                    p->secure ? "s" : "", p->host, p->path);
-        }
 }
 

@@ -78,23 +78,6 @@ static void              payload_push(struct payload *, const ag_value *);
 
 
 /*
- * Declare the proptotypes of the dynamic dispatch callbacks for ag_list. We are
- * providing callbacks for all polymorphic object functions.
- */
-
-
-static ag_memblock *__ag_list_clone__(const ag_memblock *);
-static void         __ag_list_release__(ag_memblock *);
-static enum ag_cmp  __ag_list_cmp__(const ag_object *, const ag_object *);
-static bool         __ag_list_valid__(const ag_object *);
-static size_t       __ag_list_sz__(const ag_object *);
-static size_t       __ag_list_len__(const ag_object *);
-static ag_hash      __ag_list_hash__(const ag_object *);
-static ag_string   *__ag_list_str__(const ag_object *);
-#define __ag_list_json__ NULL
-
-
-/*
  * Define the ag_list object. The ag_list type is defined as an object by its
  * dynamic dispatch callback functions that are registered with the object
  * registry.
@@ -102,6 +85,156 @@ static ag_string   *__ag_list_str__(const ag_object *);
 
 
 AG_OBJECT_DEFINE(ag_list, AG_TYPEID_LIST); 
+
+/*
+ * Define the __ag_list_clone__() dynamic dispatch callback function. This function is
+ * called by ag_object_clone() when ag_list_clone() is invoked. We create a new
+ * list using the contextual list as a reference.
+ */
+
+AG_OBJECT_DEFINE_CLONE(ag_list,
+        const struct payload *p = _p_;
+        return payload_new(p->head);
+);
+
+
+/*
+ * Define the __ag_list_release__() dynamic dispatch callback function. This function
+ * is called by ag_object_release() when ag_list_release() is invoked. We simply
+ * iterate through each of the nodes in the list and release the node through
+ * node_release(). node_release() takes care of releasing the encapsulated value
+ * and returns NULL when it reaches the tail node.
+ *
+ * We don't need to check whether the reference count has fallen to 1 before
+ * performing the cleanup operation because ag_object_release() takes care of
+ * that before invoking this callback.
+ */
+
+AG_OBJECT_DEFINE_RELEASE(ag_list,
+        struct payload *p = _p_; 
+        register struct node *n = p->head;
+
+        while (n)
+                n = node_release(n);
+);
+
+
+/*
+ * Define the __ag_list_cmp__() dynamic dispatch callback function. This function is
+ * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
+ * lexicographical comparison of the two lists. Two empty lists are considered
+ * equal, and an empty list is considered smaller than a non-empty list.
+ *
+ * Although we're not considering it now, it's important to keep in mind that
+ * sorting can affect the result of this comparison. See also the question on
+ * https://stackoverflow.com/questions/13052857/.
+ */
+
+AG_OBJECT_DEFINE_CMP(ag_list,
+        const struct payload *p1 = ag_object_payload(_o1_);
+        const struct payload *p2 = ag_object_payload(_o2_);
+
+        if (AG_UNLIKELY (!p1->len))
+                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
+
+        if (AG_UNLIKELY (!p2->len))
+                return !p1->len ? AG_CMP_EQ : AG_CMP_GT;
+
+        size_t lim = p1->len < p2->len ? p1->len : p2->len;
+        register const struct node *n1 = p1->head;
+        register const struct node *n2 = p2->head;
+        register enum ag_cmp chk;
+
+        AG_ASSERT (ag_value_type(n1->val) == ag_value_type(n2->val));
+
+        for (register size_t i = 0; i < lim; i++) {
+                if ((chk = ag_value_cmp(n1->val, n2->val)))
+                        return chk;
+
+                n1 = n1->nxt;
+                n2 = n2->nxt;
+        }
+
+        if (p1->len == p2->len)
+                return AG_CMP_EQ;
+        else
+                return p1->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
+);
+
+
+/*
+ * Define the __ag_list_valid__() dynamic dispatch callback function. This function is
+ * called by ag_object_valid() when ag_list_valid() is invoked. We consider a
+ * list to be valid if (a) it's not empty, and (b) each of the values contained
+ * within it is valid.
+ *
+ * In our implementation, we first check if the list is not empty, and then
+ * iterate through each of its values, checking if each is valid. If we reach
+ * the end of the list successfully in this manner, the iterator will be NULL
+ * since it'll have crossed the tail.
+ */
+
+AG_OBJECT_DEFINE_VALID(ag_list,
+        const struct payload *p = ag_object_payload(_o_);
+        register const struct node *n = p->head;
+
+        if (AG_UNLIKELY (!n))
+                return false;
+
+        while (n && ag_value_valid(n->val))
+                n = n->nxt;
+
+        return !n;
+);
+
+
+/*
+ * Define the __ag_list_sz__() dynamic dispatch callback function. This function is
+ * called by ag_object_sz() when ag_list_sz() is invoked. The size of list is
+ * the cumulative size of all the values contained within it.
+ */
+
+AG_OBJECT_DEFINE_SZ(ag_list,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->sz;
+);
+
+
+/*
+ * Define the __ag_list_len__() dynamic dispatch callback function. This function is
+ * called by ag_object_len() when ag_list_len() is invoked. The length of a list
+ * is the number of values contained within it.
+ */
+
+AG_OBJECT_DEFINE_LEN(ag_list,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->len;
+);
+
+
+/*
+ * Define the __ag_list_hash__() dynamic dispatch callback function. This function is
+ * called by ag_object_hash() when ag_list_hash() is invoked. The hash of a list
+ * is the cumulative hash of all the values contained within it.
+ */
+
+AG_OBJECT_DEFINE_HASH(ag_list,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->hash;
+);
+
+
+/*
+ * Define the __ag_list_str__() dynamic dispatch callback function. This function is
+ * called by ag_object_str() when ag_list_str() is invoked.
+ *
+ * TODO: Improve definition
+ */
+
+AG_OBJECT_DEFINE_STR(ag_list,
+        return ag_string_new_fmt("list len = %lu", ag_object_len(_o_));
+);
+
 
 /*
  * Define the ag_list_new() interface function. Since lists are objects, we use
@@ -441,201 +574,4 @@ payload_push(struct payload *ctx, const ag_value *val)
         ctx->hash += ag_value_hash(val);
 }
 
-
-/*
- * Define the __ag_list_clone__() dynamic dispatch callback function. This function is
- * called by ag_object_clone() when ag_list_clone() is invoked. We create a new
- * list using the contextual list as a reference.
- */
-
-
-static ag_memblock *
-__ag_list_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->head);
-}
-
-
-/*
- * Define the __ag_list_release__() dynamic dispatch callback function. This function
- * is called by ag_object_release() when ag_list_release() is invoked. We simply
- * iterate through each of the nodes in the list and release the node through
- * node_release(). node_release() takes care of releasing the encapsulated value
- * and returns NULL when it reaches the tail node.
- *
- * We don't need to check whether the reference count has fallen to 1 before
- * performing the cleanup operation because ag_object_release() takes care of
- * that before invoking this callback.
- */
-
-
-static void
-__ag_list_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        register struct node *n = p->head;
-
-        while (n)
-                n = node_release(n);
-}
-
-
-/*
- * Define the __ag_list_cmp__() dynamic dispatch callback function. This function is
- * called by ag_object_cmp() when ag_list_cmp() is invoked. We perform a
- * lexicographical comparison of the two lists. Two empty lists are considered
- * equal, and an empty list is considered smaller than a non-empty list.
- *
- * Although we're not considering it now, it's important to keep in mind that
- * sorting can affect the result of this comparison. See also the question on
- * https://stackoverflow.com/questions/13052857/.
- */
-
-
-static enum ag_cmp
-__ag_list_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_LIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        const struct payload *p2 = ag_object_payload(cmp);
-
-        if (AG_UNLIKELY (!p->len))
-                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
-
-        if (AG_UNLIKELY (!p2->len))
-                return !p->len ? AG_CMP_EQ : AG_CMP_GT;
-
-        size_t lim = p->len < p2->len ? p->len : p2->len;
-        register const struct node *n = p->head;
-        register const struct node *n2 = p2->head;
-        register enum ag_cmp chk;
-
-        AG_ASSERT (ag_value_type(n->val) == ag_value_type(n2->val));
-
-        for (register size_t i = 0; i < lim; i++) {
-                if ((chk = ag_value_cmp(n->val, n2->val)))
-                        return chk;
-
-                n = n->nxt;
-                n2 = n2->nxt;
-        }
-
-        if (p->len == p2->len)
-                return AG_CMP_EQ;
-        else
-                return p->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
-}
-
-
-/*
- * Define the __ag_list_valid__() dynamic dispatch callback function. This function is
- * called by ag_object_valid() when ag_list_valid() is invoked. We consider a
- * list to be valid if (a) it's not empty, and (b) each of the values contained
- * within it is valid.
- *
- * In our implementation, we first check if the list is not empty, and then
- * iterate through each of its values, checking if each is valid. If we reach
- * the end of the list successfully in this manner, the iterator will be NULL
- * since it'll have crossed the tail.
- */
-
-
-static bool
-__ag_list_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        register const struct node *n = p->head;
-
-        if (AG_UNLIKELY (!n))
-                return false;
-
-        while (n && ag_value_valid(n->val))
-                n = n->nxt;
-
-        return !n;
-}
-
-
-/*
- * Define the __ag_list_sz__() dynamic dispatch callback function. This function is
- * called by ag_object_sz() when ag_list_sz() is invoked. The size of list is
- * the cumulative size of all the values contained within it.
- */
-
-
-static size_t
-__ag_list_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->sz;
-}
-
-
-/*
- * Define the __ag_list_len__() dynamic dispatch callback function. This function is
- * called by ag_object_len() when ag_list_len() is invoked. The length of a list
- * is the number of values contained within it.
- */
-
-
-static size_t
-__ag_list_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->len;
-}
-
-
-/*
- * Define the __ag_list_hash__() dynamic dispatch callback function. This function is
- * called by ag_object_hash() when ag_list_hash() is invoked. The hash of a list
- * is the cumulative hash of all the values contained within it.
- */
-
-
-static ag_hash
-__ag_list_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->hash;
-}
-
-
-/*
- * Define the __ag_list_str__() dynamic dispatch callback function. This function is
- * called by ag_object_str() when ag_list_str() is invoked.
- *
- * TODO: Improve definition
- */
-
-
-static ag_string
-*__ag_list_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_LIST);
-
-        return ag_string_new_fmt("list len = %lu", ag_object_len(ctx));
-}
 

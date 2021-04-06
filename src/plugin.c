@@ -34,19 +34,51 @@ struct payload {
 static struct payload   *payload_new(const char *, const char *);
 
 
-static ag_memblock      *__ag_plugin_clone__(const ag_memblock *);
-static void              __ag_plugin_release__(ag_memblock *);
-static enum ag_cmp       __ag_plugin_cmp__(const ag_object *, const ag_object *);
-static bool              __ag_plugin_valid__(const ag_object *);
-static size_t            __ag_plugin_sz__(const ag_object *);
-static size_t            __ag_plugin_len__(const ag_object *);
-static ag_hash           __ag_plugin_hash__(const ag_object *);
-static ag_string        *__ag_plugin_str__(const ag_object *);
-#define __ag_plugin_json__ NULL
-
-
 AG_OBJECT_DEFINE(ag_plugin, AG_TYPEID_PLUGIN);
 
+AG_OBJECT_DEFINE_CLONE(ag_plugin,
+        const struct payload *p = _p_;
+        return payload_new(p->dso, p->sym);
+);
+
+AG_OBJECT_DEFINE_RELEASE(ag_plugin,
+        struct payload *p = _p_;
+        ag_string_release(&p->dso);
+        ag_string_release(&p->sym);
+        dlclose(p->hnd);
+);
+
+AG_OBJECT_DEFINE_CMP(ag_plugin,
+        AG_AUTO(ag_string) *s = ag_object_str(_o1_);
+        AG_AUTO(ag_string) *s2 = ag_object_str(_o2_);
+
+        return ag_string_cmp(s, s2);
+);
+
+AG_OBJECT_DEFINE_VALID(ag_plugin,
+        (void)_o_;
+        return true;
+);
+
+AG_OBJECT_DEFINE_SZ(ag_plugin,
+        (void)_o_;
+        return sizeof(struct payload);
+);
+
+AG_OBJECT_DEFINE_LEN(ag_plugin,
+        (void)_o_;
+        return 1;
+);
+
+AG_OBJECT_DEFINE_HASH(ag_plugin,
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
+        return ag_hash_new_str(s);
+);
+
+AG_OBJECT_DEFINE_STR(ag_plugin,
+        const struct payload *p = ag_object_payload(_o_);
+        return ag_string_new_fmt("%s::%s()", p->dso, p->sym);
+);
 
 
 extern ag_plugin *
@@ -119,97 +151,5 @@ payload_new(const char *dso, const char *sym)
         }
 
         return p;
-}
-
-
-static ag_memblock *
-__ag_plugin_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->dso, p->sym);
-}
-
-
-static void
-__ag_plugin_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        ag_string_release(&p->dso);
-        ag_string_release(&p->sym);
-        dlclose(p->hnd);
-}
-
-
-static enum ag_cmp       
-__ag_plugin_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_PLUGIN);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        AG_AUTO(ag_string) *s2 = ag_object_str(cmp);
-
-        return ag_string_cmp(s, s2);
-}
-
-
-static bool              
-__ag_plugin_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-
-        (void)ctx;
-        return true;
-}
-
-
-static size_t            
-__ag_plugin_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-
-        (void)ctx;
-        return sizeof(struct payload);
-}
-
-
-static size_t            
-__ag_plugin_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-
-        (void)ctx;
-        return 1;
-}
-
-
-static ag_hash           
-__ag_plugin_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_hash_new_str(s);
-}
-
-
-static ag_string *
-__ag_plugin_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_PLUGIN);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return ag_string_new_fmt("%s::%s()", p->dso, p->sym);
 }
 

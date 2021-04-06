@@ -38,17 +38,69 @@ static struct payload   *payload_new(enum ag_http_method, enum ag_http_mime,
                             const ag_alist *);
 
 
-static ag_memblock      *__ag_http_request_clone__(const ag_memblock *);
-static void              __ag_http_request_release__(ag_memblock *);
-static enum ag_cmp       __ag_http_request_cmp__(const ag_object *, const ag_object *);
-static bool              __ag_http_request_valid__(const ag_object *);
-static size_t            __ag_http_request_sz__(const ag_object *);
-static size_t            __ag_http_request_len__(const ag_object *);
-static ag_hash           __ag_http_request_hash__(const ag_object *);
-static ag_string        *__ag_http_request_str__(const ag_object *);
-#define __ag_http_request_json__ NULL
-
 AG_OBJECT_DEFINE(ag_http_request, AG_TYPEID_HTTP_REQUEST);
+
+AG_OBJECT_DEFINE_CLONE(ag_http_request,
+        const struct payload *p = _p_;
+        return payload_new(p->meth, p->type, p->url, p->usr, p->param);
+);
+
+
+AG_OBJECT_DEFINE_RELEASE(ag_http_request,
+        struct payload *p = _p_;
+
+        ag_http_client_release(&p->usr);
+        ag_http_url_release(&p->url);
+        ag_alist_release(&p->param);
+);
+
+
+AG_OBJECT_DEFINE_CMP(ag_http_request,
+        AG_AUTO(ag_string) *s1 = ag_object_str(_o1_);
+        AG_AUTO(ag_string) *s2 = ag_object_str(_o2_);
+
+        return ag_string_cmp(s1, s2);
+);
+
+
+AG_OBJECT_DEFINE_VALID(ag_http_request,
+        (void)_o_;
+        return true;
+);
+
+
+AG_OBJECT_DEFINE_SZ(ag_http_request,
+        const struct payload *p = ag_object_payload(_o_);
+        return sizeof *p + ag_http_client_sz(p->usr) + ag_http_url_sz(p->url)
+            + ag_alist_sz(p->param);
+);
+
+
+AG_OBJECT_DEFINE_LEN(ag_http_request,
+        (void)_o_;
+        return 1;
+);
+
+
+AG_OBJECT_DEFINE_HASH(ag_http_request,
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
+        return ag_hash_new_str(s);
+);
+
+
+AG_OBJECT_DEFINE_STR(ag_http_request,
+        const struct payload *p = ag_object_payload(_o_);
+
+        AG_AUTO(ag_string) *meth = ag_http_method_str(p->meth);
+        AG_AUTO(ag_string) *type = ag_http_mime_str(p->type);
+        AG_AUTO(ag_string) *url = ag_http_url_str(p->url);
+        AG_AUTO(ag_string) *usr = ag_http_client_str(p->usr);
+        AG_AUTO(ag_string) *param = ag_alist_str(p->param);
+
+        return ag_string_new_fmt("[%s] %s: url=%s, client=%s, param=%s",
+            meth, type, url, usr, param);
+);
+
 
 
 extern ag_http_request *
@@ -131,99 +183,5 @@ payload_new(enum ag_http_method meth, enum ag_http_mime type,
         p->param = ag_alist_copy(param);
 
         return p;
-}
-
-
-static ag_memblock *
-__ag_http_request_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->meth, p->type, p->url, p->usr, p->param);
-}
-
-
-static void
-__ag_http_request_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-
-        ag_http_client_release(&p->usr);
-        ag_http_url_release(&p->url);
-        ag_alist_release(&p->param);
-}
-
-
-static enum ag_cmp
-__ag_http_request_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        AG_AUTO(ag_string) *s2 = ag_object_str(cmp);
-
-        return ag_string_cmp(s, s2);
-}
-
-
-static bool
-__ag_http_request_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        (void)ctx;
-        return true;
-}
-
-
-static size_t
-__ag_http_request_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return sizeof *p + ag_http_client_sz(p->usr) + ag_http_url_sz(p->url)
-            + ag_alist_sz(p->param);
-}
-
-
-static size_t
-__ag_http_request_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        (void)ctx;
-        return 1;
-}
-
-
-static ag_hash
-__ag_http_request_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        AG_AUTO(ag_string) *s = ag_object_str(ctx);
-        return ag_hash_new_str(s);
-}
-
-
-static ag_string *
-__ag_http_request_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ag_object_payload(ctx);
-
-        AG_AUTO(ag_string) *meth = ag_http_method_str(p->meth);
-        AG_AUTO(ag_string) *type = ag_http_mime_str(p->type);
-        AG_AUTO(ag_string) *url = ag_http_url_str(p->url);
-        AG_AUTO(ag_string) *usr = ag_http_client_str(p->usr);
-        AG_AUTO(ag_string) *param = ag_alist_str(p->param);
-
-        return ag_string_new_fmt("[%s] %s: url=%s, client=%s, param=%s",
-            meth, type, url, usr, param);
 }
 

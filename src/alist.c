@@ -46,19 +46,110 @@ static inline struct node       *node_release(struct node *);
 static struct payload   *payload_new(const struct node *);
 static void              payload_push(struct payload *, const ag_field *);
 
-
-static ag_memblock *__ag_alist_clone__(const ag_memblock *);
-static void         __ag_alist_release__(ag_memblock *);
-static enum ag_cmp  __ag_alist_cmp__(const ag_object *, const ag_object *);
-static bool         __ag_alist_valid__(const ag_object *);
-static size_t       __ag_alist_sz__(const ag_object *);
-static size_t       __ag_alist_len__(const ag_object *);
-static ag_hash      __ag_alist_hash__(const ag_object *);
-static ag_string   *__ag_alist_str__(const ag_object *);
-#define __ag_alist_json__ NULL
-
-
 AG_OBJECT_DEFINE(ag_alist, AG_TYPEID_ALIST);
+
+AG_OBJECT_DEFINE_CLONE(ag_alist,
+        const struct payload *p = _p_;
+        return payload_new(p->head);
+);
+
+AG_OBJECT_DEFINE_RELEASE(ag_alist,
+        struct payload *p = _p_;
+        register struct node *n = p->head;
+
+        while (n)
+                n = node_release(n);
+);
+
+AG_OBJECT_DEFINE_CMP(ag_alist,
+        const struct payload *p1 = ag_object_payload(_o1_);
+        const struct payload *p2 = ag_object_payload(_o2_);
+
+        if (AG_UNLIKELY (!p1->len))
+                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
+
+        if (AG_UNLIKELY (!p2->len))
+                return !p1->len ? AG_CMP_EQ : AG_CMP_GT;
+
+        size_t lim = p1->len < p2->len ? p1->len : p2->len;
+        register const struct node *n = p1->head;
+        register const struct node *n2 = p2->head;
+        register enum ag_cmp chk;
+
+        for (register size_t i = 0; i < lim; i++) {
+                if ((chk = ag_field_cmp(n->attr, n2->attr)))
+                        return chk;
+
+                n = n->nxt;
+                n2 = n2->nxt;
+        }
+
+        if (p1->len == p2->len)
+                return AG_CMP_EQ;
+        else
+                return p1->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
+);
+
+AG_OBJECT_DEFINE_VALID(ag_alist,
+        const struct payload *p = ag_object_payload(_o_);
+        register const struct node *n = p->head;
+
+        if (AG_UNLIKELY (!n))
+                return false;
+
+        while (n && ag_field_valid(n->attr))
+                n = n->nxt;
+
+        return !n;
+);
+
+AG_OBJECT_DEFINE_SZ(ag_alist,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->sz;
+);
+
+AG_OBJECT_DEFINE_LEN(ag_alist,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->len;
+);
+
+AG_OBJECT_DEFINE_HASH(ag_alist,
+        const struct payload *p = ag_object_payload(_o_);
+        return p->hash;
+);
+
+AG_OBJECT_DEFINE_STR(ag_alist,
+        const struct payload *p = ag_object_payload(_o_);
+        struct node *n = p->head;
+
+        ag_string *s = ag_string_new_empty();
+        ag_string *s2 = ag_string_new_empty();
+        ag_string *s3 = ag_string_new_empty();
+
+        for (register size_t i = 0; i < p->len; i++) {
+                ag_string_release(&s);
+                s = ag_field_str(n->attr);
+
+                ag_string_release(&s2);
+                s2 = ag_string_new_fmt("(%s)", s);
+
+                ag_string_release(&s);
+                s = ag_string_clone(s3);
+
+                ag_string_release(&s3);
+                s3 = *s ? ag_string_new_fmt("%s %s", s, s2) : ag_string_new(s2);
+
+                n = n->nxt;
+        }
+
+        ag_string_release(&s);
+        s = ag_string_new_fmt("(%s)", s3);
+        
+        ag_string_release(&s2);
+        ag_string_release(&s3);
+        return s;
+);
+
 
 
 extern ag_alist *
@@ -466,156 +557,3 @@ payload_push(struct payload *ctx, const ag_field *attr)
         ctx->hash += ag_field_hash(attr);
 }
 
-
-        
-static ag_memblock *
-__ag_alist_clone__(const ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        const struct payload *p = ctx;
-        return payload_new(p->head);
-}
-
-
-static void
-__ag_alist_release__(ag_memblock *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-
-        struct payload *p = ctx;
-        register struct node *n = p->head;
-
-        while (n)
-                n = node_release(n);
-}
-
-
-static enum ag_cmp
-__ag_alist_cmp__(const ag_object *ctx, const ag_object *cmp)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_PTR (cmp);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-        AG_ASSERT (ag_object_typeid(cmp) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        const struct payload *p2 = ag_object_payload(cmp);
-
-        if (AG_UNLIKELY (!p->len))
-                return !p2->len ? AG_CMP_EQ : AG_CMP_LT;
-
-        if (AG_UNLIKELY (!p2->len))
-                return !p->len ? AG_CMP_EQ : AG_CMP_GT;
-
-        size_t lim = p->len < p2->len ? p->len : p2->len;
-        register const struct node *n = p->head;
-        register const struct node *n2 = p2->head;
-        register enum ag_cmp chk;
-
-        for (register size_t i = 0; i < lim; i++) {
-                if ((chk = ag_field_cmp(n->attr, n2->attr)))
-                        return chk;
-
-                n = n->nxt;
-                n2 = n2->nxt;
-        }
-
-        if (p->len == p2->len)
-                return AG_CMP_EQ;
-        else
-                return p->len < p2->len ? AG_CMP_LT : AG_CMP_GT;
-}
-
-
-static bool
-__ag_alist_valid__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        register const struct node *n = p->head;
-
-        if (AG_UNLIKELY (!n))
-                return false;
-
-        while (n && ag_field_valid(n->attr))
-                n = n->nxt;
-
-        return !n;
-}
-
-
-static size_t
-__ag_alist_sz__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->sz;
-}
-
-
-static size_t
-__ag_alist_len__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->len;
-}
-
-
-static ag_hash
-__ag_alist_hash__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        return p->hash;
-}
-
-
-static ag_string
-*__ag_alist_str__(const ag_object *ctx)
-{
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT (ag_object_typeid(ctx) == AG_TYPEID_ALIST);
-
-        const struct payload *p = ag_object_payload(ctx);
-        struct node *n = p->head;
-
-        ag_string *s = ag_string_new_empty();
-        ag_string *s2 = ag_string_new_empty();
-        ag_string *s3 = ag_string_new_empty();
-
-        for (register size_t i = 0; i < p->len; i++) {
-                ag_string_release(&s);
-                s = ag_field_str(n->attr);
-
-                ag_string_release(&s2);
-                s2 = ag_string_new_fmt("(%s)", s);
-
-                ag_string_release(&s);
-                s = ag_string_clone(s3);
-
-                ag_string_release(&s3);
-                s3 = *s ? ag_string_new_fmt("%s %s", s, s2) : ag_string_new(s2);
-
-                n = n->nxt;
-        }
-
-        ag_string_release(&s);
-        s = ag_string_new_fmt("(%s)", s3);
-        
-        ag_string_release(&s2);
-        ag_string_release(&s3);
-        return s;
-}
-
-
-        

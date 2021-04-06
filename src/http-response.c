@@ -37,48 +37,47 @@ struct payload {
 static struct payload   *payload_new(enum ag_http_mime, enum ag_http_status,
                             const char *);
 
-
-#define __ag_http_response_json__ NULL
+AG_OBJECT_DEFINE(ag_http_response, AG_TYPEID_HTTP_RESPONSE);
 
 AG_OBJECT_DEFINE_CLONE(ag_http_response,
-        const struct payload *p = _P_;
+        const struct payload *p = _p_;
         return payload_new(p->mime, p->status, p->body);
 );
 
 AG_OBJECT_DEFINE_RELEASE(ag_http_response,
-        struct payload *p = _P_;
+        struct payload *p = _p_;
         ag_string_release(&p->body);
 );
 
 AG_OBJECT_DEFINE_CMP(ag_http_response,
-        const struct payload *p1 = ag_object_payload(_O1_);
-        const struct payload *p2 = ag_object_payload(_O2_);
+        const struct payload *p1 = ag_object_payload(_o1_);
+        const struct payload *p2 = ag_object_payload(_o2_);
 
         return ag_string_cmp(p1->body, p2->body);
 );
 
 AG_OBJECT_DEFINE_VALID(ag_http_response,
-        (void)_O_;
+        (void)_o_;
         return true;
 );
 
 AG_OBJECT_DEFINE_SZ(ag_http_response,
-        const struct payload *p = ag_object_payload(_O_);
+        const struct payload *p = ag_object_payload(_o_);
         return ag_string_sz(p->body);
 );
 
 AG_OBJECT_DEFINE_LEN(ag_http_response,
-        const struct payload *p = ag_object_payload(_O_);
+        const struct payload *p = ag_object_payload(_o_);
         return ag_string_len(p->body);
 );
 
 AG_OBJECT_DEFINE_HASH(ag_http_response,
-        AG_AUTO(ag_string) *s = ag_object_str(_O_);
+        AG_AUTO(ag_string) *s = ag_object_str(_o_);
         return ag_hash_new_str(s);
 );
 
 AG_OBJECT_DEFINE_STR(ag_http_response,
-        const struct payload *p = ag_object_payload(_O_);
+        const struct payload *p = ag_object_payload(_o_);
         AG_AUTO(ag_string) *m = ag_http_mime_str(p->mime);
         AG_AUTO(ag_string) *s = ag_http_status_str(p->status);
 
@@ -87,7 +86,6 @@ AG_OBJECT_DEFINE_STR(ag_http_response,
 );
 
 
-AG_OBJECT_DEFINE(ag_http_response, AG_TYPEID_HTTP_RESPONSE);
 
 
 extern ag_http_response *
