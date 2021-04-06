@@ -49,25 +49,15 @@ AG_OBJECT_DEFINE_RELEASE(ag_plugin,
 );
 
 AG_OBJECT_DEFINE_CMP(ag_plugin,
-        AG_AUTO(ag_string) *s = ag_object_str(_o1_);
+        AG_AUTO(ag_string) *s1 = ag_object_str(_o1_);
         AG_AUTO(ag_string) *s2 = ag_object_str(_o2_);
 
-        return ag_string_cmp(s, s2);
-);
-
-AG_OBJECT_DEFINE_VALID(ag_plugin,
-        (void)_o_;
-        return true;
+        return ag_string_cmp(s1, s2);
 );
 
 AG_OBJECT_DEFINE_SZ(ag_plugin,
         (void)_o_;
         return sizeof(struct payload);
-);
-
-AG_OBJECT_DEFINE_LEN(ag_plugin,
-        (void)_o_;
-        return 1;
 );
 
 AG_OBJECT_DEFINE_HASH(ag_plugin,
