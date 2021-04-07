@@ -277,7 +277,7 @@ def_json(const ag_object *hnd)
 
         return ag_string_new_fmt(
             "{\"object\":"
-            "{\"typeid\":\"%s\",\"uuid\":\"%s\",\"address\":\"%s\"}}",
+            "{\"typeid\":\"%d\",\"uuid\":\"%s\",\"address\":\"%s\"}}",
             ag_object_typeid(hnd), ustr, mstr);
 }
 
