@@ -271,6 +271,24 @@
         }
 
 
+#define AG_METATEST_OBJECT_JSON(T, SMP, JSTR)           \
+        AG_TEST_CASE(#T "_json(): " #SMP " => " #JSTR)  \
+        {                                               \
+                AG_AUTO(T) *o = SMP;                    \
+                AG_AUTO(ag_string) *j = T##_json(o);    \
+                AG_TEST (ag_string_eq(j, JSTR));        \
+        }
+
+
+#define AG_METATEST_OBJECT_JSON_HAS(T, SMP, JSTR)       \
+        AG_TEST_CASE(#T "_json(): " #SMP " => " #JSTR)  \
+        {                                               \
+                AG_AUTO(T) *o = SMP;                    \
+                AG_AUTO(ag_string) *j = T##_json(o);    \
+                AG_TEST (ag_string_has(j, JSTR));       \
+        }
+
+
 #define AG_METATEST_OBJECT_REFC(type, sample)                           \
         AG_TEST_CASE(#type "_refc(): single instance => refc == 1")     \
         {                                                               \
