@@ -276,7 +276,8 @@ def_json(const ag_object *hnd)
         AG_AUTO(ag_string) *mstr = ag_memblock_str(hnd);
 
         return ag_string_new_fmt(
-            "{\"object\":{\"typeid\":%s,\"uuid\":%s,\"address\":%s}",
+            "{\"object\":"
+            "{\"typeid\":\"%s\",\"uuid\":\"%s\",\"address\":\"%s\"}}",
             ag_object_typeid(hnd), ustr, mstr);
 }
 
