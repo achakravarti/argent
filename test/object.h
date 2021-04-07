@@ -36,6 +36,7 @@
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _copy(o);                   \
+                (void)cp;                                               \
                 AG_TEST (type ## _refc(o) == 2);                        \
         }                                                               \
         AG_TEST_CASE(#type "_copy(): " #sample " => data preserved")    \
@@ -57,6 +58,7 @@
         {                                                               \
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _clone(o);                  \
+                (void)cp;                                               \
                 AG_TEST (type ## _refc(o) == 1);                        \
         }                                                               \
         AG_TEST_CASE(#type "_clone(): " #sample " => data preserved")   \
@@ -300,6 +302,7 @@
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _copy(o);                   \
                 AG_AUTO(type) *cp2 = type ## _copy(cp);                 \
+                (void)cp2;                                              \
                 AG_TEST (type ## _refc(o) == 3);                        \
         }                                                               \
         AG_TEST_CASE(#type "_refc(): deep copy => refc == 1")           \
@@ -307,6 +310,7 @@
                 AG_AUTO(type) *o = sample;                              \
                 AG_AUTO(type) *cp = type ## _clone(o);                  \
                 AG_AUTO(type) *cp2 = type ## _clone(cp);                \
+                (void)cp2;                                              \
                 AG_TEST (type ## _refc(o) == 1);                        \
         }
 
