@@ -41,7 +41,7 @@
 #include "./alist.h"
 #include "./plugin.h"
 #include "../src/test/test.h"
-#include "./http.h"
+#include "../src/http/http.h"
 #include "./manager.h"
 
 #endif /* !__ARGENT_INCLUDE_ARGENT_H__ */
