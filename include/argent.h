@@ -40,7 +40,7 @@
 #include "./list.h"
 #include "./alist.h"
 #include "./plugin.h"
-#include "./test.h"
+#include "../src/test/test.h"
 #include "./http.h"
 #include "./manager.h"
 
