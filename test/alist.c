@@ -99,6 +99,7 @@ AG_METATEST_OBJECT_UUID(ag_alist, sample_empty());
 AG_METATEST_OBJECT_REFC(ag_alist, sample_empty());
 AG_METATEST_OBJECT_LEN(ag_alist, sample_empty(), 0);
 AG_METATEST_OBJECT_STR(ag_alist, sample_empty(), "()");
+AG_METATEST_OBJECT_JSON_HAS(ag_alist, sample_empty(), "{\"object\":");
 
 AG_METATEST_OBJECT_COPY(ag_alist, sample_single());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_single());
@@ -110,6 +111,7 @@ AG_METATEST_OBJECT_UUID(ag_alist, sample_single());
 AG_METATEST_OBJECT_REFC(ag_alist, sample_single());
 AG_METATEST_OBJECT_LEN(ag_alist, sample_single(), 1); 
 AG_METATEST_OBJECT_STR(ag_alist, sample_single(), "((key:val))");
+AG_METATEST_OBJECT_JSON_HAS(ag_alist, sample_empty(), "{\"object\":");
 
 AG_METATEST_OBJECT_COPY(ag_alist, sample_list());
 AG_METATEST_OBJECT_CLONE(ag_alist, sample_list());
@@ -121,6 +123,7 @@ AG_METATEST_OBJECT_UUID(ag_alist, sample_list());
 AG_METATEST_OBJECT_REFC(ag_alist, sample_list());
 AG_METATEST_OBJECT_LEN(ag_alist, sample_list(), 3);
 AG_METATEST_OBJECT_STR(ag_alist, sample_list(), "((1:foo) (2:bar) (3:foobar))");
+AG_METATEST_OBJECT_JSON_HAS(ag_alist, sample_empty(), "{\"object\":");
 
 
 AG_METATEST_OBJECT_CMP(ag_alist, sample_empty(), sample_single());
