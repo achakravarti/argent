@@ -29,8 +29,8 @@ extern "C" {
 #endif
 
 
-#include "./exception.h"
-#include "./value.h"
+#include "../../include/exception.h"
+#include "../../include/value.h"
 
 
 /*

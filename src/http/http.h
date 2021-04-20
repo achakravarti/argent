@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include "../../include/alist.h"
+#include "../ds/alist.h"
 #include "../../include/object.h"
 #include "../../include/plugin.h"
 
