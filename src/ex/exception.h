@@ -30,7 +30,7 @@
 
 
 #include "./erno.h"
-#include "./log.h"
+#include "../../include/log.h"
 
 #include <stddef.h>
 #include <stdio.h>

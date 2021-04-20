@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 
-#include "../../include/exception.h"
+#include "../ex/exception.h"
 #include "../../include/value.h"
 
 

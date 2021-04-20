@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 
-#include "./exception.h"
+#include "../src/ex/exception.h"
 #include "./memblock.h"
 #include "./hash.h"
 #include "./typeid.h"
