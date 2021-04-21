@@ -30,7 +30,7 @@ extern "C" {
 
 
 #include "../ex/exception.h"
-#include "../../include/value.h"
+#include "../type/value.h"
 
 
 /*

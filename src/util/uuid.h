@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 
-#include "../../include/primitives.h"
+#include "../type/primitives.h"
 #include "./hash.h"
 #include "./string.h"
 

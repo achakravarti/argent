@@ -29,7 +29,7 @@
 #endif
 
 
-#include "./string.h"
+#include "../type/string.h"
 
 
 typedef void ag_memblock;

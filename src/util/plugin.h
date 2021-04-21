@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include "../../include/object.h"
+#include "../type/object.h"
 
 
 AG_OBJECT_DECLARE(ag_plugin, AG_TYPEID_PLUGIN);

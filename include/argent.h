@@ -24,7 +24,7 @@
 #ifndef __ARGENT_INCLUDE_ARGENT_H__
 #define __ARGENT_INCLUDE_ARGENT_H__
 
-#include "./primitives.h"
+#include "../src/type/primitives.h"
 #include "../src/util/registry.h"
 #include "../src/util/log.h"
 #include "../src/ex/erno.h"
@@ -32,10 +32,10 @@
 #include "../src/util/hash.h"
 #include "./string.h"
 #include "../src/util/memblock.h"
-#include "./typeid.h"
+#include "../src/type/typeid.h"
 #include "../src/util/uuid.h"
-#include "./object.h"
-#include "./value.h"
+#include "../src/type/object.h"
+#include "../src/type/value.h"
 #include "../src/ds/field.h"
 #include "../src/ds/list.h"
 #include "../src/ds/alist.h"

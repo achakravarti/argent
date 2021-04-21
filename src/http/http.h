@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 #include "../ds/alist.h"
-#include "../../include/object.h"
+#include "../type/object.h"
 #include "../util/plugin.h"
 
 

@@ -31,7 +31,7 @@ extern "C" {
 
 #include "../ex/exception.h"
 #include "./field.h"
-#include "../../include//value.h"
+#include "../type/value.h"
 
 
 /*

@@ -29,11 +29,11 @@ extern "C" {
 #endif
 
 
-#include "../src/ex/exception.h"
-#include "../src/util/memblock.h"
-#include "../src/util/hash.h"
+#include "../ex/exception.h"
+#include "../util/memblock.h"
+#include "../util/hash.h"
 #include "./typeid.h"
-#include "../src/util/uuid.h"
+#include "../util/uuid.h"
 
 
 typedef struct ag_object ag_object;
