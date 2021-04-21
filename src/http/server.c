@@ -1,4 +1,4 @@
-#include "../../include/argent.h"
+#include "../argent.h"
 
 #include <fcgiapp.h>
 

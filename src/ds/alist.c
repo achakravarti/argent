@@ -20,7 +20,7 @@
  * You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
  ******************************************************************************/
 
-#include "../../include/argent.h"
+#include "../argent.h"
 
 
 struct node {

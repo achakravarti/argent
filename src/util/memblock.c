@@ -21,7 +21,7 @@
  ******************************************************************************/
 
 
-#include "../../include/argent.h"
+#include "../argent.h"
 
 #ifdef __FreeBSD__
 #       include <malloc_np.h>

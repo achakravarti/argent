@@ -24,7 +24,7 @@
 #ifndef __ARGENT_TEST_TEST_H__
 #define __ARGENT_TEST_TEST_H__
 
-#include "../include/argent.h"
+#include "../src/argent.h"
 
 
 extern ag_test_suite    *test_suite_log(void);

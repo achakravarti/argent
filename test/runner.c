@@ -22,7 +22,7 @@
 
 
 #include "./test.h"
-#include "../include/argent.h"
+#include "../src/argent.h"
 #include <stdio.h>
 #include <stdlib.h>
 
