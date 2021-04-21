@@ -25,24 +25,24 @@
 #define __ARGENT_INCLUDE_ARGENT_H__
 
 #include "./primitives.h"
-#include "./registry.h"
-#include "./log.h"
+#include "../src/util/registry.h"
+#include "../src/util/log.h"
 #include "../src/ex/erno.h"
 #include "../src/ex//exception.h"
-#include "./hash.h"
+#include "../src/util/hash.h"
 #include "./string.h"
-#include "./memblock.h"
+#include "../src/util/memblock.h"
 #include "./typeid.h"
-#include "./uuid.h"
+#include "../src/util/uuid.h"
 #include "./object.h"
 #include "./value.h"
 #include "../src/ds/field.h"
 #include "../src/ds/list.h"
 #include "../src/ds/alist.h"
-#include "./plugin.h"
+#include "../src/util/plugin.h"
 #include "../src/test/test.h"
 #include "../src/http/http.h"
-#include "./manager.h"
+#include "../src/util/manager.h"
 
 #endif /* !__ARGENT_INCLUDE_ARGENT_H__ */
 

@@ -21,33 +21,28 @@
  ******************************************************************************/
 
 
-#include "../include/argent.h"
+#ifndef __ARGENT_INCLUDE_PLUGIN_H__
+#define __ARGENT_INCLUDE_PLUGIN_H__
 
-#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "../../include/object.h"
 
 
-extern ag_hash
-ag_hash_new(size_t key)
-{
-        key = (key ^ (key >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
-        key = (key ^ (key >> 27)) * UINT64_C(0x94d049bb133111eb);
-        key = key ^ (key >> 31);
-    
-        return key;
+AG_OBJECT_DECLARE(ag_plugin, AG_TYPEID_PLUGIN);
+
+extern ag_plugin        *ag_plugin_new(const char *, const char *);
+extern ag_plugin        *ag_plugin_new_local(const char *);
+
+extern ag_string        *ag_plugin_dso(const ag_plugin *);
+extern ag_string        *ag_plugin_sym(const ag_plugin *);
+extern void             *ag_plugin_hnd(const ag_plugin *);
+
+#ifdef __cplusplus
 }
+#endif
 
-
-extern ag_hash
-ag_hash_new_str(const char *key)
-{
-        AG_ASSERT_PTR (key);
-
-        register ag_hash hash = 5381;
-        register int c;
-
-        while ((c = *key++))
-                hash = ((hash << 5) + hash) + c;
-
-        return hash;
-}
+#endif /* !__ARGENT_INCLUDE_PLUGIN_H__ */
 

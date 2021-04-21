@@ -30,7 +30,7 @@ extern "C" {
 
 #include "../ds/alist.h"
 #include "../../include/object.h"
-#include "../../include/plugin.h"
+#include "../util/plugin.h"
 
 
 /**

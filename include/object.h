@@ -30,10 +30,10 @@ extern "C" {
 
 
 #include "../src/ex/exception.h"
-#include "./memblock.h"
-#include "./hash.h"
+#include "../src/util/memblock.h"
+#include "../src/util/hash.h"
 #include "./typeid.h"
-#include "./uuid.h"
+#include "../src/util/uuid.h"
 
 
 typedef struct ag_object ag_object;
