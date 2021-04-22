@@ -157,12 +157,19 @@ ag_log_err(const char *fmt, ...)
 extern void
 ag_log_warning(const char *fmt, ...)
 {
-    AG_ASSERT_PTR (fmt && *fmt);
+    /*AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     log_write(LOG_WARNING, fmt, ap);
-    va_end(ap);
+    va_end(ap);*/
+
+        AG_ASSERT_STR (fmt);
+
+        va_list ap;
+        va_start(ap, fmt);
+        ag_log_write(AG_LOG_LEVEL_WARNING, fmt, ap);
+        va_end(ap);
 }
 
 
