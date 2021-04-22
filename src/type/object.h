@@ -232,6 +232,16 @@ typedef struct ag_object ag_object;
         }
 
 
+#define AG_OBJECT_DEFINE_JSON(T, CLOS)                                  \
+        ag_string *                                                     \
+        __##T##_json__(const ag_object *_o_)                            \
+        {                                                               \
+                AG_ASSERT_PTR (_o_);                                    \
+                AG_ASSERT (ag_object_typeid(_o_) == __##T##_tid__);     \
+                CLOS                                                    \
+        }
+
+
 #define AG_OBJECT_DEFINE(T, TID)                                        \
         const ag_typeid __##T##_tid__ = TID;                            \
         extern inline T *T##_copy(const T *);                           \
