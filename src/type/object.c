@@ -235,7 +235,7 @@ __ag_object_register__(const char *type, ag_typeid tid)
 {
         AG_ASSERT_STR (type);
 
-        void *dso = dlopen(NULL, RTLD_NOW);
+        void *dso = dlopen(NULL, RTLD_LAZY);
         if (AG_UNLIKELY (!dso)) {
                 fputs(dlerror(), stderr);
                 fputs("\n", stderr);
