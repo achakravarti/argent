@@ -27,6 +27,7 @@
         extern "C" {
 #endif
 
+#include "../ex/exception.h"
 
 enum ag_log_level {
         AG_LOG_LEVEL_EMERG = 0,

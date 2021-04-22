@@ -76,12 +76,19 @@ ag_log_write(enum ag_log_level lvl, const char *fmt, ...)
 extern void
 ag_log_emerg(const char *fmt, ...)
 {
-    AG_ASSERT_PTR (fmt && *fmt);
+    /*AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     log_write(LOG_EMERG, fmt, ap);
-    va_end(ap);
+    va_end(ap);*/
+
+        AG_ASSERT_STR (fmt);
+
+        va_list ap;
+        va_start(ap, fmt);
+        ag_log_write(AG_LOG_LEVEL_EMERG, fmt, ap);
+        va_end(ap);
 }
 
 
