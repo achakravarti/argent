@@ -27,6 +27,18 @@
         extern "C" {
 #endif
 
+
+enum ag_log_level {
+        AG_LOG_LEVEL_EMERG,
+        AG_LOG_LEVEL_ALERT,
+        AG_LOG_LEVEL_CRIT,
+        AG_LOG_LEVEL_ERR,
+        AG_LOG_LEVEL_WARNING,
+        AG_LOG_LEVEL_NOTICE,
+        AG_LOG_LEVEL_INFO,
+        AG_LOG_LEVEL_DEBUG
+};
+
                 
 extern void ag_log_emerg(const char *, ...);
 extern void ag_log_alert(const char *, ...);
