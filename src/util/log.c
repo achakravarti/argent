@@ -45,6 +45,33 @@ log_write(int pr, const char *fmt, va_list ap)
  *                              LOGGING EXTERNALS
  */
 
+
+extern void 
+ag_log_write(enum ag_log_level lvl, const char *fmt, ...)
+{
+        AG_ASSERT_STR (fmt);
+
+        int map[] = {
+                LOG_EMERG,
+                LOG_ALERT,
+                LOG_CRIT,
+                LOG_ERR,
+                LOG_WARNING,
+                LOG_NOTICE,
+                LOG_INFO,
+                LOG_DEBUG
+        };
+
+        openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+
+        va_list ap;
+        va_start(ap, fmt);
+        vsyslog(map[lvl], fmt, ap);
+        va_end(ap);
+
+        closelog();
+}
+
                                 /* implementation of ag_log_emerg() [AgDM:??] */
 extern void
 ag_log_emerg(const char *fmt, ...)

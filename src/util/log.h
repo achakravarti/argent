@@ -29,7 +29,7 @@
 
 
 enum ag_log_level {
-        AG_LOG_LEVEL_EMERG,
+        AG_LOG_LEVEL_EMERG = 0,
         AG_LOG_LEVEL_ALERT,
         AG_LOG_LEVEL_CRIT,
         AG_LOG_LEVEL_ERR,
@@ -39,7 +39,7 @@ enum ag_log_level {
         AG_LOG_LEVEL_DEBUG
 };
 
-                
+extern void ag_log_write(enum ag_log_level, const char *, ...);
 extern void ag_log_emerg(const char *, ...);
 extern void ag_log_alert(const char *, ...);
 extern void ag_log_crit(const char *, ...);
