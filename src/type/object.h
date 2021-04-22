@@ -30,8 +30,8 @@ extern "C" {
 
 
 #include "../ex/exception.h"
-#include "../util/memblock.h"
 #include "../util/hash.h"
+#include "../base/base.h"
 #include "./typeid.h"
 #include "../util/uuid.h"
 
@@ -342,6 +342,7 @@ extern void                              ag_object_registry_init(void);
 extern void                              ag_object_registry_exit(void);
 extern const struct ag_object_vtable    *ag_object_registry_get(ag_typeid);
 extern void                              ag_object_registry_push(ag_typeid,
+                                            const char *,
                                             const struct ag_object_vtable *);
 
 

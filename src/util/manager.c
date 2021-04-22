@@ -34,7 +34,7 @@ struct node {
 
 
 extern void
-ag_init(void)
+ag_init(int argc, char *argv[])
 {
         struct node list[] = {
                 {
@@ -54,6 +54,8 @@ ag_init(void)
                 },
         };
 
+        (void)argc;
+        ag_log_init(argv[0]);
         ag_exception_registry_init();
         ag_object_registry_init();
 

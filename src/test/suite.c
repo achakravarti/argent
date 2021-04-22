@@ -161,10 +161,13 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
         ag_string *tsym;
         ag_string *dsym;
 
-        void *hnd = dlopen(NULL, RTLD_NOW);
-        if (!hnd) {
-                fputs(dlerror(), stderr);
-                exit(1);
+        dlerror();
+        void *hnd = dlopen(NULL, RTLD_LAZY);
+
+        if (AG_UNLIKELY (!hnd)) {
+                char *err = dlerror();
+                fprintf(stderr, "failed to open DSO for tests: %s\n", err);
+                exit(EXIT_FAILURE);
         }
 
         ag_test_suite *ts = ag_test_suite_new(desc);
@@ -173,15 +176,17 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
                 tsym = ag_string_new_fmt("__ag_test_%d_%d", id, i);
                 dsym = ag_string_new_fmt("__ag_desc_%d_%d", id, i);
 
+                dlerror();
                 testf = dlsym(hnd, tsym);
-                if ((err = dlerror())) {
-                        fputs(err, stderr);
-                        exit(1);
+
+                if (AG_UNLIKELY (err = dlerror())) {
+                        fprintf(stderr, "failed to load test: %s\n", err);
+                        exit(EXIT_FAILURE);
                 }
 
                 testd = dlsym(hnd, dsym);
-                if ((err = dlerror())) {
-                        fputs(err, stderr);
+                if (AG_UNLIKELY (err = dlerror())) {
+                        fprintf(stderr, "failed to load test desc: %s\n", err);
                         exit(1);
                 }
 

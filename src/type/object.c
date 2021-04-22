@@ -226,7 +226,10 @@ sym_load(void *dso, const char *type, const char *meth)
         AG_ASSERT_STR (meth);
 
         AG_AUTO(ag_string) *sym = ag_string_new_fmt("__%s_%s__", type, meth);
-        return dlsym(dso, sym);
+        void *hnd = dlsym(dso, sym);
+        ag_log_debug("__%s_%s__() %sdefined", type, meth, sym ? "" : "not ");
+
+        return hnd;
 }
 
 
@@ -235,11 +238,13 @@ __ag_object_register__(const char *type, ag_typeid tid)
 {
         AG_ASSERT_STR (type);
 
-        void *dso = dlopen(NULL, RTLD_NOW);
+        dlerror();
+        void *dso = dlopen(NULL, RTLD_LAZY | RTLD_GLOBAL);
+
         if (AG_UNLIKELY (!dso)) {
-                fputs(dlerror(), stderr);
-                fputs("\n", stderr);
-                exit(1);
+                fprintf(stderr, "failed to open DSO for objects: %s\n",
+                    dlerror());
+                exit(EXIT_FAILURE);
         }
 
         struct ag_object_vtable vt;
@@ -253,7 +258,7 @@ __ag_object_register__(const char *type, ag_typeid tid)
         vt.str = sym_load(dso, type, "str");
         vt.json = sym_load(dso, type, "json");
 
-        ag_object_registry_push(tid, &vt);
+        ag_object_registry_push(tid, type, &vt);
         dlclose(dso);
 }
 
