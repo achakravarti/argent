@@ -217,11 +217,18 @@ ag_log_info(const char *fmt, ...)
 extern void
 ag_log_debug(const char *fmt, ...)
 {
-    AG_ASSERT_PTR (fmt && *fmt);
+    /*AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     log_write(LOG_DEBUG, fmt, ap);
-    va_end(ap);
+    va_end(ap);*/
+
+        AG_ASSERT_STR (fmt);
+
+        va_list ap;
+        va_start(ap, fmt);
+        ag_log_write(AG_LOG_LEVEL_DEBUG, fmt, ap);
+        va_end(ap);
 }
 
