@@ -27,6 +27,13 @@
 #include <stdarg.h>
 
 
+#define LOG_WRITE(FMT, LVL)             \
+        AG_ASSERT_STR (FMT);            \
+        va_list ap;                     \
+        va_start(ap, FMT);              \
+        ag_log_write(LVL, FMT, ap);     \
+        va_end(ap);
+
 /*******************************************************************************
  *                              LOGGING EXTERNALS
  */
@@ -62,12 +69,7 @@ ag_log_write(enum ag_log_level lvl, const char *fmt, ...)
 extern void
 ag_log_emerg(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_EMERG, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_EMERG);
 }
 
 
@@ -75,12 +77,7 @@ ag_log_emerg(const char *fmt, ...)
 extern void
 ag_log_alert(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_ALERT, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_ALERT);
 }
 
 
@@ -88,12 +85,7 @@ ag_log_alert(const char *fmt, ...)
 extern void
 ag_log_crit(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_CRIT, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_CRIT);
 
 }
 
@@ -102,12 +94,7 @@ ag_log_crit(const char *fmt, ...)
 extern void
 ag_log_err(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_ERR, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_ERR);
 }
 
 
@@ -115,12 +102,7 @@ ag_log_err(const char *fmt, ...)
 extern void
 ag_log_warning(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_WARNING, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_WARNING);
 }
 
 
@@ -128,12 +110,7 @@ ag_log_warning(const char *fmt, ...)
 extern void 
 ag_log_notice(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_NOTICE, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_NOTICE);
 }
 
 
@@ -141,12 +118,7 @@ ag_log_notice(const char *fmt, ...)
 extern void
 ag_log_info(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_INFO, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_INFO);
 }
 
 
@@ -154,11 +126,6 @@ ag_log_info(const char *fmt, ...)
 extern void
 ag_log_debug(const char *fmt, ...)
 {
-        AG_ASSERT_STR (fmt);
-
-        va_list ap;
-        va_start(ap, fmt);
-        ag_log_write(AG_LOG_LEVEL_DEBUG, fmt, ap);
-        va_end(ap);
+        LOG_WRITE(fmt, AG_LOG_LEVEL_DEBUG);
 }
 
