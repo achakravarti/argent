@@ -197,12 +197,19 @@ ag_log_notice(const char *fmt, ...)
 extern void
 ag_log_info(const char *fmt, ...)
 {
-    AG_ASSERT_PTR (fmt && *fmt);
+    /*AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     log_write(LOG_INFO, fmt, ap);
-    va_end(ap);
+    va_end(ap);*/
+
+        AG_ASSERT_STR (fmt);
+
+        va_list ap;
+        va_start(ap, fmt);
+        ag_log_write(AG_LOG_LEVEL_INFO, fmt, ap);
+        va_end(ap);
 }
 
 
