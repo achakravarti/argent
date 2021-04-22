@@ -116,12 +116,20 @@ ag_log_alert(const char *fmt, ...)
 extern void
 ag_log_crit(const char *fmt, ...)
 {
-    AG_ASSERT_PTR (fmt && *fmt);
+    /*AG_ASSERT_PTR (fmt && *fmt);
     va_list ap;
     va_start(ap, fmt);
 
     log_write(LOG_CRIT, fmt, ap);
-    va_end(ap);
+    va_end(ap);*/
+        
+        AG_ASSERT_STR (fmt);
+
+        va_list ap;
+        va_start(ap, fmt);
+        ag_log_write(AG_LOG_LEVEL_CRIT, fmt, ap);
+        va_end(ap);
+
 }
 
 
