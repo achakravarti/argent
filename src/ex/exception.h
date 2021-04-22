@@ -30,7 +30,7 @@
 
 
 #include "./erno.h"
-#include "../util/log.h"
+#include "../util/util.h"
 
 #include <stddef.h>
 #include <stdio.h>

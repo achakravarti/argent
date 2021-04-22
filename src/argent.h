@@ -24,6 +24,7 @@
 #ifndef __ARGENT_INCLUDE_ARGENT_H__
 #define __ARGENT_INCLUDE_ARGENT_H__
 
+#include "util/util.h"
 #include "ds/alist.h"
 #include "ds/field.h"
 #include "ds/list.h"
@@ -37,9 +38,9 @@
 #include "type/object.h"
 #include "type/value.h"
 #include "util/registry.h"
-#include "util/log.h"
+//#include "util/log.h"
 #include "util/hash.h"
-#include "util/memblock.h"
+//#include "util/memblock.h"
 #include "util/uuid.h"
 #include "util/plugin.h"
 #include "util/manager.h"

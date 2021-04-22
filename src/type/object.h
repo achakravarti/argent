@@ -30,8 +30,8 @@ extern "C" {
 
 
 #include "../ex/exception.h"
-#include "../util/memblock.h"
 #include "../util/hash.h"
+#include "../util/util.h"
 #include "./typeid.h"
 #include "../util/uuid.h"
 
