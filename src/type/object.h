@@ -31,7 +31,7 @@ extern "C" {
 
 #include "../ex/exception.h"
 #include "../util/hash.h"
-#include "../util/util.h"
+#include "../base/base.h"
 #include "./typeid.h"
 #include "../util/uuid.h"
 

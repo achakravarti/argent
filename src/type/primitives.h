@@ -34,67 +34,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_PURE __attribute__((pure))
-#else
-#       define AG_PURE
-#       warning "[!] AG_PURE not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_HOT __attribute__((hot))
-#else
-#       define AG_HOT
-#       warning "[!] AG_HOT not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_COLD __attribute__((cold))
-#else
-#       define AG_COLD
-#       warning "[!] AG_COLD not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
-#else
-#       define AG_LIKELY(p) (p)
-#       warning "[!] AG_LIKELY() not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
-#else
-#       define AG_UNLIKELY(p) (p)
-#       warning "[!] AG_UNLIKELY() not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_THREADLOCAL __thread
-#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
-                && !defined __STDC_NO_TRHEADS__)
-#       include <threads.h>
-#       define AG_THREADLOCAL thread_local
-#else
-#       define AG_THREADLOCAL
-#       warning "[!] AG_THREADLOCAL not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_AUTO(t) __attribute__((cleanup(t##_release))) t
-#else
-#       define AG_AUTO(t) t
-#       warning "[!] AG_AUTO() not supported on current compiler"
-#endif
-
-
 typedef intptr_t ag_int;
 typedef uintptr_t ag_uint;
 typedef double ag_float;
@@ -109,13 +48,7 @@ typedef double ag_float;
 #define AG_FLOAT_MIN DBL_MIN
 #define AG_FLOAT_MAX DBL_MAX
 
-enum ag_cmp {
-        AG_CMP_LT = -1,
-        AG_CMP_EQ,
-        AG_CMP_GT
-};
-
-extern ag_int ag_int_parse(const char *);
+ ag_int ag_int_parse(const char *);
 
 extern ag_uint ag_uint_parse(const char *);
 

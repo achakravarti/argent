@@ -1,11 +1,80 @@
-#ifndef __ARGENT_UTIL_H_INCLUDED__
-#define __ARGENT_UTIL_H_INCLUDED__
+#ifndef __ARGENT_BASE_H_INCLUDED__
+#define __ARGENT_BASE_H_INCLUDED__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "../type/string.h"
+#include <stdbool.h>
+#include <stddef.h>
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_PURE __attribute__((pure))
+#else
+#       define AG_PURE
+#       warning "[!] AG_PURE not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_HOT __attribute__((hot))
+#else
+#       define AG_HOT
+#       warning "[!] AG_HOT not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_COLD __attribute__((cold))
+#else
+#       define AG_COLD
+#       warning "[!] AG_COLD not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
+#else
+#       define AG_LIKELY(p) (p)
+#       warning "[!] AG_LIKELY() not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
+#else
+#       define AG_UNLIKELY(p) (p)
+#       warning "[!] AG_UNLIKELY() not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_THREADLOCAL __thread
+#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
+                && !defined __STDC_NO_TRHEADS__)
+#       include <threads.h>
+#       define AG_THREADLOCAL thread_local
+#else
+#       define AG_THREADLOCAL
+#       warning "[!] AG_THREADLOCAL not supported by current compiler"
+#endif
+
+
+#if (defined __GNUC__ || defined __clang__)
+#       define AG_AUTO(t) __attribute__((cleanup(t##_release))) t
+#else
+#       define AG_AUTO(t) t
+#       warning "[!] AG_AUTO() not supported on current compiler"
+#endif
+
+
+enum ag_cmp {
+        AG_CMP_LT = -1,
+        AG_CMP_EQ,
+        AG_CMP_GT
+};
+
+/** LOG **/
 
 enum ag_log_level {
         AG_LOG_LEVEL_EMERG = 0,
@@ -29,7 +98,10 @@ extern void ag_log_info(const char *, ...);
 extern void ag_log_debug(const char *, ...);
 
 
-typedef void ag_memblock;
+/** MEMBLOCK **/
+
+typedef void    ag_memblock;
+typedef char    ag_string;      // forward-declared
 
 extern ag_memblock *ag_memblock_new(size_t);
 extern ag_memblock *ag_memblock_new_align(size_t, size_t);
@@ -71,5 +143,5 @@ extern ag_string *ag_memblock_str(const ag_memblock *);
 }
 #endif
 
-#endif /* !__ARGENT_UTIL_H_INCLUDED__ */
+#endif /* !__ARGENT_BASE_H_INCLUDED__ */
 
