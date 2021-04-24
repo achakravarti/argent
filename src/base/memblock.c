@@ -28,38 +28,27 @@
 #else
 #       include <malloc.h>
 #endif
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 
 
 #ifndef NDEBUG
-static inline bool      is_size_valid(size_t );
-static inline bool      is_alignment_valid(size_t);
+#       define is_size_valid(SZ)        (SZ)
+#       define is_alignment_valid(AL)   (AL && !(AL % 2))
 #endif
 
 
-static inline size_t *
-meta_head(const ag_memblock *ctx)
-{
-        return &((size_t *)ctx)[-2];
-}
+
+/*******************************************************************************
+ *
+ */
+
+static inline size_t    *meta_head(const ag_memblock *ctx);
+static inline size_t     meta_sz(const ag_memblock *ctx);
+static inline size_t     meta_refc(const ag_memblock *ctx);
 
 
-static inline size_t
-meta_sz(const ag_memblock *ctx)
-{
-        return ((size_t *)ctx)[-1];
-}
-
-
-static inline size_t
-meta_refc(const ag_memblock *ctx)
-{
-        return ((size_t *)ctx)[-2];
-}
-
+/*******************************************************************************
+ *
+ */
 
 extern ag_memblock *
 ag_memblock_new(size_t sz)
@@ -79,6 +68,10 @@ ag_memblock_new(size_t sz)
         return (ag_memblock *)&(ctx[2]);
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern ag_memblock *
 ag_memblock_new_align(size_t sz, size_t align)
@@ -101,6 +94,10 @@ ag_memblock_new_align(size_t sz, size_t align)
 }
 
 
+/*******************************************************************************
+ *
+ */
+
 extern ag_memblock *
 ag_memblock_copy(const ag_memblock *ctx)
 {
@@ -110,6 +107,10 @@ ag_memblock_copy(const ag_memblock *ctx)
         return cp;
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern ag_memblock *
 ag_memblock_clone(const ag_memblock *ctx)
@@ -123,6 +124,10 @@ ag_memblock_clone(const ag_memblock *ctx)
         return cp;
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern ag_memblock *
 ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
@@ -138,6 +143,10 @@ ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
 }
 
 
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_memblock_release(ag_memblock **ctx)
 {
@@ -152,12 +161,20 @@ ag_memblock_release(ag_memblock **ctx)
 }
 
 
+/*******************************************************************************
+ *
+ */
+
 extern enum ag_cmp
 ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
 {
         return ctx == cmp ? AG_CMP_EQ : memcmp(ctx, cmp, meta_sz(ctx));
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern inline bool      ag_memblock_lt(const ag_memblock *,
                             const ag_memblock *);
@@ -167,6 +184,10 @@ extern inline bool      ag_memblock_gt(const ag_memblock *,
                             const ag_memblock *);
 
 
+/*******************************************************************************
+ *
+ */
+
 extern size_t
 ag_memblock_sz(const ag_memblock *ctx)
 {
@@ -174,6 +195,11 @@ ag_memblock_sz(const ag_memblock *ctx)
 
         return meta_sz(ctx);
 }
+
+
+/*******************************************************************************
+ *
+ */
 
 extern size_t
 ag_memblock_sz_total(const ag_memblock *ctx)
@@ -184,7 +210,9 @@ ag_memblock_sz_total(const ag_memblock *ctx)
 }
 
 
-
+/*******************************************************************************
+ *
+ */
 
 extern size_t
 ag_memblock_refc(const ag_memblock *ctx)
@@ -195,6 +223,10 @@ ag_memblock_refc(const ag_memblock *ctx)
 }
 
 
+/*******************************************************************************
+ *
+ */
+
 extern bool
 ag_memblock_aligned(const ag_memblock *ctx, size_t align)
 {
@@ -204,6 +236,10 @@ ag_memblock_aligned(const ag_memblock *ctx, size_t align)
         return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern void
 ag_memblock_resize(ag_memblock **ctx, size_t sz)
@@ -221,6 +257,10 @@ ag_memblock_resize(ag_memblock **ctx, size_t sz)
         *ctx = cp;
 }
 
+
+/*******************************************************************************
+ *
+ */
 
 extern void
 ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
@@ -240,6 +280,10 @@ ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
 }
 
 
+/*******************************************************************************
+ *
+ */
+
 extern ag_string *
 ag_memblock_str(const ag_memblock *ctx)
 {
@@ -252,21 +296,35 @@ ag_memblock_str(const ag_memblock *ctx)
 }
 
 
-#ifndef NDEBUG
-static inline bool
-is_size_valid(size_t sz)
+/*******************************************************************************
+ *
+ */
+
+static inline size_t *
+meta_head(const ag_memblock *ctx)
 {
-        return sz;
+        return &((size_t *)ctx)[-2];
 }
-#endif
 
 
-#ifndef NDEBUG
-static inline bool
-is_alignment_valid(size_t align)
+/*******************************************************************************
+ *
+ */
+
+static inline size_t
+meta_sz(const ag_memblock *ctx)
 {
-        return align && !(align % 2);
-
+        return ((size_t *)ctx)[-1];
 }
-#endif
+
+
+/*******************************************************************************
+ *
+ */
+
+static inline size_t
+meta_refc(const ag_memblock *ctx)
+{
+        return ((size_t *)ctx)[-2];
+}
 

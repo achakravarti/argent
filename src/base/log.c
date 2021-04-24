@@ -27,6 +27,10 @@
 #include <stdarg.h>
 
 
+/*******************************************************************************
+ *
+ */
+
 #define LOG_WRITE(FMT, LVL)             \
         AG_ASSERT_STR (FMT);            \
         va_list ap;                     \
@@ -34,10 +38,10 @@
         ag_log_write(LVL, FMT, ap);     \
         va_end(ap);
 
-/*******************************************************************************
- *                              LOGGING EXTERNALS
- */
 
+/*******************************************************************************
+ *
+ */
 
 extern void 
 ag_log_write(enum ag_log_level lvl, const char *fmt, ...)
@@ -65,7 +69,10 @@ ag_log_write(enum ag_log_level lvl, const char *fmt, ...)
         closelog();
 }
 
-                                /* implementation of ag_log_emerg() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_emerg(const char *fmt, ...)
 {
@@ -73,7 +80,10 @@ ag_log_emerg(const char *fmt, ...)
 }
 
 
-                                /* implementation of ag_log_alert() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_alert(const char *fmt, ...)
 {
@@ -81,7 +91,10 @@ ag_log_alert(const char *fmt, ...)
 }
 
 
-                                 /* implementation of ag_log_crit() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_crit(const char *fmt, ...)
 {
@@ -90,7 +103,10 @@ ag_log_crit(const char *fmt, ...)
 }
 
 
-                                  /* implementation of ag_log_err() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_err(const char *fmt, ...)
 {
@@ -98,7 +114,10 @@ ag_log_err(const char *fmt, ...)
 }
 
 
-                              /* implementation of ag_log_warning() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_warning(const char *fmt, ...)
 {
@@ -106,7 +125,10 @@ ag_log_warning(const char *fmt, ...)
 }
 
 
-                               /* implementation of ag_log_notice() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void 
 ag_log_notice(const char *fmt, ...)
 {
@@ -114,7 +136,10 @@ ag_log_notice(const char *fmt, ...)
 }
 
 
-                                 /* implementation of ag_log_info() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_info(const char *fmt, ...)
 {
@@ -122,7 +147,10 @@ ag_log_info(const char *fmt, ...)
 }
 
 
-                                /* implementation of ag_log_debug() [AgDM:??] */
+/*******************************************************************************
+ *
+ */
+
 extern void
 ag_log_debug(const char *fmt, ...)
 {
