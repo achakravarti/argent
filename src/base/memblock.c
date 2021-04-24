@@ -30,13 +30,6 @@
 #endif
 
 
-#ifndef NDEBUG
-#       define is_size_valid(SZ)        (SZ)
-#       define is_alignment_valid(AL)   (AL && !(AL % 2))
-#endif
-
-
-
 /*******************************************************************************
  *
  */
@@ -50,10 +43,22 @@ static inline size_t     meta_refc(const ag_memblock *ctx);
  *
  */
 
+extern inline bool      ag_memblock_lt(const ag_memblock *,
+                            const ag_memblock *);
+extern inline bool      ag_memblock_eq(const ag_memblock *,
+                            const ag_memblock *);
+extern inline bool      ag_memblock_gt(const ag_memblock *,
+                            const ag_memblock *);
+
+
+/*******************************************************************************
+ *
+ */
+
 extern ag_memblock *
 ag_memblock_new(size_t sz)
 {
-        AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
 
         size_t sz2 = sz + sizeof(size_t) * 2;
         size_t *ctx = malloc(sz2);
@@ -76,8 +81,8 @@ ag_memblock_new(size_t sz)
 extern ag_memblock *
 ag_memblock_new_align(size_t sz, size_t align)
 {
-        AG_ASSERT (is_size_valid(sz));
-        AG_ASSERT (is_alignment_valid(align));
+        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
+        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
        
         size_t sz2 = sz + sizeof(size_t) * 2; 
         size_t *ctx;
@@ -133,7 +138,7 @@ extern ag_memblock *
 ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (is_alignment_valid(align));
+        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
 
         size_t sz = meta_sz(ctx);
         ag_memblock *cp = ag_memblock_new_align(sz, align);
@@ -170,18 +175,6 @@ ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
 {
         return ctx == cmp ? AG_CMP_EQ : memcmp(ctx, cmp, meta_sz(ctx));
 }
-
-
-/*******************************************************************************
- *
- */
-
-extern inline bool      ag_memblock_lt(const ag_memblock *,
-                            const ag_memblock *);
-extern inline bool      ag_memblock_eq(const ag_memblock *,
-                            const ag_memblock *);
-extern inline bool      ag_memblock_gt(const ag_memblock *,
-                            const ag_memblock *);
 
 
 /*******************************************************************************
@@ -231,7 +224,8 @@ extern bool
 ag_memblock_aligned(const ag_memblock *ctx, size_t align)
 {
         AG_ASSERT_PTR (ctx);
-        AG_ASSERT (is_alignment_valid(align));
+        //AG_ASSERT (is_alignment_valid(align));
+        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
 
         return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
@@ -245,7 +239,8 @@ extern void
 ag_memblock_resize(ag_memblock **ctx, size_t sz)
 {
         AG_ASSERT_PTR (ctx && *ctx);
-        AG_ASSERT (is_size_valid(sz));
+        //AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
 
         ag_memblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
@@ -266,8 +261,10 @@ extern void
 ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
 {
         AG_ASSERT_PTR (ctx && *ctx);
-        AG_ASSERT (is_size_valid(sz));
-        AG_ASSERT (is_alignment_valid(align));
+        //AG_ASSERT (is_size_valid(sz));
+        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
+        //AG_ASSERT (is_alignment_valid(align));
+        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
 
         ag_memblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
