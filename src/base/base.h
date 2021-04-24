@@ -8,63 +8,34 @@ extern "C" {
 #include <stdbool.h>
 #include <stddef.h>
 
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_PURE __attribute__((pure))
-#else
-#       define AG_PURE
-#       warning "[!] AG_PURE not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_HOT __attribute__((hot))
-#else
-#       define AG_HOT
-#       warning "[!] AG_HOT not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_COLD __attribute__((cold))
-#else
-#       define AG_COLD
-#       warning "[!] AG_COLD not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
-#else
-#       define AG_LIKELY(p) (p)
-#       warning "[!] AG_LIKELY() not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
-#else
-#       define AG_UNLIKELY(p) (p)
-#       warning "[!] AG_UNLIKELY() not supported by current compiler"
-#endif
-
-
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_THREADLOCAL __thread
-#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
-                && !defined __STDC_NO_TRHEADS__)
-#       include <threads.h>
-#       define AG_THREADLOCAL thread_local
-#else
-#       define AG_THREADLOCAL
-#       warning "[!] AG_THREADLOCAL not supported by current compiler"
-#endif
-
 
 #if (defined __GNUC__ || defined __clang__)
 #       define AG_AUTO(t) __attribute__((cleanup(t##_release))) t
+#       define AG_COLD __attribute__((cold))
+#       define AG_HOT __attribute__((hot))
+#       define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
+#       define AG_PURE __attribute__((pure))
+#       define AG_THREADLOCAL __thread
+#       define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
+#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
+    && !defined __STDC_NO_TRHEADS__)
+#       include <threads.h>
+#       define AG_THREADLOCAL thread_local
 #else
 #       define AG_AUTO(t) t
+#       define AG_COLD
+#       define AG_HOT
+#       define AG_LIKELY(p) (p)
+#       define AG_PURE
+#       define AG_THREADLOCAL
+#       define AG_UNLIKELY(p) (p)
 #       warning "[!] AG_AUTO() not supported on current compiler"
+#       warning "[!] AG_COLD not supported by current compiler"
+#       warning "[!] AG_HOT not supported by current compiler"
+#       warning "[!] AG_LIKELY() not supported by current compiler"
+#       warning "[!] AG_PURE not supported by current compiler"
+#       warning "[!] AG_THREADLOCAL not supported by current compiler"
+#       warning "[!] AG_UNLIKELY() not supported by current compiler"
 #endif
 
 

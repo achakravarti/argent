@@ -29,9 +29,8 @@
         extern "C" {
 #endif
 
+#include "../base/base.h"
 #include <float.h>
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 
 typedef intptr_t ag_int;
