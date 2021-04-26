@@ -67,13 +67,15 @@ extern "C" {
 
 
 /*******************************************************************************
- *
+ * We often need to compare two entities, and the conventional approach is that
+ * of `strcmp()` and `memcmp()`. We maintain this approach, but opt to use
+ * enumerators instead for better readability.
  */
 
 enum ag_cmp {
-        AG_CMP_LT = -1,
-        AG_CMP_EQ,
-        AG_CMP_GT
+        AG_CMP_LT = -1, /* lhs < rhs  */
+        AG_CMP_EQ,      /* lhs == rhs */
+        AG_CMP_GT       /* lhs > rhs  */
 };
 
 
