@@ -27,6 +27,9 @@
 #include <syslog.h>
 
 
+static AG_THREADLOCAL bool g_init = false;
+
+
 /*******************************************************************************
  * `LOG_WRITE()` is a helper macro for the `ag_log_write()` wrapper functions.
  * Since these wrapper functions are semantically similar except for the log
@@ -43,6 +46,26 @@
         va_end(ap);
 
 
+extern void
+ag_log_init(const char *ident)
+{
+        AG_ASSERT_STR (ident);
+
+        openlog(ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+        g_init = true;
+}
+
+
+extern void
+ag_log_exit(void)
+{
+        AG_ASSERT_TAG ("LOG_INIT", g_init);
+
+        closelog();
+        g_init = false;
+}
+
+
 /*******************************************************************************
  * `ag_log_write()` writes a formatted message to the system log with a given
  * priority level. The priority level is passed through the first parameter, the
@@ -54,6 +77,7 @@
 extern void 
 ag_log_write(enum ag_log_level lvl, const char *msg, ...)
 {
+        AG_ASSERT_TAG ("LOG_INIT", g_init);
         AG_ASSERT_STR (msg);
 
         int map[] = {
@@ -67,14 +91,14 @@ ag_log_write(enum ag_log_level lvl, const char *msg, ...)
                 LOG_DEBUG
         };
 
-        openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+        //openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
 
         va_list ap;
         va_start(ap, msg);
         vsyslog(map[lvl], msg, ap);
         va_end(ap);
 
-        closelog();
+        //closelog();
 }
 
 
