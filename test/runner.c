@@ -29,10 +29,7 @@
 
 int main(int argc, char **argv)
 {
-        (void) argc;
-        (void) argv;
-
-        ag_init();
+        ag_init(argc, argv);
         (void)system("mkdir -p bld/test");
 
         ag_test_harness *th = ag_test_harness_new();

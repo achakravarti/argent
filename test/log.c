@@ -44,7 +44,7 @@
  * return a non-zero value.
  */
 
-#define cmd_journalctl(level) "journalctl -t ag-tests -p \"" level      \
+#define cmd_journalctl(level) "journalctl -t ./bld/ag-tests -p \"" level  \
         "\" -S \"5 sec ago\" | grep \"No entries\""
 
 #define log_check(level) system(cmd_journalctl(level))
