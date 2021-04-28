@@ -31,18 +31,18 @@ static AG_THREADLOCAL bool g_init = false;
 
 
 /*******************************************************************************
- * `LOG_WRITE()` is a helper macro for the `ag_log_write()` wrapper functions.
- * Since these wrapper functions are semantically similar except for the log
- * priority level, `LOG_WRITE()` abstracts the code that is common to them.
- * We've used a macro instead of a helper function in order to avoid the
- * complication of passing around variable argument lists.
+ * `LOG_WRITE()` is a helper macro for the log writing functions.  Since these
+ * functions are semantically similar except for the log priority level,
+ * `LOG_WRITE()` abstracts the code that is common to them.  We've used a macro
+ * instead of a helper function in order to avoid the complication of passing
+ * around variable argument lists.
  */
 
-#define LOG_WRITE(FMT, LVL)             \
-        AG_ASSERT_STR (FMT);            \
-        va_list ap;                     \
-        va_start(ap, FMT);              \
-        ag_log_write(LVL, FMT, ap);     \
+#define LOG_WRITE(MSG, LVL)     \
+        AG_ASSERT_STR (MSG);    \
+        va_list ap;             \
+        va_start(ap, MSG);      \
+        vsyslog(LVL, MSG, ap);  \
         va_end(ap);
 
 
@@ -53,6 +53,7 @@ ag_log_init(const char *ident)
 
         openlog(ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
         g_init = true;
+        ag_log_info("starting log");
 }
 
 
@@ -61,6 +62,7 @@ ag_log_exit(void)
 {
         AG_ASSERT_TAG ("LOG_INIT", g_init);
 
+        ag_log_info("stopping log");
         closelog();
         g_init = false;
 }
@@ -77,28 +79,7 @@ ag_log_exit(void)
 extern void 
 ag_log_write(enum ag_log_level lvl, const char *msg, ...)
 {
-        AG_ASSERT_TAG ("LOG_INIT", g_init);
-        AG_ASSERT_STR (msg);
-
-        int map[] = {
-                LOG_EMERG,
-                LOG_ALERT,
-                LOG_CRIT,
-                LOG_ERR,
-                LOG_WARNING,
-                LOG_NOTICE,
-                LOG_INFO,
-                LOG_DEBUG
-        };
-
-        //openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
-
-        va_list ap;
-        va_start(ap, msg);
-        vsyslog(map[lvl], msg, ap);
-        va_end(ap);
-
-        //closelog();
+        LOG_WRITE(msg, lvl);
 }
 
 
