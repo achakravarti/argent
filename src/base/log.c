@@ -53,7 +53,8 @@ ag_log_init(const char *ident)
 
         openlog(ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
         g_init = true;
-        ag_log_info("starting log");
+
+        ag_log_info("log started");
 }
 
 
@@ -63,6 +64,7 @@ ag_log_exit(void)
         AG_ASSERT_TAG ("LOG_INIT", g_init);
 
         ag_log_info("stopping log");
+
         closelog();
         g_init = false;
 }

@@ -75,6 +75,8 @@ static ag_string        *def_json(const ag_object *);
 extern void
 ag_object_registry_init(void)
 {
+        ag_log_info("starting object registry");
+
         g_argent = ag_registry_new(reg_dispose);
         g_client = ag_registry_new(reg_dispose);
 }
@@ -89,6 +91,8 @@ ag_object_registry_init(void)
 extern void
 ag_object_registry_exit(void)
 {
+        ag_log_info("stopping object registry");
+
         ag_registry_release(&g_argent);
         ag_registry_release(&g_client);
 }
