@@ -104,7 +104,12 @@ extern void     ag_log_err(const char *, ...);
 extern void     ag_log_warning(const char *, ...);
 extern void     ag_log_notice(const char *, ...);
 extern void     ag_log_info(const char *, ...);
-extern void     ag_log_debug(const char *, ...);
+
+#ifdef NDEBUG
+#       define ag_log_debug(MSG, ...)
+#else
+        extern void     ag_log_debug(const char *, ...);
+#endif
 
 
 /*******************************************************************************

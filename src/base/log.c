@@ -34,7 +34,7 @@
  */
 
 #ifndef NDEBUG
-static AG_THREADLOCAL bool      g_init = false;
+        static AG_THREADLOCAL bool      g_init = false;
 #endif
 
 
@@ -102,13 +102,19 @@ ag_log_exit(void)
  * priority level. The priority level is passed through the first parameter, the
  * message through the second, and the format specifiers through the variable
  * argument list. The format specifiers are rquired only if the message is
- * formatted.
+ * formatted. This function also takes care to ensure the debug messages are
+ * logged only in debug builds.
  */
 
 extern void 
 ag_log_write(enum ag_log_level lvl, const char *msg, ...)
 {
+#ifdef NDEBUG
+        if (AG_LIKELY (lvl != AG_LOG_LEVEL_DEBUG)
+                LOG_WRITE(msg, lvl);
+#else
         LOG_WRITE(msg, lvl);
+#endif
 }
 
 
@@ -209,12 +215,15 @@ ag_log_info(const char *msg, ...)
 /*******************************************************************************
  * `ag_log_debug()` is a convenience wrapper around `ag_log_write()` that logs a
  * formatted debug message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
+ * the same as `ag_log_emerg()`. This function is only available for release
+ * builds.
  */
 
+#ifndef NDEBUG
 extern void
 ag_log_debug(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_DEBUG);
 }
+#endif
 
