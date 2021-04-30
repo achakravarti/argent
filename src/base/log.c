@@ -27,7 +27,15 @@
 #include <syslog.h>
 
 
-static AG_THREADLOCAL bool g_init = false;
+/*******************************************************************************
+ * The global variable `g_init` is used to track whether or not the logging unit
+ * has been initialised, and is required only for release builds. As is the norm
+ * for Argent, we specify every static global variable to be thread-local.
+ */
+
+#ifndef NDEBUG
+static AG_THREADLOCAL bool      g_init = false;
+#endif
 
 
 /*******************************************************************************
@@ -38,17 +46,29 @@ static AG_THREADLOCAL bool g_init = false;
  * around variable argument lists.
  */
 
-#define LOG_WRITE(MSG, LVL)     \
-        AG_ASSERT_STR (MSG);    \
-        va_list ap;             \
-        va_start(ap, MSG);      \
-        vsyslog(LVL, MSG, ap);  \
-        va_end(ap);
+#define LOG_WRITE(MSG, LVL)                     \
+do {                                            \
+        AG_ASSERT_TAG ("LOG_INIT", g_init);     \
+        AG_ASSERT_STR (MSG);                    \
+        va_list ap;                             \
+        va_start(ap, MSG);                      \
+        vsyslog(LVL, MSG, ap);                  \
+        va_end(ap);                             \
+} while (0)
 
+
+/*******************************************************************************
+ * `ag_log_init()` initialises the logging unit of the Argent Library. The
+ * log writing functions will not work as expected unless this function is first
+ * called. The identity of the client program is passed through the only
+ * parameter. `ag_init()` calls this function with `argv[0]`, so client code
+ * does not need to call this function directly.
+ */
 
 extern void
 ag_log_init(const char *ident)
 {
+        AG_ASSERT_TAG ("LOG_NOT_INIT", !g_init);
         AG_ASSERT_STR (ident);
 
         openlog(ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
@@ -57,6 +77,13 @@ ag_log_init(const char *ident)
         ag_log_info("log started");
 }
 
+
+/*******************************************************************************
+ * `ag_log_exit()` shuts down the logging unit of the Argent Library, and is
+ * expected to be called as part of the finalisation of a program. Client code
+ * does not need to call this function directly since `ag_exit()` already does
+ * so.
+ */
 
 extern void
 ag_log_exit(void)
