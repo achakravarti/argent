@@ -68,10 +68,10 @@ ag_exception_registry_init(void)
 {
         AG_ASSERT_TAG ("EXCEPTION_REGISTRY_NOT_INIT", !(g_argent && g_client));
         
-        ag_log_info("starting exception registry");
-
         g_argent = ag_registry_new(ex_release);
         g_client = ag_registry_new(ex_release);
+        
+        ag_log_info("started exception registry");
         
 }
 
@@ -86,10 +86,10 @@ ag_exception_registry_exit(void)
 {
         AG_ASSERT_TAG ("EXCEPTION_REGISTRY_INIT", g_argent && g_client);
 
-        ag_log_info("stopping exception registry");
-
         ag_registry_release(&g_argent);
         ag_registry_release(&g_client);
+
+        ag_log_info("stopped exception registry");
         
 }
 
@@ -147,12 +147,12 @@ ag_exception_registry_set(ag_erno erno, const char *msg, ag_exception_hnd *hnd)
         AG_ASSERT_TAG ("ERNO_VALID", erno);
         AG_ASSERT_STR (msg);
         
-        ag_log_info("registering exception handler %s", msg);
-        
         struct ex *x = ex_new(msg, hnd);
         ag_registry *r = erno < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(erno);
         ag_registry_push(r, h, x);
+        
+        ag_log_info("registered exception handler %s", msg);
         
 }
 

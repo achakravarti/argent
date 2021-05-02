@@ -78,17 +78,13 @@ static ag_string        *def_json(const ag_object *);
  *
  * The processed object v-table (destination) is passed through the first
  * parameter, the object v-table provided by the client code (source) is passed
- * through the second parameter, and the object method callback suffix is passed
- * through the third parameter.
- *
- * Since an informational log message is written at the start of the v-table
- * registration process, the debug log message has been indented so that the
- * context is clearer.
+ * through the second, the object typename through the third, and the object
+ * method callback suffix is passed through the fourth.
  */
 
-#define CBK_SELECT(D, S, M)                                             \
-        ag_log_debug("  selecting %s callback for ag_object_%s()",      \
-            S->M ? "custom" : "default", #M);                           \
+#define CBK_SELECT(D, S, T, M)                                  \
+        ag_log_debug("selecting %s callback for %s_%s()",       \
+            S->M ? "custom" : "default", T, #M);                \
         D->M = S->M ? S->M : def_##M
 
 
@@ -102,10 +98,10 @@ static ag_string        *def_json(const ag_object *);
 extern void
 ag_object_registry_init(void)
 {
-        ag_log_info("starting object registry");
-
         g_argent = ag_registry_new(reg_dispose);
         g_client = ag_registry_new(reg_dispose);
+        
+        ag_log_info("started object registry");
 }
 
 
@@ -118,10 +114,10 @@ ag_object_registry_init(void)
 extern void
 ag_object_registry_exit(void)
 {
-        ag_log_info("stopping object registry");
-
         ag_registry_release(&g_argent);
         ag_registry_release(&g_client);
+        
+        ag_log_info("stopped object registry");
 }
 
 
@@ -155,21 +151,21 @@ ag_object_registry_get(ag_typeid typeid)
  */
 
 extern void
-__ag_object_registry_push__(ag_typeid typeid, const char *typenm,
+ag_object_registry_push(ag_typeid typeid, const char *typenm,
     const struct ag_object_vtable *vt)
 {
         AG_ASSERT_PTR (vt);
 
         struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
-        CBK_SELECT(v, vt, clone);
-        CBK_SELECT(v, vt, release);
-        CBK_SELECT(v, vt, cmp);
-        CBK_SELECT(v, vt, valid);
-        CBK_SELECT(v, vt, sz);
-        CBK_SELECT(v, vt, len);
-        CBK_SELECT(v, vt, hash);
-        CBK_SELECT(v, vt, str);
-        CBK_SELECT(v, vt, json);
+        CBK_SELECT(v, vt, typenm, clone);
+        CBK_SELECT(v, vt, typenm, release);
+        CBK_SELECT(v, vt, typenm, cmp);
+        CBK_SELECT(v, vt, typenm, valid);
+        CBK_SELECT(v, vt, typenm, sz);
+        CBK_SELECT(v, vt, typenm, len);
+        CBK_SELECT(v, vt, typenm, hash);
+        CBK_SELECT(v, vt, typenm, str);
+        CBK_SELECT(v, vt, typenm, json);
         
         ag_registry *r = typeid < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(typeid);

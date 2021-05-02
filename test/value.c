@@ -59,7 +59,7 @@ object_register(void)
             .hash = NULL,  .str = NULL,
     };
 
-    ag_object_registry_push(OBJECT_TYPEID, &vt);
+    ag_object_registry_push(OBJECT_TYPEID, "OBJECT", &vt);
 }
 
 

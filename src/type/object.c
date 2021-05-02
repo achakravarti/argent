@@ -253,7 +253,7 @@ __ag_object_register__(const char *type, ag_typeid tid)
         vt.str = sym_load(dso, type, "str");
         vt.json = sym_load(dso, type, "json");
 
-        ag_object_registry_push(tid, &vt);
+        ag_object_registry_push(tid, type, &vt);
         dlclose(dso);
 }
 
