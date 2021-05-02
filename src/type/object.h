@@ -341,8 +341,12 @@ struct ag_object_vtable {
 extern void                              ag_object_registry_init(void);
 extern void                              ag_object_registry_exit(void);
 extern const struct ag_object_vtable    *ag_object_registry_get(ag_typeid);
-extern void                              ag_object_registry_push(ag_typeid,
+extern void                              __ag_object_registry_push__(ag_typeid,
+                                            const char *,
                                             const struct ag_object_vtable *);
+
+#define ag_object_registry_push(T, V) \
+        __ag_object_registry_push__(T, #T, V)
 
 
 #ifdef __cplusplus

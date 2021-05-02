@@ -66,6 +66,33 @@ static ag_string        *def_json(const ag_object *);
 
 
 /*******************************************************************************
+ * Before the v-table for an object can be pushed into the object registry, we
+ * need to check whether or not all the callbacks have been defined by client
+ * code. If any of the callbacks have not been defined (i.e. null), then the
+ * corresponding default callback (see above) needs to be used.
+ *
+ * The `CBK_SELECT()` macro does this pre-processing for an object method
+ * callback, and additionally writes a debug log explaining which callback has
+ * been selected. We're using a macro instead of a function because we need to
+ * dynamically generate the callback identifiers.
+ *
+ * The processed object v-table (destination) is passed through the first
+ * parameter, the object v-table provided by the client code (source) is passed
+ * through the second parameter, and the object method callback suffix is passed
+ * through the third parameter.
+ *
+ * Since an informational log message is written at the start of the v-table
+ * registration process, the debug log message has been indented so that the
+ * context is clearer.
+ */
+
+#define CBK_SELECT(D, S, M)                                             \
+        ag_log_debug("  selecting %s callback for ag_object_%s()",      \
+            S->M ? "custom" : "default", #M);                           \
+        D->M = S->M ? S->M : def_##M
+
+
+/*******************************************************************************
  * The `ag_object_registry_init()` interface function initialises the object
  * registry by creating new instances of the internal registries. Both of the
  * internal registries are passed the `reg_dispose()` helper function as the
@@ -117,29 +144,38 @@ ag_object_registry_get(ag_typeid typeid)
 
 
 /*******************************************************************************
- * The `ag_object_registry_push()` interface function pushes the object v-table
- * (second parameter) associated with a given object type ID (first parameter).
+ * The `__ag_object_registry_push__()` interface function pushes the object
+ * v-table (third parameter) associated with a given object type ID (first
+ * parameter).  The type name associated with the type ID is passed through the
+ * second parameter.
+ *
  * If any of the callbacks in the v-table are not provided (indicated by `NULL`)
- * then they are set to their corresponding default callback.
+ * then they are set to their corresponding default callback; this is done
+ * through the `CBK_SELECT()` macro. 
  */
 
 extern void
-ag_object_registry_push(ag_typeid typeid, const struct ag_object_vtable *vt)
+__ag_object_registry_push__(ag_typeid typeid, const char *typenm,
+    const struct ag_object_vtable *vt)
 {
-        struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
-        v->clone = vt->clone ? vt->clone : def_clone;
-        v->release = vt->release ? vt->release : def_release;
-        v->cmp = vt->cmp ? vt->cmp : def_cmp;
-        v->valid = vt->valid ? vt->valid : def_valid;
-        v->sz = vt->sz ? vt->sz : def_sz;
-        v->len = vt->len ? vt->len : def_len;
-        v->hash = vt->hash ? vt->hash : def_hash;
-        v->str = vt->str ? vt->str : def_str;
-        v->json = vt->json ? vt->json : def_json;
+        AG_ASSERT_PTR (vt);
 
+        struct ag_object_vtable *v = ag_memblock_new(sizeof *v);
+        CBK_SELECT(v, vt, clone);
+        CBK_SELECT(v, vt, release);
+        CBK_SELECT(v, vt, cmp);
+        CBK_SELECT(v, vt, valid);
+        CBK_SELECT(v, vt, sz);
+        CBK_SELECT(v, vt, len);
+        CBK_SELECT(v, vt, hash);
+        CBK_SELECT(v, vt, str);
+        CBK_SELECT(v, vt, json);
+        
         ag_registry *r = typeid < 0 ? g_argent : g_client;
         ag_hash h = ag_hash_new(typeid);
         ag_registry_push(r, h, v);
+        
+        ag_log_info("registered object v-table for %s (%d)", typenm, typeid);
 }
 
 
