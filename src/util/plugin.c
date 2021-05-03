@@ -133,7 +133,7 @@ payload_new(const char *dso, const char *sym)
         struct payload *p = ag_memblock_new(sizeof *p);
         p->dso = ag_string_new(dso);
         p->sym = ag_string_new(sym);
-        p->hnd = dlopen(p->dso, RTLD_NOW);
+        p->hnd = dlopen(p->dso, RTLD_LAZY);
 
         if (!p->hnd) {
                 fputs(dlerror(), stderr);

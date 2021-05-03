@@ -161,7 +161,7 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
         ag_string *tsym;
         ag_string *dsym;
 
-        void *hnd = dlopen(NULL, RTLD_NOW);
+        void *hnd = dlopen(NULL, RTLD_LAZY);
         if (!hnd) {
                 fputs(dlerror(), stderr);
                 exit(1);
