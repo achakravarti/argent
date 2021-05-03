@@ -225,11 +225,11 @@ sym_load(void *dso, const char *type, const char *meth)
         AG_ASSERT_STR (type);
         AG_ASSERT_STR (meth);
 
-        AG_AUTO(ag_string) *symstr = ag_string_new_fmt("__%s_%s__", type, meth);
-        void *sym = dlsym(dso, symstr);
+        AG_AUTO(ag_string) *sym = ag_string_new_fmt("__%s_%s__", type, meth);
+        void *hnd = dlsym(dso, sym);
         ag_log_debug("__%s_%s__() %sdefined", type, meth, sym ? "" : "not ");
 
-        return sym;
+        return hnd;
 }
 
 
