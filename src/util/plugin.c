@@ -111,13 +111,15 @@ ag_plugin_hnd(const ag_plugin *ctx)
 {
         AG_ASSERT_PTR (ctx);
 
+        dlerror();
+
         const struct payload *p = ag_object_payload(ctx);
         void *hnd = dlsym(p->hnd, p->sym);
         char *err = dlerror();
 
-        if (err) {
-                fputs(err, stderr);
-                exit(1);
+        if (AG_UNLIKELY (err)) {
+                fprintf(stderr, "failed to load plugin: %s\n", dlerror());
+                exit(EXIT_FAILURE);
         }
 
         return hnd;
@@ -130,14 +132,16 @@ payload_new(const char *dso, const char *sym)
         AG_ASSERT_PTR (dso);
         AG_ASSERT_STR (sym);
 
+        dlerror();
+
         struct payload *p = ag_memblock_new(sizeof *p);
         p->dso = ag_string_new(dso);
         p->sym = ag_string_new(sym);
-        p->hnd = dlopen(p->dso, RTLD_LAZY);
+        p->hnd = dlopen(p->dso, RTLD_LAZY | RTLD_GLOBAL);
 
-        if (!p->hnd) {
-                fputs(dlerror(), stderr);
-                exit(1);
+        if (AG_UNLIKELY (!p->hnd)) {
+                fprintf(stderr, "failed to open DSO: %s\n", dlerror());
+                exit(EXIT_FAILURE);
         }
 
         return p;

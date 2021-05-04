@@ -238,11 +238,12 @@ __ag_object_register__(const char *type, ag_typeid tid)
 {
         AG_ASSERT_STR (type);
 
-        void *dso = dlopen(NULL, RTLD_LAZY);
+        dlerror();
+        void *dso = dlopen(NULL, RTLD_LAZY | RTLD_GLOBAL);
+
         if (AG_UNLIKELY (!dso)) {
-                fputs(dlerror(), stderr);
-                fputs("\n", stderr);
-                exit(1);
+                fprintf(stderr, "failed to open DSO: %s\n", dlerror());
+                exit(EXIT_FAILURE);
         }
 
         struct ag_object_vtable vt;
