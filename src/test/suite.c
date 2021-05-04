@@ -165,7 +165,8 @@ __ag_test_suite_generate__(const char *desc, int id, int counter)
         void *hnd = dlopen(NULL, RTLD_LAZY);
 
         if (AG_UNLIKELY (!hnd)) {
-                fprintf(stderr, "failed to open DSO: %s\n", dlerror());
+                char *err = dlerror();
+                fprintf(stderr, "failed to open DSO for tests: %s\n", err);
                 exit(EXIT_FAILURE);
         }
 

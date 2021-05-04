@@ -140,7 +140,7 @@ payload_new(const char *dso, const char *sym)
         p->hnd = dlopen(p->dso, RTLD_LAZY | RTLD_GLOBAL);
 
         if (AG_UNLIKELY (!p->hnd)) {
-                fprintf(stderr, "failed to open DSO: %s\n", dlerror());
+                fprintf(stderr, "failed to open plugin DSO: %s\n", dlerror());
                 exit(EXIT_FAILURE);
         }
 

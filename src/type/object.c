@@ -242,7 +242,8 @@ __ag_object_register__(const char *type, ag_typeid tid)
         void *dso = dlopen(NULL, RTLD_LAZY | RTLD_GLOBAL);
 
         if (AG_UNLIKELY (!dso)) {
-                fprintf(stderr, "failed to open DSO: %s\n", dlerror());
+                fprintf(stderr, "failed to open DSO for objects: %s\n",
+                    dlerror());
                 exit(EXIT_FAILURE);
         }
 
