@@ -108,7 +108,11 @@ extern void     ag_log_info(const char *, ...);
 #ifdef NDEBUG
 #       define ag_log_debug(MSG, ...)
 #else
-        extern void     ag_log_debug(const char *, ...);
+        extern void     __ag_log_debug__(const char *, const char *, int,
+                            const char *, ...);
+#       define ag_log_debug(MSG, ...)   \
+                __ag_log_debug__(__func__, __FILE__, __LINE__, MSG,     \
+                    ##__VA_ARGS__)
 #endif
 
 

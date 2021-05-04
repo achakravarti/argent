@@ -221,9 +221,19 @@ ag_log_info(const char *msg, ...)
 
 #ifndef NDEBUG
 extern void
-ag_log_debug(const char *msg, ...)
+__ag_log_debug__(const char *func, const char *file, int line, const char *msg,
+    ...)
 {
-        LOG_WRITE(msg, AG_LOG_LEVEL_DEBUG);
+        char meta[1024];
+        snprintf(meta, 1024, "[%s() @ %s:%d]", func, file, line);
+
+        char body[1024];
+        va_list ap;
+        va_start(ap, msg);
+        vsnprintf(body, 1024, msg, ap);
+        va_end(ap);
+
+        syslog(AG_LOG_LEVEL_DEBUG, "%s %s", body, meta);
 }
 #endif
 
