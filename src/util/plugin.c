@@ -137,7 +137,7 @@ payload_new(const char *dso, const char *sym)
         struct payload *p = ag_memblock_new(sizeof *p);
         p->dso = ag_string_new(dso);
         p->sym = ag_string_new(sym);
-        p->hnd = dlopen(p->dso, RTLD_LAZY | RTLD_GLOBAL);
+        p->hnd = dlopen(*dso ? dso : NULL, RTLD_LAZY | RTLD_GLOBAL);
 
         if (AG_UNLIKELY (!p->hnd)) {
                 fprintf(stderr, "failed to open plugin DSO: %s\n", dlerror());
