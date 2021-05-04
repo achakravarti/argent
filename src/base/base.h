@@ -96,7 +96,6 @@ enum ag_log_level {
 
 extern void     ag_log_init(const char *);
 extern void     ag_log_exit(void);
-extern void     ag_log_write(enum ag_log_level, const char *, ...);
 extern void     ag_log_emerg(const char *, ...);
 extern void     ag_log_alert(const char *, ...);
 extern void     ag_log_crit(const char *, ...);
