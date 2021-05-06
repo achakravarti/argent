@@ -46,14 +46,28 @@
  * around variable argument lists.
  */
 
-#define LOG_WRITE(MSG, LVL)                                     \
-do {                                                            \
+#define LOG_WRITE(MSG, LVL) do {                                \
         AG_ASSERT (g_init && "logging unit initialised");       \
         AG_ASSERT (*MSG && "message valid string");             \
         va_list ap;                                             \
         va_start(ap, MSG);                                      \
         vsyslog(LVL, MSG, ap);                                  \
         va_end(ap);                                             \
+} while (0)
+
+
+#define WRITE_META(L, FN, FL, LN, M) do {                       \
+        AG_ASSERT (*FN && "function name valid string");        \
+        AG_ASSERT (*FL && "file path valid string");            \
+        AG_ASSERT (*M && "log message valid string");           \
+        char meta[1024];                                        \
+        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);     \
+        char body[1024];                                        \
+        va_list ap;                                             \
+        va_start(ap, M);                                        \
+        vsnprintf(body, 1024, M, ap);                           \
+        va_end(ap);                                             \
+        syslog(L, "%s %s", body, meta);                         \
 } while (0)
 
 
@@ -134,19 +148,6 @@ ag_log_emerg(const char *msg, ...)
 
 
 /*******************************************************************************
- * `ag_log_alert()` is a convenience wraapper around `ag_log_write()` that logs
- * a formatted alert message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
- */
-
-void
-ag_log_alert(const char *msg, ...)
-{
-        LOG_WRITE(msg, AG_LOG_LEVEL_ALERT);
-}
-
-
-/*******************************************************************************
  * `ag_log_crit()` is a convenience wrapper around `ag_log_write()` that logs a
  * formatted critical message to the system log. The parameters are semantically
  * the same as `ag_log_emerg()`.
@@ -157,19 +158,6 @@ ag_log_crit(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_CRIT);
 
-}
-
-
-/*******************************************************************************
- * `ag_log_err()` is a convenience wrapper aournd `ag_log_write()` that logs a
- * formatted error message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
- */
-
-void
-ag_log_err(const char *msg, ...)
-{
-        LOG_WRITE(msg, AG_LOG_LEVEL_ERR);
 }
 
 
@@ -213,6 +201,34 @@ ag_log_info(const char *msg, ...)
 
 
 /*******************************************************************************
+ * `ag_log_alert()` is a convenience wraapper around `ag_log_write()` that logs
+ * a formatted alert message to the system log. The parameters are semantically
+ * the same as `ag_log_emerg()`.
+ */
+
+void
+__ag_log_alert__(const char *func, const char *file, int line, const char *msg,
+    ...)
+{
+        WRITE_META(AG_LOG_LEVEL_ALERT, func, file, line, msg);
+}
+
+
+/*******************************************************************************
+ * `ag_log_err()` is a convenience wrapper aournd `ag_log_write()` that logs a
+ * formatted error message to the system log. The parameters are semantically
+ * the same as `ag_log_emerg()`.
+ */
+
+void
+__ag_log_err__(const char *func, const char *file, int line, const char *msg,
+    ...)
+{
+        WRITE_META(AG_LOG_LEVEL_ERR, func, file, line, msg);
+}
+
+
+/*******************************************************************************
  * `ag_log_debug()` is a convenience wrapper around `ag_log_write()` that logs a
  * formatted debug message to the system log. The parameters are semantically
  * the same as `ag_log_emerg()`. This function is only available for release
@@ -224,20 +240,7 @@ void
 __ag_log_debug__(const char *func, const char *file, int line, const char *msg,
     ...)
 {
-        AG_ASSERT (*func && "function name valid string");
-        AG_ASSERT (*file && "file path valid string");
-        AG_ASSERT (*msg && "log message valid string");
-
-        char meta[1024];
-        snprintf(meta, 1024, "[%s() @ %s:%d]", func, file, line);
-
-        char body[1024];
-        va_list ap;
-        va_start(ap, msg);
-        vsnprintf(body, 1024, msg, ap);
-        va_end(ap);
-
-        syslog(AG_LOG_LEVEL_DEBUG, "%s %s", body, meta);
+        WRITE_META(AG_LOG_LEVEL_DEBUG, func, file, line, msg);
 }
 #endif
 

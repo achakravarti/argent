@@ -72,7 +72,7 @@ ag_memblock_new(size_t sz)
         size_t sz2 = sz + sizeof(size_t) * 2;
         size_t *ctx = malloc(sz2);
 
-        struct ag_exception_memblock x = { .sz = sz, .align = 0i };
+        struct ag_exception_memblock x = { .sz = sz, .align = 0 };
         AG_REQUIRE_OPT (ctx, AG_ERNO_MBLOCK, &x);
 
         memset(ctx, 0, sz2);
