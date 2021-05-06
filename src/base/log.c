@@ -39,46 +39,6 @@
 
 
 /*******************************************************************************
- * `WRTIE_NOMETA()` is a helper macro for writing log messages without any
- * additional code location metadata. This macro takes two parameters, the first
- * being the log level and the second being the message. We've used a macro
- * instead of a helper function in order to avoid the complication of passing
- * around variable argument lists.
- */
-
-#define WRITE_NOMETA(L, M) do {                                 \
-        AG_ASSERT (g_init && "logging unit initialised");       \
-        AG_ASSERT (*M && "message valid string");               \
-        va_list ap;                                             \
-        va_start(ap, M);                                        \
-        vsyslog(L, M, ap);                                      \
-        va_end(ap);                                             \
-} while (0)
-
-
-/*******************************************************************************
- * The `WRITE_META()` helper macro is similar to `WRITE_NOMETA()`, but also adds
- * code location metadata to the log message. The first parameter is the log
- * level, the second the function name, the third the line number, and the
- * fourth the log message.
- */
-
-#define WRITE_META(L, FN, FL, LN, M) do {                       \
-        AG_ASSERT (*FN && "function name valid string");        \
-        AG_ASSERT (*FL && "file path valid string");            \
-        AG_ASSERT (*M && "log message valid string");           \
-        char meta[1024];                                        \
-        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);     \
-        char body[1024];                                        \
-        va_list ap;                                             \
-        va_start(ap, M);                                        \
-        vsnprintf(body, 1024, M, ap);                           \
-        va_end(ap);                                             \
-        syslog(L, "%s %s", body, meta);                         \
-} while (0)
-
-
-/*******************************************************************************
  * `ag_log_init()` initialises the logging unit of the Argent Library. The
  * log writing functions will not work as expected unless this function is first
  * called. The identity of the client program is passed through the only
@@ -119,113 +79,52 @@ ag_log_exit(void)
 
 
 /*******************************************************************************
- * `ag_log_crit()` writes a critical log message. The first parameter is the
- * formatted log message, and the second is the variable argument list of format
- * specifiers. The variable argument list does not need to be specified in case
- * the log message is not formatted.
+ * `WRTIE_NOMETA()` is a helper macro for writing log messages without any
+ * additional code location metadata. This macro takes two parameters, the first
+ * being the log level and the second being the message. We've used a macro
+ * instead of a helper function in order to avoid the complication of passing
+ * around variable argument lists.
  */
 
 void
-ag_log_crit(const char *msg, ...)
+__ag_log_write__(enum ag_log_level lvl, const char *msg, ...)
 {
-        WRITE_NOMETA(AG_LOG_LEVEL_CRIT, msg);
+        AG_ASSERT (g_init && "logging unit initialised");
+        AG_ASSERT (*msg && "log message valid string");
 
+        va_list ap;
+        va_start(ap, msg);
+        vsyslog(lvl, msg, ap);
+        va_end(ap);
 }
 
 
 /*******************************************************************************
- * `ag_log_warning()` writes a warning log message. The parameters are identical
- * to that of `ag_log_crit()`.
+ * The `WRITE_META()` helper macro is similar to `WRITE_NOMETA()`, but also adds
+ * code location metadata to the log message. The first parameter is the log
+ * level, the second the function name, the third the line number, and the
+ * fourth the log message.
  */
 
 void
-ag_log_warning(const char *msg, ...)
+__ag_log_write_meta__(const char *func, const char *file, int line,
+    enum ag_log_level lvl, const char *msg, ...)
 {
-        WRITE_NOMETA(AG_LOG_LEVEL_WARNING, msg);
+        AG_ASSERT (g_init && "logging unit initialised");
+        AG_ASSERT (*func && "function name valid string");
+        AG_ASSERT (*file && "file path valid string");
+        AG_ASSERT (line && "file line valid natural number");
+        AG_ASSERT (*msg && "log message valid string");
+        
+        char meta[1024];
+        snprintf(meta, 1024, "[%s() @ %s:%d]", func, file, line);
+        
+        char body[1024];
+        va_list ap;
+        va_start(ap, msg);
+        vsnprintf(body, 1024, msg, ap);
+        va_end(ap);
+        
+        syslog(lvl, "%s %s", body, meta);
 }
-
-
-/*******************************************************************************
- * `ag_log_notice()` writes a notice log message. The parameters are identical
- * to that of `ag_log_crit()`.
- */
-
-void 
-ag_log_notice(const char *msg, ...)
-{
-        WRITE_NOMETA(AG_LOG_LEVEL_NOTICE, msg);
-}
-
-
-/*******************************************************************************
- * `ag_log_info()` writes an informational log message. The parameters are
- * identical to that of `ag_log_crit()`.
- */
-
-void
-ag_log_info(const char *msg, ...)
-{
-        WRITE_NOMETA(AG_LOG_LEVEL_INFO, msg);
-}
-
-
-/*******************************************************************************
- * `ag_log_emerg()` is a convenience wrapper around `ag_log_write()` that logs a
- * formatted emergency message to the system log. The message is passed through
- * the first parameter, and the format specifiers are passed through the
- * variable argument list. The format specifiers are required only if the
- * message is formatted.
- */
-
-void
-__ag_log_emerg__(const char *func, const char *file, int line, const char *msg,
-    ...)
-{
-        WRITE_META(AG_LOG_LEVEL_EMERG, func, file, line, msg);
-}
-
-
-/*******************************************************************************
- * `ag_log_alert()` is a convenience wraapper around `ag_log_write()` that logs
- * a formatted alert message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
- */
-
-void
-__ag_log_alert__(const char *func, const char *file, int line, const char *msg,
-    ...)
-{
-        WRITE_META(AG_LOG_LEVEL_ALERT, func, file, line, msg);
-}
-
-
-/*******************************************************************************
- * `ag_log_err()` is a convenience wrapper aournd `ag_log_write()` that logs a
- * formatted error message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
- */
-
-void
-__ag_log_err__(const char *func, const char *file, int line, const char *msg,
-    ...)
-{
-        WRITE_META(AG_LOG_LEVEL_ERR, func, file, line, msg);
-}
-
-
-/*******************************************************************************
- * `ag_log_debug()` is a convenience wrapper around `ag_log_write()` that logs a
- * formatted debug message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`. This function is only available for release
- * builds.
- */
-
-#ifndef NDEBUG
-void
-__ag_log_debug__(const char *func, const char *file, int line, const char *msg,
-    ...)
-{
-        WRITE_META(AG_LOG_LEVEL_DEBUG, func, file, line, msg);
-}
-#endif
 

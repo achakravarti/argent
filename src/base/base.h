@@ -80,37 +80,40 @@ enum ag_log_level {
 
 extern AG_NONULL void   ag_log_init(const char *);
 extern void             ag_log_exit(void);
-extern AG_NONULL void   ag_log_emerg(const char *, ...);
-extern AG_NONULL void   ag_log_crit(const char *, ...);
-extern AG_NONULL void   ag_log_warning(const char *, ...);
-extern AG_NONULL void   ag_log_notice(const char *, ...);
-extern AG_NONULL void   ag_log_info(const char *, ...);
+extern AG_NONULL void   __ag_log_write__(enum ag_log_level, const char *, ...);
+extern AG_NONULL void   __ag_log_write_meta__(const char *, const char *, int,
+                            enum ag_log_level, const char *, ...);
 
-extern AG_NONULL void   __ag_log_emerg__(const char *, const char *, int,
-                            const char *, ...);
-extern AG_NONULL void   __ag_log_alert__(const char *, const char *, int,
-                            const char *, ...);
-extern AG_NONULL void   __ag_log_err__(const char *, const char *, int,
-                            const char *, ...);
-extern AG_NONULL void   __ag_log_debug__(const char *, const char *, int,
-                            const char *, ...);
+#define ag_log_emerg(MSG, ...)                                  \
+        __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
+            AG_LOG_LEVEL_EMERG, MSG, ##__VA_ARGS__)
 
-#define ag_log_emerg(MSG, ...)  \
-        __ag_log_emerg__(__func__, __FILE__, __LINE__, MSG, ##__VA_ARGS__)
+#define ag_log_alert(MSG, ...)                                  \
+        __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
+            AG_LOG_LEVEL_ALERT, MSG, ##__VA_ARGS__)
 
-#define ag_log_alert(MSG, ...)  \
-        __ag_log_alert__(__func__, __FILE__, __LINE__, MSG, ##__VA_ARGS__)
+#define ag_log_crit(MSG, ...)   \
+        __ag_log_write__(AG_LOG_LEVEL_CRIT, MSG, ##__VA_ARGS__)
 
-#define ag_log_err(MSG, ...)   \
-        __ag_log_err__(__func__, __FILE__, __LINE__, MSG, ##__VA_ARGS__)
+#define ag_log_err(MSG, ...)                                    \
+        __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
+            AG_LOG_LEVEL_ERR, MSG, ##__VA_ARGS__)
 
+#define ag_log_warning(MSG, ...)   \
+        __ag_log_write__(AG_LOG_LEVEL_WARNING, MSG, ##__VA_ARGS__)
+
+#define ag_log_notice(MSG, ...)   \
+        __ag_log_write__(AG_LOG_LEVEL_NOTICE, MSG, ##__VA_ARGS__)
+
+#define ag_log_info(MSG, ...)   \
+        __ag_log_write__(AG_LOG_LEVEL_INFO, MSG, ##__VA_ARGS__)
 
 #ifdef NDEBUG
 #       define ag_log_debug(MSG, ...)
 #else
-#       define ag_log_debug(MSG, ...)   \
-                __ag_log_debug__(__func__, __FILE__, __LINE__, MSG,     \
-                    ##__VA_ARGS__)
+#       define ag_log_debug(MSG, ...)                                   \
+                __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
+                    AG_LOG_LEVEL_DEBUG, MSG, ##__VA_ARGS__)
 #endif
 
 
