@@ -39,9 +39,9 @@
 
 
 /*******************************************************************************
- * `LOG_WRITE()` is a helper macro for the log writing functions.  Since these
- * functions are semantically similar except for the log priority level,
- * `LOG_WRITE()` abstracts the code that is common to them.  We've used a macro
+ * `WRTIE_NOMETA()` is a helper macro for writing log messages without any
+ * additional code location metadata. This macro takes two parameters, the first
+ * being the log level and the second being the message. We've used a macro
  * instead of a helper function in order to avoid the complication of passing
  * around variable argument lists.
  */
@@ -56,16 +56,23 @@
 } while (0)
 
 
+/*******************************************************************************
+ * The `WRITE_META()` helper macro is similar to `WRITE_NOMETA()`, but also adds
+ * code location metadata to the log message. The first parameter is the log
+ * level, the second the function name, the third the line number, and the
+ * fourth the log message.
+ */
+
 #define WRITE_META(L, FN, FL, LN, M) do {                       \
         AG_ASSERT (*FN && "function name valid string");        \
         AG_ASSERT (*FL && "file path valid string");            \
         AG_ASSERT (*M && "log message valid string");           \
         char meta[1024];                                        \
-        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);   \
+        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);     \
         char body[1024];                                        \
         va_list ap;                                             \
         va_start(ap, M);                                        \
-        vsnprintf(body, 1024, M, ap);                         \
+        vsnprintf(body, 1024, M, ap);                           \
         va_end(ap);                                             \
         syslog(L, "%s %s", body, meta);                         \
 } while (0)
@@ -112,18 +119,10 @@ ag_log_exit(void)
 
 
 /*******************************************************************************
- * `ag_log_emerg()` is a convenience wrapper around `ag_log_write()` that logs a
- * formatted emergency message to the system log. The message is passed through
- * the first parameter, and the format specifiers are passed through the
- * variable argument list. The format specifiers are required only if the
- * message is formatted.
- */
-
-
-/*******************************************************************************
- * `ag_log_crit()` is a convenience wrapper around `ag_log_write()` that logs a
- * formatted critical message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
+ * `ag_log_crit()` writes a critical log message. The first parameter is the
+ * formatted log message, and the second is the variable argument list of format
+ * specifiers. The variable argument list does not need to be specified in case
+ * the log message is not formatted.
  */
 
 void
@@ -135,9 +134,8 @@ ag_log_crit(const char *msg, ...)
 
 
 /*******************************************************************************
- * `ag_log_warning()` is a convenience wrapper around `ag_log_write()` that logs
- * a formatted warning message to the system log. The parameters are
- * semantically the same as `ag_log_emerg()`.
+ * `ag_log_warning()` writes a warning log message. The parameters are identical
+ * to that of `ag_log_crit()`.
  */
 
 void
@@ -148,9 +146,8 @@ ag_log_warning(const char *msg, ...)
 
 
 /*******************************************************************************
- * `ag_log_notice()` is a convenience wrapper around `ag_log_write()` that logs
- * a formatted notice message to the system log. The parameters are semantically
- * the same as `ag_log_emerg()`.
+ * `ag_log_notice()` writes a notice log message. The parameters are identical
+ * to that of `ag_log_crit()`.
  */
 
 void 
@@ -161,9 +158,8 @@ ag_log_notice(const char *msg, ...)
 
 
 /*******************************************************************************
- * `ag_log_info()` is a convenience wrapper around `ag_log_write()` that logs a
- * formatted information message to the system log. The parameters are
- * semantically the same as `ag_log_emerg()`.
+ * `ag_log_info()` writes an informational log message. The parameters are
+ * identical to that of `ag_log_crit()`.
  */
 
 void
