@@ -36,34 +36,17 @@ extern "C" {
  *
  */
 
-#if (defined __GNUC__ || defined __clang__)
-#       define AG_AUTO(t) __attribute__((cleanup(t##_release))) t
-#       define AG_COLD __attribute__((cold))
-#       define AG_HOT __attribute__((hot))
-#       define AG_LIKELY(p) (__builtin_expect(!!(p), 1))
-#       define AG_PURE __attribute__((pure))
-#       define AG_THREADLOCAL __thread
-#       define AG_UNLIKELY(p) (__builtin_expect(!!(p), 0))
-#elif (defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L \
-    && !defined __STDC_NO_TRHEADS__)
-#       include <threads.h>
-#       define AG_THREADLOCAL thread_local
-#else
-#       define AG_AUTO(t) t
-#       define AG_COLD
-#       define AG_HOT
-#       define AG_LIKELY(p) (p)
-#       define AG_PURE
-#       define AG_THREADLOCAL
-#       define AG_UNLIKELY(p) (p)
-#       warning "[!] AG_AUTO() not supported on current compiler"
-#       warning "[!] AG_COLD not supported by current compiler"
-#       warning "[!] AG_HOT not supported by current compiler"
-#       warning "[!] AG_LIKELY() not supported by current compiler"
-#       warning "[!] AG_PURE not supported by current compiler"
-#       warning "[!] AG_THREADLOCAL not supported by current compiler"
-#       warning "[!] AG_UNLIKELY() not supported by current compiler"
+#if (!defined __GNUC__ && !defined __clang__)
+#       error "[!] unsupported compiler; use gcc or clang"
 #endif
+
+#define AG_AUTO(T)      __attribute__((cleanup(T##_release))) T
+#define AG_COLD         __attribute__((cold))
+#define AG_HOT          __attribute__((hot))
+#define AG_LIKELY(P)    (__builtin_expect(!!(P), 1))
+#define AG_PURE         __attribute__((pure))
+#define AG_THREADLOCAL  __thread
+#define AG_UNLIKELY(P)  (__builtin_expect(!!(P), 0))
 
 
 /*******************************************************************************
