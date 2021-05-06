@@ -78,21 +78,21 @@ enum ag_log_level {
         AG_LOG_LEVEL_DEBUG
 };
 
-extern void     ag_log_init(const char *);
-extern void     ag_log_exit(void);
-extern void     ag_log_emerg(const char *, ...);
-extern void     ag_log_alert(const char *, ...);
-extern void     ag_log_crit(const char *, ...);
-extern void     ag_log_err(const char *, ...);
-extern void     ag_log_warning(const char *, ...);
-extern void     ag_log_notice(const char *, ...);
-extern void     ag_log_info(const char *, ...);
+extern AG_NONULL void   ag_log_init(const char *);
+extern void             ag_log_exit(void);
+extern AG_NONULL void   ag_log_emerg(const char *, ...);
+extern AG_NONULL void   ag_log_alert(const char *, ...);
+extern AG_NONULL void   ag_log_crit(const char *, ...);
+extern AG_NONULL void   ag_log_err(const char *, ...);
+extern AG_NONULL void   ag_log_warning(const char *, ...);
+extern AG_NONULL void   ag_log_notice(const char *, ...);
+extern AG_NONULL void   ag_log_info(const char *, ...);
 
 #ifdef NDEBUG
 #       define ag_log_debug(MSG, ...)
 #else
-        extern void     __ag_log_debug__(const char *, const char *, int,
-                            const char *, ...);
+        extern AG_NONULL void   __ag_log_debug__(const char *, const char *, int,
+                                    const char *, ...);
 #       define ag_log_debug(MSG, ...)   \
                 __ag_log_debug__(__func__, __FILE__, __LINE__, MSG,     \
                     ##__VA_ARGS__)

@@ -46,14 +46,14 @@
  * around variable argument lists.
  */
 
-#define LOG_WRITE(MSG, LVL)                     \
-do {                                            \
-        AG_ASSERT_TAG ("LOG_INIT", g_init);     \
-        AG_ASSERT_STR (MSG);                    \
-        va_list ap;                             \
-        va_start(ap, MSG);                      \
-        vsyslog(LVL, MSG, ap);                  \
-        va_end(ap);                             \
+#define LOG_WRITE(MSG, LVL)                                     \
+do {                                                            \
+        AG_ASSERT (g_init && "logging unit initialised");       \
+        AG_ASSERT (*MSG && "message valid string");             \
+        va_list ap;                                             \
+        va_start(ap, MSG);                                      \
+        vsyslog(LVL, MSG, ap);                                  \
+        va_end(ap);                                             \
 } while (0)
 
 
@@ -68,8 +68,8 @@ do {                                            \
 extern void
 ag_log_init(const char *ident)
 {
-        AG_ASSERT_TAG ("LOG_NOT_INIT", !g_init);
-        AG_ASSERT_STR (ident);
+        AG_ASSERT (!g_init && "logging unit not initialised");
+        AG_ASSERT (*ident && "log identity valid string");
 
         openlog(ident, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
         g_init = true;
@@ -88,7 +88,7 @@ ag_log_init(const char *ident)
 extern void
 ag_log_exit(void)
 {
-        AG_ASSERT_TAG ("LOG_INIT", g_init);
+        AG_ASSERT (g_init && "logging unit initialised");
 
         ag_log_info("stopping log");
 
@@ -224,6 +224,10 @@ extern void
 __ag_log_debug__(const char *func, const char *file, int line, const char *msg,
     ...)
 {
+        AG_ASSERT (*func && "function name valid string");
+        AG_ASSERT (*file && "file path valid string");
+        AG_ASSERT (*msg && "log message valid string");
+
         char meta[1024];
         snprintf(meta, 1024, "[%s() @ %s:%d]", func, file, line);
 
