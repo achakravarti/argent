@@ -46,12 +46,12 @@
  * around variable argument lists.
  */
 
-#define LOG_WRITE(MSG, LVL) do {                                \
+#define WRITE_NOMETA(L, M) do {                                 \
         AG_ASSERT (g_init && "logging unit initialised");       \
-        AG_ASSERT (*MSG && "message valid string");             \
+        AG_ASSERT (*M && "message valid string");               \
         va_list ap;                                             \
-        va_start(ap, MSG);                                      \
-        vsyslog(LVL, MSG, ap);                                  \
+        va_start(ap, M);                                        \
+        vsyslog(L, M, ap);                                      \
         va_end(ap);                                             \
 } while (0)
 
@@ -112,27 +112,6 @@ ag_log_exit(void)
 
 
 /*******************************************************************************
- * `ag_log_write()` writes a formatted message to the system log with a given
- * priority level. The priority level is passed through the first parameter, the
- * message through the second, and the format specifiers through the variable
- * argument list. The format specifiers are rquired only if the message is
- * formatted. This function also takes care to ensure the debug messages are
- * logged only in debug builds.
- */
-
-void 
-ag_log_write(enum ag_log_level lvl, const char *msg, ...)
-{
-#ifdef NDEBUG
-        if (AG_LIKELY (lvl != AG_LOG_LEVEL_DEBUG)
-                LOG_WRITE(msg, lvl);
-#else
-        LOG_WRITE(msg, lvl);
-#endif
-}
-
-
-/*******************************************************************************
  * `ag_log_emerg()` is a convenience wrapper around `ag_log_write()` that logs a
  * formatted emergency message to the system log. The message is passed through
  * the first parameter, and the format specifiers are passed through the
@@ -143,7 +122,7 @@ ag_log_write(enum ag_log_level lvl, const char *msg, ...)
 void
 ag_log_emerg(const char *msg, ...)
 {
-        LOG_WRITE(msg, AG_LOG_LEVEL_EMERG);
+        WRITE_NOMETA(AG_LOG_LEVEL_EMERG, msg);
 }
 
 
@@ -156,7 +135,7 @@ ag_log_emerg(const char *msg, ...)
 void
 ag_log_crit(const char *msg, ...)
 {
-        LOG_WRITE(msg, AG_LOG_LEVEL_CRIT);
+        WRITE_NOMETA(AG_LOG_LEVEL_CRIT, msg);
 
 }
 
@@ -170,7 +149,7 @@ ag_log_crit(const char *msg, ...)
 void
 ag_log_warning(const char *msg, ...)
 {
-        LOG_WRITE(msg, AG_LOG_LEVEL_WARNING);
+        WRITE_NOMETA(AG_LOG_LEVEL_WARNING, msg);
 }
 
 
@@ -181,9 +160,9 @@ ag_log_warning(const char *msg, ...)
  */
 
 void 
-ag_log_notice(const char *fmt, ...)
+ag_log_notice(const char *msg, ...)
 {
-        LOG_WRITE(fmt, AG_LOG_LEVEL_NOTICE);
+        WRITE_NOMETA(AG_LOG_LEVEL_NOTICE, msg);
 }
 
 
@@ -196,7 +175,7 @@ ag_log_notice(const char *fmt, ...)
 void
 ag_log_info(const char *msg, ...)
 {
-        LOG_WRITE(msg, AG_LOG_LEVEL_INFO);
+        WRITE_NOMETA(AG_LOG_LEVEL_INFO, msg);
 }
 
 
