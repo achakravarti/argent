@@ -34,16 +34,16 @@
  *
  */
 
-static inline size_t    *meta_head(const ag_memblock *ctx);
-static inline size_t     meta_sz(const ag_memblock *ctx);
-static inline size_t     meta_refc(const ag_memblock *ctx);
+static AG_NONULL inline size_t  *meta_head(const ag_memblock *ctx);
+static AG_NONULL inline size_t   meta_sz(const ag_memblock *ctx);
+static AG_NONULL inline size_t   meta_refc(const ag_memblock *ctx);
 
 
 /*******************************************************************************
  *
  */
 
-extern inline bool      ag_memblock_lt(const ag_memblock *,
+extern inline bool      ag_memblock_lt(const ag_memblock *, 
                             const ag_memblock *);
 extern inline bool      ag_memblock_eq(const ag_memblock *,
                             const ag_memblock *);
@@ -58,7 +58,7 @@ extern inline bool      ag_memblock_gt(const ag_memblock *,
 extern ag_memblock *
 ag_memblock_new(size_t sz)
 {
-        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
+        AG_ASSERT (sz && "memory size valid");
 
         size_t sz2 = sz + sizeof(size_t) * 2;
         size_t *ctx = malloc(sz2);
@@ -81,8 +81,8 @@ ag_memblock_new(size_t sz)
 extern ag_memblock *
 ag_memblock_new_align(size_t sz, size_t align)
 {
-        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
-        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
+        AG_ASSERT (sz && "memory size valid");
+        AG_ASSERT (align && !(align % 2) && "memory alignment valid");
        
         size_t sz2 = sz + sizeof(size_t) * 2; 
         size_t *ctx;
@@ -120,8 +120,6 @@ ag_memblock_copy(const ag_memblock *ctx)
 extern ag_memblock *
 ag_memblock_clone(const ag_memblock *ctx)
 {
-        AG_ASSERT_PTR (ctx);
-
         size_t sz = meta_sz(ctx);
         ag_memblock *cp = ag_memblock_new(sz);
         memcpy(cp, ctx, sz);
@@ -137,8 +135,7 @@ ag_memblock_clone(const ag_memblock *ctx)
 extern ag_memblock *
 ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
 {
-        AG_ASSERT_PTR (ctx);
-        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
+        AG_ASSERT (align && !(align % 2) && "memory alignment valid");
 
         size_t sz = meta_sz(ctx);
         ag_memblock *cp = ag_memblock_new_align(sz, align);
@@ -184,8 +181,6 @@ ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
 extern size_t
 ag_memblock_sz(const ag_memblock *ctx)
 {
-        AG_ASSERT_PTR (ctx);
-
         return meta_sz(ctx);
 }
 
@@ -197,8 +192,6 @@ ag_memblock_sz(const ag_memblock *ctx)
 extern size_t
 ag_memblock_sz_total(const ag_memblock *ctx)
 {
-        AG_ASSERT_PTR (ctx);
-
         return malloc_usable_size(meta_head(ctx));
 }
 
@@ -210,8 +203,6 @@ ag_memblock_sz_total(const ag_memblock *ctx)
 extern size_t
 ag_memblock_refc(const ag_memblock *ctx)
 {
-        AG_ASSERT_PTR (ctx);
-
         return meta_refc(ctx);
 }
 
@@ -223,9 +214,7 @@ ag_memblock_refc(const ag_memblock *ctx)
 extern bool
 ag_memblock_aligned(const ag_memblock *ctx, size_t align)
 {
-        AG_ASSERT_PTR (ctx);
-        //AG_ASSERT (is_alignment_valid(align));
-        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
+        AG_ASSERT (align && !(align % 2) && "memory alignment valid");
 
         return !((uintptr_t)meta_head(ctx) & (align - 1));
 }
@@ -238,9 +227,8 @@ ag_memblock_aligned(const ag_memblock *ctx, size_t align)
 extern void
 ag_memblock_resize(ag_memblock **ctx, size_t sz)
 {
-        AG_ASSERT_PTR (ctx && *ctx);
-        //AG_ASSERT (is_size_valid(sz));
-        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
+        AG_ASSERT (*ctx && "memory handle valid");
+        AG_ASSERT (sz && "memory size valid");
 
         ag_memblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
@@ -260,11 +248,9 @@ ag_memblock_resize(ag_memblock **ctx, size_t sz)
 extern void
 ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
 {
-        AG_ASSERT_PTR (ctx && *ctx);
-        //AG_ASSERT (is_size_valid(sz));
-        AG_ASSERT_TAG ("MEM_SIZE_VALID", sz);
-        //AG_ASSERT (is_alignment_valid(align));
-        AG_ASSERT_TAG ("MEM_ALIGN_VALID", align && !(align % 2));
+        AG_ASSERT (*ctx && "memory handle valid");
+        AG_ASSERT (sz && "memory size valid");
+        AG_ASSERT (align && !(align % 2) && "memory alignment valid");
 
         ag_memblock *hnd = *ctx;
         size_t oldsz = meta_sz(hnd);
@@ -284,8 +270,6 @@ ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
 extern ag_string *
 ag_memblock_str(const ag_memblock *ctx)
 {
-        AG_ASSERT_PTR (ctx);
-
         return (ag_string_new_fmt("address = %p, data sz = %lu,"
             " total data = %lu, refc = %lu", (void *)meta_head(ctx),
             meta_sz(ctx), ag_memblock_sz_total(ctx), meta_refc(ctx)));
