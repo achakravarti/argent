@@ -44,6 +44,7 @@ extern "C" {
 #define AG_COLD         __attribute__((cold))
 #define AG_HOT          __attribute__((hot))
 #define AG_LIKELY(P)    (__builtin_expect(!!(P), 1))
+#define AG_NONULL       __attribute__((nonnull))
 #define AG_PURE         __attribute__((pure))
 #define AG_THREADLOCAL  __thread
 #define AG_UNLIKELY(P)  (__builtin_expect(!!(P), 0))
