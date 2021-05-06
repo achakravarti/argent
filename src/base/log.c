@@ -65,7 +65,7 @@ do {                                                            \
  * does not need to call this function directly.
  */
 
-extern void
+void
 ag_log_init(const char *ident)
 {
         AG_ASSERT (!g_init && "logging unit not initialised");
@@ -85,7 +85,7 @@ ag_log_init(const char *ident)
  * so.
  */
 
-extern void
+void
 ag_log_exit(void)
 {
         AG_ASSERT (g_init && "logging unit initialised");
@@ -106,7 +106,7 @@ ag_log_exit(void)
  * logged only in debug builds.
  */
 
-extern void 
+void 
 ag_log_write(enum ag_log_level lvl, const char *msg, ...)
 {
 #ifdef NDEBUG
@@ -126,7 +126,7 @@ ag_log_write(enum ag_log_level lvl, const char *msg, ...)
  * message is formatted.
  */
 
-extern void
+void
 ag_log_emerg(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_EMERG);
@@ -139,7 +139,7 @@ ag_log_emerg(const char *msg, ...)
  * the same as `ag_log_emerg()`.
  */
 
-extern void
+void
 ag_log_alert(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_ALERT);
@@ -152,7 +152,7 @@ ag_log_alert(const char *msg, ...)
  * the same as `ag_log_emerg()`.
  */
 
-extern void
+void
 ag_log_crit(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_CRIT);
@@ -166,7 +166,7 @@ ag_log_crit(const char *msg, ...)
  * the same as `ag_log_emerg()`.
  */
 
-extern void
+void
 ag_log_err(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_ERR);
@@ -179,7 +179,7 @@ ag_log_err(const char *msg, ...)
  * semantically the same as `ag_log_emerg()`.
  */
 
-extern void
+void
 ag_log_warning(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_WARNING);
@@ -192,7 +192,7 @@ ag_log_warning(const char *msg, ...)
  * the same as `ag_log_emerg()`.
  */
 
-extern void 
+void 
 ag_log_notice(const char *fmt, ...)
 {
         LOG_WRITE(fmt, AG_LOG_LEVEL_NOTICE);
@@ -205,7 +205,7 @@ ag_log_notice(const char *fmt, ...)
  * semantically the same as `ag_log_emerg()`.
  */
 
-extern void
+void
 ag_log_info(const char *msg, ...)
 {
         LOG_WRITE(msg, AG_LOG_LEVEL_INFO);
@@ -220,7 +220,7 @@ ag_log_info(const char *msg, ...)
  */
 
 #ifndef NDEBUG
-extern void
+void
 __ag_log_debug__(const char *func, const char *file, int line, const char *msg,
     ...)
 {

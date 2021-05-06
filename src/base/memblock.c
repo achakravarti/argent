@@ -55,7 +55,7 @@ extern inline bool      ag_memblock_gt(const ag_memblock *,
  *
  */
 
-extern ag_memblock *
+ag_memblock *
 ag_memblock_new(size_t sz)
 {
         AG_ASSERT (sz && "memory size valid");
@@ -78,7 +78,7 @@ ag_memblock_new(size_t sz)
  *
  */
 
-extern ag_memblock *
+ag_memblock *
 ag_memblock_new_align(size_t sz, size_t align)
 {
         AG_ASSERT (sz && "memory size valid");
@@ -103,7 +103,7 @@ ag_memblock_new_align(size_t sz, size_t align)
  *
  */
 
-extern ag_memblock *
+ag_memblock *
 ag_memblock_copy(const ag_memblock *ctx)
 {
         ag_memblock *cp = (ag_memblock *)ctx;
@@ -117,7 +117,7 @@ ag_memblock_copy(const ag_memblock *ctx)
  *
  */
 
-extern ag_memblock *
+ag_memblock *
 ag_memblock_clone(const ag_memblock *ctx)
 {
         size_t sz = meta_sz(ctx);
@@ -132,7 +132,7 @@ ag_memblock_clone(const ag_memblock *ctx)
  *
  */
 
-extern ag_memblock *
+ag_memblock *
 ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
 {
         AG_ASSERT (align && !(align % 2) && "memory alignment valid");
@@ -149,7 +149,7 @@ ag_memblock_clone_align(const ag_memblock *ctx, size_t align)
  *
  */
 
-extern void
+void
 ag_memblock_release(ag_memblock **ctx)
 {
         size_t *hnd;
@@ -167,7 +167,7 @@ ag_memblock_release(ag_memblock **ctx)
  *
  */
 
-extern enum ag_cmp
+enum ag_cmp
 ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
 {
         return ctx == cmp ? AG_CMP_EQ : memcmp(ctx, cmp, meta_sz(ctx));
@@ -178,7 +178,7 @@ ag_memblock_cmp(const ag_memblock *ctx, const ag_memblock *cmp)
  *
  */
 
-extern size_t
+size_t
 ag_memblock_sz(const ag_memblock *ctx)
 {
         return meta_sz(ctx);
@@ -189,7 +189,7 @@ ag_memblock_sz(const ag_memblock *ctx)
  *
  */
 
-extern size_t
+size_t
 ag_memblock_sz_total(const ag_memblock *ctx)
 {
         return malloc_usable_size(meta_head(ctx));
@@ -200,7 +200,7 @@ ag_memblock_sz_total(const ag_memblock *ctx)
  *
  */
 
-extern size_t
+size_t
 ag_memblock_refc(const ag_memblock *ctx)
 {
         return meta_refc(ctx);
@@ -211,7 +211,7 @@ ag_memblock_refc(const ag_memblock *ctx)
  *
  */
 
-extern bool
+bool
 ag_memblock_aligned(const ag_memblock *ctx, size_t align)
 {
         AG_ASSERT (align && !(align % 2) && "memory alignment valid");
@@ -224,7 +224,7 @@ ag_memblock_aligned(const ag_memblock *ctx, size_t align)
  *
  */
 
-extern void
+void
 ag_memblock_resize(ag_memblock **ctx, size_t sz)
 {
         AG_ASSERT (*ctx && "memory handle valid");
@@ -245,7 +245,7 @@ ag_memblock_resize(ag_memblock **ctx, size_t sz)
  *
  */
 
-extern void
+void
 ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
 {
         AG_ASSERT (*ctx && "memory handle valid");
@@ -267,7 +267,7 @@ ag_memblock_resize_align(ag_memblock **ctx, size_t sz, size_t align)
  *
  */
 
-extern ag_string *
+ag_string *
 ag_memblock_str(const ag_memblock *ctx)
 {
         return (ag_string_new_fmt("address = %p, data sz = %lu,"
@@ -281,7 +281,7 @@ ag_memblock_str(const ag_memblock *ctx)
  *
  */
 
-static inline size_t *
+size_t *
 meta_head(const ag_memblock *ctx)
 {
         return &((size_t *)ctx)[-2];
@@ -292,7 +292,7 @@ meta_head(const ag_memblock *ctx)
  *
  */
 
-static inline size_t
+size_t
 meta_sz(const ag_memblock *ctx)
 {
         return ((size_t *)ctx)[-1];
@@ -303,7 +303,7 @@ meta_sz(const ag_memblock *ctx)
  *
  */
 
-static inline size_t
+size_t
 meta_refc(const ag_memblock *ctx)
 {
         return ((size_t *)ctx)[-2];
