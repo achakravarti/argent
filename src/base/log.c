@@ -61,11 +61,11 @@
         AG_ASSERT (*FL && "file path valid string");            \
         AG_ASSERT (*M && "log message valid string");           \
         char meta[1024];                                        \
-        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);     \
+        snprintf(meta, 1024, "[%s() @ %s:%d]", FN, FL, LN);   \
         char body[1024];                                        \
         va_list ap;                                             \
         va_start(ap, M);                                        \
-        vsnprintf(body, 1024, M, ap);                           \
+        vsnprintf(body, 1024, M, ap);                         \
         va_end(ap);                                             \
         syslog(L, "%s %s", body, meta);                         \
 } while (0)
@@ -119,12 +119,6 @@ ag_log_exit(void)
  * message is formatted.
  */
 
-void
-ag_log_emerg(const char *msg, ...)
-{
-        WRITE_NOMETA(AG_LOG_LEVEL_EMERG, msg);
-}
-
 
 /*******************************************************************************
  * `ag_log_crit()` is a convenience wrapper around `ag_log_write()` that logs a
@@ -176,6 +170,22 @@ void
 ag_log_info(const char *msg, ...)
 {
         WRITE_NOMETA(AG_LOG_LEVEL_INFO, msg);
+}
+
+
+/*******************************************************************************
+ * `ag_log_emerg()` is a convenience wrapper around `ag_log_write()` that logs a
+ * formatted emergency message to the system log. The message is passed through
+ * the first parameter, and the format specifiers are passed through the
+ * variable argument list. The format specifiers are required only if the
+ * message is formatted.
+ */
+
+void
+__ag_log_emerg__(const char *func, const char *file, int line, const char *msg,
+    ...)
+{
+        WRITE_META(AG_LOG_LEVEL_EMERG, func, file, line, msg);
 }
 
 
