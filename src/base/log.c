@@ -24,7 +24,6 @@
 #include "../argent.h"
 
 #include <stdarg.h>
-#include <syslog.h>
 
 
 /*******************************************************************************
@@ -79,36 +78,55 @@ ag_log_exit(void)
 
 
 /*******************************************************************************
- * `WRTIE_NOMETA()` is a helper macro for writing log messages without any
- * additional code location metadata. This macro takes two parameters, the first
- * being the log level and the second being the message. We've used a macro
- * instead of a helper function in order to avoid the complication of passing
- * around variable argument lists.
+ * `__ag_log_write__()` is a protected helper function used for writing a log
+ * message without any code location metadata. Although this function has extern
+ * visibility, it is __not__ part of the logging unit interface; it is called by
+ * the following interface macros:
+ *   - `ag_log_crit()`
+ *   - `ag_log_warning()`
+ *   - `ag_log_notice()`
+ *   - `ag_log_info()`
+ *
+ * The log priority level is provided through the first parameter, and the log
+ * message (which may be formatted) is passed through the second parameter. In
+ * case the log message is formatted, then the format specifiers are passed
+ * through the variable argument list.
  */
 
 void
-__ag_log_write__(enum ag_log_level lvl, const char *msg, ...)
+__ag_log_write__(int pr, const char *msg, ...)
 {
         AG_ASSERT (g_init && "logging unit initialised");
         AG_ASSERT (*msg && "log message valid string");
 
         va_list ap;
         va_start(ap, msg);
-        vsyslog(lvl, msg, ap);
+        vsyslog(pr, msg, ap);
         va_end(ap);
 }
 
 
 /*******************************************************************************
- * The `WRITE_META()` helper macro is similar to `WRITE_NOMETA()`, but also adds
- * code location metadata to the log message. The first parameter is the log
- * level, the second the function name, the third the line number, and the
- * fourth the log message.
+ * `__ag_log_write_meta__()` is similar to `__ag_log_write__()`, except that it
+ * appends the code location metadata when writing the log message. It is used
+ * by the following interface macros:
+ *   - `ag_log_emerg()`
+ *   - `ag_log_alert()`
+ *   - `ag_log_err()`
+ *   - `ag_log_debug()`
+ *
+ * Since these particular macros are used to log messages for diagnosing adverse
+ * conditions, referring to the code location metadata (function, file and line
+ * number) is useful. The function name is especially useful for pin-pointing
+ * metaprogrammatically generated code.
+ *
+ * The code location metadata is passed through the first three parameters, and
+ * the remaining parameters are the same as in the case of `__ag_log_write__()`.
  */
 
 void
-__ag_log_write_meta__(const char *func, const char *file, int line,
-    enum ag_log_level lvl, const char *msg, ...)
+__ag_log_write_meta__(const char *func, const char *file, int line, int pr,
+    const char *msg, ...)
 {
         AG_ASSERT (g_init && "logging unit initialised");
         AG_ASSERT (*func && "function name valid string");
@@ -125,6 +143,6 @@ __ag_log_write_meta__(const char *func, const char *file, int line,
         vsnprintf(body, 1024, msg, ap);
         va_end(ap);
         
-        syslog(lvl, "%s %s", body, meta);
+        syslog(pr, "%s %s", body, meta);
 }
 

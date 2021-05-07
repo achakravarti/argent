@@ -30,6 +30,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <syslog.h>
 
 
 /*******************************************************************************
@@ -64,56 +65,66 @@ enum ag_cmp {
 
 
 /*******************************************************************************
+ * Logging is an essential component of any application, and the Argent Library
+ * provides this support through the logging unit of the base module. The
+ * logging unit is closely modelled around syslog, and currently requires a
+ * syslog daemon to be running on the host system.
  *
+ * In order to log a message, use one of the function-like macros defined below;
+ * each of these macros corresponds to a syslog priority level:
+ *   - `ag_log_emerg()`  : emergency condition
+ *   - `ag_log_alert()`  : something really bad has happened
+ *   - `ag_log_crit()`   : something really bad is about to happen
+ *   - `ag_log_err()`    : something bad has happened
+ *   - `ag_log_warning()`: something bad is about to happen
+ *   - `ag_log_notice()` : something important has happened
+ *   - `ag_log_info()`   : something normal has happened
+ *   - `ag_log_debug()`  : debug output
+ *
+ * `ag_log_debug()` is special in that it logs debug messages only in debug
+ * builds; in release builds (where the symbolic constant `NDEBUG` is defined)
+ * it results in a no-op.
+ *
+ * See src/base/log.c for more details.
  */
-
-enum ag_log_level {
-        AG_LOG_LEVEL_EMERG = 0,
-        AG_LOG_LEVEL_ALERT,
-        AG_LOG_LEVEL_CRIT,
-        AG_LOG_LEVEL_ERR,
-        AG_LOG_LEVEL_WARNING,
-        AG_LOG_LEVEL_NOTICE,
-        AG_LOG_LEVEL_INFO,
-        AG_LOG_LEVEL_DEBUG
-};
 
 extern AG_NONULL void   ag_log_init(const char *);
 extern void             ag_log_exit(void);
-extern AG_NONULL void   __ag_log_write__(enum ag_log_level, const char *, ...);
+
+extern AG_NONULL void   __ag_log_write__(int, const char *, ...);
 extern AG_NONULL void   __ag_log_write_meta__(const char *, const char *, int,
-                            enum ag_log_level, const char *, ...);
+                            int, const char *, ...);
 
 #define ag_log_emerg(MSG, ...)                                  \
         __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
-            AG_LOG_LEVEL_EMERG, MSG, ##__VA_ARGS__)
+            LOG_EMERG, MSG, ##__VA_ARGS__)
 
 #define ag_log_alert(MSG, ...)                                  \
         __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
-            AG_LOG_LEVEL_ALERT, MSG, ##__VA_ARGS__)
+            LOG_ALERT, MSG, ##__VA_ARGS__)
 
 #define ag_log_crit(MSG, ...)   \
-        __ag_log_write__(AG_LOG_LEVEL_CRIT, MSG, ##__VA_ARGS__)
+        __ag_log_write__(LOG_CRIT, MSG, ##__VA_ARGS__)
 
 #define ag_log_err(MSG, ...)                                    \
         __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
-            AG_LOG_LEVEL_ERR, MSG, ##__VA_ARGS__)
+            LOG_ERR, MSG, ##__VA_ARGS__)
 
 #define ag_log_warning(MSG, ...)   \
-        __ag_log_write__(AG_LOG_LEVEL_WARNING, MSG, ##__VA_ARGS__)
+        __ag_log_write__(LOG_WARNING, MSG, ##__VA_ARGS__)
 
 #define ag_log_notice(MSG, ...)   \
-        __ag_log_write__(AG_LOG_LEVEL_NOTICE, MSG, ##__VA_ARGS__)
+        __ag_log_write__(LOG_NOTICE, MSG, ##__VA_ARGS__)
 
 #define ag_log_info(MSG, ...)   \
-        __ag_log_write__(AG_LOG_LEVEL_INFO, MSG, ##__VA_ARGS__)
+        __ag_log_write__(LOG_INFO, MSG, ##__VA_ARGS__)
 
 #ifdef NDEBUG
 #       define ag_log_debug(MSG, ...)
 #else
 #       define ag_log_debug(MSG, ...)                                   \
                 __ag_log_write_meta__(__func__, __FILE__, __LINE__,     \
-                    AG_LOG_LEVEL_DEBUG, MSG, ##__VA_ARGS__)
+                    LOG_DEBUG, MSG, ##__VA_ARGS__)
 #endif
 
 
