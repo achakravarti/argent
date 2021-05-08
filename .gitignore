@@ -74,6 +74,7 @@ dkms.conf
 *.gcno
 
 # Development environment
-/bld
+ag-tests*
 tags
+Makefile
 

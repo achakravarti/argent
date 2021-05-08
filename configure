@@ -1,0 +1,473 @@
+#!/bin/sh
+################################################################################
+# SPDX-License-Identifier: GPL-3.0-only
+#
+# Argent---infrastructure for building web services
+# Copyright (C) 2020 Abhishek Chakravarti
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or(at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+#
+# You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+################################################################################
+
+
+# displays a green [OK] message
+ok() {
+	printf "[\033[0;32mOK\033[0m]   $1...\n"
+}
+
+
+# displays an orange [WARN] message
+warn() {
+	printf "[\033[0;33mWARN\033[0m] $1...\n"
+}
+
+
+# displays a red [FAIL] message
+fail() {
+	printf "[\033[0;31mFAIL\033[0m] $1.\n"
+	exit
+}
+
+
+# checks whether a binary is installed
+exists_bin() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		if which $1 1>/dev/null 2>/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		if which $1 >/dev/null 2>&1 ; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+
+# checks whether a library is installed
+exists_lib() {
+	if [ $OS = "FreeBSD" ] ; then
+		if [ $SHELL = "/bin/csh" ] ; then
+			if find /usr -name lib$1.so | grep $1 \
+			    1>/dev/null 2>/dev/null
+			then
+				return 0
+			else
+				return 1
+			fi
+		else
+			if find /usr -name lib$1.so | grep $1 >/dev/null 2>&1
+			then
+				return 0
+			else
+				return 1
+			fi
+		fi
+	fi
+
+	if [ $SHELL = "/bin/csh" ] ; then
+		if $LDCONFIG -p | grep lib$1 1>/dev/null 2>/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		if $LDCONFIG -p | grep lib$1 >/dev/null 2>&1 ; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+
+# prints the copyright notice
+copyright() {
+	echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
+	echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
+	echo "This is free software, and you are welcome to redistribute it"
+	echo "under certain conditions; see LICENSE for details."
+	echo ""
+}
+
+
+# checks whether we are running Linux or FreeBSD
+check_os() {
+	OS=`uname`
+	if [ $OS = "Linux" ] ; then
+		ok "GNU/Linux detected"
+	elif [ $OS = "FreeBSD" ] ; then
+		ok "FreeBSD detected"
+	else
+		fail "Unsupported OS; use FreeBSD or a Linux distro"
+	fi
+
+	[ -z $SHELL ] && ok "/bin/sh running" || ok "$SHELL running"
+}
+
+
+# checks whether required binaries are installed
+check_dep() {
+	exists_bin make
+	[ $? -ne 0 ] || MAKE=make
+	[ -z $MAKE ] && fail "make not found; install it first" \
+	    || ok "make found"
+	
+	exists_bin make
+	[ $? -ne 0 ] || LDCONFIG=ldconfig
+	[ -z $LDCONFIG ] && fail "ldconfig not found; install it first" \
+	    || ok "ldconfig found"
+
+	exists_bin gcc
+	[ $? -ne 0 ] || GCC=gcc
+	[ -z $GCC ] || ok "gcc found"
+	
+	exists_bin clang
+	[ $? -ne 0 ] || CLANG=clang
+	[ -z $CLANG ] || ok "clang found"
+
+	if [ -z $GCC ] && [ -z $CLANG ] ; then
+		fail "compiler not found; install either gcc or clang"
+	fi
+	
+	exists_bin ccache
+	[ $? -ne 0 ] || CCACHE=ccache
+	[ -z $CCACHE ] && warn "ccache not found; compilation caching skipped" \
+	    || ok "ccache found"
+	
+	exists_bin valgrind
+	[ $? -ne 0 ] || VALGRIND=valgrind
+	[ -z $VALGRIND ] && warn "valgrind not found; memory check skipped" \
+	    || ok "valgrind found"
+	
+	exists_bin gcovr
+	[ $? -ne 0 ] || GCOVR=gcovr
+	[ -z $GCOVR ] && warn "gcovr not found; test coverage skipped" \
+	    || ok "gcovr found"
+	
+	exists_bin psql
+	[ $? -ne 0 ] && PSQL= || PSQL=psql
+	
+	exists_bin pg_config
+	[ $? -ne 0 ] && PGCONFIG= || PGCONFIG=pg_config
+	[ -z $PGCONFIG ] && fail "pg_config not found; install it first" \
+	    || ok "pg_config found"
+}
+
+
+# checks whether required libraries are installed
+check_lib() {
+	exists_lib uuid
+	[ $? -ne 0 ] && fail "libuuid not found; install it first" \
+	    || ok "libuuid found"
+	
+	exists_lib pq
+	[ $? -ne 0 ] && fail "libpq not found; install it first" \
+	    || ok "libpq found"
+	
+	exists_lib fcgi
+	[ $? -ne 0 ] && fail "libfcgi not found; install it first" \
+	    || ok "libfcgi found"
+
+}
+
+
+# selects the compiler
+set_compiler() {
+	if [ ! -z $GCC ] && [ ! -z $CLANG ] && [ -z $CI ]; then
+		echo
+		echo "Both gcc and clang available; which one should I use?"
+		echo "  1) Default (gcc on Linux / clang on FreeBSD)"
+		echo "  2) gcc"
+		echo "  3) clang"
+		printf "\nSelect an option [default = 1]: "
+		read CC 
+
+		if [ -z $CC ] || [ $CC = "1" ] ; then
+			[ $OS = "Linux" ] && CC=gcc || CC=clang
+			ok "Default compiler selected, setting CC to $CC"
+		elif [ $CC = "2" ] ; then
+			CC=gcc
+			ok "gcc selected as compiler"
+		elif [ $CC = "3" ] ; then
+			CC=clang
+			ok "clang selected as compiler"
+		else
+			fail "invalid option selected"
+		fi
+	elif [ -z $GCC ] ; then
+		CC=clang
+		ok "clang selected as compiler"
+	else
+		if [ -z $CI ] ; then
+			CC=gcc
+			ok "gcc selected as compiler"
+		else
+			[ $OS = "Linux" ] && CC=gcc || CC=clang
+			ok "Default compiler selected, setting CC to $CC"
+		fi
+	fi
+}
+
+
+# creates empty Makefile
+mktouch() {
+	MAKEFILE=Makefile
+
+	if [ $SHELL = "/bin/csh" ] ; then
+		rm -f $MAKEFILE 1>/dev/null 2>/dev/null
+	else
+		rm -f $MAKEFILE >/dev/null 2>&1
+	fi
+
+	touch $MAKEFILE
+	ok "touched $MAKEFILE"
+}
+
+
+# prints to the Makefile
+mkwrite() {
+	printf "$1" >> $MAKEFILE
+}
+
+
+# prints the copyright header to the Makefile
+mkheader() {
+	mkwrite "###################################################"
+	mkwrite "#############################\n"
+ 
+	mkwrite "# SPDX-License-Identifier: GPL-3.0-only\n"
+	mkwrite "#\n"
+ 
+	mkwrite "# Argent---infrastructure for building web services\n"
+ 	mkwrite "# Copyright (C) 2020 Abhishek Chakravarti\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# This program is free software: you can "
+	mkwrite "redistribute it and/or modify it under\n"
+ 	mkwrite "# the terms of the GNU General Public License as "
+	mkwrite "published by the Free Software\n"
+ 	mkwrite "# Foundation, either version 3 of the License, or"
+	mkwrite "(at your option) any later\n"
+ 	mkwrite "# version.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# This program is distributed in the hope that it will be "
+	mkwrite "useful, but WITHOUT\n"
+ 	mkwrite "# ANY WARRANTY; without even the implied warranty of "
+	mkwrite "MERCHANTIBILITY or FITNESS\n"
+ 	mkwrite "# FOR A PARTICULAR PURPOSE. See the GNU General Public "
+	mkwrite "License for more\n"
+ 	mkwrite "# details.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# You should have received a copy of the GNU General Public "
+	mkwrite "License along with\n"
+ 	mkwrite "# this program. If not, see <https://www.gnu.org/licenses/>.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# You can contact Abhishek Chakravarti at "
+	mkwrite "<abhishek@taranjali.org>.\n"
+	
+	mkwrite "###################################################"
+	mkwrite "#############################\n\n\n"
+	
+	ok "$MAKEFILE header written"
+}
+
+
+# writes the Makefile variables
+mkvar() {
+	mkwrite "# dynamic library variables\n\n"
+	mkwrite "LDIR = src\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "LSRC!= find \$(LDIR)/ -type f -name '*.c'\n"
+		mkwrite "LOBJ = \$(LSRC:.c=.o)\n"
+	else
+		mkwrite "LSRC = \$(sort \$(shell find \$(LDIR)/ -type f -name "
+		mkwrite "'*.c'))\n"
+		mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(LSRC))\n"
+	fi
+
+	mkwrite "LBIN = libargent.so\n\n\n"
+
+	mkwrite "# test runner variables\n\n"
+	mkwrite "TDIR = test\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "TSRC!= find \$(TDIR) -type f -name '*.c'\n"
+	else
+		mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
+	fi
+
+	mkwrite "TBIN = ag-tests\n\n\n"
+
+	mkwrite "# build variables\n\n"
+	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+		[ -z $GCOVR ] || mkwrite " --coverage"
+		mkwrite " -I `pg_config --includedir`\n"
+		mkwrite "LDFLAGS = -rdynamic -L `pg_config --libdir`\n"
+	else
+		mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+		[ -z $GCOVR ] || mkwrite " --coverage"
+		mkwrite " -I \$(shell pg_config --includedir)\n"
+		mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)\n"
+	fi
+
+	mkwrite "LDLIBS = \$(LBIN) -lfcgi -lpq -luuid -ldl\n\n\n"
+
+	ok "$MAKEFILE variables written"
+}
+
+
+# writes the Makefile rules
+mkrule() {
+	mkwrite "# build rule for library\n\n"
+	mkwrite "\$(LBIN): \$(LOBJ)\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "\t\$(CC) \$(CFLAGS) \$(LDFLAGS) -shared \$(LOBJ) -o "
+		mkwrite "\$@\n\n\n"
+	else
+		mkwrite "\t\$(LINK.c) -shared $^ -o \$@\n\n\n"
+	fi
+
+	mkwrite "# build rule for test runner\n\n"
+	mkwrite "\$(TBIN): \$(TSRC) \$(LBIN)\n"
+	mkwrite "\t\$(CC) -g"
+	[ -z $GCOVR ] || mkwrite " --coverage"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite " -O0 \$(TSRC) \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
+	else
+		mkwrite " -O0 $^ \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
+	fi
+
+	mkwrite "# build rule for library objects\n\n"
+	mkwrite "%%.o: \$(LDIR)/%%.c\n"
+	mkwrite "\t\$(COMPILE.c) \$^ -o \$@\n\n\n"
+
+	ok "$MAKEFILE rules written"
+}
+
+
+# writes the Makefile targets
+mktarget() {
+	mkwrite "all: \$(LBIN)\n\n"
+
+	mkwrite "test: \$(TBIN)\n"
+	mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
+	mkwrite "./\$(TBIN)\n\n"
+
+	if [ ! -z $VALGRIND ] ; then
+		mkwrite "check: \$(TBIN)\n"
+		mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
+		mkwrite "$VALGRIND --tool=memcheck --leak-check=full"
+		mkwrite " --show-leak-kinds=all"
+		mkwrite " --track-origins=yes --log-file=\$(TBIN).vglog "
+		mkwrite "./\$(TBIN)\n"
+		mkwrite "\ttail \$(TBIN).vglog\n\n"
+	fi
+
+	if [ ! -z $GCOVR ] ; then
+		mkwrite "coverage:\n"
+		mkwrite "\t\$(GCOVR) -r .\n\n"
+	fi
+
+	mkwrite "install: \$(LBIN)\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent\n"
+	mkwrite "\t@cp src/argent.h /usr/local/include/argent\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/base\n"
+	mkwrite "\t@cp src/base/*.h /usr/local/include/argent/base\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/ds\n"
+	mkwrite "\t@cp src/ds/*.h /usr/local/include/argent/ds\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/ex\n"
+	mkwrite "\t@cp src/ex/*.h /usr/local/include/argent/ex\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/http\n"
+	mkwrite "\t@cp src/http/*.h /usr/local/include/argent/http\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/test\n"
+	mkwrite "\t@cp src/test/*.h /usr/local/include/argent/test\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/type\n"
+	mkwrite "\t@cp src/type/*.h /usr/local/include/argent/type\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/util\n"
+	mkwrite "\t@cp src/util/*.h /usr/local/include/argent/util\n"
+	mkwrite "\t@cp \$(LBIN) /usr/local/lib\n"
+	mkwrite "\t@$LDCONFIG\n"
+	mkwrite "\t@echo \"Successfully installed the Argent Library; "
+	mkwrite "to use:\"\n"
+	mkwrite "\t@echo \"  * include /usr/local/include/argent/argent.h "
+	mkwrite "in your code\"\n"
+	mkwrite "\t@echo \"  * link with /usr/local/lib/libargent.so\"\n\n"
+	
+	mkwrite "uninstall:\n"
+	mkwrite "\t@rm -rf /usr/local/include/argent\n"
+	mkwrite "\t@rm -rf /usr/local/\$(LBIN)\n\n"
+	mkwrite "\t@echo \"Successfully uninstalled the Argent Library.\"\n"
+
+	mkwrite "clean:\n"
+	mkwrite "\trm -rfv \$(TBIN)* \$(LBIN)\n"
+	mkwrite "\tfind . -type f -name '*.o' -delete\n"
+
+	if [ ! -z $GCOVR ] ; then
+		mkwrite "\tfind . -type f -name '*.gcno' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcda' -delete\n\n"
+	
+		mkwrite "tidy:\n"
+		mkwrite "\trm -rfv \$(TBIN)*\n"
+		mkwrite "\tfind . -type f -name '*.o' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcno' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcda' -delete\n\n"
+	fi
+
+	mkwrite "\n.PHONY: all test "
+	[ -z $VALGRIND ] || mkwrite "check "
+	mkwrite "install uninstall clean "
+	[ -z $GCOVR ] || mkwrite "tidy coverage"
+	mkwrite "\n\n"
+
+	ok "$MAKEFILE targets written"
+}
+
+
+# generate Makefile
+
+copyright
+echo "Starting Argent build configuration..."
+
+check_os
+check_dep
+check_lib
+set_compiler
+
+mktouch
+mkheader
+mkvar
+mkrule
+mktarget
+
+echo ""
+echo "$MAKEFILE generated successfully; run the following now:"
+echo "  * make"
+echo "  * make test (optional)"
+[ -z $VALGRIND ] || echo "  * make check (optional)"
+echo "  * [sudo] make install"
+
