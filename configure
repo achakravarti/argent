@@ -6,6 +6,11 @@ info() {
 }
 
 
+warn() {
+	echo "[WARNING] $1"
+}
+
+
 error() {
 	echo "[ERROR]   $1"
 	exit
@@ -33,7 +38,7 @@ os() {
 }
 
 
-depmet() {
+depreq() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
 			info "$1 found..."
@@ -50,11 +55,30 @@ depmet() {
 }
 
 
+depopt() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		if which $1 1>/dev/null 2>/dev/null ; then
+			info "$1 found..."
+		else
+			warn "$1 not found; $2 won't be available."
+		fi
+	else
+		if which $1 >&/dev/null ; then
+			info "$1 found..."
+		else
+			warn "$1 not found; $2 won't be available."
+		fi
+	fi
+}
+
+
 copyright
 info "Starting Argent build configuration..."
 os
-depmet cc "gcc or clang"
-depmet make "make"
-depmet ccache "ccache"
-depmet psql "postgresql"
-depmet valgrind "valgrind"
+depreq cc "gcc or clang"
+depreq make "make"
+depreq psql "postgresql"
+depopt ccache "compilation caching"
+depopt valgrind "make check"
+depopt gcovr "make coverage"
+
