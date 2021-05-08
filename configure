@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Copyright notice
+echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
+echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
+echo "This is free software, and you are welcome to redistribute it"
+echo "under certain conditions; see LICENSE for details."
+echo ""
+
