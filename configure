@@ -21,20 +21,41 @@ copyright() {
 }
 
 
+os() {
+	OS=`uname`
+	if [ $OS = "Linux" ] ; then
+		info "GNU/Linux detected..."
+	elif [ $OS = "FreeBSD" ] ; then
+		info "FreeBSD detected..."
+	else
+		error "Unsupported OS; use FreeBSD or a Linux distro."
+	fi
+}
+
+
+depmet() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		if which $1 2>/dev/null ; then
+			info "$1 found..."
+		else
+			error "$1 not found; install $2 first."
+		fi
+	else
+		if which $1 >&/dev/null ; then
+			info "$1 found..."
+		else
+			error "$1 not found; install $2 first."
+		fi
+	fi
+}
+
+
 copyright
 info "Starting Argent build configuration..."
+os
+depmet cc "gcc or clang"
 
 
-# Determine OS
-
-OS=`uname`
-if [ $OS = "Linux" ] ; then
-	info "GNU/Linux detected..."
-elif [ $OS = "FreeBSD" ] ; then
-	info "FreeBSD detected..."
-else
-	error "Unsupported OS; use FreeBSD or a Linux distro."
-fi
 
 
 # Determine shell
