@@ -40,7 +40,8 @@ fi
 
 # Check if required dependencies installed
 
-if which cc >> /dev/null $REDIRECT ; then
+#if which cc >> /dev/null $REDIRECT ; then
+if which cc >&/dev/null ; then
 	echo "[INFO]    cc found..."
 else
 	echo "[ERROR]   cc not found; install gcc or clang."
