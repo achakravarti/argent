@@ -55,28 +55,3 @@ info "Starting Argent build configuration..."
 os
 depmet cc "gcc or clang"
 
-
-
-
-# Determine shell
-
-if [ $SHELL = "/bin/bash" ] ; then
-	REDIRECT=`2>&1`
-	info "bash detected..."
-elif [ $SHELL = "/bin/csh" ] ; then
-	REDIRECT=`>&`
-	info "csh detected..."
-else
-	error "Unsupported shell; use bash/dash/csh/tcsh."
-fi
-
-
-# Check if required dependencies installed
-
-#if which cc >> /dev/null $REDIRECT ; then
-if which cc >&/dev/null ; then
-	info "cc found..."
-else
-	error "cc not found; install gcc or clang."
-fi
-
