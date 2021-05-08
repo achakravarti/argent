@@ -17,27 +17,6 @@ error() {
 }
 
 
-copyright() {
-	echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
-	echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
-	echo "This is free software, and you are welcome to redistribute it"
-	echo "under certain conditions; see LICENSE for details."
-	echo ""
-}
-
-
-os() {
-	OS=`uname`
-	if [ $OS = "Linux" ] ; then
-		info "GNU/Linux detected..."
-	elif [ $OS = "FreeBSD" ] ; then
-		info "FreeBSD detected..."
-	else
-		error "Unsupported OS; use FreeBSD or a Linux distro."
-	fi
-}
-
-
 depreq() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
@@ -72,11 +51,37 @@ depopt() {
 }
 
 
+copyright() {
+	echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
+	echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
+	echo "This is free software, and you are welcome to redistribute it"
+	echo "under certain conditions; see LICENSE for details."
+	echo ""
+}
+
+
+check_os() {
+	OS=`uname`
+	if [ $OS = "Linux" ] ; then
+		info "GNU/Linux detected..."
+	elif [ $OS = "FreeBSD" ] ; then
+		info "FreeBSD detected..."
+	else
+		error "Unsupported OS; use FreeBSD or a Linux distro."
+	fi
+}
+
+
+check_make() {
+	depreq make "make"
+}
+
+
 copyright
 info "Starting Argent build configuration..."
-os
+check_os
+check_make
 depreq cc "gcc or clang"
-depreq make "make"
 depreq psql "postgresql"
 depopt ccache "compilation caching"
 depopt valgrind "make check"
