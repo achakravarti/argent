@@ -35,7 +35,7 @@ os() {
 
 depmet() {
 	if [ $SHELL = "/bin/csh" ] ; then
-		if which $1 2>/dev/null ; then
+		if which $1 1>/dev/null 2>/dev/null ; then
 			info "$1 found..."
 		else
 			error "$1 not found; install $2 first."
