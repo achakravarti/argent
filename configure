@@ -54,4 +54,7 @@ copyright
 info "Starting Argent build configuration..."
 os
 depmet cc "gcc or clang"
-
+depmet make "make"
+depmet ccache "ccache"
+depmet psql "postgresql"
+depmet valgrind "valgrind"
