@@ -1,6 +1,11 @@
 #!/bin/sh
 
 
+info() {
+	echo "[INFO]    $1"
+}
+
+
 # Copyright notice
 
 echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
@@ -8,16 +13,17 @@ echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
 echo "This is free software, and you are welcome to redistribute it"
 echo "under certain conditions; see LICENSE for details."
 echo ""
-echo "[INFO]    Starting Argent build configuration..."
+#echo "[INFO]    Starting Argent build configuration..."
+info "Starting Argent build configuration..."
 
 
 # Determine OS
 
 OS=`uname`
 if [ $OS = "Linux" ] ; then
-	echo "[INFO]    GNU/Linux detected..."
+	info "GNU/Linux detected..."
 elif [ $OS = "FreeBSD" ] ; then
-	echo "[INFO]    FreeBSD detected..."
+	info "FreeBSD detected..."
 else
 	echo "[ERROR]   Unsupported OS; use FreeBSD or a Linux distro."
 	exit
@@ -28,10 +34,10 @@ fi
 
 if [ $SHELL = "/bin/bash" ] ; then
 	REDIRECT=`2>&1`
-	echo "[INFO]    bash detected..."
+	info "bash detected..."
 elif [ $SHELL = "/bin/csh" ] ; then
 	REDIRECT=`>&`
-	echo "[INFO]    csh detected..."
+	info "csh detected..."
 else
 	echo "[ERROR]   Unsupported shell; use bash/dash/csh/tcsh."
 	exit
@@ -42,7 +48,7 @@ fi
 
 #if which cc >> /dev/null $REDIRECT ; then
 if which cc >&/dev/null ; then
-	echo "[INFO]    cc found..."
+	info "cc found..."
 else
 	echo "[ERROR]   cc not found; install gcc or clang."
 	exit
