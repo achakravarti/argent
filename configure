@@ -1,6 +1,8 @@
 #!/bin/sh
 
+
 # Copyright notice
+
 echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
 echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
 echo "This is free software, and you are welcome to redistribute it"
@@ -9,15 +11,39 @@ echo ""
 echo "[INFO]    Starting Argent build configuration..."
 
 
+# Determine OS
+
 OS=`uname`
 if [ $OS = "Linux" ] ; then
 	echo "[INFO]    GNU/Linux detected..."
 elif [ $OS = "FreeBSD" ] ; then
 	echo "[INFO]    FreeBSD detected..."
 else
-	echo "[ERROR]   Unsupported OS; please use FreeBSD or a Linux distro."
+	echo "[ERROR]   Unsupported OS; use FreeBSD or a Linux distro."
 	exit
 fi
 
 
+# Determine shell
+
+if [ $SHELL = "/bin/bash" ] ; then
+	REDIRECT=`2>&1`
+	echo "[INFO]    bash detected..."
+elif [ $SHELL = "/bin/csh" ] ; then
+	REDIRECT=`>&`
+	echo "[INFO]    csh detected..."
+else
+	echo "[ERROR]   Unsupported shell; use bash/dash/csh/tcsh."
+	exit
+fi
+
+
+# Check if required dependencies installed
+
+if which cc >> /dev/null $REDIRECT ; then
+	echo "[INFO]    cc found..."
+else
+	echo "[ERROR]   cc not found; install gcc or clang."
+	exit
+fi
 
