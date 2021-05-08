@@ -6,6 +6,12 @@ info() {
 }
 
 
+error() {
+	echo "[ERROR]   $1"
+	exit
+}
+
+
 # Copyright notice
 
 echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
@@ -13,7 +19,6 @@ echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
 echo "This is free software, and you are welcome to redistribute it"
 echo "under certain conditions; see LICENSE for details."
 echo ""
-#echo "[INFO]    Starting Argent build configuration..."
 info "Starting Argent build configuration..."
 
 
@@ -25,8 +30,7 @@ if [ $OS = "Linux" ] ; then
 elif [ $OS = "FreeBSD" ] ; then
 	info "FreeBSD detected..."
 else
-	echo "[ERROR]   Unsupported OS; use FreeBSD or a Linux distro."
-	exit
+	error "Unsupported OS; use FreeBSD or a Linux distro."
 fi
 
 
@@ -39,8 +43,7 @@ elif [ $SHELL = "/bin/csh" ] ; then
 	REDIRECT=`>&`
 	info "csh detected..."
 else
-	echo "[ERROR]   Unsupported shell; use bash/dash/csh/tcsh."
-	exit
+	error "Unsupported shell; use bash/dash/csh/tcsh."
 fi
 
 
@@ -50,7 +53,6 @@ fi
 if which cc >&/dev/null ; then
 	info "cc found..."
 else
-	echo "[ERROR]   cc not found; install gcc or clang."
-	exit
+	error "cc not found; install gcc or clang."
 fi
 
