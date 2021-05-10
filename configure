@@ -1,34 +1,64 @@
 #!/bin/sh
 
 
-info() {
-	echo "[INFO]    $1"
+ok() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		echo "[\033[0;32mOK\033[0m]   $1"
+	else
+		echo -e "[\033[0;32mOK\033[0m] $1"
+	fi
 }
 
 
 warn() {
-	echo "[WARNING] $1"
+	if [ $SHELL = "/bin/csh" ] ; then
+		echo "[\033[0;33mWARN\033[0m] $1"
+	else
+		echo -e "[\033[0;33mWARN\033[0m] $1"
+	fi
 }
 
 
-error() {
-	echo "[ERROR]   $1"
+fail() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		echo "[\033[0;31mFAIL\033[0m] $1"
+	else
+		echo -e "[\033[0;31mFAIL\033[0m] $1"
+	fi
+
 	exit
+}
+
+
+exists() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		if which $1 1>/dev/null 2>/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		if which $1 >&/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	fi
 }
 
 
 depreq() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
-			info "$1 found..."
+			ok "$1 found..."
 		else
-			error "$1 not found; install $2 first."
+			fail "$1 not found; install $2 first."
 		fi
 	else
 		if which $1 >&/dev/null ; then
-			info "$1 found..."
+			ok "$1 found..."
 		else
-			error "$1 not found; install $2 first."
+			fail "$1 not found; install $2 first."
 		fi
 	fi
 }
@@ -37,13 +67,13 @@ depreq() {
 depopt() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
-			info "$1 found..."
+			ok "$1 found..."
 		else
 			warn "$1 not found; $2 won't be available."
 		fi
 	else
 		if which $1 >&/dev/null ; then
-			info "$1 found..."
+			ok "$1 found..."
 		else
 			warn "$1 not found; $2 won't be available."
 		fi
@@ -63,9 +93,9 @@ copyright() {
 check_os() {
 	OS=`uname`
 	if [ $OS = "Linux" ] ; then
-		info "GNU/Linux detected..."
+		ok "GNU/Linux detected..."
 	elif [ $OS = "FreeBSD" ] ; then
-		info "FreeBSD detected..."
+		ok "FreeBSD detected..."
 	else
 		error "Unsupported OS; use FreeBSD or a Linux distro."
 	fi
@@ -73,15 +103,28 @@ check_os() {
 
 
 check_make() {
-	depreq make "make"
+	exists make
+
+	if [ "$?" -ne "0" ] ; then
+		error "make not available; install it first."
+	else
+		ok "make found."
+	fi
+}
+
+
+check_compiler() {
+	[ $OS = "Linux" ] && CC=gcc || CC=clang
+	depreq $CC $CC
 }
 
 
 copyright
-info "Starting Argent build configuration..."
+echo "Starting Argent build configuration..."
 check_os
 check_make
-depreq cc "gcc or clang"
+check_compiler
+#depreq cc "gcc or clang"
 depreq psql "postgresql"
 depopt ccache "compilation caching"
 depopt valgrind "make check"
