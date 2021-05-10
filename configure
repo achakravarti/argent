@@ -17,7 +17,16 @@ fail() {
 }
 
 
-exists() {
+required() {
+	[[ -z $1 ]] && error "$2 not found; install it first" || ok "$2 found"
+}
+
+optional() {
+	[[ -z $1 ]] && warn "$2 not found; $3 not available" || ok "$2 found"
+}
+
+
+exists_bin() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
 			return 0
@@ -29,40 +38,6 @@ exists() {
 			return 0
 		else
 			return 1
-		fi
-	fi
-}
-
-
-depreq() {
-	if [ $SHELL = "/bin/csh" ] ; then
-		if which $1 1>/dev/null 2>/dev/null ; then
-			ok "$1 found..."
-		else
-			fail "$1 not found; install $2 first."
-		fi
-	else
-		if which $1 >&/dev/null ; then
-			ok "$1 found..."
-		else
-			fail "$1 not found; install $2 first."
-		fi
-	fi
-}
-
-
-depopt() {
-	if [ $SHELL = "/bin/csh" ] ; then
-		if which $1 1>/dev/null 2>/dev/null ; then
-			ok "$1 found..."
-		else
-			warn "$1 not found; $2 won't be available."
-		fi
-	else
-		if which $1 >&/dev/null ; then
-			ok "$1 found..."
-		else
-			warn "$1 not found; $2 won't be available."
 		fi
 	fi
 }
@@ -89,14 +64,38 @@ check_os() {
 }
 
 
-check_make() {
-	exists make
+check_dep() {
+	exists_bin make
+	[[ $? -ne 0 ]] && MAKE= || MAKE=make
+	required $MAKE "make"
 
-	if [ "$?" -ne "0" ] ; then
-		error "make not available; install it first."
-	else
-		ok "make found."
-	fi
+	exists_bin gcc
+	[[ $? -ne 0 ]] && GCC= || GCC=gcc
+	[[ -z $GCC ]] && echo "" || ok "gcc found"
+	
+	exists_bin clang
+	[[ $? -ne 0 ]] && CLANG= || CLANG=clang
+	[[ -z $CLANG ]] && echo "" || ok "clang found"
+	
+	exists_bin ccache
+	[[ $? -ne 0 ]] && CCACHE= || CCACHE=ccache
+	optional $CCACHE "ccache" "compilation caching"
+	
+	exists_bin valgrind
+	[[ $? -ne 0 ]] && VALGRIND= || VALGRIND=valgrind
+	optional $VALGRIND "valgrind" "memory check"
+	
+	exists_bin gcovr
+	[[ $? -ne 0 ]] && GCOVR= || GCOVR=gcovr
+	optional $GCOVR "gcovr" "test coverage"
+	
+	exists_bin psql
+	[[ $? -ne 0 ]] && PSQL= || PSQL=psql
+	required $PSQL "PostgreSQL server"
+	
+	exists_bin pg_config
+	[[ $? -ne 0 ]] && PGCONFIG= || PGCONFIG=pg_config
+	required $PGCONFIG "libpq"
 }
 
 
@@ -109,11 +108,5 @@ check_compiler() {
 copyright
 echo "Starting Argent build configuration..."
 check_os
-check_make
-check_compiler
-#depreq cc "gcc or clang"
-depreq psql "postgresql"
-depopt ccache "compilation caching"
-depopt valgrind "make check"
-depopt gcovr "make coverage"
+check_dep
 
