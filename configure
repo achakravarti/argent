@@ -17,12 +17,6 @@ fail() {
 }
 
 
-required() {
-	[ -z $1 ] && error "$2 not found; install it first" || ok "$2 found"
-}
-
-
-
 exists_bin() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
@@ -56,7 +50,7 @@ check_os() {
 	elif [ $OS = "FreeBSD" ] ; then
 		ok "FreeBSD detected..."
 	else
-		error "Unsupported OS; use FreeBSD or a Linux distro."
+		fail "Unsupported OS; use FreeBSD or a Linux distro."
 	fi
 }
 
@@ -64,16 +58,20 @@ check_os() {
 check_dep() {
 	exists_bin make
 	[ $? -ne 0 ] || MAKE=make
-	[ -z $MAKE ] && error "make not found; install it first" \
+	[ -z $MAKE ] && fail "make not found; install it first" \
 	    || ok "make found"
 
 	exists_bin gcc
-	[ $? -ne 0 ] && GCC= || GCC=gcc
+	[ $? -ne 0 ] || GCC=gcc
 	[ -z $GCC ] || ok "gcc found"
 	
 	exists_bin clang
-	[ $? -ne 0 ] && CLANG= || CLANG=clang
+	[ $? -ne 0 ] || CLANG=clang
 	[ -z $CLANG ] || ok "clang found"
+
+	if [ -z $GCC ] || [ -z $CLANG ] ; then
+		fail "compiler not found; install either gcc or clang"
+	fi
 	
 	exists_bin ccache
 	[ $? -ne 0 ] || CCACHE=ccache
@@ -95,14 +93,40 @@ check_dep() {
 	
 	exists_bin pg_config
 	[ $? -ne 0 ] && PGCONFIG= || PGCONFIG=pg_config
-	[ -z $PGCONFIG ] && error "libpq not found; install it first" \
+	[ -z $PGCONFIG ] && fail "libpq not found; install it first" \
 	    || ok "libpq found"
 }
 
 
-check_compiler() {
-	[ $OS = "Linux" ] && CC=gcc || CC=clang
-	depreq $CC $CC
+set_compiler() {
+	if [ ! -z $GCC ] && [ ! -z $CLANG ] ; then
+		echo
+		echo "Both gcc and clang available; which do I use?"
+		echo "  1) Default (gcc on Linux / clang on FreeBSD)"
+		echo "  2) gcc"
+		echo "  3) clang"
+		printf "Select an option [default = 1]: "
+		read CC 
+
+		if [ -z $CC ] || [ $CC = "1" ] ; then
+			[ $OS = "Linux" ] && CC=gcc || CC=clang
+			ok "default compiler selected, setting CC to $CC"
+		elif [ $CC = "2" ] ; then
+			CC=gcc
+			ok "gcc selected as compiler"
+		elif [ $CC = "3" ] ; then
+			CC=clang
+			ok "clang selected as compiler"
+		else
+			fail "invalid option selected"
+		fi
+	elif [ -z $GCC ] ; then
+		CC=clang
+		ok "clang selected as compiler"
+	else
+		CC=gcc
+		ok "gcc selected as compiler"
+	fi
 }
 
 
@@ -110,4 +134,5 @@ copyright
 echo "Starting Argent build configuration..."
 check_os
 check_dep
+set_compiler
 
