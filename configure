@@ -69,7 +69,7 @@ check_dep() {
 	[ $? -ne 0 ] || CLANG=clang
 	[ -z $CLANG ] || ok "clang found"
 
-	if [ -z $GCC ] || [ -z $CLANG ] ; then
+	if [ -z $GCC ] && [ -z $CLANG ] ; then
 		fail "compiler not found; install either gcc or clang"
 	fi
 	
