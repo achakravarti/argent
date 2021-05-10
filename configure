@@ -21,9 +21,6 @@ required() {
 	[ -z $1 ] && error "$2 not found; install it first" || ok "$2 found"
 }
 
-optional() {
-	[ -z $1 ] && warn "$2 not found; $3 not available" || ok "$2 found"
-}
 
 
 exists_bin() {
@@ -66,36 +63,40 @@ check_os() {
 
 check_dep() {
 	exists_bin make
-	[ $? -ne 0 ] && MAKE= || MAKE=make
-	required $MAKE "make"
+	[ $? -ne 0 ] || MAKE=make
+	[ -z $MAKE ] && error "make not found; install it first" \
+	    || ok "make found"
 
 	exists_bin gcc
 	[ $? -ne 0 ] && GCC= || GCC=gcc
-	[ -z $GCC ] && echo "" || ok "gcc found"
+	[ -z $GCC ] || ok "gcc found"
 	
 	exists_bin clang
 	[ $? -ne 0 ] && CLANG= || CLANG=clang
-	[ -z $CLANG ] && echo "" || ok "clang found"
+	[ -z $CLANG ] || ok "clang found"
 	
 	exists_bin ccache
-	[ $? -ne 0 ] && CCACHE= || CCACHE=ccache
-	optional $CCACHE "ccache" "compilation caching"
+	[ $? -ne 0 ] || CCACHE=ccache
+	[ -z $CCACHE ] && warn "ccache not found; compilation caching skipped" \
+	    || ok "ccache found"
 	
 	exists_bin valgrind
-	[ $? -ne 0 ] && VALGRIND= || VALGRIND=valgrind
-	optional $VALGRIND "valgrind" "memory check"
+	[ $? -ne 0 ] || VALGRIND=valgrind
+	[ -z $VALGRIND ] && warn "valgrind not found; memory check skipped" \
+	    || ok "valgrind found"
 	
 	exists_bin gcovr
-	[ $? -ne 0 ] && GCOVR= || GCOVR=gcovr
-	optional $GCOVR "gcovr" "test coverage"
+	[ $? -ne 0 ] || GCOVR=gcovr
+	[ -z $GCOVR ] && warn "gcovr not found; test coverage skipped" \
+	    || ok "gcovr found"
 	
 	exists_bin psql
 	[ $? -ne 0 ] && PSQL= || PSQL=psql
-	required $PSQL "PostgreSQL server"
 	
 	exists_bin pg_config
 	[ $? -ne 0 ] && PGCONFIG= || PGCONFIG=pg_config
-	required $PGCONFIG "libpq"
+	[ -z $PGCONFIG ] && error "libpq not found; install it first" \
+	    || ok "libpq found"
 }
 
 
