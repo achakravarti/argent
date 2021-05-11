@@ -130,16 +130,66 @@ set_compiler() {
 }
 
 
-touch_makefile() {
+mkwrite() {
+	printf "$1" >> $MAKEFILE
+}
+
+
+mktouch() {
+	MAKEFILE=makefile
+
 	if [ $SHELL = "/bin/csh" ] ; then
-		rm -f makefile 1>/dev/null 2>/dev/null
-		touch makefile
+		rm -f $MAKEFILE 1>/dev/null 2>/dev/null
 	else
-		rm -f makefile >&/dev/null
-		touch makefile
+		rm -f $MAKEFILE >&/dev/null
 	fi
 
-	ok "touched makefile"
+	touch $MAKEFILE
+	ok "touched $MAKEFILE"
+}
+
+
+mkheader() {
+	mkwrite "###################################################"
+	mkwrite "#############################\n"
+ 
+	mkwrite "# SPDX-License-Identifier: GPL-3.0-only\n"
+	mkwrite "#\n"
+ 
+	mkwrite "# Argent---infrastructure for building web services\n"
+ 	mkwrite "# Copyright (C) 2020 Abhishek Chakravarti\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# This program is free software: you can "
+	mkwrite "redistribute it and/or modify it under\n"
+ 	mkwrite "# the terms of the GNU General Public License as "
+	mkwrite "published by the Free Software\n"
+ 	mkwrite "# Foundation, either version 3 of the License, or"
+	mkwrite "(at your option) any later\n"
+ 	mkwrite "# version.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# This program is distributed in the hope that it will be "
+	mkwrite "useful, but WITHOUT\n"
+ 	mkwrite "# ANY WARRANTY; without even the implied warranty of "
+	mkwrite "MERCHANTIBILITY or FITNESS\n"
+ 	mkwrite "# FOR A PARTICULAR PURPOSE. See the GNU General Public "
+	mkwrite "License for more\n"
+ 	mkwrite "# details.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# You should have received a copy of the GNU General Public "
+	mkwrite "License along with\n"
+ 	mkwrite "# this program. If not, see <https://www.gnu.org/licenses/>.\n"
+ 	mkwrite "#\n"
+ 
+	mkwrite "# You can contact Abhishek Chakravarti at "
+	mkwrite "<abhishek@taranjali.org>.\n"
+	
+	mkwrite "###################################################"
+	mkwrite "#############################\n"
+	
+	ok "header written"
 }
 
 
@@ -150,5 +200,6 @@ check_os
 check_dep
 set_compiler
 
-touch_makefile
+mktouch
+mkheader
 
