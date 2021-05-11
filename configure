@@ -130,9 +130,25 @@ set_compiler() {
 }
 
 
+touch_makefile() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		rm -f makefile 1>/dev/null 2>/dev/null
+		touch makefile
+	else
+		rm -f makefile >&/dev/null
+		touch makefile
+	fi
+
+	ok "touched makefile"
+}
+
+
 copyright
 echo "Starting Argent build configuration..."
+
 check_os
 check_dep
 set_compiler
+
+touch_makefile
 
