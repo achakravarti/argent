@@ -187,9 +187,31 @@ mkheader() {
 	mkwrite "<abhishek@taranjali.org>.\n"
 	
 	mkwrite "###################################################"
-	mkwrite "#############################\n"
+	mkwrite "#############################\n\n\n"
 	
 	ok "header written"
+}
+
+
+mkvar() {
+	mkwrite "# build variables\n\n"
+	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
+	mkwrite "CFLAGS = -fPIC -g --coverage -O0 -Wall -Wextra \\ \n"
+	mkwrite "\t-I \$(shell pg_config --includedir)\n"
+	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)"
+	mkwrite " -lfcgi -lpq -luuid -ldl\n\n\n"
+
+	mkwrite "# library variables\n\n"
+	mkwrite "LDIR = src\n"
+	mkwrite "LSRC = \$(sort \$(shell find \$(DIR_LIB)/ -type f -name "
+	mkwrite "'*.c'))\n"
+	mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(SRC_LIB))\n"
+	mkwrite "LBIN = libargent.so\n\n\n"
+
+	mkwrite "# test variables\n\n"
+	mkwrite "TDIR = test\n"
+	mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
+	mkwrite "TBIN = \$ag-tests\n\n\n"
 }
 
 
@@ -202,4 +224,6 @@ set_compiler
 
 mktouch
 mkheader
+mkvar
+
 
