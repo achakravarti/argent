@@ -196,22 +196,63 @@ mkheader() {
 mkvar() {
 	mkwrite "# build variables\n\n"
 	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
-	mkwrite "CFLAGS = -fPIC -g --coverage -O0 -Wall -Wextra \\ \n"
-	mkwrite "\t-I \$(shell pg_config --includedir)\n"
+	mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+	[ -z $GCOVR ] || mkwrite " --coverage"
+	mkwrite " -I \$(shell pg_config --includedir)\n"
 	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)"
 	mkwrite " -lfcgi -lpq -luuid -ldl\n\n\n"
 
 	mkwrite "# library variables\n\n"
 	mkwrite "LDIR = src\n"
-	mkwrite "LSRC = \$(sort \$(shell find \$(DIR_LIB)/ -type f -name "
+	mkwrite "LSRC = \$(sort \$(shell find \$(LDIR)/ -type f -name "
 	mkwrite "'*.c'))\n"
-	mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(SRC_LIB))\n"
+	mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(LSRC))\n"
 	mkwrite "LBIN = libargent.so\n\n\n"
 
 	mkwrite "# test variables\n\n"
 	mkwrite "TDIR = test\n"
 	mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
-	mkwrite "TBIN = \$ag-tests\n\n\n"
+	mkwrite "TBIN = ag-tests\n\n\n"
+}
+
+
+mkrule() {
+	mkwrite "# build rule for library\n\n"
+	mkwrite "\$(LBIN): \$(LOBJ)\n"
+	mkwrite "\t\$(LINK.c) -shared $^ -o \$@\n\n\n"
+
+	mkwrite "# build rule for test runner\n\n"
+	mkwrite "\$(TBIN): \$(TSRC) ./\$(LBIN)\n"
+	mkwrite "\t\$(CC) -g --coverage -O0 $^ \$(LDFLAGS) -o \$@\n\n\n"
+
+	mkwrite "# build rule for library objects\n\n"
+	mkwrite "%%.o: \$(LDIR)/%%.c\n"
+	mkwrite "\t\$(COMPILE.c) \$^ -o \$@\n\n\n"
+}
+
+
+mktarget() {
+	mkwrite "all: \$(LBIN)\n\n"
+
+	mkwrite "test: \$(TBIN)\n"
+	mkwrite "\t./\$(TBIN)\n\n"
+
+	mkwrite "clean:\n"
+	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
+	mkwrite "\tfind . -type f -name '*.o' -delete\n"
+
+	if [ ! -z $GCOVR ] ; then
+		mkwrite "\tfind . -type f -name '*.gcno' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcda' -delete\n\n"
+	
+		mkwrite "tidy:\n"
+		mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
+		mkwrite "\tfind . -type f -name '*.o' -delete\n\n"
+	fi
+
+	mkwrite "\n.PHONY: all test clean "
+	[ -z $GCOVR ] || mkwrite "tidy coverage"
+	mkwrite "\n\n"
 }
 
 
@@ -225,5 +266,6 @@ set_compiler
 mktouch
 mkheader
 mkvar
-
+mkrule
+mktarget
 
