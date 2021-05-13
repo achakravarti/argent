@@ -2,17 +2,17 @@
 
 
 ok() {
-	printf "[\033[0;32mOK\033[0m]   $1\n"
+	printf "[\033[0;32mOK\033[0m]   $1...\n"
 }
 
 
 warn() {
-	printf "[\033[0;33mWARN\033[0m] $1\n"
+	printf "[\033[0;33mWARN\033[0m] $1...\n"
 }
 
 
 fail() {
-	printf "[\033[0;31mFAIL\033[0m] $1\n"
+	printf "[\033[0;31mFAIL\033[0m] $1.\n"
 	exit
 }
 
@@ -63,11 +63,11 @@ copyright() {
 check_os() {
 	OS=`uname`
 	if [ $OS = "Linux" ] ; then
-		ok "GNU/Linux detected..."
+		ok "GNU/Linux detected"
 	elif [ $OS = "FreeBSD" ] ; then
-		ok "FreeBSD detected..."
+		ok "FreeBSD detected"
 	else
-		fail "Unsupported OS; use FreeBSD or a Linux distro."
+		fail "Unsupported OS; use FreeBSD or a Linux distro"
 	fi
 }
 
@@ -143,12 +143,12 @@ set_compiler() {
 		echo "  1) Default (gcc on Linux / clang on FreeBSD)"
 		echo "  2) gcc"
 		echo "  3) clang"
-		printf "Select an option [default = 1]: "
+		printf "\nSelect an option [default = 1]: "
 		read CC 
 
 		if [ -z $CC ] || [ $CC = "1" ] ; then
 			[ $OS = "Linux" ] && CC=gcc || CC=clang
-			ok "default compiler selected, setting CC to $CC"
+			ok "Default compiler selected, setting CC to $CC"
 		elif [ $CC = "2" ] ; then
 			CC=gcc
 			ok "gcc selected as compiler"
@@ -227,7 +227,7 @@ mkheader() {
 	mkwrite "###################################################"
 	mkwrite "#############################\n\n\n"
 	
-	ok "header written"
+	ok "$MAKEFILE header written"
 }
 
 
@@ -251,6 +251,8 @@ mkvar() {
 	mkwrite " -I \$(shell pg_config --includedir)\n"
 	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)\n"
 	mkwrite "LDLIBS = \$(LBIN) -lfcgi -lpq -luuid -ldl\n\n\n"
+
+	ok "$MAKEFILE variables written"
 }
 
 
@@ -268,6 +270,8 @@ mkrule() {
 	mkwrite "# build rule for library objects\n\n"
 	mkwrite "%%.o: \$(LDIR)/%%.c\n"
 	mkwrite "\t\$(COMPILE.c) \$^ -o \$@\n\n\n"
+
+	ok "$MAKEFILE rules written"
 }
 
 
@@ -294,6 +298,8 @@ mktarget() {
 	mkwrite "\n.PHONY: all test clean "
 	[ -z $GCOVR ] || mkwrite "tidy coverage"
 	mkwrite "\n\n"
+
+	ok "$MAKEFILE targets written"
 }
 
 
@@ -310,4 +316,11 @@ mkheader
 mkvar
 mkrule
 mktarget
+
+echo ""
+echo "$MAKEFILE generated successfully; run the following now:"
+echo "  * make"
+echo "  * make test (optional)"
+[ -z $VALGRIND ] || echo "  * make check (optional)"
+echo "  * make install"
 
