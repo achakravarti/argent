@@ -35,14 +35,33 @@ exists_bin() {
 
 
 exists_lib() {
+	if [ $OS = "FreeBSD" ] ; then
+		if [ $SHELL = "/bin/csh" ] ; then
+			if find /usr -name lib$1.so | grep $1 \
+			    1>/dev/null 2>/dev/null
+			then
+				return 0
+			else
+				return 1
+			fi
+		else
+			if find /usr -nname lib$1.so | grep $1 >&/dev/null
+			then
+				return 0
+			else
+				return 1
+			fi
+		fi
+	fi
+
 	if [ $SHELL = "/bin/csh" ] ; then
-		if ldconfig -p | grep $1 1>/dev/null 2>/dev/null ; then
+		if ldconfig -p | grep lib$1 1>/dev/null 2>/dev/null ; then
 			return 0
 		else
 			return 1
 		fi
 	else
-		if ldconfig -p | grep $1 >&/dev/null ; then
+		if ldconfig -p | grep lib$1 >&/dev/null ; then
 			return 0
 		else
 			return 1
@@ -121,15 +140,15 @@ check_dep() {
 
 
 check_lib() {
-	exists_lib libuuid
+	exists_lib uuid
 	[ $? -ne 0 ] && fail "libuuid not found; install it first" \
 	    || ok "libuuid found"
 	
-	exists_lib libpq
+	exists_lib pq
 	[ $? -ne 0 ] && fail "libpq not found; install it first" \
 	    || ok "libpq found"
 	
-	exists_lib libfcgi
+	exists_lib fcgi
 	[ $? -ne 0 ] && fail "libfcgi not found; install it first" \
 	    || ok "libfcgi found"
 
