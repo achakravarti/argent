@@ -139,7 +139,7 @@ check_lib() {
 set_compiler() {
 	if [ ! -z $GCC ] && [ ! -z $CLANG ] ; then
 		echo
-		echo "Both gcc and clang available; which do I use?"
+		echo "Both gcc and clang available; which one should I use?"
 		echo "  1) Default (gcc on Linux / clang on FreeBSD)"
 		echo "  2) gcc"
 		echo "  3) clang"
