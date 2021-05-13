@@ -25,6 +25,7 @@
 ### Prerequisites
 
 #### Debian/Ubuntu
+  - `libfcgi-dev`
   - `uuid-dev`
   - `valgrind`
 
@@ -32,6 +33,7 @@
   - `gmake`
   - `ccache`
   - `e2fsprogs-libuuid`
+  - `fcgi-devkit`
   - `postgresql12-server`
   - `postgresql12-client`
   - `postgresql-libpgeasy`
