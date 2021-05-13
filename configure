@@ -194,25 +194,25 @@ mkheader() {
 
 
 mkvar() {
-	mkwrite "# build variables\n\n"
-	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
-	mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
-	[ -z $GCOVR ] || mkwrite " --coverage"
-	mkwrite " -I \$(shell pg_config --includedir)\n"
-	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)"
-	mkwrite " -lfcgi -lpq -luuid -ldl\n\n\n"
-
-	mkwrite "# library variables\n\n"
+	mkwrite "# dynamic library variables\n\n"
 	mkwrite "LDIR = src\n"
 	mkwrite "LSRC = \$(sort \$(shell find \$(LDIR)/ -type f -name "
 	mkwrite "'*.c'))\n"
 	mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(LSRC))\n"
 	mkwrite "LBIN = libargent.so\n\n\n"
 
-	mkwrite "# test variables\n\n"
+	mkwrite "# test runner variables\n\n"
 	mkwrite "TDIR = test\n"
 	mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
 	mkwrite "TBIN = ag-tests\n\n\n"
+
+	mkwrite "# build variables\n\n"
+	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
+	mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+	[ -z $GCOVR ] || mkwrite " --coverage"
+	mkwrite " -I \$(shell pg_config --includedir)\n"
+	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)\n"
+	mkwrite "LDLIBS = \$(LBIN) -lfcgi -lpq -luuid -ldl\n\n\n"
 }
 
 
@@ -223,7 +223,9 @@ mkrule() {
 
 	mkwrite "# build rule for test runner\n\n"
 	mkwrite "\$(TBIN): \$(TSRC) ./\$(LBIN)\n"
-	mkwrite "\t\$(CC) -g --coverage -O0 $^ \$(LDFLAGS) -o \$@\n\n\n"
+	mkwrite "\t\$(CC) -g"
+	[ -z $GCOVR ] || mkwrite " --coverage"
+	mkwrite " -O0 $^ \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
 
 	mkwrite "# build rule for library objects\n\n"
 	mkwrite "%%.o: \$(LDIR)/%%.c\n"
@@ -235,7 +237,8 @@ mktarget() {
 	mkwrite "all: \$(LBIN)\n\n"
 
 	mkwrite "test: \$(TBIN)\n"
-	mkwrite "\t./\$(TBIN)\n\n"
+	mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
+	mkwrite "./\$(TBIN)\n\n"
 
 	mkwrite "clean:\n"
 	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
