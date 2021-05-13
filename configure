@@ -334,6 +334,21 @@ mktarget() {
 	mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
 	mkwrite "./\$(TBIN)\n\n"
 
+	if [ ! -z $VALGRIND ] ; then
+		mkwrite "check:\n"
+		mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
+		mkwrite "$VALGRIND --tool=memcheck --leak-check=full"
+		mkwrite " --show-leak-kinds=all"
+		mkwrite " --track-origins=yes --log-file=\$(TBIN).vglog "
+		mkwrite "./\$(TBIN)\n"
+		mkwrite "\ttail \$(TBIN).vglog\n\n"
+	fi
+
+	if [ ! -z $GCOVR ] ; then
+		mkwrite "coverage:\n"
+		mkwrite "\t\$(GCOVR) -r .\n\n"
+	fi
+
 	mkwrite "clean:\n"
 	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
 	mkwrite "\tfind . -type f -name '*.o' -delete\n"
@@ -347,7 +362,9 @@ mktarget() {
 		mkwrite "\tfind . -type f -name '*.o' -delete\n\n"
 	fi
 
-	mkwrite "\n.PHONY: all test clean "
+	mkwrite "\n.PHONY: all test "
+	[ -z $VALGRIND ] || mkwrite "check "
+	mkwrite "clean "
 	[ -z $GCOVR ] || mkwrite "tidy coverage"
 	mkwrite "\n\n"
 
