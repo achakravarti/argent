@@ -34,6 +34,23 @@ exists_bin() {
 }
 
 
+exists_lib() {
+	if [ $SHELL = "/bin/csh" ] ; then
+		if ldconfig -p | grep $1 1>/dev/null 2>/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		if ldconfig -p | grep $1 >&/dev/null ; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+}
+
+
 copyright() {
 	echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
 	echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
@@ -60,6 +77,11 @@ check_dep() {
 	[ $? -ne 0 ] || MAKE=make
 	[ -z $MAKE ] && fail "make not found; install it first" \
 	    || ok "make found"
+	
+	exists_bin make
+	[ $? -ne 0 ] || LDCONFIG=ldconfig
+	[ -z $LDCONFIG ] && fail "ldconfig not found; install it first" \
+	    || ok "ldconfig found"
 
 	exists_bin gcc
 	[ $? -ne 0 ] || GCC=gcc
@@ -93,8 +115,24 @@ check_dep() {
 	
 	exists_bin pg_config
 	[ $? -ne 0 ] && PGCONFIG= || PGCONFIG=pg_config
-	[ -z $PGCONFIG ] && fail "libpq not found; install it first" \
+	[ -z $PGCONFIG ] && fail "pg_config not found; install it first" \
+	    || ok "pg_config found"
+}
+
+
+check_lib() {
+	exists_lib libuuid
+	[ $? -ne 0 ] && fail "libuuid not found; install it first" \
+	    || ok "libuuid found"
+	
+	exists_lib libpq
+	[ $? -ne 0 ] && fail "libpq not found; install it first" \
 	    || ok "libpq found"
+	
+	exists_lib libfcgi
+	[ $? -ne 0 ] && fail "libfcgi not found; install it first" \
+	    || ok "libfcgi found"
+
 }
 
 
@@ -264,6 +302,7 @@ echo "Starting Argent build configuration..."
 
 check_os
 check_dep
+check_lib
 set_compiler
 
 mktouch
