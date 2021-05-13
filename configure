@@ -253,22 +253,44 @@ mkheader() {
 mkvar() {
 	mkwrite "# dynamic library variables\n\n"
 	mkwrite "LDIR = src\n"
-	mkwrite "LSRC = \$(sort \$(shell find \$(LDIR)/ -type f -name "
-	mkwrite "'*.c'))\n"
-	mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(LSRC))\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "LSRC!= find \$(LDIR)/ -type f -name '*.c'\n"
+		mkwrite "LOBJ = \$(LSRC:.c=.o)\n"
+	else
+		mkwrite "LSRC = \$(sort \$(shell find \$(LDIR)/ -type f -name "
+		mkwrite "'*.c'))\n"
+		mkwrite "LOBJ = \$(patsubst %%.c, %%.o, \$(LSRC))\n"
+	fi
+
 	mkwrite "LBIN = libargent.so\n\n\n"
 
 	mkwrite "# test runner variables\n\n"
 	mkwrite "TDIR = test\n"
-	mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "TSRC!= find \$(TDIR) -type f -name '*.c'\n"
+	else
+		mkwrite "TSRC = \$(sort \$(wildcard \$(TDIR)/*.c))\n"
+	fi
+
 	mkwrite "TBIN = ag-tests\n\n\n"
 
 	mkwrite "# build variables\n\n"
 	[ -z $CCACHE ] && mkwrite "CC = $CC\n" || mkwrite "CC = ccache $CC\n"
-	mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
-	[ -z $GCOVR ] || mkwrite " --coverage"
-	mkwrite " -I \$(shell pg_config --includedir)\n"
-	mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+		[ -z $GCOVR ] || mkwrite " --coverage"
+		mkwrite " -I `pg_config --includedir`\n"
+		mkwrite "LDFLAGS = -rdynamic -L `pg_config --libdir`\n"
+	else
+		mkwrite "CFLAGS = -fPIC -g -O0 -Wall -Wextra"
+		[ -z $GCOVR ] || mkwrite " --coverage"
+		mkwrite " -I \$(shell pg_config --includedir)\n"
+		mkwrite "LDFLAGS = -rdynamic -L \$(shell pg_config --libdir)\n"
+	fi
+
 	mkwrite "LDLIBS = \$(LBIN) -lfcgi -lpq -luuid -ldl\n\n\n"
 
 	ok "$MAKEFILE variables written"
@@ -278,13 +300,24 @@ mkvar() {
 mkrule() {
 	mkwrite "# build rule for library\n\n"
 	mkwrite "\$(LBIN): \$(LOBJ)\n"
-	mkwrite "\t\$(LINK.c) -shared $^ -o \$@\n\n\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite "\t\$(CC) \$(CFLAGS) \$(LDFLAGS) -shared \$(LOBJ) -o "
+		mkwrite "\$@\n\n\n"
+	else
+		mkwrite "\t\$(LINK.c) -shared $^ -o \$@\n\n\n"
+	fi
 
 	mkwrite "# build rule for test runner\n\n"
-	mkwrite "\$(TBIN): \$(TSRC) ./\$(LBIN)\n"
+	mkwrite "\$(TBIN): \$(TSRC) \$(LBIN)\n"
 	mkwrite "\t\$(CC) -g"
 	[ -z $GCOVR ] || mkwrite " --coverage"
-	mkwrite " -O0 $^ \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
+
+	if [ $OS = "FreeBSD" ] ; then
+		mkwrite " -O0 \$(TSRC) \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
+	else
+		mkwrite " -O0 $^ \$(LDFLAGS) \$(LDLIBS) -o \$@\n\n\n"
+	fi
 
 	mkwrite "# build rule for library objects\n\n"
 	mkwrite "%%.o: \$(LDIR)/%%.c\n"
