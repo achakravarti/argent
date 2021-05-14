@@ -8,9 +8,8 @@ compiler:
   - gcc
 
 before_install:
-  - which clang
   - sudo apt update
-  - sudo apt remove clang
+  - sudo apt remove clang-7
   - sudo apt install uuid-dev
   - sudo apt install valgrind
   - sudo apt install libfcgi-dev
