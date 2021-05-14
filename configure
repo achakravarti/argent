@@ -187,13 +187,8 @@ set_compiler() {
 }
 
 
-mkwrite() {
-	printf "$1" >> $MAKEFILE
-}
-
-
 mktouch() {
-	MAKEFILE=makefile
+	MAKEFILE=Makefile
 
 	if [ $SHELL = "/bin/csh" ] ; then
 		rm -f $MAKEFILE 1>/dev/null 2>/dev/null
@@ -203,6 +198,11 @@ mktouch() {
 
 	touch $MAKEFILE
 	ok "touched $MAKEFILE"
+}
+
+
+mkwrite() {
+	printf "$1" >> $MAKEFILE
 }
 
 
