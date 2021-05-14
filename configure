@@ -117,7 +117,7 @@ check_os() {
 		fail "Unsupported OS; use FreeBSD or a Linux distro"
 	fi
 
-	ok "$SHELL running"
+	[ -z $SHELL ] && ok "/bin/sh running" || ok "$SHELL running"
 }
 
 
@@ -214,13 +214,13 @@ set_compiler() {
 		CC=clang
 		ok "clang selected as compiler"
 	else
-		CC=gcc
-		ok "gcc selected as compiler"
-	fi
-	
-	if [ ! -z $GCC ] && [ ! -z $CLANG ] && [ ! -z $CI ]; then
-		[ $OS = "Linux" ] && CC=gcc || CC=clang
-		ok "Default compiler selected, setting CC to $CC"
+		if [ -z $CI ] ; then
+			CC=gcc
+			ok "gcc selected as compiler"
+		else
+			[ $OS = "Linux" ] && CC=gcc || CC=clang
+			ok "Default compiler selected, setting CC to $CC"
+		fi
 	fi
 }
 
