@@ -9,6 +9,7 @@ compiler:
 
 before_install:
   - sudo apt update
+  - sudo apt remove clang
   - sudo apt install uuid-dev
   - sudo apt install valgrind
   - sudo apt install libfcgi-dev
