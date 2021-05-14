@@ -8,6 +8,7 @@ compiler:
   - gcc
 
 before_install:
+  - which clang
   - sudo apt update
   - sudo apt remove clang
   - sudo apt install uuid-dev
