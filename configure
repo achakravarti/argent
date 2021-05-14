@@ -349,6 +349,31 @@ mktarget() {
 		mkwrite "\t\$(GCOVR) -r .\n\n"
 	fi
 
+	mkwrite "install: \$(LBIN)\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent\n"
+	mkwrite "\tcp src/argent.h /usr/local/include/argent\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/base\n"
+	mkwrite "\tcp src/base/*.h /usr/local/include/argent/base\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/ds\n"
+	mkwrite "\tcp src/ds/*.h /usr/local/include/argent/ds\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/ex\n"
+	mkwrite "\tcp src/ex/*.h /usr/local/include/argent/ex\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/http\n"
+	mkwrite "\tcp src/http/*.h /usr/local/include/argent/http\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/test\n"
+	mkwrite "\tcp src/test/*.h /usr/local/include/argent/test\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/type\n"
+	mkwrite "\tcp src/type/*.h /usr/local/include/argent/type\n"
+	mkwrite "\tmkdir -p /usr/local/include/argent/util\n"
+	mkwrite "\tcp src/util/*.h /usr/local/include/argent/util\n"
+	mkwrite "\tcp \$(LBIN) /usr/local/lib\n"
+	mkwrite "\t@echo \"\"\n"
+	mkwrite "\t@echo \"Successfully installed the Argent Library.\"\n\n"
+	
+	mkwrite "uninstall:\n"
+	mkwrite "\trm -rfv /usr/local/include/argent\n"
+	mkwrite "\trm -rf /usr/local/\$(LBIN)\n\n"
+
 	mkwrite "clean:\n"
 	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
 	mkwrite "\tfind . -type f -name '*.o' -delete\n"
@@ -364,7 +389,7 @@ mktarget() {
 
 	mkwrite "\n.PHONY: all test "
 	[ -z $VALGRIND ] || mkwrite "check "
-	mkwrite "clean "
+	mkwrite "install uninstall clean "
 	[ -z $GCOVR ] || mkwrite "tidy coverage"
 	mkwrite "\n\n"
 
