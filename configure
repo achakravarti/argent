@@ -189,7 +189,7 @@ check_lib() {
 
 # selects the compiler
 set_compiler() {
-	if [ ! -z $GCC ] && [ ! -z $CLANG ] ; then
+	if [ ! -z $GCC ] && [ ! -z $CLANG ] && [ -z $CI ]; then
 		echo
 		echo "Both gcc and clang available; which one should I use?"
 		echo "  1) Default (gcc on Linux / clang on FreeBSD)"
@@ -216,6 +216,11 @@ set_compiler() {
 	else
 		CC=gcc
 		ok "gcc selected as compiler"
+	fi
+	
+	if [ ! -z $GCC ] && [ ! -z $CLANG ] && [ ! -z $CI ]; then
+		[ $OS = "Linux" ] && CC=gcc || CC=clang
+		ok "Default compiler selected, setting CC to $CC"
 	fi
 }
 
