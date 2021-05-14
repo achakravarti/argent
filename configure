@@ -417,7 +417,7 @@ mktarget() {
 	mkwrite "\t@echo \"Successfully uninstalled the Argent Library.\"\n"
 
 	mkwrite "clean:\n"
-	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
+	mkwrite "\trm -rfv \$(TBIN)* \$(LBIN)\n"
 	mkwrite "\tfind . -type f -name '*.o' -delete\n"
 
 	if [ ! -z $GCOVR ] ; then
@@ -425,8 +425,10 @@ mktarget() {
 		mkwrite "\tfind . -type f -name '*.gcda' -delete\n\n"
 	
 		mkwrite "tidy:\n"
-		mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
-		mkwrite "\tfind . -type f -name '*.o' -delete\n\n"
+		mkwrite "\trm -rfv \$(TBIN)*\n"
+		mkwrite "\tfind . -type f -name '*.o' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcno' -delete\n"
+		mkwrite "\tfind . -type f -name '*.gcda' -delete\n\n"
 	fi
 
 	mkwrite "\n.PHONY: all test "
