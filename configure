@@ -116,6 +116,8 @@ check_os() {
 	else
 		fail "Unsupported OS; use FreeBSD or a Linux distro"
 	fi
+
+	ok "$SHELL running"
 }
 
 
