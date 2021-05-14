@@ -50,7 +50,7 @@ exists_bin() {
 			return 1
 		fi
 	else
-		if which $1 >&/dev/null ; then
+		if which $1 >/dev/null 2>&1 ; then
 			return 0
 		else
 			return 1
@@ -71,7 +71,7 @@ exists_lib() {
 				return 1
 			fi
 		else
-			if find /usr -nname lib$1.so | grep $1 >&/dev/null
+			if find /usr -nname lib$1.so | grep $1 >/dev/null 2>&1
 			then
 				return 0
 			else
@@ -87,7 +87,7 @@ exists_lib() {
 			return 1
 		fi
 	else
-		if $LDCONFIG -p | grep lib$1 >&/dev/null ; then
+		if $LDCONFIG -p | grep lib$1 >/dev/null 2>&1 ; then
 			return 0
 		else
 			return 1
