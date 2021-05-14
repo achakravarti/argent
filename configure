@@ -372,7 +372,7 @@ mktarget() {
 	mkwrite "./\$(TBIN)\n\n"
 
 	if [ ! -z $VALGRIND ] ; then
-		mkwrite "check:\n"
+		mkwrite "check: \$(TBIN)\n"
 		mkwrite "\texport LD_LIBRARY_PATH=\$(LD_LIBRARY_PATH):`pwd` ; "
 		mkwrite "$VALGRIND --tool=memcheck --leak-check=full"
 		mkwrite " --show-leak-kinds=all"
