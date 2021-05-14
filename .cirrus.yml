@@ -3,7 +3,7 @@ freebsd_instance:
 
 task:
   install_script:
-    pkg install -y gmake ccache e2fsprogs-libuuid postgresql12-server
+    pkg install -y ccache e2fsprogs-libuuid postgresql12-server
     postgresql12-client postgresql-libpgeasy valgrind-devel fcgi-devkit
-  script: gmake check
+  script: ./configure ; make check
 
