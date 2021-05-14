@@ -55,13 +55,13 @@ exists_lib() {
 	fi
 
 	if [ $SHELL = "/bin/csh" ] ; then
-		if ldconfig -p | grep lib$1 1>/dev/null 2>/dev/null ; then
+		if $LDCONFIG -p | grep lib$1 1>/dev/null 2>/dev/null ; then
 			return 0
 		else
 			return 1
 		fi
 	else
-		if ldconfig -p | grep lib$1 >&/dev/null ; then
+		if $LDCONFIG -p | grep lib$1 >&/dev/null ; then
 			return 0
 		else
 			return 1
@@ -350,29 +350,34 @@ mktarget() {
 	fi
 
 	mkwrite "install: \$(LBIN)\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent\n"
-	mkwrite "\tcp src/argent.h /usr/local/include/argent\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/base\n"
-	mkwrite "\tcp src/base/*.h /usr/local/include/argent/base\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/ds\n"
-	mkwrite "\tcp src/ds/*.h /usr/local/include/argent/ds\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/ex\n"
-	mkwrite "\tcp src/ex/*.h /usr/local/include/argent/ex\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/http\n"
-	mkwrite "\tcp src/http/*.h /usr/local/include/argent/http\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/test\n"
-	mkwrite "\tcp src/test/*.h /usr/local/include/argent/test\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/type\n"
-	mkwrite "\tcp src/type/*.h /usr/local/include/argent/type\n"
-	mkwrite "\tmkdir -p /usr/local/include/argent/util\n"
-	mkwrite "\tcp src/util/*.h /usr/local/include/argent/util\n"
-	mkwrite "\tcp \$(LBIN) /usr/local/lib\n"
-	mkwrite "\t@echo \"\"\n"
-	mkwrite "\t@echo \"Successfully installed the Argent Library.\"\n\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent\n"
+	mkwrite "\t@cp src/argent.h /usr/local/include/argent\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/base\n"
+	mkwrite "\t@cp src/base/*.h /usr/local/include/argent/base\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/ds\n"
+	mkwrite "\t@cp src/ds/*.h /usr/local/include/argent/ds\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/ex\n"
+	mkwrite "\t@cp src/ex/*.h /usr/local/include/argent/ex\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/http\n"
+	mkwrite "\t@cp src/http/*.h /usr/local/include/argent/http\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/test\n"
+	mkwrite "\t@cp src/test/*.h /usr/local/include/argent/test\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/type\n"
+	mkwrite "\t@cp src/type/*.h /usr/local/include/argent/type\n"
+	mkwrite "\t@mkdir -p /usr/local/include/argent/util\n"
+	mkwrite "\t@cp src/util/*.h /usr/local/include/argent/util\n"
+	mkwrite "\t@cp \$(LBIN) /usr/local/lib\n"
+	mkwrite "\t@$LDCONFIG\n"
+	mkwrite "\t@echo \"Successfully installed the Argent Library; "
+	mkwrite "to use:\"\n"
+	mkwrite "\t@echo \"  * include /usr/local/include/argent/argent.h "
+	mkwrite "in your code\"\n"
+	mkwrite "\t@echo \"  * link with /usr/local/lib/libargent.so\"\n\n"
 	
 	mkwrite "uninstall:\n"
-	mkwrite "\trm -rfv /usr/local/include/argent\n"
-	mkwrite "\trm -rf /usr/local/\$(LBIN)\n\n"
+	mkwrite "\t@rm -rf /usr/local/include/argent\n"
+	mkwrite "\t@rm -rf /usr/local/\$(LBIN)\n\n"
+	mkwrite "\t@echo \"Successfully uninstalled the Argent Library.\"\n"
 
 	mkwrite "clean:\n"
 	mkwrite "\trm -rfv \$(TBIN) \$(LBIN)\n"
@@ -416,5 +421,5 @@ echo "$MAKEFILE generated successfully; run the following now:"
 echo "  * make"
 echo "  * make test (optional)"
 [ -z $VALGRIND ] || echo "  * make check (optional)"
-echo "  * make install"
+echo "  * [sudo] make install"
 
