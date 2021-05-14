@@ -1,22 +1,47 @@
 #!/bin/sh
+################################################################################
+# SPDX-License-Identifier: GPL-3.0-only
+#
+# Argent---infrastructure for building web services
+# Copyright (C) 2020 Abhishek Chakravarti
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or(at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTIBILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+#
+# You can contact Abhishek Chakravarti at <abhishek@taranjali.org>.
+################################################################################
 
 
+# displays a green [OK] message
 ok() {
 	printf "[\033[0;32mOK\033[0m]   $1...\n"
 }
 
 
+# displays an orange [WARN] message
 warn() {
 	printf "[\033[0;33mWARN\033[0m] $1...\n"
 }
 
 
+# displays a red [FAIL] message
 fail() {
 	printf "[\033[0;31mFAIL\033[0m] $1.\n"
 	exit
 }
 
 
+# checks whether a binary is installed
 exists_bin() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		if which $1 1>/dev/null 2>/dev/null ; then
@@ -34,6 +59,7 @@ exists_bin() {
 }
 
 
+# checks whether a library is installed
 exists_lib() {
 	if [ $OS = "FreeBSD" ] ; then
 		if [ $SHELL = "/bin/csh" ] ; then
@@ -70,6 +96,7 @@ exists_lib() {
 }
 
 
+# prints the copyright notice
 copyright() {
 	echo "Argent Library Copyright (C) 2021 Abhishek Chakravarti"
 	echo "This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE."
@@ -79,6 +106,7 @@ copyright() {
 }
 
 
+# checks whether we are running Linux or FreeBSD
 check_os() {
 	OS=`uname`
 	if [ $OS = "Linux" ] ; then
@@ -91,6 +119,7 @@ check_os() {
 }
 
 
+# checks whether required binaries are installed
 check_dep() {
 	exists_bin make
 	[ $? -ne 0 ] || MAKE=make
@@ -139,6 +168,7 @@ check_dep() {
 }
 
 
+# checks whether required libraries are installed
 check_lib() {
 	exists_lib uuid
 	[ $? -ne 0 ] && fail "libuuid not found; install it first" \
@@ -155,6 +185,7 @@ check_lib() {
 }
 
 
+# selects the compiler
 set_compiler() {
 	if [ ! -z $GCC ] && [ ! -z $CLANG ] ; then
 		echo
@@ -187,6 +218,7 @@ set_compiler() {
 }
 
 
+# creates empty Makefile
 mktouch() {
 	MAKEFILE=Makefile
 
@@ -201,11 +233,13 @@ mktouch() {
 }
 
 
+# prints to the Makefile
 mkwrite() {
 	printf "$1" >> $MAKEFILE
 }
 
 
+# prints the copyright header to the Makefile
 mkheader() {
 	mkwrite "###################################################"
 	mkwrite "#############################\n"
@@ -250,6 +284,7 @@ mkheader() {
 }
 
 
+# writes the Makefile variables
 mkvar() {
 	mkwrite "# dynamic library variables\n\n"
 	mkwrite "LDIR = src\n"
@@ -297,6 +332,7 @@ mkvar() {
 }
 
 
+# writes the Makefile rules
 mkrule() {
 	mkwrite "# build rule for library\n\n"
 	mkwrite "\$(LBIN): \$(LOBJ)\n"
@@ -327,6 +363,7 @@ mkrule() {
 }
 
 
+# writes the Makefile targets
 mktarget() {
 	mkwrite "all: \$(LBIN)\n\n"
 
@@ -401,6 +438,8 @@ mktarget() {
 	ok "$MAKEFILE targets written"
 }
 
+
+# generate Makefile
 
 copyright
 echo "Starting Argent build configuration..."
