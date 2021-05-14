@@ -225,7 +225,7 @@ mktouch() {
 	if [ $SHELL = "/bin/csh" ] ; then
 		rm -f $MAKEFILE 1>/dev/null 2>/dev/null
 	else
-		rm -f $MAKEFILE >&/dev/null
+		rm -f $MAKEFILE >/dev/null 2>&1
 	fi
 
 	touch $MAKEFILE
