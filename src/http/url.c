@@ -253,7 +253,7 @@ ag_http_url_parse_env(const struct ag_http_env *cgi)
         AG_AUTO(ag_string) *p2 = ag_string_split(p, "?");
         AG_AUTO(ag_string) *path = ag_string_split(p2, "#");
 
-        ag_uint port = ag_uint_parse(cgi->remote_port);
+        ag_uint port = ag_uint_parse(cgi->server_port);
 
         return port ? ag_http_url_new(secure, cgi->server_name, port, path)
             : ag_http_url_new_noport(secure, cgi->server_name, path);
