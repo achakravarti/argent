@@ -14,7 +14,7 @@ static void plugin_release(void *hnd)
 
 static AG_THREADLOCAL struct {
         struct ag_http_env       env;
-        FCGX_Request            *cgi;
+        FCGX_Request             cgi;
         ag_registry             *reg;
         ag_http_request         *req;
 } *g_http = NULL;
@@ -31,7 +31,7 @@ ag_http_server_init(void)
         g_http->env = (const struct ag_http_env){'\0'};
         
         AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
-        AG_REQUIRE (!FCGX_InitRequest(g_http->cgi, 0, 0), AG_ERNO_HTTP);
+        AG_REQUIRE (!FCGX_InitRequest(&g_http->cgi, 0, 0), AG_ERNO_HTTP);
 }
 
 
@@ -55,7 +55,9 @@ env_read(const char *key)
         AG_ASSERT_PTR (g_http);
         AG_ASSERT_STR (key);
 
-        const char *v = FCGX_GetParam(key, g_http->cgi->envp);
+        const char *v = FCGX_GetParam(key, g_http->cgi.envp);
+        ag_log_debug("%s = %s", key, v ? v : "(empty)");
+
         return v ? v : "";
 }
 
@@ -132,21 +134,19 @@ ag_http_server_respond(const ag_http_response *resp)
         AG_ASSERT_PTR (g_http);
 
         AG_AUTO(ag_string) *s = ag_http_response_str(resp);
-        FCGX_FPrintF(g_http->cgi->out, s);
+        FCGX_FPrintF(g_http->cgi.out, s);
 }
 
 
 static void
-default_http_handler(const ag_http_request *req)
+default_http_handler(void)
 {
-        AG_ASSERT_PTR (req);
+        AG_AUTO(ag_http_url) *u = ag_http_request_url(g_http->req);
+        AG_AUTO(ag_string) *us = ag_http_url_str(u);
+        ag_log_warning("request handler for %s not found, using default", us);
 
-        const char *msg = "<h1>[!] request handler not found!</h1><p>%s</p>";
-        AG_AUTO(ag_string) *s = ag_http_request_str(req);
-        AG_AUTO(ag_string) *s2 = ag_string_new_fmt(msg, s);
-
-        AG_AUTO(ag_http_response) *r = ag_http_response_new(
-            AG_HTTP_MIME_TEXT_HTML, AG_HTTP_STATUS_404_NOT_FOUND, s2);
+        AG_AUTO(ag_http_response) *r = ag_http_response_new_empty(
+            AG_HTTP_MIME_TEXT_HTML, AG_HTTP_STATUS_404_NOT_FOUND);
         ag_http_server_respond(r);
 }
 
@@ -177,9 +177,9 @@ param_post(void)
                 ag_memblock *m = bfr;
                 ag_memblock_resize(&m, sz);
 
-                read += FCGX_GetStr(bfr + read, sz - read, g_http->cgi->in);
+                read += FCGX_GetStr(bfr + read, sz - read, g_http->cgi.in);
                 if (AG_UNLIKELY (!read || 
-                    (err = FCGX_GetError(g_http->cgi->in))))
+                    (err = FCGX_GetError(g_http->cgi.in))))
                         ag_memblock_release(&m);
 
                 AG_REQUIRE (!err, AG_ERNO_HTTP);
@@ -203,7 +203,8 @@ srv_req(void)
         const struct ag_http_env *e = ag_http_server_env();
 
         enum ag_http_method m = ag_http_method_parse(e->request_method);
-        enum ag_http_mime t = ag_http_mime_parse(e->content_type);
+        enum ag_http_mime t = *e->content_type 
+            ? ag_http_mime_parse(e->content_type) : AG_HTTP_MIME_TEXT_PLAIN;
 
         AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
         AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
@@ -227,12 +228,12 @@ srv_resp(void)
         ag_hash h = ag_hash_new_str(p);
 
         const ag_plugin *plg = ag_registry_get(g_http->reg, h);
-        ag_http_handler *hnd = ag_plugin_hnd(plg);
 
-        if (AG_LIKELY (hnd))
+        if (AG_LIKELY (plg)) {
+                ag_http_handler *hnd = ag_plugin_hnd(plg);
                 hnd(g_http->req);
-        else
-                default_http_handler(g_http->req);
+        } else
+                default_http_handler();
 }
 
 
@@ -241,10 +242,10 @@ ag_http_server_run(void)
 {
         AG_ASSERT_PTR (g_http);
 
-        while (FCGX_Accept_r(g_http->cgi) >= 0) {
+        while (FCGX_Accept_r(&g_http->cgi) >= 0) {
                 srv_req();
                 srv_resp();
-                FCGX_Finish_r(g_http->cgi);
+                FCGX_Finish_r(&g_http->cgi);
         }
 }
 
