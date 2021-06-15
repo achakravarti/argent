@@ -118,7 +118,9 @@ ag_plugin_hnd(const ag_plugin *ctx)
         char *err = dlerror();
 
         if (AG_UNLIKELY (err)) {
-                fprintf(stderr, "failed to load plugin: %s\n", dlerror());
+                fprintf(stderr, "failed to load plugin: %s\n", err);
+                ag_log_err("failed to load plugin: %s", err);
+
                 exit(EXIT_FAILURE);
         }
 
@@ -140,7 +142,10 @@ payload_new(const char *dso, const char *sym)
         p->hnd = dlopen(*dso ? dso : NULL, RTLD_LAZY | RTLD_GLOBAL);
 
         if (AG_UNLIKELY (!p->hnd)) {
-                fprintf(stderr, "failed to open plugin DSO: %s\n", dlerror());
+                char *err = dlerror();
+                fprintf(stderr, "failed to open plugin DSO: %s\n", err);
+                ag_log_err("failed to open plugin DSO: %s\n", err);
+
                 exit(EXIT_FAILURE);
         }
 
