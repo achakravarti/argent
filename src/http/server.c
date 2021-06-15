@@ -139,16 +139,14 @@ ag_http_server_respond(const ag_http_response *resp)
 
 
 static void
-default_http_handler(const ag_http_request *req)
+default_http_handler(void)
 {
-        AG_ASSERT_PTR (req);
+        AG_AUTO(ag_http_url) *u = ag_http_request_url(g_http->req);
+        AG_AUTO(ag_string) *us = ag_http_url_str(u);
+        ag_log_warning("request handler for %s not found, using default", us);
 
-        const char *msg = "<h1>[!] request handler not found!</h1><p>%s</p>";
-        AG_AUTO(ag_string) *s = ag_http_request_str(req);
-        AG_AUTO(ag_string) *s2 = ag_string_new_fmt(msg, s);
-
-        AG_AUTO(ag_http_response) *r = ag_http_response_new(
-            AG_HTTP_MIME_TEXT_HTML, AG_HTTP_STATUS_404_NOT_FOUND, s2);
+        AG_AUTO(ag_http_response) *r = ag_http_response_new_empty(
+            AG_HTTP_MIME_TEXT_HTML, AG_HTTP_STATUS_404_NOT_FOUND);
         ag_http_server_respond(r);
 }
 
@@ -230,12 +228,12 @@ srv_resp(void)
         ag_hash h = ag_hash_new_str(p);
 
         const ag_plugin *plg = ag_registry_get(g_http->reg, h);
-        ag_http_handler *hnd = ag_plugin_hnd(plg);
 
-        if (AG_LIKELY (hnd))
-                hnd(g_http->req);
-        else
-                default_http_handler(g_http->req);
+        if (AG_LIKELY (plg)) {
+                ag_http_handler *hnd = ag_plugin_hnd(plg);
+                AG_LIKELY (hnd) ? hnd(g_http->req) : default_http_handler();
+        } else
+                default_http_handler();
 }
 
 
