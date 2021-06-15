@@ -56,7 +56,7 @@ env_read(const char *key)
         AG_ASSERT_STR (key);
 
         const char *v = FCGX_GetParam(key, g_http->cgi.envp);
-        ag_log_debug("%s = %s", v ? v : "");
+        ag_log_debug("%s = %s", key, v ? v : "(empty)");
 
         return v ? v : "";
 }
