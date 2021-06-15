@@ -205,7 +205,8 @@ srv_req(void)
         const struct ag_http_env *e = ag_http_server_env();
 
         enum ag_http_method m = ag_http_method_parse(e->request_method);
-        enum ag_http_mime t = ag_http_mime_parse(e->content_type);
+        enum ag_http_mime t = *e->content_type 
+            ? ag_http_mime_parse(e->content_type) : AG_HTTP_MIME_TEXT_PLAIN;
 
         AG_AUTO(ag_http_url) *u = ag_http_url_parse_env(e);
         AG_AUTO(ag_http_client) *c = ag_http_client_parse_env(e);
