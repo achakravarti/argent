@@ -14,7 +14,7 @@ static void plugin_release(void *hnd)
 
 static AG_THREADLOCAL struct {
         struct ag_http_env       env;
-        FCGX_Request            *cgi;
+        FCGX_Request             cgi;
         ag_registry             *reg;
         ag_http_request         *req;
 } *g_http = NULL;
@@ -31,7 +31,7 @@ ag_http_server_init(void)
         g_http->env = (const struct ag_http_env){'\0'};
         
         AG_REQUIRE (!FCGX_Init(), AG_ERNO_HTTP);
-        AG_REQUIRE (!FCGX_InitRequest(g_http->cgi, 0, 0), AG_ERNO_HTTP);
+        AG_REQUIRE (!FCGX_InitRequest(&g_http->cgi, 0, 0), AG_ERNO_HTTP);
 }
 
 
@@ -55,7 +55,7 @@ env_read(const char *key)
         AG_ASSERT_PTR (g_http);
         AG_ASSERT_STR (key);
 
-        const char *v = FCGX_GetParam(key, g_http->cgi->envp);
+        const char *v = FCGX_GetParam(key, g_http->cgi.envp);
         return v ? v : "";
 }
 
@@ -132,7 +132,7 @@ ag_http_server_respond(const ag_http_response *resp)
         AG_ASSERT_PTR (g_http);
 
         AG_AUTO(ag_string) *s = ag_http_response_str(resp);
-        FCGX_FPrintF(g_http->cgi->out, s);
+        FCGX_FPrintF(g_http->cgi.out, s);
 }
 
 
@@ -177,9 +177,9 @@ param_post(void)
                 ag_memblock *m = bfr;
                 ag_memblock_resize(&m, sz);
 
-                read += FCGX_GetStr(bfr + read, sz - read, g_http->cgi->in);
+                read += FCGX_GetStr(bfr + read, sz - read, g_http->cgi.in);
                 if (AG_UNLIKELY (!read || 
-                    (err = FCGX_GetError(g_http->cgi->in))))
+                    (err = FCGX_GetError(g_http->cgi.in))))
                         ag_memblock_release(&m);
 
                 AG_REQUIRE (!err, AG_ERNO_HTTP);
@@ -241,10 +241,10 @@ ag_http_server_run(void)
 {
         AG_ASSERT_PTR (g_http);
 
-        while (FCGX_Accept_r(g_http->cgi) >= 0) {
+        while (FCGX_Accept_r(&g_http->cgi) >= 0) {
                 srv_req();
                 srv_resp();
-                FCGX_Finish_r(g_http->cgi);
+                FCGX_Finish_r(&g_http->cgi);
         }
 }
 
