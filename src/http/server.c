@@ -231,7 +231,7 @@ srv_resp(void)
 
         if (AG_LIKELY (plg)) {
                 ag_http_handler *hnd = ag_plugin_hnd(plg);
-                AG_LIKELY (hnd) ? hnd(g_http->req) : default_http_handler();
+                hnd(g_http->req);
         } else
                 default_http_handler();
 }
